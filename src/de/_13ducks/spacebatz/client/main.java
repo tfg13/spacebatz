@@ -1,4 +1,4 @@
-package spacebatz_client;
+package de._13ducks.spacebatz.client;
 
 /**
  * Die Main-Klasse enthält die Main()-Methode

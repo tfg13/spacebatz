@@ -1,4 +1,4 @@
-package spacebatz_client;
+package de._13ducks.spacebatz.client;
 
 /**
  * Die Hauptklasse des Clients

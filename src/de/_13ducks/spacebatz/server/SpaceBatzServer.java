@@ -1,4 +1,4 @@
-package spacebatz_server;
+package de._13ducks.spacebatz.server;
 
 /**
  * Die Hauptklasse des Servers
