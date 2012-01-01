@@ -1,8 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -44,6 +42,8 @@ public class Engine {
         while (!Display.isCloseRequested()) {
             // Render-Code...
 
+            // Frames limitieren:
+            Display.sync(60);
             // Fertig, Puffer swappen:
             Display.update();
         }
