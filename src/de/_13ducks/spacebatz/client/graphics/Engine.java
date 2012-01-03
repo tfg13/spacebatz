@@ -62,11 +62,13 @@ public class Engine {
             ex.printStackTrace();
             return;
         }
+        // OpenGL-Init
+        initGL();
 
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
-            // Render-Code...
-
+            // Render-Code
+            render();
             // Frames limitieren:
             Display.sync(60);
             // Fertig, Puffer swappen:
@@ -76,5 +78,17 @@ public class Engine {
         // Ende der Mainloop.
         Display.destroy();
 
+    }
+
+    /**
+     * OpenGL initialisieren
+     */
+    private void initGL() {
+    }
+
+    /**
+     * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
+     */
+    private void render() {
     }
 }
