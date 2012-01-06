@@ -2,11 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.ContextCapabilities;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.*;
 
 /**
  * Kern der Grafikengine. Startet die Grafikausgabe
@@ -36,6 +32,8 @@ public class Engine {
         try {
             Display.setDisplayMode(new DisplayMode(800, 600));
             Display.create();
+            
+            // Fähigkeiten ausgeben, bleibt mal noch drin.
             ContextCapabilities con = GLContext.getCapabilities();
             boolean FBOEnabled = con.GL_EXT_framebuffer_object;
             System.out.println("OpenGL Major Version Support:");
