@@ -15,7 +15,7 @@ public final class Settings {
     }
     
     public static final int CLIENT_GFX_RES_X = 800;
-    public static final int CLIENT_GFX_RES_Y = 600;
+    public static final int CLIENT_GFX_RES_Y = 640;
     public static final int CLIENT_GFX_TILESIZE = 16;
     public static final int CLIENT_GFX_TILEZOOM = 2;
 
