@@ -1,12 +1,18 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
+
 /**
  * Kern der Grafikengine. Startet die Grafikausgabe
+ *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Engine {
@@ -23,17 +29,20 @@ public class Engine {
             ex.printStackTrace();
         }
     }
+    /**
+     * Die Ground-Tilemap
+     */
+    private Texture groundTiles;
 
     /**
-     * Startet die Grafik.
-     * Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
+     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
      */
     public void start() {
         // Fenster aufmachen:
         try {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
-            
+
             // Fähigkeiten ausgeben, bleibt mal noch drin.
             ContextCapabilities con = GLContext.getCapabilities();
             boolean FBOEnabled = con.GL_EXT_framebuffer_object;
@@ -63,6 +72,14 @@ public class Engine {
         }
         // OpenGL-Init
         initGL();
+        // Texturen laden
+        try {
+            loadTex();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Display.destroy();
+            System.exit(1);
+        }
 
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
@@ -83,7 +100,7 @@ public class Engine {
      * OpenGL initialisieren
      */
     private void initGL() {
-        // Orthogonalperspektive mit res/endusertilesize initialisieren.
+        // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, 0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
     }
 
@@ -91,5 +108,12 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
+    }
+
+    /**
+     * Läd alle benötigten Texturen
+     */
+    private void loadTex() throws IOException {
+        groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"));
     }
 }
