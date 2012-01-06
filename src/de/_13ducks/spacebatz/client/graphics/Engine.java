@@ -1,9 +1,10 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import static de._13ducks.spacebatz.Settings.*;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
-
+import org.lwjgl.util.glu.GLU;
 /**
  * Kern der Grafikengine. Startet die Grafikausgabe
  * @author Tobias Fleig <tobifleig@googlemail.com>
@@ -30,7 +31,7 @@ public class Engine {
     public void start() {
         // Fenster aufmachen:
         try {
-            Display.setDisplayMode(new DisplayMode(800, 600));
+            Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
             
             // Fähigkeiten ausgeben, bleibt mal noch drin.
@@ -82,6 +83,8 @@ public class Engine {
      * OpenGL initialisieren
      */
     private void initGL() {
+        // Orthogonalperspektive mit res/endusertilesize initialisieren.
+        GLU.gluOrtho2D(0, 0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
     }
 
     /**
