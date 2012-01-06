@@ -4,6 +4,7 @@ import static de._13ducks.spacebatz.Settings.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
+import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
@@ -101,19 +102,37 @@ public class Engine {
      */
     private void initGL() {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
-        GLU.gluOrtho2D(0, 0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+        GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+        glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Überschreiben stellen
+
     }
 
     /**
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
+        // Mal ein Quad versuchen:
+        groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
+        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+        glTexCoord2f(0, 0); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+        glVertex3f(1, 1, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles)
+        // Die weiteren 3 Ecken im Uhrzeigersinn:
+        glTexCoord2f(0.0625f, 0);
+        glVertex3f(0, 1, 0);
+        glTexCoord2f(0.0625f, 0.0625f);
+        glVertex3f(0, 0, 0);
+        glTexCoord2f(0, 0.0625f);
+        glVertex3f(1, 0, 0);
+        glEnd(); // Zeichnen des QUADs fertig
     }
 
     /**
      * Läd alle benötigten Texturen
      */
     private void loadTex() throws IOException {
-        groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"));
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
+        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
+        groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
     }
 }
