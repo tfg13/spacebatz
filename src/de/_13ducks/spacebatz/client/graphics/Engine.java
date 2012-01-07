@@ -96,10 +96,11 @@ public class Engine {
         while (!Display.isCloseRequested()) {
             // Render-Code
             render();
-            // Frames limitieren:
-            Display.sync(60);
+
             // Fertig, Puffer swappen:
             Display.update();
+            // Frames limitieren:
+            Display.sync(60);
         }
 
         // Ende der Mainloop.
