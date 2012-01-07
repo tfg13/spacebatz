@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.client.Client;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
@@ -32,13 +33,21 @@ public class Engine {
         }
     }
     /**
-     * Die Ground-Tilemap
+     * Die Ground-Tilemap.
      */
     private Texture groundTiles;
     /**
-     * Die Anzahl der Tiles auf dem Bildschirm
+     * Die Anzahl der Tiles auf dem Bildschirm.
      */
     private int tilesX, tilesY;
+    /**
+     * Die aktuelle FPS-Zahl.
+     */
+    private int fps;
+    /**
+     * Zeitpunkt der letzten FPS-Messung.
+     */
+    private long lastFPS;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -92,6 +101,7 @@ public class Engine {
             System.exit(1);
         }
 
+        lastFPS = getTime();
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
             // Render-Code
@@ -99,13 +109,35 @@ public class Engine {
 
             // Fertig, Puffer swappen:
             Display.update();
+            // Frames messen:
+            updateFPS();
             // Frames limitieren:
-            Display.sync(60);
+            Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
 
         // Ende der Mainloop.
         Display.destroy();
 
+    }
+    /**
+     * Liefert eine wirklich aktuelle Zeit. Nicht so gammlig wie System.currentTimeMillis();
+     *
+     * @return eine wirklich aktuelle Zeit.
+     */
+    public static long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
+    /**
+     * Aktualisiert die FPS-Daten. Muss bei jedem Frame aufgerufen werden.
+     */
+    private void updateFPS() {
+        if (getTime() - lastFPS > 1000) {
+            Display.setTitle("FPS: " + fps);
+            fps = 0;
+            lastFPS += 1000;
+        }
+        fps++;
     }
 
     /**
