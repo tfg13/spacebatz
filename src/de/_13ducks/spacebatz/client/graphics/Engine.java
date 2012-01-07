@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
+import de._13ducks.spacebatz.client.Client;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
@@ -34,6 +35,15 @@ public class Engine {
      * Die Ground-Tilemap
      */
     private Texture groundTiles;
+    /**
+     * Die Anzahl der Tiles auf dem Bildschirm
+     */
+    private int tilesX, tilesY;
+
+    public Engine() {
+        tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+        tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+    }
 
     /**
      * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
@@ -112,19 +122,25 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
-        // Mal ein Quad versuchen:
+        int[][] ground = Client.currentLevel.getGround();
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
-        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-        glTexCoord2f(0, 0); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-        glVertex3f(1, 1, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles)
-        // Die weiteren 3 Ecken im Uhrzeigersinn:
-        glTexCoord2f(0.0625f, 0);
-        glVertex3f(0, 1, 0);
-        glTexCoord2f(0.0625f, 0.0625f);
-        glVertex3f(0, 0, 0);
-        glTexCoord2f(0, 0.0625f);
-        glVertex3f(1, 0, 0);
-        glEnd(); // Zeichnen des QUADs fertig
+        for (int x = 0; x < tilesX; x++) {
+            for (int y = 0; y < tilesY; y++) {
+                int tx = ground[x][y] % 16;
+                int ty = ground[x][y] / 16;
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+                glVertex3f(x, y + 1, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                // Die weiteren 3 Ecken im Uhrzeigersinn:
+                glTexCoord2f((tx + 1) * 0.0625f, ty * 0.0625f);
+                glVertex3f(x + 1, y + 1, 0);
+                glTexCoord2f((tx + 1) * 0.0625f, (ty + 1) * 0.0625f);
+                glVertex3f(x + 1, y, 0);
+                glTexCoord2f(tx * 0.0625f, (ty + 1) * 0.0625f);
+                glVertex3f(x, y, 0);
+                glEnd(); // Zeichnen des QUADs fertig
+            }
+        }
     }
 
     /**
