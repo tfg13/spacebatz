@@ -38,6 +38,14 @@ public class Engine {
      */
     private Texture groundTiles;
     /**
+     * Die Player-Tilemap.
+     */
+    private Texture playerTiles;
+    /**
+     * Die Richtung, in die der Spieler schaut.
+     */
+    private int playerDir = 0;
+    /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
     private int tilesX, tilesY;
@@ -134,15 +142,19 @@ public class Engine {
     private void input() {
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
             panY -= 2 / 32f;
+            playerDir = 6;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             panY += 2 / 32f;
+            playerDir = 2;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             panX += 2 / 32f;
+            playerDir = 0;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             panX -= 2 / 32f;
+            playerDir = 4;
         }
     }
 
@@ -175,7 +187,8 @@ public class Engine {
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Überschreiben stellen
-
+        glEnable(GL_BLEND); // Transparenz in Texturen erlauben
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
 
     /**
@@ -201,6 +214,18 @@ public class Engine {
                 glEnd(); // Zeichnen des QUADs fertig
             }
         }
+        // Player in die Mitte:
+        playerTiles.bind();
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0625f * playerDir, 0);
+        glVertex3f(tilesX / 2, tilesY / 2 + 2, 0);
+        glTexCoord2f(0.0625f * (2 + playerDir), 0);
+        glVertex3f(tilesX / 2 + 2, tilesY / 2 + 2, 0);
+        glTexCoord2f(0.0625f * (2 + playerDir), 0.0625f * 2);
+        glVertex3f(tilesX / 2 + 2, tilesY / 2, 0);
+        glTexCoord2f(0.0625f * playerDir, 0.0625f * 2);
+        glVertex3f(tilesX / 2, tilesY / 2, 0);
+        glEnd();
     }
 
     private int texAt(int[][] layer, int x, int y) {
@@ -218,5 +243,6 @@ public class Engine {
         // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
+        playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
     }
 }
