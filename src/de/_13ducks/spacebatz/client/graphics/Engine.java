@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
@@ -48,6 +49,10 @@ public class Engine {
      * Zeitpunkt der letzten FPS-Messung.
      */
     private long lastFPS;
+    /**
+     * Scrollen des Bildschirms, in Feldern.
+     */
+    private float panX, panY;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -62,6 +67,7 @@ public class Engine {
         try {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
+            Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
 
             // Fähigkeiten ausgeben, bleibt mal noch drin.
             ContextCapabilities con = GLContext.getCapabilities();
@@ -111,6 +117,8 @@ public class Engine {
             Display.update();
             // Frames messen:
             updateFPS();
+            // Input verarbeiten:
+            input();
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
@@ -119,6 +127,25 @@ public class Engine {
         Display.destroy();
 
     }
+
+    /**
+     * Verarbeitet den Input.
+     */
+    private void input() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+            panY -= 2 / 32f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+            panY += 2 / 32f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+            panX += 2 / 32f;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+            panX -= 2 / 32f;
+        }
+    }
+
     /**
      * Liefert eine wirklich aktuelle Zeit. Nicht so gammlig wie System.currentTimeMillis();
      *
@@ -155,24 +182,32 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
-        int[][] ground = Client.currentLevel.getGround();
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
-        for (int x = 0; x < tilesX; x++) {
-            for (int y = 0; y < tilesY; y++) {
-                int tx = ground[x][y] % 16;
-                int ty = ground[x][y] / 16;
+        for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
+            for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
+                int tex = texAt(Client.currentLevel.getGround(), x, y);
+                int tx = tex % 16;
+                int ty = tex / 16;
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-                glVertex3f(x, y + 1, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
                 // Die weiteren 3 Ecken im Uhrzeigersinn:
                 glTexCoord2f((tx + 1) * 0.0625f, ty * 0.0625f);
-                glVertex3f(x + 1, y + 1, 0);
+                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
                 glTexCoord2f((tx + 1) * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + 1, y, 0);
+                glVertex3f(x + 1 + panX, y + panY, 0);
                 glTexCoord2f(tx * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x, y, 0);
+                glVertex3f(x + panX, y + panY, 0);
                 glEnd(); // Zeichnen des QUADs fertig
             }
+        }
+    }
+
+    private int texAt(int[][] layer, int x, int y) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer.length) {
+            return 0;
+        } else {
+            return layer[x][y];
         }
     }
 
