@@ -50,10 +50,10 @@ public class LevelGenerator {
         
 
         // Hohles Rechteck
-        int leftborder = random.nextInt(xSize / 3);
-        int rightborder = xSize - random.nextInt(xSize / 3);
-        int topborder = random.nextInt(ySize / 3);
-        int bottomborder = ySize - random.nextInt(ySize / 3);
+        int leftborder = random.nextInt(xSize / 3) + 2;
+        int rightborder = xSize - random.nextInt(xSize / 3) - 2;
+        int topborder = random.nextInt(ySize / 3) + 2;
+        int bottomborder = ySize - random.nextInt(ySize / 3) - 2;
         
         ArrayList<Position> bla = new ArrayList<Position>();
         bla.addAll(findRectangleHollow(leftborder, topborder, rightborder, bottomborder));
@@ -66,7 +66,7 @@ public class LevelGenerator {
 
     public static void drawPositions(ArrayList<Position> posarray, int groundnumber) {        
         for (Position pos : posarray) {
-            ground[pos.getX()][pos.getY()] = groundnumber;
+            ground[(int) pos.getX()][(int) pos.getY()] = groundnumber;
         }
     }
     
@@ -77,8 +77,8 @@ public class LevelGenerator {
     public static ArrayList<Position> findLine(Position alpha, Position beta) {
         ArrayList<Position> Returnthis = new ArrayList<Position>();
 
-        int vX = beta.getX() - alpha.getX();
-        int vY = beta.getY() - alpha.getY();
+        int vX = (int) beta.getX() - (int) alpha.getX();
+        int vY = (int) beta.getY() - (int) alpha.getY();
         if (Math.abs(vX) >= Math.abs(vY)) {
             if (vX > 0) {
                 for (int i = 0; i <= vX; i++) {

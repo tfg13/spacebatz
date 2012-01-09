@@ -1,9 +1,12 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
+import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Position;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -41,6 +44,10 @@ public class Engine {
      * Die Player-Tilemap.
      */
     private Texture playerTiles;
+    /**
+     * Die Bullet-Tilemap.
+     */
+    private Texture bulletTiles;
     /**
      * Die Richtung, in die der Spieler schaut.
      */
@@ -156,6 +163,14 @@ public class Engine {
             panX -= 8 / 32f;
             playerDir = 4;
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            // Bullet erstellen
+            Bullet bullet = new Bullet(Client.getGametick(), new Position(64, 64), Math.PI * 2 * playerDir / 8 + Math.PI, 0.2f);
+            LinkedList BulletList = Client.getBulletList();
+            BulletList.add(bullet);
+
+            System.out.println(Client.getGametick());
+        }
     }
 
     /**
@@ -195,6 +210,8 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
+        Client.incrementGametick();
+
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
@@ -226,6 +243,26 @@ public class Engine {
         glTexCoord2f(0.0625f * playerDir, 0.0625f * 2);
         glVertex3f(tilesX / 2, tilesY / 2, 0);
         glEnd();
+
+        // Test Bullet
+        bulletTiles.bind();
+        for (int i = 0; i < Client.getBulletList().size(); i++) {
+            Bullet bullet = Client.getBulletList().get(i);
+            float radius = (float) bullet.getSpeed() * (Client.getGametick() - bullet.getSpawntick());
+            float x = radius * (float) Math.cos(bullet.getDirection());
+            float y = radius * (float) Math.sin(bullet.getDirection());
+            
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(0, 0.25f);
+            glVertex3f(tilesX / 2 + x + panX, tilesY / 2 + y + panY, 0);
+            glTexCoord2f(0.25f, 0.25f);
+            glVertex3f(tilesX / 2 + x + 2 + panX, tilesY / 2 + y + panY, 0);
+            glTexCoord2f(0.25f, 0);
+            glVertex3f(tilesX / 2 + x + 2 + panX, tilesY / 2 + y + 2 + panY, 0);
+            glTexCoord2f(0, 0);
+            glVertex3f(tilesX / 2 + x + panX, tilesY / 2 + y + 2 + panY, 0);
+            glEnd(); // Zeichnen des QUADs fertig
+        }
     }
 
     private int texAt(int[][] layer, int x, int y) {
@@ -244,5 +281,6 @@ public class Engine {
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
+        bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
     }
 }
