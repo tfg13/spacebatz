@@ -10,7 +10,7 @@ import de._13ducks.spacebatz.server.network.ServerNetwork;
  *
  * @author michael
  */
-public final class SpacebatzServer {
+public final class Server {
 
     /**
      * Globale Referenz auf den MessageInterpreter

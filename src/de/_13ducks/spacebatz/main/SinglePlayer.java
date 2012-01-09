@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.main;
 
 import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.server.SpacebatzServer;
+import de._13ducks.spacebatz.server.Server;
 
 /**
  * Enthält main für SinglePlayer, also ein Server, ein verbundener Client.
@@ -16,7 +16,7 @@ public class SinglePlayer {
 
             @Override
             public void run() {
-                SpacebatzServer.main(new String[]{});
+                Server.main(new String[]{});
             }
         });
         // Client
