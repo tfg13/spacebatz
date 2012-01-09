@@ -15,30 +15,23 @@ public class Level {
      * Die Bodentexturen. Indizes der Tiles
      */
     private int[][] ground;
+    
+    private int sizeX;
+    private int sizeY;
 
-    /**
-     * Erzeugt eine neues Level.
-     *
-     * @param xSize Größe in X-Richtung
-     * @param ySize Größe in Y-Richtung
+    /*
+     * Konstruktor, wird vom Levelgenerator augerufen
      */
     public Level(int xSize, int ySize) {
-        ground = new int[xSize][ySize];
-
-        // Default-Bodentextur:
-        for (int x = 0; x < xSize; x++) {
-            for (int y = 0; y < ySize; y++) {
-                ground[x][y] = 1;
-            }
-        }
-        // Ein Paar Krater zufällig verteilen
-        Random random = new Random(System.nanoTime());
-        for (int i = 0; i < 50; i++) {
-            ground[random.nextInt(xSize)][random.nextInt(ySize)] = 2;
-        }
+        this.sizeX = xSize;
+        this.sizeY = ySize;
     }
     
     public int[][] getGround() {
         return ground;
+    }
+
+    public void setGround(int[][] ground) {
+        this.ground = ground;
     }
 }
