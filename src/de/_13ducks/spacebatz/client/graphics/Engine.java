@@ -246,6 +246,13 @@ public class Engine {
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
             Bullet bullet = Client.getBulletList().get(i);
+            // Zu alte Bullets löschen:
+            if (bullet.getDeletetick() < Client.getGametick()) {
+                
+                Client.getBulletList().remove(i);
+                i--;
+            } else {
+
             float radius = (float) bullet.getSpeed() * (Client.getGametick() - bullet.getSpawntick());
             float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
             float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
@@ -260,6 +267,7 @@ public class Engine {
             glTexCoord2f(0, 0);
             glVertex3f(x + panX, y + 2 + panY, 0);
             glEnd(); // Zeichnen des QUADs fertig
+            }
         }
     }
 

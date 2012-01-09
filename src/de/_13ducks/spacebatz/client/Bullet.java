@@ -22,12 +22,17 @@ public class Bullet {
      * Geschwindigkeit
      */
     private float speed;
+     /*
+     * Tick, zu dem die Bullet gelöscht wird
+     */
+    private int deletetick;
     
     public Bullet(int spawntick, Position spawnposition, double direction, float speed) {
         this.spawntick = spawntick;
         this.spawnposition = spawnposition;
         this.direction = direction;
         this.speed = speed;
+        this.deletetick = spawntick + 600; // Nach 10 Sekunden löschen
     }
 
     /**
@@ -63,5 +68,12 @@ public class Bullet {
      */
     public float getSpeed() {
         return speed;
+    }
+
+    /**
+     * @return the deletetick
+     */
+    public int getDeletetick() {
+        return deletetick;
     }
 }
