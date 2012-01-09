@@ -3,10 +3,12 @@ package de._13ducks.spacebatz.client.graphics;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.Position;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
+import java.util.Random;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -37,16 +39,10 @@ public class Engine {
         }
     }
     /**
-     * Die Ground-Tilemap.
+     * Tilemaps
      */
     private Texture groundTiles;
-    /**
-     * Die Player-Tilemap.
-     */
     private Texture playerTiles;
-    /**
-     * Die Bullet-Tilemap.
-     */
     private Texture bulletTiles;
     /**
      * Die Richtung, in die der Spieler schaut.
@@ -147,29 +143,32 @@ public class Engine {
      * Verarbeitet den Input.
      */
     private void input() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            panY -= 8 / 32f;
-            playerDir = 6;
-        }
+        Player player = Client.getPlayer();
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            panY += 8 / 32f;
+            player.setY(player.getY() - 0.25f);
             playerDir = 2;
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+            player.setY(player.getY() + 0.25f);
+            playerDir = 6;
+        }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            panX += 8 / 32f;
+            player.setX(player.getX() - 0.25f);
             playerDir = 0;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            panX -= 8 / 32f;
+            player.setX(player.getX() + 0.25f);
             playerDir = 4;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             // Bullet erstellen
-            Bullet bullet = new Bullet(Client.getGametick(), new Position(64, 64), Math.PI * 2 * playerDir / 8 + Math.PI, 0.2f);
+            Random random = new Random(System.nanoTime());
+            double spread = random.nextGaussian() * Math.PI / 64;
+            Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI + spread, 0.4f);
             LinkedList BulletList = Client.getBulletList();
             BulletList.add(bullet);
 
-            System.out.println(Client.getGametick());
+            System.out.println(Client.getPlayer().getX() + "," + Client.getPlayer().getY());
         }
     }
 
@@ -211,6 +210,8 @@ public class Engine {
      */
     private void render() {
         Client.incrementGametick();
+        panX = (float) -Client.getPlayer().getX() + tilesX / 2;
+        panY = (float) -Client.getPlayer().getY() + tilesY / 2;
 
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
@@ -244,24 +245,32 @@ public class Engine {
         glVertex3f(tilesX / 2, tilesY / 2, 0);
         glEnd();
 
-        // Test Bullet
+        // Bullets
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
             Bullet bullet = Client.getBulletList().get(i);
+            // Zu alte Bullets löschen:
+            if (bullet.getDeletetick() < Client.getGametick()) {
+                
+                Client.getBulletList().remove(i);
+                i--;
+            } else {
+
             float radius = (float) bullet.getSpeed() * (Client.getGametick() - bullet.getSpawntick());
-            float x = radius * (float) Math.cos(bullet.getDirection());
-            float y = radius * (float) Math.sin(bullet.getDirection());
+            float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
+            float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
             
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(0, 0.25f);
-            glVertex3f(tilesX / 2 + x + panX, tilesY / 2 + y + panY, 0);
+            glVertex3f(x + panX, y + panY, 0);
             glTexCoord2f(0.25f, 0.25f);
-            glVertex3f(tilesX / 2 + x + 2 + panX, tilesY / 2 + y + panY, 0);
+            glVertex3f(x + 2 + panX, y + panY, 0);
             glTexCoord2f(0.25f, 0);
-            glVertex3f(tilesX / 2 + x + 2 + panX, tilesY / 2 + y + 2 + panY, 0);
+            glVertex3f(x + 2 + panX, y + 2 + panY, 0);
             glTexCoord2f(0, 0);
-            glVertex3f(tilesX / 2 + x + panX, tilesY / 2 + y + 2 + panY, 0);
+            glVertex3f(x + panX, y + 2 + panY, 0);
             glEnd(); // Zeichnen des QUADs fertig
+            }
         }
     }
 
