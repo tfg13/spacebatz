@@ -49,7 +49,7 @@ public class ServerNetwork {
             public void run() {
 
                 try {
-                    ServerSocket ss = new ServerSocket(Settings.TCPPORT);
+                    ServerSocket ss = new ServerSocket(Settings.SERVER_TCPPORT);
 
                     while (true) {
                         Socket clientSocket = ss.accept();
@@ -76,6 +76,7 @@ public class ServerNetwork {
 
     /**
      * Stellt eine Verbindung mit jedem anfragenden Client her.
+     * Forkt sofort.
      */
     public void startServer() {
         clientAcceptorThread.start();

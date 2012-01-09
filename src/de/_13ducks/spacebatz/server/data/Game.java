@@ -24,6 +24,7 @@ public class Game {
      */
     public Game(){
         clients = new ArrayList<Client>();
+        chars = new ArrayList<>();
     }
     
 }

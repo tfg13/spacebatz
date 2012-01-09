@@ -45,7 +45,7 @@ public final class Settings {
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
     /**
-     * Der Port auf dem der Server auf TCP-Verbindugen wartet
+     * Der Port auf dem der Server auf TCP-Verbindugen wartet.
      */
-    public static final int TCPPORT = 10000;
+    public static final int SERVER_TCPPORT = 10000;
 }
