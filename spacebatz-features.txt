@@ -1,0 +1,8 @@
+
+ FEATURES FOR SPACEBATZ
+
+possible features to try out:
+
+- programmable bots (simple "script" with actions like walk to dest, use, carry, ...)
+- "pro"-mode, increased difficulty but also increased possibilities
+-  
