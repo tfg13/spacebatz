@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server;
+package de._13ducks.spacebatz.server.gamelogic;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,12 @@ public class Game {
      * Liste der verbundenen Clients
      */
     public ArrayList<Client> clients;
+    
+    /**
+     * Liste aller dynamischen Objekte
+     * (z.B. Spieler, Mobs, ...)
+     */
+    public ArrayList<Char> chars;
     
     /**
      * Konstruktor

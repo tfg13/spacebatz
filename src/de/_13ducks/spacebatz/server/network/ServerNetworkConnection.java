@@ -1,5 +1,7 @@
-package de._13ducks.spacebatz.server;
+package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.server.gamelogic.Client;
+import de._13ducks.spacebatz.server.SpacebatzServer;
 import java.io.IOException;
 import java.net.Socket;
 

@@ -1,4 +1,6 @@
-package de._13ducks.spacebatz.server;
+package de._13ducks.spacebatz.server.gamelogic;
+
+import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
 
 /**
  * Diese Klasse stellt einen Client dar

@@ -6,14 +6,12 @@ package de._13ducks.spacebatz;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public final class Settings {
-    
+
     /**
      * Private, da Utility-Class
      */
     private Settings() {
-        
     }
-    
     /**
      * Die X-Auflösung der Grafikausgabe.
      */
@@ -46,5 +44,8 @@ public final class Settings {
      * Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
-
+    /**
+     * Der Port auf dem der Server auf TCP-Verbindugen wartet
+     */
+    public static final int TCPPORT = 10000;
 }

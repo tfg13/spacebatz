@@ -1,5 +1,11 @@
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.gamelogic.Game;
+import de._13ducks.spacebatz.server.gamelogic.MainLoop;
+import de._13ducks.spacebatz.server.network.ServerNetwork;
+import de._13ducks.spacebatz.server.network.MessageInterpreter;
+import de._13ducks.spacebatz.server.network.MessageSender;
+
 /**
  * Diese Klasse enthält statische Referenzen auf die wichtigsten Module
  * @author michael
@@ -16,6 +22,17 @@ public final class SpacebatzServer {
      */
     public static Game game;
     
+    /**
+     * Das Netzwerkmodul des Servers
+     */
+    public static ServerNetwork serverNetwork = new ServerNetwork();
+    /**
+     * Die SendeKomponente des Netzwerkmoduls
+     */
+    public static MessageSender messageSender = new MessageSender();
+    
+    
+    
     
     
     /**
@@ -24,5 +41,12 @@ public final class SpacebatzServer {
      */
     public static void main(String args[]){
         game = new Game();
+        
+        MainLoop mainLoop = new MainLoop();
+        
+        
+        
+        // GO! GO! GO!
+        mainLoop.startGameLogic();
     }
 }

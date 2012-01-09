@@ -1,12 +1,10 @@
-package de._13ducks.spacebatz.server;
+package de._13ducks.spacebatz.server.network;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import de._13ducks.spacebatz.Settings;
 
 /**
  * Die Netzwerkkomponente des Servers
@@ -14,10 +12,6 @@ import java.util.ArrayList;
  */
 public class ServerNetwork {
 
-    /**
-     * Der Port auf dem der Server auf TCP-Verbindugen wartet
-     */
-    public static final int TCPPORT = 10000;
     /**
      * Liste mit allen verbundenen Clients
      */
@@ -54,7 +48,7 @@ public class ServerNetwork {
             public void run() {
 
                 try {
-                    ServerSocket ss = new ServerSocket(TCPPORT);
+                    ServerSocket ss = new ServerSocket(Settings.TCPPORT);
 
                     while (true) {
                         Socket clientSocket = ss.accept();
