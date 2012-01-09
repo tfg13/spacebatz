@@ -1,11 +1,11 @@
-package de._13ducks.spacebatz.server.gamelogic;
+package de._13ducks.spacebatz.server.data;
 
 /**
  * Ein bewwegliches Objekt
  * (z.B. ein Spieler, Mob etc)
  * @author michael
  */
-class Char {
+public class Char {
     
     /**
      * Die Position des Chars
@@ -14,9 +14,14 @@ class Char {
     public int posY;
     
     /**
+     * Die Bewegung des Objekts
+     */
+    public int dX, dY;
+    
+    /**
      * Der Name des Chars
      */
-    public String name;
+    public int id;
    
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -24,10 +29,10 @@ class Char {
      * @param y
      * @param name 
      */
-    public Char(int x, int y, String name){
+    public Char(int x, int y, int id){
         this.posX = x;
         this.posY = y;
-        this.name = name;
+        this.id = id;
     }
     
 }

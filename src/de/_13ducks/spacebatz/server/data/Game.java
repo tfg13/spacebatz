@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.gamelogic;
+package de._13ducks.spacebatz.server.data;
 
 import java.util.ArrayList;
 

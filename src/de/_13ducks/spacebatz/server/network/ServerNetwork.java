@@ -5,6 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.data.Client;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Die Netzwerkkomponente des Servers
@@ -82,12 +85,26 @@ public class ServerNetwork {
 
     /**
      * Sendet Daten an alle Clients
+     * @param message die zu sendenden bytes
      */
     public void broadcastData(byte message[]) {
         try {
             for (int i = 0; i < connections.size(); i++) {
                 connections.get(i).getSocket().getOutputStream().write(message);
             }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    /**
+     * Sendet Daten an einen bestimmten Client
+     * @param message die zu sendenden bytes
+     * @param client der Empfänger
+     */
+    public void sendData(byte message[], Client client){
+        try {
+            client.getNetworkConnection().getSocket().getOutputStream().write(message);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

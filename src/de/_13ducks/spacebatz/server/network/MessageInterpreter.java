@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.server.gamelogic.Client;
+import de._13ducks.spacebatz.server.SpacebatzServer;
+import de._13ducks.spacebatz.server.data.Client;
 
 
 /**
@@ -19,5 +20,17 @@ public class MessageInterpreter {
             System.out.print((int)message[i]);
         }
         System.out.print("\n");
+        
+        
+        for(int i=0; i< SpacebatzServer.game.chars.size(); i++){
+            if((byte)SpacebatzServer.game.chars.get(i).id == message[0])
+            {
+                SpacebatzServer.game.chars.get(i).posX = (int)message[1];
+                SpacebatzServer.game.chars.get(i).posY = (int)message[2];
+            }
+        }
+        
+        
+        
     }
 }

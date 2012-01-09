@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server;
 
-import de._13ducks.spacebatz.server.gamelogic.Game;
+import de._13ducks.spacebatz.server.data.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.ServerNetwork;
 import de._13ducks.spacebatz.server.network.MessageInterpreter;

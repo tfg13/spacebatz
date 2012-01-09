@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.gamelogic;
+package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
 
@@ -17,7 +17,6 @@ public class Client {
      * gibt die Netzwerkverbindung des Clients zurück
      */
     public ServerNetworkConnection getNetworkConnection(){
-     return connection;   
-        
+     return connection;    
     }
 }

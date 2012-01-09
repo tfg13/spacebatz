@@ -1,12 +1,13 @@
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.server.gamelogic.Client;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.SpacebatzServer;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Ein Client, der mit dem Server verbunden ist
+ * Eine Verbindung mit einem Client
+ * Verwaltet den Socket und das einlesen/schreiben von Daten
  * @author michael
  */
 public class ServerNetworkConnection {
