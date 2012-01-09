@@ -1,0 +1,85 @@
+
+ SPACEBATZ NETWORKING
+
+
+PROBLEMS OF NETWORK-SYNCHRONISATION:
+- Real-Time-Movement must be synchronized between Clients and Server
+- When a Client decides to walk, the message is sent to the server.
+- when the client waits for the server to answer, the user recognizes the delay as lag (which sucks) 
+- the client can start walking before the servers response, causing teleports if the server wont let the
+  client move or moves the client elsewhere (e.g. the client is pushed by some mob)
+
+SOLUTIONS:
+- use fast UDP for realtime-synchronisation
+- only send changes on dynamic objects (deltas), not regular position updates
+- Client: start walking before Server answers the walk request (IF no collision)
+- Client: guess Movement of dynamic Objects, use Prediction
+- client and server have a deterministic simulation of the game, so they can predict actions
+
+
+IMPLEMENTATION:
+- Basic Network Module
+	- CLIENTNETWORK
+	- SERVERNETWORK
+- Server/Client Gamelogic implements Prediction and other synchronisation meassures
+	- message-interpreter
+	- gamelogic
+
+NOTE:
+All Operations can be performed synchron (means the functions return when the operation is complete) or 
+asynchron (the functions return immediately, other functions are called when the operation is complete).
+
+
+CLIENTNETWORK:
+- find servers in network
+- connect to server
+- send message TCP
+- send message UDP
+- disconnect
+- receive data
+- detect connection loss
+
+SERVERNETWORK:
+- start server and announce server in network
+- send message TCP
+- send message UDP
+- receive message from client
+- broadcast message TCP
+- broadcast message UDP
+- shutdown gracefully
+- detect client join
+- detect client leave
+- detect connection loss
+
+
+GAMTETICKS
+- every time the mainloop is passed, a frame counter is incremented
+- this framecounter counts the gameticks
+- every action happens at a certain gametick
+- changes are sent via deltas, when something changes a delta message is sent to the clients
+- the delta message contains the gametick at which it was executed
+- if the message arrives too late, the client can calculate the actual status based on the delta and its gametick
+- fast UDP messages that are too old (several gameticks ago) can be ignored
+
+PROTOCOL:     
+the first byte of a message always contains the size of a message. the first byte is read and then the 
+corresponding number of bytes is read and stored as a byte array, which is then passed to the message 
+interpreter.
+
+MESSAGE-INTERPRETER
+the message interpreter reads the messages received by the network component. the messages are read and 
+interpreted, and the gamedata is modified by the message interpreter.
+
+
+
+SERVER-MAINLOOP:
+1. calculate dynamic objects
+2. send deltas to clients
+3. process input from clients
+
+Input sent by the clients is buffered untill the mainloop reaches stage 3. when all buffered input is processed
+the mainloop switches to stage 1 and all further input is buffered for the next gametick.
+
+NOTE: would real-time input processing reduce lag?
+
+ 
