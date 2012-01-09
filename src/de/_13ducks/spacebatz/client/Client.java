@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.Engine;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -15,6 +16,10 @@ public class Client {
      */
     public static Level currentLevel;
     /*
+     * Der Spieler
+     */
+    private static Player player;
+    /*
      * aktueller Tick, wird einmal von Server empfangen werden...
      */
     private static int gametick;
@@ -27,6 +32,7 @@ public class Client {
     public static void main(String[] args) {
         //Neues Level erstellen:
         currentLevel = LevelGenerator.generateLevel(128, 128);
+        player = new Player(30, 30);
         new Engine().start();
     }
 
@@ -49,5 +55,12 @@ public class Client {
      */
     public static LinkedList<Bullet> getBulletList() {
         return BulletList;
+    }
+
+    /**
+     * @return the player
+     */
+    public static Player getPlayer() {
+        return player;
     }
 }
