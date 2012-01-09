@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.SpacebatzServer;
+import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
 import java.net.Socket;
 
