@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz;
 
 /**
- * Spieleinstellungen, der Einfachheit halber hier statisch erreichbar.
- * Achtung: Für Server und Client gleich!!
+ * Spieleinstellungen, der Einfachheit halber hier statisch erreichbar. Achtung: Für Server und Client gleich!!
+ *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public final class Settings {
@@ -29,23 +29,26 @@ public final class Settings {
      */
     public static final int CLIENT_GFX_TILEZOOM = 2;
     /**
-     * Frames auf dieses Anzahl limitieren.
-     * Dingend empfohlen.
-     * Hinweis: Hier wirkt auch vsync rein.
-     * Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
+     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit,
+     * vsync)
      */
     public static final int CLIENT_GFX_FRAMELIMIT = 60;
     /**
-     * VSync-Option.
-     * Empfohlen, macht Bildschirmausgabe viel flüssiger.
-     * Beeinflusst die Framerate direkt (double-buffering).
-     * Auf den meisten Systemen wird die Framerate durch diese Option 60.
-     * Hinweis: Die Framerate wird auch von FRAMELIMIT beeinfluss.
-     * Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
+     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen wird die
+     * Framerate durch diese Option 60. Hinweis: Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer min(framelimit,
+     * vsync)
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
     /**
      * Der Port auf dem der Server auf TCP-Verbindugen wartet.
      */
     public static final int SERVER_TCPPORT = 10000;
+    /**
+     * Die Server-Tickrate. Guter Wert muss empirisch ermittelt werden.
+     */
+    public static final int SERVER_TICKRATE = 60;
+    /**
+     * Wieviel der Server maximal hinter seiner Target-Tickrate sein darf, bevor eine Warnung ausgespuckt wird.
+     */
+    public static final int SERVER_TICKMISS_MAX_NANOS = 125000000;
 }
