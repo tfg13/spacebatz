@@ -8,6 +8,7 @@ import de._13ducks.spacebatz.client.Position;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
+import java.util.Random;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -161,7 +162,9 @@ public class Engine {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             // Bullet erstellen
-            Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI, 0.4f);
+            Random random = new Random(System.nanoTime());
+            double spread = random.nextGaussian() * Math.PI / 64;
+            Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI + spread, 0.4f);
             LinkedList BulletList = Client.getBulletList();
             BulletList.add(bullet);
 
