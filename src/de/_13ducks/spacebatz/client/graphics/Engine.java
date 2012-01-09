@@ -161,7 +161,7 @@ public class Engine {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             // Bullet erstellen
-            Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI, 0.2f);
+            Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI, 0.4f);
             LinkedList BulletList = Client.getBulletList();
             BulletList.add(bullet);
 
