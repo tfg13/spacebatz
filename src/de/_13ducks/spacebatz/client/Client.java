@@ -16,7 +16,8 @@ public class Client {
 
     // Einstiegspunkt:
     public static void main(String[] args) {
-        currentLevel = new Level(64, 64);
+        //Neues Level erstellen:
+        currentLevel = LevelGenerator.generateLevel(128, 128);
         new Engine().start();
     }
 }

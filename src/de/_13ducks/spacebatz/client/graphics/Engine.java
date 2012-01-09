@@ -141,19 +141,19 @@ public class Engine {
      */
     private void input() {
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            panY -= 2 / 32f;
+            panY -= 8 / 32f;
             playerDir = 6;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            panY += 2 / 32f;
+            panY += 8 / 32f;
             playerDir = 2;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            panX += 2 / 32f;
+            panX += 8 / 32f;
             playerDir = 0;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            panX -= 2 / 32f;
+            panX -= 8 / 32f;
             playerDir = 4;
         }
     }
