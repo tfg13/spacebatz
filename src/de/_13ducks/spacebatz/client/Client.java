@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.Engine;
 import java.util.ArrayList;
+import de._13ducks.spacebatz.client.network.ClientNetwork;
 import java.util.LinkedList;
 
 /**
@@ -10,11 +11,15 @@ import java.util.LinkedList;
  * @author michael
  */
 public class Client {
-    
+
     /**
      * Das derzeit laufende Level.
      */
     public static Level currentLevel;
+    /**
+     * Das Netzwerksystem.
+     */
+    private static ClientNetwork network;
     /*
      * Der Spieler
      */
@@ -27,13 +32,24 @@ public class Client {
      * List für alle aktuellen Bullets
      */
     private static LinkedList<Bullet> BulletList = new LinkedList<Bullet>();
-    
+
     // Einstiegspunkt:
     public static void main(String[] args) {
-        //Neues Level erstellen:
-        currentLevel = LevelGenerator.generateLevel(128, 128);
-        player = new Player(30, 30);
-        new Engine().start();
+        String targetIp = "localhost"; // Das ist default
+        for (String s : args) {
+            if (s.startsWith("ip=")) {
+                targetIp = s.substring(s.indexOf("=") + 1);
+            }
+        }
+        network = new ClientNetwork();
+        if (network.tryConnect(targetIp)) {
+            //Neues Level erstellen:
+            currentLevel = LevelGenerator.generateLevel(128, 128);
+			player = new Player(30, 30);
+            new Engine().start();
+        } else {
+            System.out.println("ERROR: Can't connect!");
+        }
     }
 
     /**

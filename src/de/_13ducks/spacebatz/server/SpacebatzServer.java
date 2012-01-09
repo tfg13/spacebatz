@@ -41,6 +41,7 @@ public final class SpacebatzServer {
      */
     public static void main(String args[]){
         game = new Game();
+        serverNetwork.startServer();
         
         MainLoop mainLoop = new MainLoop();
         

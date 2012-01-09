@@ -1,13 +1,11 @@
 package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.data.Client;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Die Netzwerkkomponente des Servers
@@ -26,7 +24,7 @@ public class ServerNetwork {
     /**
      * Der Thread der Verbindungen zu Clients aufbaut
      */
-    private Thread ClientAcceptorThread;
+    private Thread clientAcceptorThread;
 
     /**
      * Konstruktor
@@ -45,13 +43,13 @@ public class ServerNetwork {
         receiveTcpDataThread.setName("DataReceiverThread");
 
         // neuer thread, der clients akzeptiert:
-        ClientAcceptorThread = new Thread(new Runnable() {
+        clientAcceptorThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
 
                 try {
-                    ServerSocket ss = new ServerSocket(Settings.TCPPORT);
+                    ServerSocket ss = new ServerSocket(Settings.SERVER_TCPPORT);
 
                     while (true) {
                         Socket clientSocket = ss.accept();
@@ -71,16 +69,17 @@ public class ServerNetwork {
 
             }
         });
-        ClientAcceptorThread.setName("ClientAcceptorThread");
+        clientAcceptorThread.setName("ClientAcceptorThread");
 
 
     }
 
     /**
      * Stellt eine Verbindung mit jedem anfragenden Client her.
+     * Forkt sofort.
      */
     public void startServer() {
-        ClientAcceptorThread.start();
+        clientAcceptorThread.start();
     }
 
     /**
