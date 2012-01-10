@@ -32,6 +32,7 @@ public class ClientNetwork {
         boolean result = true;
         try {
             mySocket.connect(serverAddress, 10000);
+            receiveData();
         } catch (IOException ex) {
             ex.printStackTrace();
             result = false;
@@ -94,5 +95,7 @@ public class ClientNetwork {
                 }
             }
         });
+        receiveDataThread.setName("ReceiveDataThread");
+        receiveDataThread.start();
     }
 }

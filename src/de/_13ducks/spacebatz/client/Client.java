@@ -40,19 +40,13 @@ public class Client {
     private static LinkedList<Bullet> BulletList = new LinkedList<Bullet>();
 
     // Einstiegspunkt:
-    public static void main(String[] args) {
-        String targetIp = "localhost"; // Das ist default
-        for (String s : args) {
-            if (s.startsWith("ip=")) {
-                targetIp = s.substring(s.indexOf("=") + 1);
-            }
-        }
+    public static void startClient(String ip) {
+
+        msgInterpreter = new MessageInterpreter();
         network = new ClientNetwork();
-        if (network.tryConnect(targetIp)) {
+        if (network.tryConnect(ip)) {
             //Neues Level erstellen:
-            currentLevel = LevelGenerator.generateLevel(128, 128);
             player = new Player(30, 30);
-            new Engine().start();
         } else {
             System.out.println("ERROR: Can't connect!");
         }

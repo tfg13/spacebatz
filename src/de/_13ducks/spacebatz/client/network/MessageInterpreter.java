@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.client.network;
 
 import com.sun.corba.se.impl.orbutil.ObjectWriter;
+import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.Level;
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -20,10 +22,13 @@ public class MessageInterpreter {
      */
     public void interpretTcpMessage(byte cmdId, byte message[]) {
 
+        System.out.println("RECEIVED: " + cmdId);
         if (cmdId == (byte) 20) {
             try {
                 ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                 Level myLevel = (Level) is.readObject();
+                Client.currentLevel = myLevel;
+                new Engine();
                 System.out.println("Level received and loaded!");
             } catch (IOException ex) {
                 ex.printStackTrace();
