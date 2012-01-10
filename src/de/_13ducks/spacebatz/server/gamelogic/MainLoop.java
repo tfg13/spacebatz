@@ -65,7 +65,7 @@ public class MainLoop {
             timeDeficit += delta - (expected * 1000000);
             // Defizit arg schlimm?
             if (timeDeficit >= Settings.SERVER_TICKMISS_MAX_NANOS) {
-                System.out.println("ERROR: Server too slow!");
+                System.out.println("WARNING: Server too slow!");
                 timeDeficit = 0;
             }
         }
