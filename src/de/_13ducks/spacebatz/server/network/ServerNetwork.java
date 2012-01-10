@@ -31,7 +31,7 @@ public class ServerNetwork {
      * initialisiert die Datenempfangs-Threads
      */
     public ServerNetwork() {
-        connections = new ArrayList<ServerNetworkConnection>();
+        connections = new ArrayList<>();
         // neuer thread, der daten empfängt:
         receiveTcpDataThread = new Thread(new Runnable() {
 
@@ -86,7 +86,7 @@ public class ServerNetwork {
      * Sendet Daten via TCP an alle Clients
      * @param message die zu sendenden bytes
      */
-    public void broadcastData(byte message[]) {
+    void broadcastData(byte message[]) {
         try {
             for (int i = 0; i < connections.size(); i++) {
                 connections.get(i).getSocket().getOutputStream().write(message);
@@ -101,7 +101,7 @@ public class ServerNetwork {
      * @param message die zu sendenden bytes
      * @param client der Empfänger
      */
-    public void sendData(byte message[], Client client){
+    void sendData(byte message[], Client client){
         try {
             client.getNetworkConnection().getSocket().getOutputStream().write(message);
         } catch (IOException ex) {
