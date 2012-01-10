@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server;
 import de._13ducks.spacebatz.server.data.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.MessageInterpreter;
+import de._13ducks.spacebatz.server.network.MessageSender;
 import de._13ducks.spacebatz.server.network.ServerNetwork;
 
 /**
@@ -24,19 +25,22 @@ public final class Server {
      * Das Netzwerkmodul des Servers
      */
     public static ServerNetwork serverNetwork = new ServerNetwork();
+    
+    /**
+     * Die Sendekomponente des Netzwerkmoduls
+     */
+    public static MessageSender msgSender = new MessageSender();
 
     /**
      * Einstiegspunkt
      *
      * @param args die Kommandozeilenargumente
      */
-    public static void main(String args[]) {
+    public static void startServer() {
         game = new Game();
         serverNetwork.startServer();
 
         MainLoop mainLoop = new MainLoop();
-
-
 
         // GO! GO! GO!
         mainLoop.startGameLogic();

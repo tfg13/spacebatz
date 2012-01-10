@@ -25,13 +25,9 @@ public class MultiPlayer {
                 break;
             } else {
                 // Versuche als IP zu interpretieren:
-                try {
-                    InetAddress adr = InetAddress.getByName(result);
-                    System.out.println("IP seems valid, starting client...");
-                    // Es scheint eine gültige IP zu sein, da hin verbinden!
-                    Client.main(new String[]{"ip=" + result});
-                } catch (UnknownHostException ex) {
-                }
+                System.out.println("IP seems valid, starting client...");
+                // Es scheint eine gültige IP zu sein, da hin verbinden!
+                Client.startClient(result);
             }
             System.out.println("Enter valid IP-Adress or type \"quit\"!");
         }

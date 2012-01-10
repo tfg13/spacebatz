@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.client.Client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -14,20 +15,6 @@ public class ClientNetwork {
      * Unser Socket
      */
     private Socket mySocket;
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        ClientNetwork cn = new ClientNetwork();
-
-//        boolean connected = cn.tryConnect("127.0.0.1");
-//        System.err.println(connected);
-//        byte d[] = {3, 42, 42, 42};
-//
-//
-//        cn.sendData(d);
-    }
 
     /**
      * Konstruktor
@@ -45,6 +32,7 @@ public class ClientNetwork {
         boolean result = true;
         try {
             mySocket.connect(serverAddress, 10000);
+            receiveData();
         } catch (IOException ex) {
             ex.printStackTrace();
             result = false;
@@ -64,12 +52,50 @@ public class ClientNetwork {
         }
     }
 
+    /**
+     * Empfängt in einer Endlosschleife Daten
+     */
     private void receiveData() {
         Thread receiveDataThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
+                try {
+                    int bytesToRead = 0; // Die bytes die noch gelesen werden müssen
+                    byte cmdId = 0;     // Die cmdId
+                    byte buffer[] = new byte[0];   // der puffer
+
+                    while (true) {
+                        if (bytesToRead == 0) {
+                            if (mySocket.getInputStream().available() > 0) {
+                                bytesToRead = mySocket.getInputStream().read();
+                                buffer = new byte[bytesToRead];
+                                cmdId = 0;
+                            }
+                        } else {
+                            if (cmdId == 0) {
+                                if (mySocket.getInputStream().available() >= bytesToRead) {
+                                    cmdId = (byte) mySocket.getInputStream().read();
+                                }
+                            } else {
+                                if (mySocket.getInputStream().available() >= bytesToRead) {
+                                    for (int i = 0; i < bytesToRead; i++) {
+                                        buffer[i] = (byte) mySocket.getInputStream().read();
+                                    }
+                                    Client.getMsgInterpreter().interpretTcpMessage(cmdId, buffer);
+                                    bytesToRead = 0;
+                                }
+                            }
+
+                        }
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+
+                }
             }
         });
+        receiveDataThread.setName("ReceiveDataThread");
+        receiveDataThread.start();
     }
 }

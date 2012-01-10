@@ -16,7 +16,7 @@ public class SinglePlayer {
 
             @Override
             public void run() {
-                Server.main(new String[]{});
+                Server.startServer();
             }
         });
         // Client
@@ -24,7 +24,7 @@ public class SinglePlayer {
 
             @Override
             public void run() {
-                Client.main(new String[]{});
+                Client.startClient("127.0.0.1");
             }
         });
         // Server starten
@@ -33,5 +33,6 @@ public class SinglePlayer {
         Thread.sleep(500);
         // Client starten & verbinden lassen:
         client.start();
+
     }
 }

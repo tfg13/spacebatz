@@ -1,8 +1,10 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import java.util.ArrayList;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
+import de._13ducks.spacebatz.client.network.MessageInterpreter;
 import java.util.LinkedList;
 
 /**
@@ -20,6 +22,10 @@ public class Client {
      * Das Netzwerksystem.
      */
     private static ClientNetwork network;
+    /**
+     * Der NAchrichteninterpreter
+     */
+    private static MessageInterpreter msgInterpreter;
     /*
      * Der Spieler
      */
@@ -34,19 +40,13 @@ public class Client {
     private static LinkedList<Bullet> BulletList = new LinkedList<Bullet>();
 
     // Einstiegspunkt:
-    public static void main(String[] args) {
-        String targetIp = "localhost"; // Das ist default
-        for (String s : args) {
-            if (s.startsWith("ip=")) {
-                targetIp = s.substring(s.indexOf("=") + 1);
-            }
-        }
+    public static void startClient(String ip) {
+
+        msgInterpreter = new MessageInterpreter();
         network = new ClientNetwork();
-        if (network.tryConnect(targetIp)) {
+        if (network.tryConnect(ip)) {
             //Neues Level erstellen:
-            currentLevel = LevelGenerator.generateLevel(128, 128);
-			player = new Player(30, 30);
-            new Engine().start();
+            player = new Player(30, 30);
         } else {
             System.out.println("ERROR: Can't connect!");
         }
@@ -78,5 +78,13 @@ public class Client {
      */
     public static Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Getter für den MessageInterpreter
+     * @return der MessageInterpreter
+     */
+    public static MessageInterpreter getMsgInterpreter() {
+        return msgInterpreter;
     }
 }

@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -54,7 +55,7 @@ public class ServerNetwork {
                     while (true) {
                         Socket clientSocket = ss.accept();
                         ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
-                        connections.add(client);
+                        Server.game.clientJoined(new Client(client));
 
                         if (!receiveTcpDataThread.isAlive()) {
                             receiveTcpDataThread.start();
@@ -95,13 +96,13 @@ public class ServerNetwork {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Sendet Daten via TCP an einen bestimmten Client
      * @param message die zu sendenden bytes
      * @param client der Empfänger
      */
-    void sendData(byte message[], Client client){
+    void sendData(byte message[], Client client) {
         try {
             client.getNetworkConnection().getSocket().getOutputStream().write(message);
         } catch (IOException ex) {
