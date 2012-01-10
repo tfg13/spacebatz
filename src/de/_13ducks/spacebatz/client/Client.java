@@ -40,7 +40,7 @@ public class Client {
     private static LinkedList<Bullet> BulletList = new LinkedList<Bullet>();
 
     // Einstiegspunkt:
-    public static void startClient(String[] args) {
+    public static void main(String[] args) {
         String targetIp = "localhost"; // Das ist default
         for (String s : args) {
             if (s.startsWith("ip=")) {
