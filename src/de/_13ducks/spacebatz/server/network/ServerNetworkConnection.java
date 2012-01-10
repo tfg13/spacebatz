@@ -54,7 +54,7 @@ public class ServerNetworkConnection {
                     for (int i = 0; i < bytesToRead; i++) {
                         buffer[i] = (byte) mySocket.getInputStream().read();
                     }
-                    Server.msgInterpreter.interpretMessage(buffer, myClient);
+                    Server.msgInterpreter.interpretTCPMessage(buffer, myClient);
                     bytesToRead = 0;
                 }
             }
