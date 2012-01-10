@@ -14,8 +14,7 @@ public class Player extends Char {
      * @param id netID, nicht mehr änderbar.
      * @param client der Client, dem dieser Player gehören soll.
      */
-    public Player(double x, double y, int id, Client client) {
+    public Player(double x, double y, int id) {
         super(x, y, id);
-        client.setPlayer(this);
     }
 }

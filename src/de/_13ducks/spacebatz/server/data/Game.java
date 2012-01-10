@@ -27,4 +27,12 @@ public class Game {
         chars = new ArrayList<>();
     }
     
+    /**
+     * Wird gerufen, wenn ein neuer Client verbunden wurde
+     * @param client der neue Client
+     */
+    public void clientJoined(Client client){
+        clients.add(client);
+    }
+    
 }
