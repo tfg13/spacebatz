@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.server.data.Client;
+
 /**
  * Sendet Daten übers Netzwerk.
  * Kümmert sich darum, gescheite Pakete zu backen.
@@ -7,4 +9,10 @@ package de._13ducks.spacebatz.server.network;
  */
 public class MessageSender {
 
+    /**
+     * Sendet das Level an einen Client
+     */
+    public void sendLevel(Client client){
+       
+    }
 }

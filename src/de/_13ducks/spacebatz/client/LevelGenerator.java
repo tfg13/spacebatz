@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.shared.Level;
 import java.util.Random;
 import java.util.ArrayList;
 

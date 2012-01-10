@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import java.util.ArrayList;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
