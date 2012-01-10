@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.client;
+package de._13ducks.spacebatz.shared;
 
 import java.util.Random;
 
@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class Level {
+public class Level implements java.io.Serializable{
 
     /**
      * Die Bodentexturen. Indizes der Tiles
