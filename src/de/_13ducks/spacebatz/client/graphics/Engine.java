@@ -167,8 +167,6 @@ public class Engine {
             Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI + spread, 0.4f);
             LinkedList BulletList = Client.getBulletList();
             BulletList.add(bullet);
-
-            System.out.println(Client.getPlayer().getX() + "," + Client.getPlayer().getY());
         }
     }
 
@@ -260,14 +258,17 @@ public class Engine {
             float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
             float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
             
+            float v = 0.75f;
+            float w = 0.0f;
+            
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(0, 0.25f);
+            glTexCoord2f(v, w + 0.25f);
             glVertex3f(x + panX, y + panY, 0);
-            glTexCoord2f(0.25f, 0.25f);
+            glTexCoord2f(v + 0.25f, w + 0.25f);
             glVertex3f(x + 2 + panX, y + panY, 0);
-            glTexCoord2f(0.25f, 0);
+            glTexCoord2f(v + 0.25f, w);
             glVertex3f(x + 2 + panX, y + 2 + panY, 0);
-            glTexCoord2f(0, 0);
+            glTexCoord2f(v, w);
             glVertex3f(x + panX, y + 2 + panY, 0);
             glEnd(); // Zeichnen des QUADs fertig
             }
