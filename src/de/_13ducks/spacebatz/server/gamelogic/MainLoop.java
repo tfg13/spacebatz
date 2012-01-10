@@ -32,7 +32,9 @@ public class MainLoop {
             public void run() {
                 runStart = System.nanoTime();
                 while (true) {
-                    //TODO: Gameloop, logic.
+                    // Gamelogic berechnen:
+                    calculateGameTick();
+                    // GameTicks balancieren:
                     balanceTicks();
                 }
             }
@@ -78,5 +80,14 @@ public class MainLoop {
      */
     public void startGameLogic() {
         mainLoopThread.start();
+    }
+    
+    
+    /**
+     * Berechnet die Spielphysik für einen GameTick
+     */
+    private void calculateGameTick(){
+        
+        
     }
 }
