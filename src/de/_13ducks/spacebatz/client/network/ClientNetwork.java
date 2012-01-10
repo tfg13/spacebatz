@@ -17,13 +17,6 @@ public class ClientNetwork {
     private Socket mySocket;
 
     /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        ClientNetwork cn = new ClientNetwork();
-    }
-
-    /**
      * Konstruktor
      */
     public ClientNetwork() {
