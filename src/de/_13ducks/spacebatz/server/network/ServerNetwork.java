@@ -83,7 +83,7 @@ public class ServerNetwork {
     }
 
     /**
-     * Sendet Daten an alle Clients
+     * Sendet Daten via TCP an alle Clients
      * @param message die zu sendenden bytes
      */
     public void broadcastData(byte message[]) {
@@ -97,7 +97,7 @@ public class ServerNetwork {
     }
     
     /**
-     * Sendet Daten an einen bestimmten Client
+     * Sendet Daten via TCP an einen bestimmten Client
      * @param message die zu sendenden bytes
      * @param client der Empfänger
      */

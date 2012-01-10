@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.server.SpacebatzServer;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
 import java.net.Socket;
@@ -54,7 +54,7 @@ public class ServerNetworkConnection {
                     for (int i = 0; i < bytesToRead; i++) {
                         buffer[i] = (byte) mySocket.getInputStream().read();
                     }
-                    SpacebatzServer.msgInterpreter.interpretMessage(buffer, myClient);
+                    Server.msgInterpreter.interpretMessage(buffer, myClient);
                     bytesToRead = 0;
                 }
             }

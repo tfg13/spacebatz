@@ -1,38 +1,49 @@
 package de._13ducks.spacebatz.server.data;
 
 /**
- * Ein bewwegliches Objekt
- * (z.B. ein Spieler, Mob etc)
+ * Ein bewegliches Objekt. (z.B. ein Spieler, Mob etc)
+ *
  * @author michael
  */
 public class Char {
-    
+
     /**
-     * Die Position des Chars
+     * Die Position des Chars.
      */
-    public int posX;
-    public int posY;
-    
+    private double posX, posY;
     /**
-     * Die Bewegung des Objekts
+     * Die ID des Chars.
      */
-    public int dX, dY;
-    
-    /**
-     * Der Name des Chars
-     */
-    public int id;
-   
+    public final int netID;
+
     /**
      * Konstruktor, erstellt einen neuen Char
+     *
      * @param x
      * @param y
-     * @param name 
+     * @param name
      */
-    public Char(int x, int y, int id){
+    public Char(double x, double y, int id) {
         this.posX = x;
         this.posY = y;
-        this.id = id;
+        this.netID = id;
     }
-    
+
+    /**
+     * Liefert die X-Koordinate.
+     *
+     * @return die X-Koordinate.
+     */
+    public double getX() {
+        return posX;
+    }
+
+    /**
+     * Liefert die Y-Koordinate.
+     *
+     * @return die Y-Koordinate.
+     */
+    public double getY() {
+        return posY;
+    }
 }
