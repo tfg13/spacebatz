@@ -16,7 +16,7 @@ public class SinglePlayer {
 
             @Override
             public void run() {
-                Server.main(new String[]{});
+                Server.startServer();
             }
         });
         // Client

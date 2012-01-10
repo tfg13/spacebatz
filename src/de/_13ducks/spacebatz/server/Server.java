@@ -36,7 +36,7 @@ public final class Server {
      *
      * @param args die Kommandozeilenargumente
      */
-    public static void main(String args[]) {
+    public static void startServer() {
         game = new Game();
         serverNetwork.startServer();
 
