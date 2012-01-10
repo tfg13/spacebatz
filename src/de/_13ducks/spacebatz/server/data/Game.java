@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.Server;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -27,7 +28,7 @@ public class Game {
     /**
      * Das Serialisierte Level
      */
-    private byte[] serializedLevel;
+    private byte[] serializedLevelMessage;
 
     /**
      * Konstruktor
@@ -43,16 +44,16 @@ public class Game {
         try {
             os = new ObjectOutputStream(bs);
             os.writeObject(level);
+            serializedLevelMessage = new byte[bs.toByteArray().length + 2];
+            for (int i = 0; i < bs.toByteArray().length; i++) {
+                serializedLevelMessage[2 + i] = bs.toByteArray()[i];
+            }
+            serializedLevelMessage[0] = (byte) serializedLevelMessage.length;
+            serializedLevelMessage[1] = (byte) 20;
 
-            serializedLevel = bs.toByteArray();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-
-
-
-
     }
 
     /**
@@ -61,6 +62,7 @@ public class Game {
      */
     public void clientJoined(Client client) {
         clients.add(client);
+        Server.msgSender.sendLevel(client);
     }
 
     /**
@@ -68,6 +70,6 @@ public class Game {
      * @return die bytes des serialisierten levels
      */
     public byte[] getSerializedLevel() {
-        return serializedLevel;
+        return serializedLevelMessage;
     }
 }
