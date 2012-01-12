@@ -6,10 +6,6 @@ package de._13ducks.spacebatz.server.data;
  */
 public class Player extends Char {
     
-    /**
-     * Bei welchem Tick zuletzt eine Positionsänderung vom Client empfangen wurde.
-     */
-    private int lastPosTick;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
