@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
-import java.net.Socket;
 
 /**
  * Diese Klasse stellt einen Client dar
@@ -18,6 +17,12 @@ public class Client {
      * Das zugehörige Player-Objekt
      */
     private Player player;
+    
+    /**
+     * Auf welchem Servertick die letzen Clientupdates beruhen.
+     * Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und verarbeitet wurde.
+     */
+    public int lastTick;
 
     /**
      * Konstruktor

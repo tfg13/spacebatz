@@ -44,6 +44,14 @@ public final class Settings {
      */
     public static final int SERVER_TCPPORT = 10000;
     /**
+     * Auf diesem Port ist der Server per UDP zu erreichen.
+     */
+    public static final int SERVER_UDPPORT = 13947;
+    /**
+     * Auf diesem Port ist der Client per UDP zu erreichen.
+     */
+    public static final int CLIENT_UDPPORT = 13947;
+    /**
      * Die Server-Tickrate. Guter Wert muss empirisch ermittelt werden.
      */
     public static final int SERVER_TICKRATE = 60;
@@ -51,4 +59,20 @@ public final class Settings {
      * Wieviel der Server maximal hinter seiner Target-Tickrate sein darf, bevor eine Warnung ausgespuckt wird.
      */
     public static final int SERVER_TICKMISS_MAX_NANOS = 125000000;
+    /**
+     * Größe des Empfangspuffers für ein Clientpacket auf Serverseite.
+     * NICHT EINFACH VERÄNDERN!
+     */
+    public static final int NET_UDP_CTS_SIZE = 7;
+    
+    /**
+     * Größe des Empfangspuffers für ein Serverpacket auf Clientseite.
+     * NICHT EINFACH VERÄNDERN!
+     */
+    public static final int NET_UDP_STC_MAX_SIZE = 512;
+    
+    /**
+     * Normales Einheitenupdate, das Regelmäßig verschickt wird.
+     */
+    public static final byte NET_UDP_CMD_NORMAL_CHAR_UPDATE = 10;
 }

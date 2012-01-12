@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.Server;
 
 /**
  * Der MainLoop des Servers
@@ -34,6 +35,8 @@ public class MainLoop {
                 while (true) {
                     // Gamelogic berechnen:
                     calculateGameTick();
+                    // Netzwerk arbeiten lassen:
+                    Server.serverNetwork.udp.tick();
                     // GameTicks balancieren:
                     balanceTicks();
                 }

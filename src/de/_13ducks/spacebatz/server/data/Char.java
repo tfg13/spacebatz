@@ -10,7 +10,7 @@ public class Char {
     /**
      * Die Position des Chars.
      */
-    private double posX, posY;
+    protected double posX, posY;
     /**
      * Die ID des Chars.
      */

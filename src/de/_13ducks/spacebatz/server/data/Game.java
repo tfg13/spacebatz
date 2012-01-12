@@ -29,12 +29,17 @@ public class Game {
      * Das Serialisierte Level
      */
     private byte[] serializedLevelMessage;
+    
+    /**
+     * Der Server-Gametick.
+     */
+    private int tick;
 
     /**
      * Konstruktor
      */
     public Game() {
-        clients = new ArrayList<Client>();
+        clients = new ArrayList<>();
         chars = new ArrayList<>();
         level = new ServerLevel();
 
@@ -71,5 +76,13 @@ public class Game {
      */
     public byte[] getSerializedLevel() {
         return serializedLevelMessage;
+    }
+    
+    public int getTick() {
+        return tick;
+    }
+    
+    public void incrementTick() {
+        tick++;
     }
 }

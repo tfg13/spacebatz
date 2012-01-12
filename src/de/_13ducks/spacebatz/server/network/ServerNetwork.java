@@ -26,6 +26,11 @@ public class ServerNetwork {
      * Der Thread der Verbindungen zu Clients aufbaut
      */
     private Thread clientAcceptorThread;
+    
+    /**
+     * Das UDP-Netzwerksystem.
+     */
+    public UDPConnection udp;
 
     /**
      * Konstruktor
