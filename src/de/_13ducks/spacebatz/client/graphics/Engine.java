@@ -1,14 +1,10 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
-import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
-import de._13ducks.spacebatz.client.Position;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.Random;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -162,11 +158,11 @@ public class Engine {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             // Bullet erstellen
-            Random random = new Random(System.nanoTime());
+            /*Random random = new Random(System.nanoTime());
             double spread = random.nextGaussian() * Math.PI / 64;
             Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI + spread, 0.4f);
             LinkedList BulletList = Client.getBulletList();
-            BulletList.add(bullet);
+            BulletList.add(bullet);*/
         }
     }
 
@@ -207,7 +203,7 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
-        Client.incrementGametick();
+        //Client.incrementGametick();
         panX = (float) -Client.getPlayer().getX() + tilesX / 2;
         panY = (float) -Client.getPlayer().getY() + tilesY / 2;
 
@@ -244,17 +240,17 @@ public class Engine {
         glEnd();
 
         // Bullets
-        bulletTiles.bind();
+        /*bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
             Bullet bullet = Client.getBulletList().get(i);
             // Zu alte Bullets löschen:
-            if (bullet.getDeletetick() < Client.getGametick()) {
+            if (bullet.getDeletetick() < Client.gametick) {
                 
                 Client.getBulletList().remove(i);
                 i--;
             } else {
 
-            float radius = (float) bullet.getSpeed() * (Client.getGametick() - bullet.getSpawntick());
+            float radius = (float) bullet.getSpeed() * (Client.gametick - bullet.getSpawntick());
             float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
             float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
             
@@ -272,7 +268,7 @@ public class Engine {
             glVertex3f(x + panX, y + 2 + panY, 0);
             glEnd(); // Zeichnen des QUADs fertig
             }
-        }
+        } */
     }
 
     private int texAt(int[][] layer, int x, int y) {
