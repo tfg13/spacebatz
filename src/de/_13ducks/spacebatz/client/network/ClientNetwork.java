@@ -31,6 +31,17 @@ public class ClientNetwork {
      * Die FIFO-Schlange für eingehende Elemente
      */
     private ConcurrentLinkedQueue<DatagramPacket> inputQueue;
+    /**
+     * Der Status des TCP-Empfangsthreads
+     * (cmdId empfangen, PacketLänge empfangen oder DAten empfangen)
+     */
+    private int tcpReceiverStatus;
+    /** cmdId empfangen */
+    final static int RECEIVE_CMDID = 0;
+    /** Packetgröße empfangen */
+    final static int RECEIVE_PACKETSIZE = 1;
+    /** PacketDaten empfangen */
+    final static int RECEIVE_PACKET = 2;
 
     /**
      * Konstruktor
@@ -62,11 +73,36 @@ public class ClientNetwork {
     /**
      * Sendet Daten an den Server
      *
-     * @param message der Byte-Array der gessendet werden soll
+     * @param cmdId die commandoid der nachricht
+     * @param message der Byte-Array der gesendet werden soll
      */
-    public void sendData(byte message[]) {
+    public void sendData(byte cmdId, byte message[]) {
         try {
-            mySocket.getOutputStream().write(message);
+            int blocks = message.length / 100;
+            int rest = message.length % 100;
+
+            // cmdID senden
+            mySocket.getOutputStream().write(cmdId);
+
+            // Größe des Packets senden:
+            byte sizePacket[] = {(byte) blocks, (byte) rest};
+            mySocket.getOutputStream().write(sizePacket);
+
+            // alle Hunderterblöcke senden:
+            byte msg[] = new byte[100];
+            for (int b = 0; b < blocks; b++) {
+                for (int i = 0; i < 100; i++) {
+                    msg[i] = message[b + i];
+                    mySocket.getOutputStream().write(msg);
+                }
+            }
+
+            // rest senden:
+            msg = new byte[rest];
+            for (int i = 0; i < rest; i++) {
+                msg[i] = message[blocks + i];
+            }
+            mySocket.getOutputStream().write(msg);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -81,32 +117,33 @@ public class ClientNetwork {
             @Override
             public void run() {
                 try {
-                    int bytesToRead = 0; // Die bytes die noch gelesen werden müssen
-                    byte cmdId = 0;     // Die cmdId
-                    byte buffer[] = new byte[0];   // der puffer
+                    int messageSize = 0;            // Die bytes die noch gelesen werden müssen
+                    byte cmdId = 0;                 // Die cmdId
+                    byte buffer[] = new byte[0];    // der puffer
+
+                    tcpReceiverStatus = RECEIVE_CMDID;
 
                     while (true) {
-                        if (bytesToRead == 0) {
+                        if (tcpReceiverStatus == RECEIVE_CMDID) {
                             if (mySocket.getInputStream().available() > 0) {
-                                bytesToRead = mySocket.getInputStream().read();
-                                buffer = new byte[bytesToRead];
-                                cmdId = 0;
+                                cmdId = (byte) mySocket.getInputStream().read();
+                                tcpReceiverStatus = RECEIVE_PACKETSIZE;
                             }
-                        } else {
-                            if (cmdId == 0) {
-                                if (mySocket.getInputStream().available() >= bytesToRead) {
-                                    cmdId = (byte) mySocket.getInputStream().read();
-                                }
-                            } else {
-                                if (mySocket.getInputStream().available() >= bytesToRead) {
-                                    for (int i = 0; i < bytesToRead; i++) {
-                                        buffer[i] = (byte) mySocket.getInputStream().read();
-                                    }
-                                    Client.getMsgInterpreter().interpretTcpMessage(cmdId, buffer);
-                                    bytesToRead = 0;
-                                }
+                        } else if (tcpReceiverStatus == RECEIVE_PACKETSIZE) {
+                            if (mySocket.getInputStream().available() > 1) {
+                                int blocks = mySocket.getInputStream().read();
+                                int rest = mySocket.getInputStream().read();
+                                messageSize = blocks * 100 + rest;
+                                tcpReceiverStatus = RECEIVE_PACKET;
                             }
-
+                        } else if (tcpReceiverStatus == RECEIVE_PACKET) {
+                            if (mySocket.getInputStream().available() > messageSize) {
+                                for (int i = 0; i < messageSize; i++) {
+                                    buffer[i] = (byte) mySocket.getInputStream().read();
+                                }
+                                Client.getMsgInterpreter().interpretTcpMessage(cmdId, buffer);
+                                tcpReceiverStatus = RECEIVE_CMDID;
+                            }
                         }
                     }
                 } catch (IOException ex) {
@@ -167,7 +204,7 @@ public class ClientNetwork {
             computeApprovedPacket(data);
         }
     }
-    
+
     /**
      * Verarbeitet verifizierte UDP-Pakete
      * @param pack ein verifiziertes UDP-Paket

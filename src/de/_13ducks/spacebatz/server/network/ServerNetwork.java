@@ -26,7 +26,6 @@ public class ServerNetwork {
      * Der Thread der Verbindungen zu Clients aufbaut
      */
     private Thread clientAcceptorThread;
-    
     /**
      * Das UDP-Netzwerksystem.
      */
@@ -106,10 +105,37 @@ public class ServerNetwork {
      * Sendet Daten via TCP an einen bestimmten Client
      * @param message die zu sendenden bytes
      * @param client der Empfänger
+     * @param cmdId die commandoid der nachricht
      */
-    void sendData(byte message[], Client client) {
+    void sendTcpData(byte cmdId, byte message[], Client client) {
         try {
-            client.getNetworkConnection().getSocket().getOutputStream().write(message);
+
+            int blocks = message.length / 100;
+            int rest = message.length % 100;
+
+            // cmdID senden
+            client.getNetworkConnection().getSocket().getOutputStream().write(cmdId);
+
+            // Größe des Packets senden:
+            byte sizePacket[] = {(byte) blocks, (byte) rest};
+            client.getNetworkConnection().getSocket().getOutputStream().write(sizePacket);
+
+            // alle hunderter blöcke senden:
+            byte msg[] = new byte[100];
+            for (int b = 0; b < blocks; b++) {
+                for (int i = 0; i < 100; i++) {
+                    msg[i] = message[b + i];
+                    client.getNetworkConnection().getSocket().getOutputStream().write(msg);
+                }
+            }
+
+            // rest senden:
+            msg = new byte[rest];
+            for (int i = 0; i < rest; i++) {
+                msg[i] = message[blocks + i];
+            }
+            client.getNetworkConnection().getSocket().getOutputStream().write(msg);
+            
         } catch (IOException ex) {
             ex.printStackTrace();
         }

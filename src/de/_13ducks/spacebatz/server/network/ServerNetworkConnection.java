@@ -21,13 +21,16 @@ public class ServerNetworkConnection {
      */
     private Client myClient;
     /**
-     * der puffer für eingehende nachrichten
+     * Der Status des TCP-Empfangsthreads
+     * (cmdId empfangen, PacketLänge empfangen oder DAten empfangen)
      */
-    private byte buffer[];
-    /**
-     * die zahl der bytes die noch gelesen wird für das aktuelle packet
-     */
-    private int bytesToRead;
+    private int tcpReceiverStatus;
+    /** cmdId empfangen */
+    final static int RECEIVE_CMDID = 0;
+    /** Packetgröße empfangen */
+    final static int RECEIVE_PACKETSIZE = 1;
+    /** PacketDaten empfangen */
+    final static int RECEIVE_PACKET = 2;
 
     /**
      * Konstruktor, erstellt einen neuen Client
@@ -44,22 +47,38 @@ public class ServerNetworkConnection {
      */
     public void receiveData() {
         try {
-            if (bytesToRead == 0) {
-                if (mySocket.getInputStream().available() > 0) {
-                    bytesToRead = mySocket.getInputStream().read();
-                    buffer = new byte[bytesToRead];
-                }
-            } else {
-                if (mySocket.getInputStream().available() >= bytesToRead) {
-                    for (int i = 0; i < bytesToRead; i++) {
-                        buffer[i] = (byte) mySocket.getInputStream().read();
+            int messageSize = 0;            // Die bytes die noch gelesen werden müssen
+            byte cmdId = 0;                 // Die cmdId
+            byte buffer[] = new byte[0];    // der puffer
+
+            tcpReceiverStatus = RECEIVE_CMDID;
+
+            while (true) {
+                if (tcpReceiverStatus == RECEIVE_CMDID) {
+                    if (mySocket.getInputStream().available() > 0) {
+                        cmdId = (byte) mySocket.getInputStream().read();
+                        tcpReceiverStatus = RECEIVE_PACKETSIZE;
                     }
-                    Server.msgInterpreter.interpretTCPMessage(buffer, myClient);
-                    bytesToRead = 0;
+                } else if (tcpReceiverStatus == RECEIVE_PACKETSIZE) {
+                    if (mySocket.getInputStream().available() > 1) {
+                        int blocks = mySocket.getInputStream().read();
+                        int rest = mySocket.getInputStream().read();
+                        messageSize = blocks * 100 + rest;
+                        tcpReceiverStatus = RECEIVE_PACKET;
+                    }
+                } else if (tcpReceiverStatus == RECEIVE_PACKET) {
+                    if (mySocket.getInputStream().available() > messageSize) {
+                        for (int i = 0; i < messageSize; i++) {
+                            buffer[i] = (byte) mySocket.getInputStream().read();
+                        }
+                        Server.msgInterpreter.interpretTCPMessage(buffer, myClient);
+                        tcpReceiverStatus = RECEIVE_CMDID;
+                    }
                 }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+
         }
     }
 

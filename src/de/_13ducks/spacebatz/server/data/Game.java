@@ -28,8 +28,7 @@ public class Game {
     /**
      * Das Serialisierte Level
      */
-    private byte[] serializedLevelMessage;
-    
+    private byte[] serializedLevel;
     /**
      * Der Server-Gametick.
      */
@@ -49,12 +48,7 @@ public class Game {
         try {
             os = new ObjectOutputStream(bs);
             os.writeObject(level);
-            serializedLevelMessage = new byte[bs.toByteArray().length + 2];
-            for (int i = 0; i < bs.toByteArray().length; i++) {
-                serializedLevelMessage[2 + i] = bs.toByteArray()[i];
-            }
-            serializedLevelMessage[0] = (byte) serializedLevelMessage.length;
-            serializedLevelMessage[1] = (byte) 20;
+            serializedLevel = bs.toByteArray();
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -75,13 +69,13 @@ public class Game {
      * @return die bytes des serialisierten levels
      */
     public byte[] getSerializedLevel() {
-        return serializedLevelMessage;
+        return serializedLevel;
     }
-    
+
     public int getTick() {
         return tick;
     }
-    
+
     public void incrementTick() {
         tick++;
     }

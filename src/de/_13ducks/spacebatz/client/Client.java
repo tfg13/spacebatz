@@ -22,7 +22,7 @@ public class Client {
      */
     private static ClientNetwork network;
     /**
-     * Der NAchrichteninterpreter.
+     * Der Nachrichteninterpreter.
      */
     private static MessageInterpreter msgInterpreter;
     /**
@@ -36,7 +36,8 @@ public class Client {
     /**
      * Die Zuordnung von netID zu Char.
      */
-    public static HashMap<Integer, Char> netIDMap;;
+    public static HashMap<Integer, Char> netIDMap;
+    ;
     /*
      * List für alle aktuellen Bullets
      */
