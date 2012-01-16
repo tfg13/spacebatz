@@ -37,6 +37,7 @@ public class ServerNetwork {
      */
     public ServerNetwork() {
         connections = new ArrayList<>();
+        udp = new UDPConnection();
         // neuer thread, der daten empfängt:
         receiveTcpDataThread = new Thread(new Runnable() {
 
@@ -135,7 +136,7 @@ public class ServerNetwork {
                 msg[i] = message[blocks + i];
             }
             client.getNetworkConnection().getSocket().getOutputStream().write(msg);
-            
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }

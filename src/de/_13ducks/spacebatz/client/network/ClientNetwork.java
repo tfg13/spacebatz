@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Iterator;
@@ -61,7 +62,10 @@ public class ClientNetwork {
         boolean result = true;
         try {
             mySocket.connect(serverAddress, 10000);
-            udpSocket = new DatagramSocket(Settings.CLIENT_UDPPORT);
+
+            // KA ob das funktioniert:
+            udpSocket = new DatagramSocket();
+
             receiveData();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -138,6 +142,7 @@ public class ClientNetwork {
                             }
                         } else if (tcpReceiverStatus == RECEIVE_PACKET) {
                             if (mySocket.getInputStream().available() > messageSize) {
+                                buffer = new byte[messageSize];
                                 for (int i = 0; i < messageSize; i++) {
                                     buffer[i] = (byte) mySocket.getInputStream().read();
                                 }
