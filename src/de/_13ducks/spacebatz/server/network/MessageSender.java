@@ -15,31 +15,37 @@ public class MessageSender {
      */
     public void sendLevel(Client client) {
         System.out.println("Sending LEvel to Clouietn.");
+        sendLargeByteBlock(Server.game.getSerializedLevelMessage(), client);
+        System.out.println("Level sent.");
+    }
 
-        // Level in 100-Byte-Blöcken senden:%
-        int send = 0;
-        int index = 0;
-        byte buffer[] = new byte[100];
-        while (true) {
-            send = 100;
-            if (Server.game.getSerializedLevel().length - index < 100) {
-                send = (Server.game.getSerializedLevel().length - index);
-            }
-            for (int i = 0; i < send; i++) {
-                buffer[i] = Server.game.getSerializedLevel()[i];
-            }
-            for (int i = 0; i < send; i++) {
-                Server.serverNetwork.sendData(buffer, client);
-            }
-            index += send;
-            if (index == Server.game.getSerializedLevel().length) {
-                break;
-            }
+    /**
+     * Sendet eine große Nachricht, die in mehrere Teilnachrichten aufgeteilt werden muss
+     * 
+     * @param byteBlock der byte array der gesendet werden soll 
+     */
+    public void sendLargeByteBlock(byte byteBlock[], Client client) {
 
+        System.out.println("Sending " + byteBlock.length + "bytes AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+
+        int blocks = byteBlock.length / 100;
+        int rest = byteBlock.length % 100;
+
+        // Größe des Packets senden:
+        byte sizePacket[] = {(byte) (byteBlock.length - 1)};
+        Server.serverNetwork.sendData(sizePacket, client);
+
+        byte msg[] = new byte[100];
+        for (int b = 0; b < blocks; b++) {
+            for (int i = 0; i < 100; i++) {
+                msg[i] = byteBlock[b + i];
+                Server.serverNetwork.sendData(msg, client);
+            }
+        }
+        msg = new byte[rest];
+        for (int i = 0; i < rest; i++) {
+            msg[i] = byteBlock[blocks + i];
         }
 
-
-
-        System.out.println("Level sent.");
     }
 }
