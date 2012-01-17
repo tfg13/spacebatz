@@ -31,7 +31,6 @@ public class MessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Level myLevel = (Level) is.readObject();
                     Client.currentLevel = myLevel;
-                    new Engine().start();
                     System.out.println("Level received and loaded!");
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -43,6 +42,10 @@ public class MessageInterpreter {
                 // Player setzen
                 Client.player = new Player(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
                 Client.netIDMap.put(Client.player.netID, Client.player);
+                break;
+            case 22:
+                // Engine starten:
+                new Engine().start();
                 break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");

@@ -23,11 +23,24 @@ public class MessageSender {
         System.out.println("Level sent, length was: " + Server.game.getSerializedLevel().length);
     }
 
+    /**
+     * Schickt dem Client einen neuen Player.
+     * @param client der Ziel-Client
+     * @param player der neue Player
+     */
     public void sendSetPlayer(Client client, Player player) {
         byte[] b = new byte[12];
         Bits.putInt(b, 0, player.netID);
         Bits.putFloat(b, 4, (float) player.getX());
         Bits.putFloat(b, 8, (float) player.getY());
         Server.serverNetwork.sendTcpData((byte) 21, b, client);
+    }
+
+    /**
+     * Lässt den Client das Spiel starten.
+     * @param client der Ziel-Client
+     */
+    public void sendStartGame(Client client) {
+        Server.serverNetwork.sendTcpData((byte) 22, new byte[1], client);
     }
 }

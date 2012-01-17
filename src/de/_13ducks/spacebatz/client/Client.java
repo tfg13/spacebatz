@@ -47,6 +47,7 @@ public class Client {
     public static void startClient(String ip) {
 
         msgInterpreter = new MessageInterpreter();
+        netIDMap = new HashMap<>();
         network = new ClientNetwork();
         if (network.tryConnect(ip)) {
             // StartRequest per TCP an Server schicken

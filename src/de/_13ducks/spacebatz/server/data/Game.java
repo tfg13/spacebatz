@@ -73,6 +73,7 @@ public class Game {
         Server.msgSender.sendLevel(client);
         Player player = new Player(10, 10, newNetID(), client);
         Server.msgSender.sendSetPlayer(client, player);
+        Server.msgSender.sendStartGame(client);
     }
 
     /**
