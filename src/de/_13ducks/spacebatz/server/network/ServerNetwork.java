@@ -125,7 +125,7 @@ public class ServerNetwork {
             byte msg[] = new byte[100];
             for (int b = 0; b < blocks; b++) {
                 for (int i = 0; i < 100; i++) {
-                    msg[i] = message[b + i];
+                    msg[i] = message[100*b + i];
                 }
                 client.getNetworkConnection().getSendStream().write(msg);
                 client.getNetworkConnection().getSendStream().flush();
@@ -134,7 +134,7 @@ public class ServerNetwork {
             // rest senden:
             msg = new byte[rest];
             for (int i = 0; i < rest; i++) {
-                msg[i] = message[blocks + i];
+                msg[i] = message[100 * blocks + i];
             }
             client.getNetworkConnection().getSendStream().write(msg);
             client.getNetworkConnection().getSendStream().flush();
