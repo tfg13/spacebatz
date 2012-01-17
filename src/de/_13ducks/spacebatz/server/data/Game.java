@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Enthält alle Daten eines Laufenden Speils
+ *
  * @author michael
  */
 public class Game {
@@ -17,8 +18,7 @@ public class Game {
      */
     public ArrayList<Client> clients;
     /**
-     * Liste aller dynamischen Objekte
-     * (z.B. Spieler, Mobs, ...)
+     * Liste aller dynamischen Objekte (z.B. Spieler, Mobs, ...)
      */
     public ArrayList<Char> chars;
     /**
@@ -33,6 +33,10 @@ public class Game {
      * Der Server-Gametick.
      */
     private int tick;
+    /**
+     * Die nächste netID.
+     */
+    private int nextNetID = 1;
 
     /**
      * Konstruktor
@@ -61,15 +65,19 @@ public class Game {
 
     /**
      * Wird gerufen, wenn ein neuer Client verbunden wurde
+     *
      * @param client der neue Client
      */
     public void clientJoined(Client client) {
         clients.add(client);
         Server.msgSender.sendLevel(client);
+        Player player = new Player(10, 10, newNetID(), client);
+        Server.msgSender.sendSetPlayer(client, player);
     }
 
     /**
      * Gibt die bytes des serialisierten Levels zurück
+     *
      * @return die bytes des serialisierten levels
      */
     public byte[] getSerializedLevel() {
@@ -82,5 +90,9 @@ public class Game {
 
     public void incrementTick() {
         tick++;
+    }
+
+    public synchronized int newNetID() {
+        return nextNetID++;
     }
 }

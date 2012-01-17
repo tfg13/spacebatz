@@ -28,7 +28,7 @@ public class Client {
     /**
      * Der Spieler.
      */
-    private static Player player;
+    public static Player player;
     /**
      * aktueller Tick, wird einmal von Server empfangen werden...
      */

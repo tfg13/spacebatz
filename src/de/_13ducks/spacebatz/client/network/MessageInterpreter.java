@@ -1,44 +1,58 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import sun.security.krb5.internal.NetClient;
 
 /**
  * Die Empfangskomponente des Netzwerkmoduls
- * @author michael 
+ *
+ * @author michael
  */
 public class MessageInterpreter {
 
     /**
      * Interpretiert eine TCP-Nachricht
+     *
      * @param message die bytes der NAchricht
      */
     public void interpretTcpMessage(byte cmdId, byte message[]) {
 
         System.out.println("RECEIVED: " + cmdId + " and " + message.length + " bytes of data: ");
 
-        if (cmdId == (byte) 20) {
-            try {
-                ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
-                Level myLevel = (Level) is.readObject();
-                Client.currentLevel = myLevel;
-                new Engine().start();
-                System.out.println("Level received and loaded!");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
-            }
+        switch (cmdId) {
+            case 20:
+                try {
+                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+                    Level myLevel = (Level) is.readObject();
+                    Client.currentLevel = myLevel;
+                    new Engine().start();
+                    System.out.println("Level received and loaded!");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case 21:
+                // Player setzen
+                Client.player = new Player(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
+                Client.netIDMap.put(Client.player.netID, Client.player);
+                break;
+            default:
+                System.out.println("WARNING: Client received unknown TCP-Command");
         }
 
     }
 
     /**
-     * Interpretiert eine Udp-Nachricht
-     * Die Nachricht sollte schnell interpretiert werden
+     * Interpretiert eine Udp-Nachricht Die Nachricht sollte schnell interpretiert werden
+     *
      * @param message die bytes der Nachricht
      */
     public void interpretUdpMessage(byte message[]) {

@@ -1,0 +1,2 @@
+20 - Server schickt Level an Client Daten: Serialisiertes Level. Größe Variabel
+21 - Server setzt Hauptplayer eines Clients wieder. Daten: int netID, float X, floatY (12)
