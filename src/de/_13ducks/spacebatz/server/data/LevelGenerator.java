@@ -18,11 +18,13 @@ public class LevelGenerator {
      * @param xSize Größe in X-Richtung
      * @param ySize Größe in Y-Richtung
      */
-    static int[][] ground;
+    private static int[][] ground;
 
     public static Level generateLevel(Level level) {
 
         Random random = new Random(System.nanoTime());
+
+        ground = level.getGround();
 
         int xSize = ground.length;
         int ySize = ground[0].length;

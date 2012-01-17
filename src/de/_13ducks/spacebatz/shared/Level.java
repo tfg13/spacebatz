@@ -25,6 +25,7 @@ public class Level implements java.io.Serializable{
     public Level(int xSize, int ySize) {
         this.sizeX = xSize;
         this.sizeY = ySize;
+        ground = new int[xSize][ySize];
     }
     
     public int[][] getGround() {
