@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.shared.Level;
-import java.util.Random;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Erstellt einen Level
@@ -19,12 +19,12 @@ public class LevelGenerator {
      */
     static int[][] ground;
 
-    public static Level generateLevel(int xSize, int ySize) {
-        Level level = new Level(xSize, ySize);
+    public static Level generateLevel(Level level) {
 
         Random random = new Random(System.nanoTime());
 
-        ground = new int[xSize][ySize];
+        int xSize = ground.length;
+        int ySize = ground[0].length;
 
         // Default-Bodentextur:
         for (int x = 0; x < xSize; x++) {
@@ -42,21 +42,21 @@ public class LevelGenerator {
             ground[i][20] = 3;
             ground[20][i] = 3;
         }
-        
-        
+
+
         // Volles Rechteck        
-        ArrayList<Position> blub = new ArrayList<Position>();
+        ArrayList<Position> blub = new ArrayList<>();
         blub.addAll(findRectangleFull(90, 110, 100, 120));
         drawPositions(blub, 2);
-        
+
 
         // Hohles Rechteck
         int leftborder = random.nextInt(xSize / 3) + 2;
         int rightborder = xSize - random.nextInt(xSize / 3) - 2;
         int topborder = random.nextInt(ySize / 3) + 2;
         int bottomborder = ySize - random.nextInt(ySize / 3) - 2;
-        
-        ArrayList<Position> bla = new ArrayList<Position>();
+
+        ArrayList<Position> bla = new ArrayList<>();
         bla.addAll(findRectangleHollow(leftborder, topborder, rightborder, bottomborder));
         drawPositions(bla, 3);
 
@@ -65,18 +65,17 @@ public class LevelGenerator {
         return level;
     }
 
-    public static void drawPositions(ArrayList<Position> posarray, int groundnumber) {        
+    public static void drawPositions(ArrayList<Position> posarray, int groundnumber) {
         for (Position pos : posarray) {
             ground[(int) pos.getX()][(int) pos.getY()] = groundnumber;
         }
     }
-    
+
     /*
-     * Kriegt 2 Positions.
-     * Gibt eine Gerade dazwischen zurück (als ArrayList<Position>).
+     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurück (als ArrayList<Position>).
      */
     public static ArrayList<Position> findLine(Position alpha, Position beta) {
-        ArrayList<Position> Returnthis = new ArrayList<Position>();
+        ArrayList<Position> Returnthis = new ArrayList<>();
 
         int vX = (int) beta.getX() - (int) alpha.getX();
         int vY = (int) beta.getY() - (int) alpha.getY();
@@ -107,20 +106,20 @@ public class LevelGenerator {
         }
         return Returnthis;
     }
-    
+
     public static ArrayList<Position> findRectangleHollow(int x1, int y1, int x2, int y2) {
-        ArrayList<Position> Returnthis = new ArrayList<Position>();
-        
+        ArrayList<Position> Returnthis = new ArrayList<>();
+
         Returnthis.addAll(findLine(new Position(x1, y1), new Position(x2, y1)));
         Returnthis.addAll(findLine(new Position(x1, y1), new Position(x1, y2)));
         Returnthis.addAll(findLine(new Position(x1, y2), new Position(x2, y2)));
         Returnthis.addAll(findLine(new Position(x2, y1), new Position(x2, y2)));
-        
+
         return Returnthis;
     }
 
     public static ArrayList<Position> findRectangleFull(int x1, int y1, int x2, int y2) {
-        ArrayList<Position> Returnthis = new ArrayList<Position>();
+        ArrayList<Position> Returnthis = new ArrayList<>();
         for (int a = x1; a <= x2; a++) {
             for (int b = y1; b <= y2; b++) {
                 Returnthis.add(new Position(a, b));
