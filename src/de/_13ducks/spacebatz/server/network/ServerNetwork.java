@@ -103,31 +103,32 @@ public class ServerNetwork {
     }
 
     /**
-     * Sendet Daten via TCP an einen bestimmten Client
-     * @param message die zu sendenden bytes
-     * @param client der Empfänger
+     * Sendet Daten an den Server
+     *
      * @param cmdId die commandoid der nachricht
+     * @param message der Byte-Array der gesendet werden soll
      */
-    void sendTcpData(byte cmdId, byte message[], Client client) {
+    public void sendTcpData(byte cmdId, byte message[], Client client) {
         try {
-
             int blocks = message.length / 100;
             int rest = message.length % 100;
 
             // cmdID senden
-            client.getNetworkConnection().getSocket().getOutputStream().write(cmdId);
+            client.getNetworkConnection().getSendStream().writeByte(cmdId);
+            client.getNetworkConnection().getSendStream().flush();
 
-            // Größe des Packets senden:
-            byte sizePacket[] = {(byte) blocks, (byte) rest};
-            client.getNetworkConnection().getSocket().getOutputStream().write(sizePacket);
+            // Packetlänge senden
+            client.getNetworkConnection().getSendStream().writeLong(message.length);
+            client.getNetworkConnection().getSendStream().flush();
 
-            // alle hunderter blöcke senden:
+            // alle Hunderterblöcke senden:
             byte msg[] = new byte[100];
             for (int b = 0; b < blocks; b++) {
                 for (int i = 0; i < 100; i++) {
                     msg[i] = message[b + i];
-                    client.getNetworkConnection().getSocket().getOutputStream().write(msg);
                 }
+                client.getNetworkConnection().getSendStream().write(msg);
+                client.getNetworkConnection().getSendStream().flush();
             }
 
             // rest senden:
@@ -135,8 +136,8 @@ public class ServerNetwork {
             for (int i = 0; i < rest; i++) {
                 msg[i] = message[blocks + i];
             }
-            client.getNetworkConnection().getSocket().getOutputStream().write(msg);
-
+            client.getNetworkConnection().getSendStream().write(msg);
+            client.getNetworkConnection().getSendStream().flush();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

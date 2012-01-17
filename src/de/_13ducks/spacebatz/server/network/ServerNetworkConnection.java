@@ -3,6 +3,8 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
@@ -16,6 +18,14 @@ public class ServerNetworkConnection {
      * Der Socket, der mit dem Client verbunden ist
      */
     private Socket mySocket;
+    /**
+     * Sendet bytes, longs etc.
+     */
+    private ObjectOutputStream sendStream;
+    /**
+     * Der Stream zum empfangen von DAten
+     */
+    private ObjectInputStream receiveStream;
     /**
      * Der Client der zu dieser Verbindung gehört
      */
@@ -39,6 +49,12 @@ public class ServerNetworkConnection {
      */
     public ServerNetworkConnection(Socket socket) {
         mySocket = socket;
+        try {
+            sendStream = new ObjectOutputStream(socket.getOutputStream());
+            receiveStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -50,29 +66,28 @@ public class ServerNetworkConnection {
             int messageSize = 0;            // Die bytes die noch gelesen werden müssen
             byte cmdId = 0;                 // Die cmdId
             byte buffer[] = new byte[0];    // der puffer
+            int index = 0;                  // der index, bis zu dem der puffer schon gefüllt ist
 
             tcpReceiverStatus = RECEIVE_CMDID;
 
             while (true) {
                 if (tcpReceiverStatus == RECEIVE_CMDID) {
-                    if (mySocket.getInputStream().available() > 0) {
-                        cmdId = (byte) mySocket.getInputStream().read();
-                        tcpReceiverStatus = RECEIVE_PACKETSIZE;
-                    }
+                    cmdId = receiveStream.readByte();
+                    tcpReceiverStatus = RECEIVE_PACKETSIZE;
+
                 } else if (tcpReceiverStatus == RECEIVE_PACKETSIZE) {
-                    if (mySocket.getInputStream().available() > 1) {
-                        int blocks = mySocket.getInputStream().read();
-                        int rest = mySocket.getInputStream().read();
-                        messageSize = blocks * 100 + rest;
-                        tcpReceiverStatus = RECEIVE_PACKET;
-                    }
+                    messageSize = (int) receiveStream.readLong();
+                    buffer = new byte[messageSize];
+                    tcpReceiverStatus = RECEIVE_PACKET;
+
                 } else if (tcpReceiverStatus == RECEIVE_PACKET) {
-                    if (mySocket.getInputStream().available() > messageSize) {
-                        for (int i = 0; i < messageSize; i++) {
-                            buffer[i] = (byte) mySocket.getInputStream().read();
-                        }
+                    int read = receiveStream.read(buffer, index, messageSize - index);
+                    if (read + index == messageSize) {
                         Server.msgInterpreter.interpretTCPMessage(buffer, myClient);
                         tcpReceiverStatus = RECEIVE_CMDID;
+                        index = 0;
+                        cmdId = 0;
+                        messageSize = 0;
                     }
                 }
             }
@@ -96,5 +111,13 @@ public class ServerNetworkConnection {
      */
     public Client getClient() {
         return myClient;
+    }
+
+    /**
+     * Gibt den Sendstream zurück, mit dem DAten gesendet werden können
+     * @return the sendStream
+     */
+    public ObjectOutputStream getSendStream() {
+        return sendStream;
     }
 }

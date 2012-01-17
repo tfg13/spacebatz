@@ -48,6 +48,10 @@ public class Game {
         try {
             os = new ObjectOutputStream(bs);
             os.writeObject(level);
+            os.flush();
+            bs.flush();
+            bs.close();
+            os.close();
             serializedLevel = bs.toByteArray();
 
         } catch (IOException ex) {

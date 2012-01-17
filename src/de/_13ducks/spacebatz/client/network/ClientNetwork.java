@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
@@ -24,6 +25,10 @@ public class ClientNetwork {
      * Unser Socket
      */
     private Socket mySocket;
+    /**
+     * Sendet bytes, longs etc als netzwerkstream
+     */
+    private ObjectOutputStream sendStream;
     /**
      * Das Client-UDP-Socket
      */
@@ -51,7 +56,7 @@ public class ClientNetwork {
         boolean result = true;
         try {
             mySocket.connect(serverAddress, 10000);
-
+            sendStream = new ObjectOutputStream(mySocket.getOutputStream());
             // KA ob das funktioniert:
             udpSocket = new DatagramSocket();
 
@@ -75,18 +80,17 @@ public class ClientNetwork {
             int rest = message.length % 100;
 
             // cmdID senden
-            mySocket.getOutputStream().write(cmdId);
+            sendStream.writeByte(cmdId);
 
-            // Größe des Packets senden:
-            byte sizePacket[] = {(byte) blocks, (byte) rest};
-            mySocket.getOutputStream().write(sizePacket);
+            // Packetlänge senden
+            sendStream.writeLong(message.length);
 
             // alle Hunderterblöcke senden:
             byte msg[] = new byte[100];
             for (int b = 0; b < blocks; b++) {
                 for (int i = 0; i < 100; i++) {
                     msg[i] = message[b + i];
-                    mySocket.getOutputStream().write(msg);
+                    sendStream.write(msg);
                 }
             }
 
@@ -95,7 +99,7 @@ public class ClientNetwork {
             for (int i = 0; i < rest; i++) {
                 msg[i] = message[blocks + i];
             }
-            mySocket.getOutputStream().write(msg);
+            sendStream.write(msg);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
