@@ -46,4 +46,12 @@ public class Client {
     public Player getPlayer() {
         return player;
     }
+
+    /**
+     * Setzt den Hauptcharakter dieses Clients
+     * @param player Der neue Player
+     */
+    void setPlayer(Player player) {
+        this.player = player;
+    }
 }
