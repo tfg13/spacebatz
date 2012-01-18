@@ -219,27 +219,11 @@ public class Engine {
                 glEnd(); // Zeichnen des QUADs fertig
             }
         }
-        // Player in die Mitte:
-        Player p = Client.getPlayer();
-        int dir = p.getDir();
         playerTiles.bind();
-      /*  glBegin(GL_QUADS);
-        glTexCoord2f(0.0625f * dir, 0);
-        glVertex3f(tilesX / 2, tilesY / 2 + 2, 0);
-        glTexCoord2f(0.0625f * (2 + dir), 0);
-        glVertex3f(tilesX / 2 + 2, tilesY / 2 + 2, 0);
-        glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
-        glVertex3f(tilesX / 2 + 2, tilesY / 2, 0);
-        glTexCoord2f(0.0625f * dir, 0.0625f * 2);
-        glVertex3f(tilesX / 2, tilesY / 2, 0);
-        glEnd(); */
 
-        // Andere Players:
+        // Players:
         for (Char c : Client.netIDMap.values()) {
-            /*if (c.equals(p)) {
-                // Der kommt in die Mitte, ham wir schon
-                continue;
-            }*/
+            int dir = c.getDir();
             glBegin(GL_QUADS);
             glTexCoord2f(0.0625f * dir, 0);
             glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
