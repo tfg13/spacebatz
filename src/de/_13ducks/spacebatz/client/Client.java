@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.MessageInterpreter;
 import de._13ducks.spacebatz.shared.Level;
@@ -96,5 +97,16 @@ public class Client {
      */
     public static void setClientID(int clientID) {
         Client.clientID = clientID;
+    }
+    
+    /**
+     * Schickt ein vollständiges, gültiges Paket an den Server.
+     * @param packet udp-Paket
+     */
+    public static void udpOut(byte[] packet) {
+        if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
+            throw new IllegalArgumentException("Illegal packet!");
+        }
+        network.udpSend(packet);
     }
 }

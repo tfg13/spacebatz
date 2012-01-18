@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
@@ -139,19 +140,22 @@ public class Engine {
      * Verarbeitet den Input, der UDP-Relevant ist.
      */
     private void directInput() {
-        
+        byte[] udp = new byte[7];
+        udp[0] = (byte) Client.getClientID();
+        Bits.putInt(udp, 1, Client.gametick);
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            
+            udp[5] |= 0x2F;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            
+            udp[5] |= 0x8F;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            
+            udp[5] |= 0x4F;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            
+            udp[5] |= 0x1F;
         }
+        Client.udpOut(udp);
     }
 
     /**

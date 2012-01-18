@@ -7,10 +7,7 @@ import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.*;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -37,6 +34,10 @@ public class ClientNetwork {
      * Die FIFO-Schlange für eingehende Elemente
      */
     private ConcurrentLinkedQueue<DatagramPacket> inputQueue;
+    /**
+     * Die Adresse des Servers.
+     */
+    private InetAddress serverAdr;
 
     /**
      * Konstruktor
@@ -57,8 +58,8 @@ public class ClientNetwork {
         try {
             mySocket.connect(serverAddress, 10000);
             sendStream = new ObjectOutputStream(mySocket.getOutputStream());
-            // KA ob das funktioniert:
-            udpSocket = new DatagramSocket();
+            udpSocket = new DatagramSocket(Settings.CLIENT_UDPPORT);
+            serverAdr = serverAddress.getAddress();
 
             receiveData();
         } catch (IOException ex) {
@@ -213,5 +214,13 @@ public class ClientNetwork {
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");
         }
+    }
+
+    /**
+     * Sendet ein packet per UDP an den Server
+     * @param packet 
+     */
+    public void udpSend(byte[] packet) {
+        DatagramPacket dp = new DatagramPacket(packet, packet.length, serverAdr, Settings.SERVER_UDPPORT);
     }
 }

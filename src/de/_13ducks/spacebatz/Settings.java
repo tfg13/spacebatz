@@ -45,12 +45,14 @@ public final class Settings {
     public static final int SERVER_TCPPORT = 10000;
     /**
      * Auf diesem Port ist der Server per UDP zu erreichen.
+     * Darf nicht der gleiche sein, wie CLIENT_UDPPORT
      */
     public static final int SERVER_UDPPORT = 13947;
     /**
      * Auf diesem Port ist der Client per UDP zu erreichen.
+     * Darf nicht der gleiche sein, wie SERVER_UDPPORT
      */
-    public static final int CLIENT_UDPPORT = 13947;
+    public static final int CLIENT_UDPPORT = 13948;
     /**
      * Die Server-Tickrate. Guter Wert muss empirisch ermittelt werden.
      */
