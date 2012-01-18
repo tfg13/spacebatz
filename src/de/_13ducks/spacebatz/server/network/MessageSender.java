@@ -67,6 +67,9 @@ public class MessageSender {
 
     public void sendAllChars(Client client) {
         for (Char c : Server.game.chars) {
+            if (c.equals(client.getPlayer())) {
+                continue; // Den eigenen nicht.
+            }
             byte[] b = new byte[12];
             Bits.putInt(b, 0, c.netID);
             Bits.putFloat(b, 4, (float) c.getX());
