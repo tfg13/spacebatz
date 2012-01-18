@@ -34,6 +34,10 @@ public class Client {
      */
     public static int gametick;
     /**
+     * Die clientID, die uns der Server zugewiesen hat.
+     */
+    private static int clientID;
+    /**
      * Die Zuordnung von netID zu Char.
      */
     public static HashMap<Integer, Char> netIDMap;
@@ -73,9 +77,24 @@ public class Client {
 
     /**
      * Getter für den MessageInterpreter
+     *
      * @return der MessageInterpreter
      */
     public static MessageInterpreter getMsgInterpreter() {
         return msgInterpreter;
+    }
+
+    /**
+     * @return the clientID
+     */
+    public static int getClientID() {
+        return clientID;
+    }
+
+    /**
+     * @param clientID the clientID to set
+     */
+    public static void setClientID(int clientID) {
+        Client.clientID = clientID;
     }
 }

@@ -60,7 +60,7 @@ public class ServerNetwork {
                     while (true) {
                         Socket clientSocket = ss.accept();
                         ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
-                        Server.game.clientJoined(new Client(client));
+                        Server.game.clientJoined(new Client(client, Server.game.newClientID()));
 
                         if (!receiveTcpDataThread.isAlive()) {
                             receiveTcpDataThread.start();

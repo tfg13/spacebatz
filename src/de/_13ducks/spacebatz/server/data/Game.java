@@ -1,10 +1,13 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Enthält alle Daten eines Laufenden Speils
@@ -16,7 +19,7 @@ public class Game {
     /**
      * Liste der verbundenen Clients
      */
-    public ArrayList<Client> clients;
+    public HashMap<Integer, Client> clients;
     /**
      * Liste aller dynamischen Objekte (z.B. Spieler, Mobs, ...)
      */
@@ -42,7 +45,7 @@ public class Game {
      * Konstruktor
      */
     public Game() {
-        clients = new ArrayList<>();
+        clients = new HashMap<>();
         chars = new ArrayList<>();
         level = new ServerLevel();
         LevelGenerator.generateLevel(level);
@@ -70,11 +73,16 @@ public class Game {
      * @param client der neue Client
      */
     public void clientJoined(Client client) {
-        clients.add(client);
-        Server.msgSender.sendLevel(client);
-        Player player = new Player(10, 10, newNetID(), client);
-        Server.msgSender.sendSetPlayer(client, player);
-        Server.msgSender.sendStartGame(client);
+        if (client.clientID != -1) {
+            clients.put(client.clientID, client);
+            Server.msgSender.sendSetClientID(client);
+            Server.msgSender.sendLevel(client);
+            Player player = new Player(10, 10, newNetID(), client);
+            Server.msgSender.sendSetPlayer(client, player);
+            Server.msgSender.sendStartGame(client);
+        } else {
+            System.out.println("WARNING: Client connected, but Server is full!");
+        }
     }
 
     /**
@@ -96,5 +104,15 @@ public class Game {
 
     public synchronized int newNetID() {
         return nextNetID++;
+    }
+
+    public int newClientID() {
+        Set<Integer> ids = clients.keySet();
+        for (int i = 0; i < Settings.SERVER_MAXPLAYERS; i++) {
+            if (!ids.contains(i)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

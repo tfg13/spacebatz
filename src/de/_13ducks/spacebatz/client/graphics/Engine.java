@@ -125,7 +125,7 @@ public class Engine {
             // Frames messen:
             updateFPS();
             // Input verarbeiten:
-            input();
+            directInput();
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
@@ -136,33 +136,21 @@ public class Engine {
     }
 
     /**
-     * Verarbeitet den Input.
+     * Verarbeitet den Input, der UDP-Relevant ist.
      */
-    private void input() {
-        Player player = Client.getPlayer();
+    private void directInput() {
+        
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            player.setY(player.getY() - 0.25f);
-            playerDir = 2;
+            
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            player.setY(player.getY() + 0.25f);
-            playerDir = 6;
+            
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            player.setX(player.getX() - 0.25f);
-            playerDir = 0;
+            
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            player.setX(player.getX() + 0.25f);
-            playerDir = 4;
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            // Bullet erstellen
-            /*Random random = new Random(System.nanoTime());
-            double spread = random.nextGaussian() * Math.PI / 64;
-            Bullet bullet = new Bullet(Client.getGametick(), new Position(player.getX(), player.getY()), Math.PI * 2 * playerDir / 8 + Math.PI + spread, 0.4f);
-            LinkedList BulletList = Client.getBulletList();
-            BulletList.add(bullet);*/
+            
         }
     }
 

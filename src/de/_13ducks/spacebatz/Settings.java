@@ -60,19 +60,19 @@ public final class Settings {
      */
     public static final int SERVER_TICKMISS_MAX_NANOS = 125000000;
     /**
-     * Größe des Empfangspuffers für ein Clientpacket auf Serverseite.
-     * NICHT EINFACH VERÄNDERN!
+     * Größe des Empfangspuffers für ein Clientpacket auf Serverseite. NICHT EINFACH VERÄNDERN!
      */
     public static final int NET_UDP_CTS_SIZE = 7;
-    
     /**
-     * Größe des Empfangspuffers für ein Serverpacket auf Clientseite.
-     * NICHT EINFACH VERÄNDERN!
+     * Größe des Empfangspuffers für ein Serverpacket auf Clientseite. NICHT EINFACH VERÄNDERN!
      */
     public static final int NET_UDP_STC_MAX_SIZE = 512;
-    
     /**
      * Normales Einheitenupdate, das Regelmäßig verschickt wird.
      */
     public static final byte NET_UDP_CMD_NORMAL_CHAR_UPDATE = 10;
+    /**
+     * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
+     */
+    public static final int SERVER_MAXPLAYERS = 32;
 }

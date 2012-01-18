@@ -47,6 +47,10 @@ public class MessageInterpreter {
                 // Engine starten:
                 new Engine().start();
                 break;
+            case 23:
+                // ClientID setzen
+                Client.setClientID(message[0]);
+                break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }

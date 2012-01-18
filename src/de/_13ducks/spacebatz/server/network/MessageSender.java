@@ -43,4 +43,12 @@ public class MessageSender {
     public void sendStartGame(Client client) {
         Server.serverNetwork.sendTcpData((byte) 22, new byte[1], client);
     }
+
+    /**
+     * Setzt die ClientID eines Clients auf dem Client.
+     * @param client der Client, dessen ID an ihn gesendet wird.
+     */
+    public void sendSetClientID(Client client) {
+        Server.serverNetwork.sendTcpData((byte) 23, new byte[]{(byte) client.clientID}, client);
+    }
 }

@@ -17,19 +17,24 @@ public class Client {
      * Das zugehörige Player-Objekt
      */
     private Player player;
-    
     /**
-     * Auf welchem Servertick die letzen Clientupdates beruhen.
-     * Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und verarbeitet wurde.
+     * Die ID, mit der der Server den Client identifiziert
+     */
+    public final int clientID;
+    /**
+     * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
+     * verarbeitet wurde.
      */
     public int lastTick;
 
     /**
      * Konstruktor
-     * @param socket der Socket, mit dem der Client verbunden ist 
+     *
+     * @param socket der Socket, mit dem der Client verbunden ist
      */
-    public Client(ServerNetworkConnection connection) {
+    public Client(ServerNetworkConnection connection, int clientID) {
         this.connection = connection;
+        this.clientID = clientID;
     }
 
     /**
@@ -41,6 +46,7 @@ public class Client {
 
     /**
      * Gibt den zugehörigen Spieler zurück
+     *
      * @return das zugehörige Player Objekt
      */
     public Player getPlayer() {
@@ -49,6 +55,7 @@ public class Client {
 
     /**
      * Setzt den Hauptcharakter dieses Clients
+     *
      * @param player Der neue Player
      */
     void setPlayer(Player player) {
