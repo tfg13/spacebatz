@@ -223,7 +223,7 @@ public class Engine {
         Player p = Client.getPlayer();
         int dir = p.getDir();
         playerTiles.bind();
-        glBegin(GL_QUADS);
+      /*  glBegin(GL_QUADS);
         glTexCoord2f(0.0625f * dir, 0);
         glVertex3f(tilesX / 2, tilesY / 2 + 2, 0);
         glTexCoord2f(0.0625f * (2 + dir), 0);
@@ -232,14 +232,14 @@ public class Engine {
         glVertex3f(tilesX / 2 + 2, tilesY / 2, 0);
         glTexCoord2f(0.0625f * dir, 0.0625f * 2);
         glVertex3f(tilesX / 2, tilesY / 2, 0);
-        glEnd();
+        glEnd(); */
 
         // Andere Players:
         for (Char c : Client.netIDMap.values()) {
-            if (c.equals(p)) {
+            /*if (c.equals(p)) {
                 // Der kommt in die Mitte, ham wir schon
                 continue;
-            }
+            }*/
             glBegin(GL_QUADS);
             glTexCoord2f(0.0625f * dir, 0);
             glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
@@ -285,7 +285,7 @@ public class Engine {
         // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
-        playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
+        playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
     }
 }

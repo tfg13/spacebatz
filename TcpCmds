@@ -2,3 +2,4 @@
 21 - Server setzt Hauptplayer eines Clients wieder. Daten: int netID, float X, floatY (12)
 22 - Server lässt Client jetzt starten Daten: keine
 23 - Server setzt ClientID eines Clients Daten: byte clientID
+24 - Server added neuen, fremden Player Daten: int netID

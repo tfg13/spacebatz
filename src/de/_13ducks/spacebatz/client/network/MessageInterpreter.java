@@ -7,7 +7,6 @@ import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import sun.security.krb5.internal.NetClient;
 
 /**
  * Die Empfangskomponente des Netzwerkmoduls
@@ -55,6 +54,7 @@ public class MessageInterpreter {
                 // Neuer, fremder Player
                 Player np = new Player(Bits.getInt(message, 0), 10, 10);
                 Client.netIDMap.put(np.netID, np);
+                System.out.println("ADDED " + np.netID);
                 break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
