@@ -54,7 +54,6 @@ public class UDPConnection {
                         while (true) {
                             DatagramPacket p = new DatagramPacket(new byte[Settings.NET_UDP_CTS_SIZE], Settings.NET_UDP_CTS_SIZE);
                             socket.receive(p);
-                            System.out.println("SINPUT: " + p);
                             queue.add(p);
                         }
                     } catch (IOException ex) {

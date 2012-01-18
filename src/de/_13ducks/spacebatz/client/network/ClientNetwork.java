@@ -143,7 +143,6 @@ public class ClientNetwork {
                     while (true) {
                         DatagramPacket pack = new DatagramPacket(new byte[Settings.NET_UDP_STC_MAX_SIZE], Settings.NET_UDP_STC_MAX_SIZE);
                         udpSocket.receive(pack);
-                        System.out.println("CINPUT: " + pack);
                         inputQueue.add(pack);
                     }
                 } catch (Exception ex) {

@@ -118,6 +118,8 @@ public class Engine {
         lastFPS = getTime();
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
+            // UDP-Input verarbeiten:
+            Client.udpTick();
             // Render-Code
             render();
 

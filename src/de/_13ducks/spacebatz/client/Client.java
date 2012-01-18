@@ -109,4 +109,11 @@ public class Client {
         }
         network.udpSend(packet);
     }
+
+    /**
+     * Leitet UDP-Ticks ans Netzwerksystem weiter.
+     */
+    public static void udpTick() {
+        network.udpTick();
+    }
 }
