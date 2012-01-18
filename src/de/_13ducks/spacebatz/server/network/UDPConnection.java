@@ -127,10 +127,10 @@ public class UDPConnection {
             if (tick > client.lastTick) {
                 client.lastTick = tick;
                 // Input auswerten:
-                client.getPlayer().clientMove((data[0] & 0x8F) != 0, (data[0] & 0x4F) != 0, (data[0] & 0x2F) != 0, (data[0] & 0x1F) != 0);
+                client.getPlayer().clientMove((data[5] & 0x80) != 0, (data[5] & 0x40) != 0, (data[5] & 0x20) != 0, (data[5] & 0x10) != 0);
             }
         } else {
-            System.out.println("INFO: Received data from unknown client. Ignoring. (id was " + data[0]);
+            System.out.println("INFO: Received data from unknown client. Ignoring. (id was " + data[0] + ")");
         }
     }
 
@@ -144,7 +144,7 @@ public class UDPConnection {
             int leftToSend = chars.size();
             while (leftToSend > 0) {
                 byte[] packet = new byte[32 + (32 * (leftToSend > 15 ? 15 : leftToSend))];
-                packChar(packet, chars, leftToSend > 15 ? 15 : leftToSend, leftToSend > 15 ? leftToSend - 15 : 0);
+                packChar(packet, chars, (byte) (leftToSend > 15 ? 15 : leftToSend), leftToSend > 15 ? leftToSend - 15 : 0);
                 sendPack(packet, client);
                 leftToSend -= 15;
             }
@@ -159,13 +159,13 @@ public class UDPConnection {
      * @param number Die Anzahl von Chars, die eingefüllt werden
      * @param offset Der Index-Offset für die chars-Liste
      */
-    private void packChar(byte[] packet, List<Char> chars, int number, int offset) {
+    private void packChar(byte[] packet, List<Char> chars, byte number, int offset) {
         // Cmd setzen
         packet[0] = Settings.NET_UDP_CMD_NORMAL_CHAR_UPDATE;
         // Tick setzen
         Bits.putInt(packet, 1, Server.game.getTick());
         // Anzahl setzen
-        Bits.putInt(packet, 5, number);
+        packet[5] = number;
         for (int i = 0; i < number; i++) {
             // NETID
             Bits.putInt(packet, 32 + (i * 32), chars.get(offset + i).netID);

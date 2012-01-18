@@ -9,7 +9,7 @@ public class Player extends Char {
     /**
      * Die normale Geschwindigkeit dieses Players.
      */
-    private double speed;
+    private double speed = .2;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -34,17 +34,16 @@ public class Player extends Char {
      */
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         if (w) {
-            posX += speed;
-        }
-        if (a) {
-            posY -= speed;
-        }
-        if (s) {
-            posX -= speed;
-        }
-        if (d) {
             posY += speed;
         }
-        System.out.println("Char at " + posX + " " + posY);
+        if (a) {
+            posX -= speed;
+        }
+        if (s) {
+            posY -= speed;
+        }
+        if (d) {
+            posX += speed;
+        }
     }
 }

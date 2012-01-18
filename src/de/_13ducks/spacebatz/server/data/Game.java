@@ -75,10 +75,12 @@ public class Game {
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
             clients.put(client.clientID, client);
+            Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
             Player player = new Player(10, 10, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
+            chars.add(player);
             Server.msgSender.sendStartGame(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");

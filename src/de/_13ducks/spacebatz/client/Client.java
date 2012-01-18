@@ -42,7 +42,6 @@ public class Client {
      * Die Zuordnung von netID zu Char.
      */
     public static HashMap<Integer, Char> netIDMap;
-    ;
     /*
      * List für alle aktuellen Bullets
      */

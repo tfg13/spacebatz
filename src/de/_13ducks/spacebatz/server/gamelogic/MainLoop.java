@@ -39,6 +39,7 @@ public class MainLoop {
                     Server.serverNetwork.udp.tick();
                     // GameTicks balancieren:
                     balanceTicks();
+                    Server.game.incrementTick();
                 }
             }
         });

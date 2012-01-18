@@ -42,10 +42,6 @@ public class Engine {
     private Texture playerTiles;
     private Texture bulletTiles;
     /**
-     * Die Richtung, in die der Spieler schaut.
-     */
-    private int playerDir = 0;
-    /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
     private int tilesX, tilesY;
@@ -146,16 +142,16 @@ public class Engine {
         udp[0] = (byte) Client.getClientID();
         Bits.putInt(udp, 1, Client.gametick);
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            udp[5] |= 0x2F;
+            udp[5] |= 0x20;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            udp[5] |= 0x8F;
+            udp[5] |= 0x80;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            udp[5] |= 0x4F;
+            udp[5] |= 0x40;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            udp[5] |= 0x1F;
+            udp[5] |= 0x10;
         }
         if (udp[5] != 0) {
             Client.udpOut(udp);
@@ -223,15 +219,17 @@ public class Engine {
             }
         }
         // Player in die Mitte:
+        Player p = Client.getPlayer();
+        int dir = p.getDir();
         playerTiles.bind();
         glBegin(GL_QUADS);
-        glTexCoord2f(0.0625f * playerDir, 0);
+        glTexCoord2f(0.0625f * dir, 0);
         glVertex3f(tilesX / 2, tilesY / 2 + 2, 0);
-        glTexCoord2f(0.0625f * (2 + playerDir), 0);
+        glTexCoord2f(0.0625f * (2 + dir), 0);
         glVertex3f(tilesX / 2 + 2, tilesY / 2 + 2, 0);
-        glTexCoord2f(0.0625f * (2 + playerDir), 0.0625f * 2);
+        glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
         glVertex3f(tilesX / 2 + 2, tilesY / 2, 0);
-        glTexCoord2f(0.0625f * playerDir, 0.0625f * 2);
+        glTexCoord2f(0.0625f * dir, 0.0625f * 2);
         glVertex3f(tilesX / 2, tilesY / 2, 0);
         glEnd();
 
