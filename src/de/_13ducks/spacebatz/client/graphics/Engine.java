@@ -155,7 +155,9 @@ public class Engine {
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             udp[5] |= 0x1F;
         }
-        Client.udpOut(udp);
+        if (udp[5] != 0) {
+            Client.udpOut(udp);
+        }
     }
 
     /**
@@ -232,35 +234,21 @@ public class Engine {
         glEnd();
 
         // Bullets
-        /*bulletTiles.bind();
-        for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i);
-            // Zu alte Bullets löschen:
-            if (bullet.getDeletetick() < Client.gametick) {
-                
-                Client.getBulletList().remove(i);
-                i--;
-            } else {
-
-            float radius = (float) bullet.getSpeed() * (Client.gametick - bullet.getSpawntick());
-            float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
-            float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
-            
-            float v = 0.75f;
-            float w = 0.0f;
-            
-            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(v, w + 0.25f);
-            glVertex3f(x + panX, y + panY, 0);
-            glTexCoord2f(v + 0.25f, w + 0.25f);
-            glVertex3f(x + 2 + panX, y + panY, 0);
-            glTexCoord2f(v + 0.25f, w);
-            glVertex3f(x + 2 + panX, y + 2 + panY, 0);
-            glTexCoord2f(v, w);
-            glVertex3f(x + panX, y + 2 + panY, 0);
-            glEnd(); // Zeichnen des QUADs fertig
-            }
-        } */
+        /*
+         * bulletTiles.bind(); for (int i = 0; i < Client.getBulletList().size(); i++) { Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets
+         * löschen: if (bullet.getDeletetick() < Client.gametick) {
+         *
+         * Client.getBulletList().remove(i); i--; } else {
+         *
+         * float radius = (float) bullet.getSpeed() * (Client.gametick - bullet.getSpawntick()); float x = (float) bullet.getSpawnposition().getX() + radius *
+         * (float) Math.cos(bullet.getDirection()); float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
+         *
+         * float v = 0.75f; float w = 0.0f;
+         *
+         * glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren glTexCoord2f(v, w + 0.25f); glVertex3f(x + panX, y + panY, 0); glTexCoord2f(v + 0.25f, w + 0.25f);
+         * glVertex3f(x + 2 + panX, y + panY, 0); glTexCoord2f(v + 0.25f, w); glVertex3f(x + 2 + panX, y + 2 + panY, 0); glTexCoord2f(v, w); glVertex3f(x +
+         * panX, y + 2 + panY, 0); glEnd(); // Zeichnen des QUADs fertig } }
+         */
     }
 
     private int texAt(int[][] layer, int x, int y) {

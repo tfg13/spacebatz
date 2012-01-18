@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Die Netzwerkkomponente des Clients
@@ -141,6 +143,7 @@ public class ClientNetwork {
                     while (true) {
                         DatagramPacket pack = new DatagramPacket(new byte[Settings.NET_UDP_STC_MAX_SIZE], Settings.NET_UDP_STC_MAX_SIZE);
                         udpSocket.receive(pack);
+                        System.out.println("CINPUT: " + pack);
                         inputQueue.add(pack);
                     }
                 } catch (Exception ex) {
@@ -221,6 +224,11 @@ public class ClientNetwork {
      * @param packet 
      */
     public void udpSend(byte[] packet) {
-        DatagramPacket dp = new DatagramPacket(packet, packet.length, serverAdr, Settings.SERVER_UDPPORT);
+        try {
+            DatagramPacket dp = new DatagramPacket(packet, packet.length, serverAdr, Settings.SERVER_UDPPORT);
+            udpSocket.send(dp);
+        } catch (IOException ex) {
+            System.out.println("ERROR: UDP-Sending failed!");
+        }
     }
 }

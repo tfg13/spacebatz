@@ -86,6 +86,7 @@ public class ServerNetwork {
      */
     public void startServer() {
         clientAcceptorThread.start();
+        udp.start();
     }
 
     /**

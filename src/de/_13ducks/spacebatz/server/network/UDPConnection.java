@@ -54,6 +54,7 @@ public class UDPConnection {
                         while (true) {
                             DatagramPacket p = new DatagramPacket(new byte[Settings.NET_UDP_CTS_SIZE], Settings.NET_UDP_CTS_SIZE);
                             socket.receive(p);
+                            System.out.println("SINPUT: " + p);
                             queue.add(p);
                         }
                     } catch (IOException ex) {
@@ -63,6 +64,14 @@ public class UDPConnection {
         } catch (SocketException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    /**
+     * Startet das UDP-Netzwerksystem.
+     * Ab jetzt emfängt und sender der Server UDP-Nachrichten.
+     */
+    public void start() {
+        inputQueuer.start();
     }
 
     /**
