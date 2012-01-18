@@ -83,6 +83,8 @@ public class Game {
             chars.add(player);
             Server.msgSender.sendStartGame(client);
             Server.msgSender.sendNewPlayer(client);
+            // Diesem Client alle anderen (alten) Chars schicken:
+            Server.msgSender.sendAllChars(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }

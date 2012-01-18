@@ -63,6 +63,10 @@ public class MessageInterpreter {
                 Client.netIDMap.put(np.netID, np);
                 System.out.println("ADDED " + np.netID);
                 break;
+            case 25:
+                // Fremder Player mit Position
+                Player np2 = new Player(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
+                Client.netIDMap.put(np.netID, np2);
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }
