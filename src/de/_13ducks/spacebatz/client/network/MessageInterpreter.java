@@ -44,7 +44,14 @@ public class MessageInterpreter {
                 break;
             case 22:
                 // Engine starten:
-                new Engine().start();
+                Thread t = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        new Engine().start();
+                    }
+                });
+                t.start();
                 break;
             case 23:
                 // ClientID setzen

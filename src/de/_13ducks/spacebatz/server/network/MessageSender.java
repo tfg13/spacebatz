@@ -60,7 +60,6 @@ public class MessageSender {
             }
             byte[] b = new byte[4];
             Bits.putInt(b, 0, client.getPlayer().netID);
-            System.out.println("asdfsdf " + client.getPlayer().netID + " to " + c.getNetworkConnection().getSocket().getPort());
             Server.serverNetwork.sendTcpData((byte) 24, b, c);
         }
     }
