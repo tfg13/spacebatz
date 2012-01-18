@@ -10,8 +10,6 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Die Netzwerkkomponente des Clients
@@ -59,6 +57,7 @@ public class ClientNetwork {
         boolean result = true;
         try {
             mySocket.connect(serverAddress, 10000);
+            System.out.println("Connected via " + mySocket.getLocalPort());
             sendStream = new ObjectOutputStream(mySocket.getOutputStream());
             udpSocket = new DatagramSocket(Settings.CLIENT_UDPPORT);
             serverAdr = serverAddress.getAddress();
