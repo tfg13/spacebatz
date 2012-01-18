@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
+import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.util.Bits;
@@ -232,6 +233,24 @@ public class Engine {
         glTexCoord2f(0.0625f * dir, 0.0625f * 2);
         glVertex3f(tilesX / 2, tilesY / 2, 0);
         glEnd();
+
+        // Andere Players:
+        for (Char c : Client.netIDMap.values()) {
+            if (c.equals(p)) {
+                // Der kommt in die Mitte, ham wir schon
+                continue;
+            }
+            glBegin(GL_QUADS);
+            glTexCoord2f(0.0625f * dir, 0);
+            glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
+            glTexCoord2f(0.0625f * (2 + dir), 0);
+            glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
+            glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
+            glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
+            glTexCoord2f(0.0625f * dir, 0.0625f * 2);
+            glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
+            glEnd();
+        }
 
         // Bullets
         /*

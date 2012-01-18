@@ -51,6 +51,11 @@ public class MessageInterpreter {
                 // ClientID setzen
                 Client.setClientID(message[0]);
                 break;
+            case 24:
+                // Neuer, fremder Player
+                Player np = new Player(Bits.getInt(message, 0), 10, 10);
+                Client.netIDMap.put(np.netID, np);
+                break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }

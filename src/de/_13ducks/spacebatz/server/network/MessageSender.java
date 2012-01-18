@@ -3,10 +3,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Player;
-import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 
 /**
  * Sendet Daten übers Netzwerk.
@@ -50,5 +47,20 @@ public class MessageSender {
      */
     public void sendSetClientID(Client client) {
         Server.serverNetwork.sendTcpData((byte) 23, new byte[]{(byte) client.clientID}, client);
+    }
+
+    /**
+     * Benachrichtigt alle ANDEREN Clients, dass es einen neuen Player gibt.
+     * @param client der Client, dem das NICHT geschickt wird.
+     */
+    public void sendNewPlayer(Client client) {
+        for (Client c : Server.game.clients.values()) {
+            if (c.equals(client)) {
+                continue; // Der weiß das schon...
+            }
+            byte[] b = new byte[4];
+            Bits.putInt(b, 0, client.getPlayer().netID);
+            Server.serverNetwork.sendTcpData((byte) 24, b, c);
+        }
     }
 }
