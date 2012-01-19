@@ -184,7 +184,7 @@ public class UDPConnection {
      * @param packet Das Packet
      * @param client Der Client
      */
-    private void sendPack(byte[] packet, Client client) {
+    public void sendPack(byte[] packet, Client client) {
         DatagramPacket dpack = new DatagramPacket(packet, packet.length, client.getNetworkConnection().getSocket().getInetAddress(), Settings.CLIENT_UDPPORT);
         try {
             socket.send(dpack);

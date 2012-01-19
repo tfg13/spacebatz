@@ -74,6 +74,10 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_NORMAL_CHAR_UPDATE = 10;
     /**
+     * Bullet erzeugen
+     */
+    public static final byte NET_UDP_CMD_SPAWN_BULLET = 11;
+    /**
      * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
      */
     public static final int SERVER_MAXPLAYERS = 32;

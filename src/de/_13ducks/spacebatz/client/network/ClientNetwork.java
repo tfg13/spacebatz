@@ -1,8 +1,10 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Position;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -211,6 +213,17 @@ public class ClientNetwork {
                         System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
                     }
                 }
+                break;
+            case Settings.NET_UDP_CMD_SPAWN_BULLET:
+                // Bullet erzeugen
+                int spawntick = Bits.getInt(pack, 1);
+                float posx = Bits.getFloat(pack, 5);
+                float posy = Bits.getFloat(pack, 9);
+                float direction = Bits.getFloat(pack, 13);
+                float speed = Bits.getFloat(pack, 17);
+                int netID = Bits.getInt(pack, 21);
+                Bullet bullet = new Bullet(spawntick, new Position(posx, posy), direction, speed, netID);
+                Client.getBulletList().add(bullet);
                 break;
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");

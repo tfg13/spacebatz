@@ -2,15 +2,17 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Set;
 
 /**
- * Enthält alle Daten eines Laufenden Speils
+ * Enthält alle Daten eines Laufenden Spiels
  *
  * @author michael
  */
@@ -24,6 +26,10 @@ public class Game {
      * Liste aller dynamischen Objekte (z.B. Spieler, Mobs, ...)
      */
     public ArrayList<Char> chars;
+    /**
+     * Liste aller Geschosse
+     */
+    public ArrayList<Bullet> bullets;
     /**
      * Das Level
      */
@@ -48,6 +54,7 @@ public class Game {
         clients = new HashMap<>();
         chars = new ArrayList<>();
         level = new ServerLevel();
+        bullets = new ArrayList<>();
         LevelGenerator.generateLevel(level);
         Enemy testenemy = new Enemy(1, 2, newNetID());
         chars.add(testenemy);
@@ -107,6 +114,26 @@ public class Game {
 
     public void incrementTick() {
         tick++;
+
+        // Ab hier: Testcode, spawnt Bullets
+        if (tick % 30 == 0) {
+            Random random = new Random(System.nanoTime());
+            Bullet bullet = new Bullet(tick, 7.0, 7.0,  random.nextGaussian() * Math.PI / 16, 0.15f, newNetID());
+            bullets.add(bullet);
+            byte[] bytearray = new byte[25];
+            
+            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
+            Bits.putInt(bytearray, 1, bullet.getSpawntick());
+            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
+            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
+            Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
+            Bits.putFloat(bytearray, 17, (float) bullet.getSpeed());
+            Bits.putInt(bytearray, 21, bullet.getNetID());
+            
+            for (int i = 0; i < clients.size(); i++) {
+                Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
+            }
+        }
     }
 
     public synchronized int newNetID() {

@@ -1,9 +1,12 @@
-package de._13ducks.spacebatz.client;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de._13ducks.spacebatz.server.data;
 
 /**
- * Ein Geschoss, dass vom Client gerendert werden muss
- * 
- * @author Johannes
+ * Ein Geschoss
+ * @author J.K.
  */
 public class Bullet {
     /*
@@ -14,31 +17,33 @@ public class Bullet {
     /*
      * Ort, an dem die Bullet erstellt wurde
      */
-    private Position spawnposition;
+    private double spawnposx;
+    private double spawnposy;
     /*
      * Richtung der Bullet
      */
-    private float direction;
+    private double direction;
     /*
      * Geschwindigkeit
      */
     private float speed;
     /*
-     * .
-     */
-    private int netID;
-    /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
+    /*
+     * netID.
+     */
+    private int netID;
 
-    public Bullet(int spawntick, Position spawnposition, float direction, float speed, int netID) {
+    public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, float speed, int netID) {
         this.spawntick = spawntick;
-        this.spawnposition = spawnposition;
+        this.spawnposx = spawnposx;
+        this.spawnposy = spawnposy;
         this.direction = direction;
         this.speed = speed;
-        this.netID = netID;
         this.deletetick = spawntick + 600; // Nach 10 Sekunden löschen
+        this.netID = netID;
     }
 
     /**
@@ -56,16 +61,23 @@ public class Bullet {
     }
 
     /**
-     * @return the spawnposition
+     * @return the spawnposition x
      */
-    public Position getSpawnposition() {
-        return spawnposition;
+    public double getSpawnposX() {
+        return spawnposx;
+    }
+
+    /**
+     * @return the spawnposition y
+     */
+    public double getSpawnposY() {
+        return spawnposy;
     }
 
     /**
      * @return the direction
      */
-    public float getDirection() {
+    public double getDirection() {
         return direction;
     }
 
@@ -81,5 +93,12 @@ public class Bullet {
      */
     public int getDeletetick() {
         return deletetick;
+    }
+
+    /**
+     * @return the netID
+     */
+    public int getNetID() {
+        return netID;
     }
 }
