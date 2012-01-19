@@ -5,13 +5,12 @@
 package de._13ducks.spacebatz.client;
 
 /**
- * Der eigene Spieler
- * 
- * @author JK
+ * Ein Gegner.
+ * @author Joj
  */
-public class Player extends Char {
+public class Enemy extends Char {
 
-    public Player(int netID, double x, double y) {
+    public Enemy(int netID, double x, double y) {
         super(netID, x, y);
     }
 }

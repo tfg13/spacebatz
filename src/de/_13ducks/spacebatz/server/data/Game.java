@@ -49,6 +49,8 @@ public class Game {
         chars = new ArrayList<>();
         level = new ServerLevel();
         LevelGenerator.generateLevel(level);
+        Enemy testenemy = new Enemy(1, 2, newNetID());
+        chars.add(testenemy);
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();

@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class Engine {
      */
     private Texture groundTiles;
     private Texture playerTiles;
+    private Texture enemyTiles;
     private Texture bulletTiles;
     /**
      * Die Anzahl der Tiles auf dem Bildschirm.
@@ -219,22 +221,45 @@ public class Engine {
                 glEnd(); // Zeichnen des QUADs fertig
             }
         }
-        playerTiles.bind();
+
+        // Gegner:
+        enemyTiles.bind();
+        for (Char c : Client.netIDMap.values()) {
+            if (c instanceof Enemy) {
+                int dir = c.getDir();
+                glBegin(GL_QUADS);
+                glTexCoord2f(0.0625f * dir, 0);
+                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
+                glTexCoord2f(0.0625f * (2 + dir), 0);
+                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
+                glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
+                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
+                glTexCoord2f(0.0625f * dir, 0.0625f * 2);
+                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
+                glEnd();
+            }
+        }
 
         // Players:
+        playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
-            int dir = c.getDir();
-            glBegin(GL_QUADS);
-            glTexCoord2f(0.0625f * dir, 0);
-            glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
-            glTexCoord2f(0.0625f * (2 + dir), 0);
-            glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
-            glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
-            glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
-            glTexCoord2f(0.0625f * dir, 0.0625f * 2);
-            glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
-            glEnd();
+            if (c instanceof Player) {
+                int dir = c.getDir();
+                glBegin(GL_QUADS);
+                glTexCoord2f(0.0625f * dir, 0);
+                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
+                glTexCoord2f(0.0625f * (2 + dir), 0);
+                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
+                glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
+                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
+                glTexCoord2f(0.0625f * dir, 0.0625f * 2);
+                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
+                glEnd();
+            }
         }
+
+
+
 
         // Bullets
         /*
@@ -269,7 +294,8 @@ public class Engine {
         // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
-        playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
+        playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
+        enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
     }
 }

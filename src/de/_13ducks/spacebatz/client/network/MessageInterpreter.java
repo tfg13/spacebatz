@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.Level;
@@ -67,6 +68,10 @@ public class MessageInterpreter {
                 // Fremder Player mit Position
                 Player np2 = new Player(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
                 Client.netIDMap.put(np2.netID, np2);
+            case 26:
+                // Neuer Gegner
+                Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
+                Client.netIDMap.put(enemy.netID, enemy);
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }
