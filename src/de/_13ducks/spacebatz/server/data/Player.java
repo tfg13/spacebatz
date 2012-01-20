@@ -34,16 +34,16 @@ public class Player extends Char {
      */
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         if (w) {
-            posY += speed;
+            setPosY(posY + speed);
         }
         if (a) {
-            posX -= speed;
+            setPosX(posX - speed);
         }
         if (s) {
-            posY -= speed;
+            setPosY(posY - speed);
         }
         if (d) {
-            posX += speed;
+            setPosX(posX + speed);
         }
     }
 }

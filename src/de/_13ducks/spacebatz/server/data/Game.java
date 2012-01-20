@@ -115,13 +115,14 @@ public class Game {
     public void incrementTick() {
         tick++;
 
-        // Ab hier: Testcode, spawnt Bullets
+        // Ab hier: Testcode
+        // Bullets spawnen:
         if (tick % 30 == 0) {
             Random random = new Random(System.nanoTime());
-            Bullet bullet = new Bullet(tick, 7.0, 7.0,  random.nextGaussian() * Math.PI / 16, 0.15f, newNetID());
+            Bullet bullet = new Bullet(tick, 7.0, 7.0, random.nextGaussian() * Math.PI / 16, 0.15f, newNetID());
             bullets.add(bullet);
             byte[] bytearray = new byte[25];
-            
+
             bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
             Bits.putInt(bytearray, 1, bullet.getSpawntick());
             Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
@@ -129,9 +130,45 @@ public class Game {
             Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
             Bits.putFloat(bytearray, 17, (float) bullet.getSpeed());
             Bits.putInt(bytearray, 21, bullet.getNetID());
-            
+
             for (int i = 0; i < clients.size(); i++) {
                 Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
+            }
+        }
+        // Enemy verfolgt Spieler:
+        for (int i = 0; i < chars.size(); i++) {
+            if (chars.get(i) instanceof Enemy) {
+                int minplayer = 0;
+                double mindist = 12;
+                for (int j = 0; j < chars.size(); j++) {
+                    if (chars.get(j) instanceof Enemy) {
+                        continue;
+                    }
+
+                    double px = chars.get(j).posX;
+                    double py = chars.get(j).posY;
+                    double ex = chars.get(i).posX;
+                    double ey = chars.get(i).posY;
+
+                    double thisdist = Math.sqrt((px - ex) * (px - ex) + (py - ey) * (py - ey));
+                    if (thisdist < mindist) {
+                        minplayer = j;
+                        mindist = thisdist;
+                    }
+
+                }
+
+                if (chars.get(i).posX < chars.get(minplayer).posX - 1) {
+                    chars.get(i).setPosX(chars.get(i).getX() + 0.05f);
+                } else if (chars.get(i).posX > chars.get(minplayer).posX + 1) {
+                    chars.get(i).setPosX(chars.get(i).getX() - 0.05f);
+                }
+                if (chars.get(i).posY < chars.get(minplayer).posY - 1) {
+                    chars.get(i).setPosY(chars.get(i).getY() + 0.05f);
+                } else if (chars.get(i).posY > chars.get(minplayer).posY + 1) {
+                    chars.get(i).setPosY(chars.get(i).getY() - 0.05f);
+                }
+
             }
         }
     }

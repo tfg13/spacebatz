@@ -6,11 +6,8 @@ package de._13ducks.spacebatz.server.data;
  * @author michael
  */
 public class Char {
-
-    /**
-     * Die Position des Chars.
-     */
-    protected double posX, posY;
+    protected double posX;
+    protected double posY;
     /**
      * Die ID des Chars.
      */
@@ -45,5 +42,19 @@ public class Char {
      */
     public double getY() {
         return posY;
+    }
+
+    /**
+     * @param posX the posX to set
+     */
+    public void setPosX(double posX) {
+        this.posX = posX;
+    }
+
+    /**
+     * @param posY the posY to set
+     */
+    public void setPosY(double posY) {
+        this.posY = posY;
     }
 }
