@@ -85,6 +85,7 @@ public final class Settings {
      * Die cmdID für Level-senden
      */
     public static final byte NET_TCP_CMD_TRANSFER_LEVEL = 20;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
