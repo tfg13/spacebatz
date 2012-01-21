@@ -132,7 +132,7 @@ public class UDPConnection {
             // Tick auswerten:
             int tick = Bits.getInt(data, 1);
             // Nur verarbeiten, wenn es neuere Informationen enthält.
-            if (tick > client.lastTick) {
+            if (tick >= client.lastTick) {
                 client.lastTick = tick;
                 // Input auswerten:
                 computeApprovedPacket(data, client);
