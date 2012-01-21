@@ -64,7 +64,7 @@ public final class Settings {
     /**
      * Größe des Empfangspuffers für ein Clientpacket auf Serverseite. NICHT EINFACH VERÄNDERN!
      */
-    public static final int NET_UDP_CTS_SIZE = 8;
+    public static final int NET_UDP_CTS_SIZE = 10;
     /**
      * Größe des Empfangspuffers für ein Serverpacket auf Clientseite. NICHT EINFACH VERÄNDERN!
      */
@@ -81,6 +81,10 @@ public final class Settings {
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_INPUT = -10;
+    /**
+     * Normales Input-an-Server-Schicken.
+     */
+    public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
     /**
      * Wieviele Ticks der Clienttick maximal hinter dem Server liegen darf, bevor er geupdated wird.
      */

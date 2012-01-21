@@ -155,10 +155,14 @@ public class Engine {
             udp[6] |= 0x10;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            udp[6] |= 0x08;
+            byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
+            udp2[0] = (byte) Client.getClientID();
+            Bits.putInt(udp2, 1, Client.gametick);
+            udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
+            Bits.putFloat(udp2, 6, (float) (Math.PI / 3));
+            Client.udpOut(udp2);
         }
         Client.udpOut(udp);
-
     }
 
     /**

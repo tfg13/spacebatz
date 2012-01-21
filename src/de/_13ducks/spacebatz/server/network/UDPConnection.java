@@ -152,7 +152,10 @@ public class UDPConnection {
         byte cmd = data[5];
         switch (cmd) {
             case Settings.NET_UDP_CMD_INPUT:
-                client.getPlayer().clientMove((data[6] & 0x80) != 0, (data[6] & 0x40) != 0, (data[6] & 0x20) != 0, (data[6] & 0x10) != 0, (data[6] & 0x08) != 0);
+                client.getPlayer().clientMove((data[6] & 0x80) != 0, (data[6] & 0x40) != 0, (data[6] & 0x20) != 0, (data[6] & 0x10) != 0);
+                break;
+            case Settings.NET_UDP_CMD_REQUEST_BULLET:
+                client.getPlayer().clientShoot(Bits.getFloat(data, 6));
                 break;
             default:
                 System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
