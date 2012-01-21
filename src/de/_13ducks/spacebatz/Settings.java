@@ -78,6 +78,10 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_SPAWN_BULLET = 11;
     /**
+     * Wieviele Ticks der Clienttick maximal hinter dem Server liegen darf, bevor er geupdated wird.
+     */
+    public static final int NET_TICKSYNC_MAX_DELAY = 5;
+    /**
      * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
      */
     public static final int SERVER_MAXPLAYERS = 32;
