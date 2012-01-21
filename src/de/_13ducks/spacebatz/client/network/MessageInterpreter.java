@@ -68,6 +68,7 @@ public class MessageInterpreter {
                 // Fremder Player mit Position
                 Player np2 = new Player(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
                 Client.netIDMap.put(np2.netID, np2);
+                break;
             case 26:
                 // Neuer Gegner
                 Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
