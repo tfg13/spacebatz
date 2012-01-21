@@ -71,10 +71,17 @@ public class MessageSender {
                 continue; // Den eigenen nicht.
             }
             byte[] b = new byte[12];
-            Bits.putInt(b, 0, c.netID);
-            Bits.putFloat(b, 4, (float) c.getX());
-            Bits.putFloat(b, 8, (float) c.getY());
-            Server.serverNetwork.sendTcpData((byte) 25, b, client);
+            if (c instanceof Player) {
+                Bits.putInt(b, 0, c.netID);
+                Bits.putFloat(b, 4, (float) c.getX());
+                Bits.putFloat(b, 8, (float) c.getY());
+                Server.serverNetwork.sendTcpData((byte) 25, b, client);
+            } else {
+                Bits.putInt(b, 0, c.netID);
+                Bits.putFloat(b, 4, (float) c.getX());
+                Bits.putFloat(b, 8, (float) c.getY());
+                Server.serverNetwork.sendTcpData((byte) 26, b, client);
+            }
         }
     }
 }
