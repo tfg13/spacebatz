@@ -92,5 +92,5 @@ public final class Settings {
     /**
      * Die Distanz, ab der arbeitslose Mobs Chars verfolgen
      */
-    public static double MOB_AGGRO_RANGE = 4.0;
+    public static double MOB_AGGRO_RANGE = 7.0;
 }

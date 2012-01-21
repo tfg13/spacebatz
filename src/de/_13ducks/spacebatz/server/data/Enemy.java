@@ -25,7 +25,7 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int id) {
         super(x, y, id);
-        speed = .1;
+        speed = .045;
     }
 
     /**
