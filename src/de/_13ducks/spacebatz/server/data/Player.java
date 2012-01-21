@@ -32,8 +32,11 @@ public class Player extends Char {
      * @param s S-Button gedrückt.
      * @param d D-Button gedrückt.
      */
-    public void clientMove(boolean w, boolean a, boolean s, boolean d, boolean space) {
-        double x = 0, y = 0;
+        
+
+    public void clientMove(boolean w, boolean a, boolean s, boolean d) {
+		double x = 0, y = 0;
+
         if (w) {
             y += 1;
         }
@@ -64,28 +67,52 @@ public class Player extends Char {
                 setVector(x, y);
             }
         }
-        if (space) {
-            int thistick = Server.game.getTick();
-            if (thistick > AttackCooldownTick + 20) {
-                Random random = new Random(System.nanoTime());
+//        if (space) {
+//            int thistick = Server.game.getTick();
+//            if (thistick > AttackCooldownTick + 20) {
+//                Random random = new Random(System.nanoTime());
+//
+//                Bullet bullet = new Bullet(thistick, posX, posY, random.nextGaussian() * Math.PI / 16, 0.15f, Server.game.newNetID());
+//                Server.game.bullets.add(bullet);
+//                byte[] bytearray = new byte[25];
+//
+//                bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
+//                Bits.putInt(bytearray, 1, bullet.getSpawntick());
+//                Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
+//                Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
+//                Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
+//                Bits.putFloat(bytearray, 17, bullet.getSpeed());
+//                Bits.putInt(bytearray, 21, bullet.getNetID());
+//
+//                for (int i = 0; i < Server.game.clients.size(); i++) {
+//                    Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
+//                }
+//                AttackCooldownTick = thistick;
+//            }
+//        }
+    }
 
-                Bullet bullet = new Bullet(thistick, posX, posY, random.nextGaussian() * Math.PI / 16, 0.15f, Server.game.newNetID());
-                Server.game.bullets.add(bullet);
-                byte[] bytearray = new byte[25];
+    public void clientShoot(float angle) {
+        int thistick = Server.game.getTick();
+        if (thistick > AttackCooldownTick + 20) {
+            Random random = new Random(System.nanoTime());
 
-                bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
-                Bits.putInt(bytearray, 1, bullet.getSpawntick());
-                Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
-                Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-                Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
-                Bits.putFloat(bytearray, 17, bullet.getSpeed());
-                Bits.putInt(bytearray, 21, bullet.getNetID());
+            Bullet bullet = new Bullet(thistick, getX(), getY(), angle + random.nextGaussian() * Math.PI / 16, 0.15f, Server.game.newNetID());
+            Server.game.bullets.add(bullet);
+            byte[] bytearray = new byte[25];
 
-                for (int i = 0; i < Server.game.clients.size(); i++) {
-                    Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
-                }
-                AttackCooldownTick = thistick;
+            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
+            Bits.putInt(bytearray, 1, bullet.getSpawntick());
+            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
+            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
+            Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
+            Bits.putFloat(bytearray, 17, bullet.getSpeed());
+            Bits.putInt(bytearray, 21, bullet.getNetID());
+
+            for (int i = 0; i < Server.game.clients.size(); i++) {
+                Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
             }
+            AttackCooldownTick = thistick;
         }
     }
 }

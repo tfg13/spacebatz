@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
@@ -155,10 +156,20 @@ public class Engine {
             udp[6] |= 0x10;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            udp[6] |= 0x08;
+            byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
+            udp2[0] = (byte) Client.getClientID();
+            Bits.putInt(udp2, 1, Client.gametick);
+            udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
+            double dx = Mouse.getX() - Display.getWidth() / 2;
+            double dy = Mouse.getY() - Display.getHeight() / 2;
+            double dir = Math.atan2(dy, dx);
+            if (dir < 0) {
+                dir += 2 * Math.PI;
+            }
+            Bits.putFloat(udp2, 6, (float) (dir));
+            Client.udpOut(udp2);
         }
         Client.udpOut(udp);
-
     }
 
     /**
