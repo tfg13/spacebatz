@@ -33,17 +33,36 @@ public class Player extends Char {
      * @param d D-Button gedrückt.
      */
     public void clientMove(boolean w, boolean a, boolean s, boolean d, boolean space) {
+        double x = 0, y = 0;
         if (w) {
-            setStillY(posY + speed);
+            y += 1;
         }
         if (a) {
-            setStillX(posX - speed);
+            x += -1;
         }
         if (s) {
-            setStillY(posY - speed);
+            y += -1;
         }
         if (d) {
-            setStillX(posX + speed);
+            x += 1;
+        }
+        // Sonderfall stoppen
+        if (x == 0 && y == 0) {
+            if (isMoving()) {
+                stopMovement();
+            }
+        } else {
+            // Bewegen wir uns zur Zeit schon (in diese Richtung)
+            if (isMoving()) {
+                double length = Math.sqrt((x * x) + (y * y));
+                x /= length;
+                y /= length;
+                if (Math.abs(vecX - x) > .001 || Math.abs(vecY - y) > .001) {
+                    this.setVector(x, y);
+                }
+            } else {
+                setVector(x, y);
+            }
         }
         if (space) {
             int thistick = Server.game.getTick();
