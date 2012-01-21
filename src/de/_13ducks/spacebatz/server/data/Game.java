@@ -117,6 +117,20 @@ public class Game {
      */
     public void gameTick() {
 
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+
+            float radius = (float) bullet.getSpeed() * (Server.game.getTick() - bullet.getSpawntick());
+            float x = (float) bullet.getSpawnposX() + radius * (float) Math.cos(bullet.getDirection());
+            float y = (float) bullet.getSpawnposY() + radius * (float) Math.sin(bullet.getDirection());
+
+            for (int j = 0; j < chars.size(); j++) {
+                if (Math.abs(x - chars.get(j).posX) < 0.7 && Math.abs(y - chars.get(j).posY) < 0.7) {
+                    System.out.println("KOLLISION " + Server.game.getTick());
+                }
+            }
+        }
+
         // Ab hier: Testcode
         // Bullets spawnen:
         if (tick % 30 == 0) {
