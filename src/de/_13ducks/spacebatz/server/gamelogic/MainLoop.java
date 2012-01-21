@@ -33,10 +33,12 @@ public class MainLoop {
             public void run() {
                 runStart = System.nanoTime();
                 while (true) {
+                    // Input vom Client holen:
+                    Server.serverNetwork.udp.receive();
                     // Gamelogic berechnen:
                     calculateGameTick();
-                    // Netzwerk arbeiten lassen:
-                    Server.serverNetwork.udp.tick();
+                    // Änderungen an den Server schicken.
+                    Server.serverNetwork.udp.send();
                     // GameTicks balancieren:
                     balanceTicks();
                     Server.game.incrementTick();

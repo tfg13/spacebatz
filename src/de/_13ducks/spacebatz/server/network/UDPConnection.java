@@ -64,22 +64,28 @@ public class UDPConnection {
             ex.printStackTrace();
         }
     }
-    
+
     /**
-     * Startet das UDP-Netzwerksystem.
-     * Ab jetzt emfängt und sender der Server UDP-Nachrichten.
+     * Startet das UDP-Netzwerksystem. Ab jetzt emfängt und sender der Server UDP-Nachrichten.
      */
     public void start() {
         inputQueuer.start();
     }
 
     /**
-     * Einmal pro Server-Gametick aufrufen. Verarbeitet zunächst den bis zum Zeitpunkt des Aufrufs dieser Methode eingegangenen Input von den Clients.
-     * Möglicherweise auch noch Packete, die während der Verarbeitung der ältesten Pakete reinkommen. Das ist aber nicht garantiert. Versendet anschließend
-     * allen Clients alle "schnellen" Informationen, die sie betreffen.
+     * Verarbeitet den bis zum Zeitpunkt des Aufrufs dieser Methode eingegangenen Input von den Clients. Möglicherweise auch noch Pakete, die während der
+     * Verarbeitung der ältesten Pakete reinkommen. Das ist aber nicht garantiert.
      */
-    public void tick() {
+    public void receive() {
         computeInput();
+    }
+
+    /**
+     * Synchronisiert die Clients, indem alle Informationen an sie gesendet werden (UDP), die sie brauchen. Berechnet anhand des Client-Sichtframes, dem
+     * MovementSystem und dem ClientContext selbst, was die Clients wissen müssen.
+     *
+     */
+    public void send() {
         sendData();
     }
 
