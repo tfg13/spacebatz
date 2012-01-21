@@ -123,12 +123,7 @@ public class Game {
         // Kollision berechnen:
         CollisionManager.computeCollision(chars, bullets);
 
-        // Ab hier: Testcode
-        // Bullets spawnen:
-        if (tick % 30 == 0) {
-            Random random = new Random(System.nanoTime());
-            fireBullet(7.0, 7.0, random.nextGaussian() * Math.PI / 16, 0.1f);
-        }
+
 
     }
 
