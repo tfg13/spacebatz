@@ -119,6 +119,11 @@ public class Game {
      */
     public void gameTick() {
 
+        // KI berechnen:
+        AIManager.computeMobBehavior(this.chars);
+        // Kollision berechnen:
+        CollisionManager.computeCollision(chars, bullets);
+
         // Ab hier: Testcode
         // Bullets spawnen:
         if (tick % 30 == 0) {
@@ -139,42 +144,7 @@ public class Game {
                 Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
             }
         }
-        // Enemy verfolgt Spieler:
-        for (int i = 0; i < chars.size(); i++) {
-            if (chars.get(i) instanceof Enemy) {
-                int minplayer = 0;
-                double mindist = 12;
-                for (int j = 0; j < chars.size(); j++) {
-                    if (chars.get(j) instanceof Enemy) {
-                        continue;
-                    }
 
-                    double px = chars.get(j).posX;
-                    double py = chars.get(j).posY;
-                    double ex = chars.get(i).posX;
-                    double ey = chars.get(i).posY;
-
-                    double thisdist = Math.sqrt((px - ex) * (px - ex) + (py - ey) * (py - ey));
-                    if (thisdist < mindist) {
-                        minplayer = j;
-                        mindist = thisdist;
-                    }
-
-                }
-
-                if (chars.get(i).posX < chars.get(minplayer).posX - 1) {
-                    chars.get(i).setStillX(chars.get(i).getX() + 0.05f);
-                } else if (chars.get(i).posX > chars.get(minplayer).posX + 1) {
-                    chars.get(i).setStillX(chars.get(i).getX() - 0.05f);
-                }
-                if (chars.get(i).posY < chars.get(minplayer).posY - 1) {
-                    chars.get(i).setStillY(chars.get(i).getY() + 0.05f);
-                } else if (chars.get(i).posY > chars.get(minplayer).posY + 1) {
-                    chars.get(i).setStillY(chars.get(i).getY() - 0.05f);
-                }
-
-            }
-        }
     }
 
     public void incrementTick() {

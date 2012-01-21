@@ -89,4 +89,8 @@ public final class Settings {
      * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
      */
     public static final int SERVER_MAXPLAYERS = 32;
+    /**
+     * Die Distanz, ab der arbeitslose Mobs Chars verfolgen
+     */
+    public static double MOB_AGGRO_RANGE = 7.0;
 }

@@ -171,6 +171,7 @@ public class ClientNetwork {
 
     /**
      * Verarbeitet ein einzelnes UDP-Paket
+     *
      * @param pack ein einzelnes UDP-Paket
      */
     private void computePacket(DatagramPacket pack) {
@@ -193,13 +194,14 @@ public class ClientNetwork {
 
     /**
      * Verarbeitet verifizierte UDP-Pakete
+     *
      * @param pack ein verifiziertes UDP-Paket
      */
     private void computeApprovedPacket(byte[] pack) {
         byte cmd = pack[0];
         switch (cmd) {
             case Settings.NET_UDP_CMD_NORMAL_CHAR_UPDATE:
-                // Einheitenkoordinaten updaten.
+                // Einheitenbewegungen updaten.
                 // Anzahl enthaltener Einheiten holen:
                 byte numberOfCharUpdates = pack[5];
                 for (int i = 0; i < numberOfCharUpdates; i++) {
@@ -207,13 +209,8 @@ public class ClientNetwork {
                     // Diese Einheit bekannt?
                     Char c = Client.netIDMap.get(netID);
                     if (c != null) {
-                        // Koordinaten auslesen
-                        float newX = Bits.getFloat(pack, 36 + (32 * i));
-                        float newY = Bits.getFloat(pack, 40 + (32 * i));
-                        // Setzen
-                        c.setX(newX);
-                        c.setY(newY);
-                        //TODO: Andere Daten verwalten, Lags interpolieren.
+                        // Bewegung setzen:
+                        c.applyMove(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
                     } else {
                         System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
                     }
@@ -237,7 +234,8 @@ public class ClientNetwork {
 
     /**
      * Sendet ein packet per UDP an den Server
-     * @param packet 
+     *
+     * @param packet
      */
     public void udpSend(byte[] packet) {
         try {
