@@ -94,14 +94,14 @@ public class ClientNetwork {
             byte msg[] = new byte[100];
             for (int b = 0; b < blocks; b++) {
                 for (int i = 0; i < 100; i++) {
-                    msg[i] = message[b + i];
+                    msg[i] = message[b * 100 + i];
                 }
                 sendStream.write(msg);
             }
             // rest senden:
             msg = new byte[rest];
             for (int i = 0; i < rest; i++) {
-                msg[i] = message[blocks + i];
+                msg[i] = message[blocks * 100 + i];
             }
             sendStream.write(msg);
             sendStream.flush();

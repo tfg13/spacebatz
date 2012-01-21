@@ -38,7 +38,8 @@ public class ServerNetwork {
     public ServerNetwork() {
         connections = new ArrayList<>();
         udp = new UDPConnection();
-        // neuer thread, der daten empfängt:
+
+        // neuer thread, der über TCP daten empfängt:
         receiveTcpDataThread = new Thread(new Runnable() {
 
             @Override
@@ -47,6 +48,7 @@ public class ServerNetwork {
             }
         });
         receiveTcpDataThread.setName("DataReceiverThread");
+        receiveTcpDataThread.start();
 
         // neuer thread, der clients akzeptiert:
         clientAcceptorThread = new Thread(new Runnable() {
@@ -60,12 +62,8 @@ public class ServerNetwork {
                     while (true) {
                         Socket clientSocket = ss.accept();
                         ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
+                        connections.add(client);
                         Server.game.clientJoined(new Client(client, Server.game.newClientID()));
-
-                        if (!receiveTcpDataThread.isAlive()) {
-                            receiveTcpDataThread.start();
-                        }
-
                     }
 
 
@@ -87,20 +85,6 @@ public class ServerNetwork {
     public void startServer() {
         clientAcceptorThread.start();
         udp.start();
-    }
-
-    /**
-     * Sendet Daten via TCP an alle Clients
-     * @param message die zu sendenden bytes
-     */
-    void broadcastData(byte message[]) {
-        try {
-            for (int i = 0; i < connections.size(); i++) {
-                connections.get(i).getSocket().getOutputStream().write(message);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     /**
@@ -126,7 +110,7 @@ public class ServerNetwork {
             byte msg[] = new byte[100];
             for (int b = 0; b < blocks; b++) {
                 for (int i = 0; i < 100; i++) {
-                    msg[i] = message[100*b + i];
+                    msg[i] = message[100 * b + i];
                 }
                 client.getNetworkConnection().getSendStream().write(msg);
                 client.getNetworkConnection().getSendStream().flush();
@@ -149,6 +133,11 @@ public class ServerNetwork {
      */
     private void receiveTcpData() {
         while (true) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
             if (!connections.isEmpty()) {
                 try {
                     for (int c = 0; c < connections.size(); c++) {
