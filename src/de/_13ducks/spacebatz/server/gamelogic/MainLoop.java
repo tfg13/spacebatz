@@ -85,13 +85,11 @@ public class MainLoop {
     public void startGameLogic() {
         mainLoopThread.start();
     }
-    
-    
+
     /**
      * Berechnet die Spielphysik für einen GameTick
      */
-    private void calculateGameTick(){
-        
-        
+    private void calculateGameTick() {
+        Server.game.gameTick();
     }
 }

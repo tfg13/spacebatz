@@ -112,8 +112,10 @@ public class Game {
         return tick;
     }
 
-    public void incrementTick() {
-        tick++;
+    /**
+     * Berechnet die GameLogic für einen Tick.
+     */
+    public void gameTick() {
 
         // Ab hier: Testcode
         // Bullets spawnen:
@@ -171,6 +173,10 @@ public class Game {
 
             }
         }
+    }
+
+    public void incrementTick() {
+        tick++;
     }
 
     public synchronized int newNetID() {
