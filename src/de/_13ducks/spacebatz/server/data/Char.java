@@ -138,7 +138,8 @@ public class Char {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt.
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit neu, damit Geschwindigkeitsänderungen
+     * während der Bewegung möglich sind. Sollte daher wenn möglich vor dem Start der Bewegung aufgerufen werden.
      *
      * @param speed die neue Geschwindigkeit > 0
      */
@@ -146,7 +147,13 @@ public class Char {
         if (speed <= 0) {
             throw new IllegalArgumentException("Cannot set speed: Must be greater than zero");
         }
-        this.speed = speed;
+        if (isMoving()) {
+            stopMovement();
+            this.speed = speed;
+            setVector(vecX, vecY);
+        } else {
+            this.speed = speed;
+        }
     }
 
     /**
