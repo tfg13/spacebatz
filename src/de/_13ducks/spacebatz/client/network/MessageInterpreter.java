@@ -32,9 +32,7 @@ public class MessageInterpreter {
                     Level myLevel = (Level) is.readObject();
                     Client.currentLevel = myLevel;
                     System.out.println("Level received and loaded!");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
                 break;
