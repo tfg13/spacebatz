@@ -157,9 +157,7 @@ public class Engine {
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             udp[6] |= 0x08;
         }
-        if (udp[6] != 0) {
-            Client.udpOut(udp);
-        }
+        Client.udpOut(udp);
 
     }
 
