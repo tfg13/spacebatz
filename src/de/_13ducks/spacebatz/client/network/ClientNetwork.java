@@ -86,6 +86,7 @@ public class ClientNetwork {
             // cmdID senden
             sendStream.writeByte(cmdId);
 
+
             // Packetlänge senden
             sendStream.writeLong(message.length);
 
@@ -94,16 +95,16 @@ public class ClientNetwork {
             for (int b = 0; b < blocks; b++) {
                 for (int i = 0; i < 100; i++) {
                     msg[i] = message[b + i];
-                    sendStream.write(msg);
                 }
+                sendStream.write(msg);
             }
-
             // rest senden:
             msg = new byte[rest];
             for (int i = 0; i < rest; i++) {
                 msg[i] = message[blocks + i];
             }
             sendStream.write(msg);
+            sendStream.flush();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
