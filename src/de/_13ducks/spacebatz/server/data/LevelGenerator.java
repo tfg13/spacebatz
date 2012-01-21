@@ -20,7 +20,7 @@ public class LevelGenerator {
      */
     private static int[][] ground;
 
-    public static Level generateLevel(Level level) {
+    public static Level generateLevel(ServerLevel level) {
 
         Random random = new Random(System.nanoTime());
 
@@ -46,22 +46,28 @@ public class LevelGenerator {
             ground[20][i] = 3;
         }
 
-
-        // Volles Rechteck        
-        ArrayList<Position> blub = new ArrayList<>();
-        blub.addAll(findRectangleFull(90, 110, 100, 120));
-        drawPositions(blub, 2);
+        
 
 
-        // Hohles Rechteck
-        int leftborder = random.nextInt(xSize / 3) + 2;
-        int rightborder = xSize - random.nextInt(xSize / 3) - 2;
-        int topborder = random.nextInt(ySize / 3) + 2;
-        int bottomborder = ySize - random.nextInt(ySize / 3) - 2;
 
-        ArrayList<Position> bla = new ArrayList<>();
-        bla.addAll(findRectangleHollow(leftborder, topborder, rightborder, bottomborder));
-        drawPositions(bla, 3);
+
+
+
+//        // Volles Rechteck        
+//        ArrayList<Position> blub = new ArrayList<>();
+//        blub.addAll(findRectangleFull(90, 110, 100, 120));
+//        drawPositions(blub, 2);
+//
+//
+//        // Hohles Rechteck
+//        int leftborder = random.nextInt(xSize / 3) + 2;
+//        int rightborder = xSize - random.nextInt(xSize / 3) - 2;
+//        int topborder = random.nextInt(ySize / 3) + 2;
+//        int bottomborder = ySize - random.nextInt(ySize / 3) - 2;
+//
+//        ArrayList<Position> bla = new ArrayList<>();
+//        bla.addAll(findRectangleHollow(leftborder, topborder, rightborder, bottomborder));
+//        drawPositions(bla, 3);
 
         level.setGround(ground);
 
@@ -129,5 +135,19 @@ public class LevelGenerator {
             }
         }
         return Returnthis;
+    }
+
+    
+    
+    
+    
+    
+    /**
+     * Erzeug eine Mauer, mit Textur UND Kollisionsinformationen
+     */
+    private void createWall(int x1, int y1, int x2, int y2, Level level) {
+        Wall collision = new Wall(x1, y1, x2, y2);
+        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), 3);
+        level.addWall(collision);
     }
 }
