@@ -192,9 +192,9 @@ public class Char {
 
     private void computeMovement() {
         if (isMoving()) {
-            movement = new Movement(posX, posY, vecX, vecY, moveStartTick);
+            movement = new Movement(posX, posY, vecX, vecY, moveStartTick, speed);
         } else {
-            movement = new Movement(posX, posY, 0, 0, -1);
+            movement = new Movement(posX, posY, 0, 0, -1, 0);
         }
     }
 }
