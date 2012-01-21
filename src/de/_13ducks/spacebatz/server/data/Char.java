@@ -29,6 +29,14 @@ public class Char {
      * Die Richtung, in die die Einheit läuft. Normalisierte Werte! Nur relevant, wenn moveStartTick != -1;
      */
     protected double vecX, vecY;
+    /**
+     * Die aktuelle Bewegung nocheinmal repräsentiert. Nur aktuell wenn moveDirty == false.
+     */
+    private Movement movement;
+    /**
+     * Ob das aktuelle Movement stimmt.
+     */
+    private boolean movementDirty = false;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -55,6 +63,7 @@ public class Char {
     public void setStillX(double x) {
         moveStartTick = -1;
         posX = x;
+        movementDirty = true;
     }
 
     /**
@@ -65,6 +74,7 @@ public class Char {
     public void setStillY(double y) {
         moveStartTick = -1;
         posY = y;
+        movementDirty = true;
     }
 
     /**
@@ -87,6 +97,7 @@ public class Char {
         posX = getX();
         posY = getY();
         moveStartTick = -1;
+        movementDirty = true;
     }
 
     /**
@@ -126,6 +137,7 @@ public class Char {
         }
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
+        movementDirty = true;
     }
 
     /**
@@ -151,6 +163,7 @@ public class Char {
             stopMovement();
             this.speed = speed;
             setVector(vecX, vecY);
+            movementDirty = true;
         } else {
             this.speed = speed;
         }
@@ -168,5 +181,20 @@ public class Char {
         // Normalisieren und setzen
         vecX = x / length;
         vecY = y / length;
+    }
+
+    public Movement getMovement() {
+        if (movementDirty) {
+            computeMovement();
+        }
+        return movement;
+    }
+
+    private void computeMovement() {
+        if (isMoving()) {
+            movement = new Movement(posX, posY, vecX, vecY, moveStartTick);
+        } else {
+            movement = new Movement(posX, posY, 0, 0, -1);
+        }
     }
 }
