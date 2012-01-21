@@ -118,7 +118,6 @@ public class Game {
      * Berechnet die GameLogic für einen Tick.
      */
     public void gameTick() {
-
         // KI berechnen:
         AIManager.computeMobBehavior(this.chars);
         // Kollision berechnen:
@@ -128,29 +127,22 @@ public class Game {
         // Bullets spawnen:
         if (tick % 30 == 0) {
             Random random = new Random(System.nanoTime());
-            Bullet bullet = new Bullet(tick, 7.0, 7.0, random.nextGaussian() * Math.PI / 16, 0.15f, newNetID());
-            bullets.add(bullet);
-            byte[] bytearray = new byte[25];
-
-            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
-            Bits.putInt(bytearray, 1, bullet.getSpawntick());
-            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
-            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-            Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
-            Bits.putFloat(bytearray, 17, bullet.getSpeed());
-            Bits.putInt(bytearray, 21, bullet.getNetID());
-
-            for (int i = 0; i < clients.size(); i++) {
-                Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
-            }
+            fireBullet(7.0, 7.0, random.nextGaussian() * Math.PI / 16, 0.1f);
         }
 
     }
 
+    /**
+     * Inkrementiert den GameTick
+     */
     public void incrementTick() {
         tick++;
     }
 
+    /**
+     * Gibt eine neue netID, die noch frei ist, zurück
+     * @return eine neue netID
+     */
     public final synchronized int newNetID() {
         return nextNetID++;
     }
@@ -163,5 +155,32 @@ public class Game {
             }
         }
         return -1;
+    }
+
+    /**
+     * Erzeugt ein Bullet und schickt es an die Clients
+     * 
+     * @param posX die X-Koordinate an der das Bulelt erstellt wird
+     * @param posY die Y-Koordinate an der das Bulelt erstellt wird
+     * @param direction die Richtung, in die das Bullet fliegt
+     * @param speed die Geschwindigkeit des Bullets
+     */
+    public void fireBullet(double posX, double posY, double direction, float speed) {
+        // Bullet erzeugen:
+        Bullet bullet = new Bullet(tick, posX, posY, direction, speed, newNetID());
+        bullets.add(bullet);
+
+        // An die Clients schicken:
+        byte[] bytearray = new byte[25];
+        bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
+        Bits.putInt(bytearray, 1, bullet.getSpawntick());
+        Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
+        Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
+        Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
+        Bits.putFloat(bytearray, 17, bullet.getSpeed());
+        Bits.putInt(bytearray, 21, bullet.getNetID());
+        for (int i = 0; i < clients.size(); i++) {
+            Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
+        }
     }
 }
