@@ -130,7 +130,7 @@ public class Game {
             Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
             Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
             Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
-            Bits.putFloat(bytearray, 17, (float) bullet.getSpeed());
+            Bits.putFloat(bytearray, 17, bullet.getSpeed());
             Bits.putInt(bytearray, 21, bullet.getNetID());
 
             for (int i = 0; i < clients.size(); i++) {
@@ -179,11 +179,11 @@ public class Game {
         tick++;
     }
 
-    public synchronized int newNetID() {
+    public final synchronized int newNetID() {
         return nextNetID++;
     }
 
-    public int newClientID() {
+    public final int newClientID() {
         Set<Integer> ids = clients.keySet();
         for (int i = 0; i < Settings.SERVER_MAXPLAYERS; i++) {
             if (!ids.contains(i)) {
