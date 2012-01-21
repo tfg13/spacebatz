@@ -135,10 +135,27 @@ public class UDPConnection {
             if (tick > client.lastTick) {
                 client.lastTick = tick;
                 // Input auswerten:
-                client.getPlayer().clientMove((data[5] & 0x80) != 0, (data[5] & 0x40) != 0, (data[5] & 0x20) != 0, (data[5] & 0x10) != 0, (data[5] & 0x08) != 0);
+                computeApprovedPacket(data, client);
             }
         } else {
             System.out.println("INFO: Received data from unknown client. Ignoring. (id was " + data[0] + ")");
+        }
+    }
+
+    /**
+     * Verarbeitet ein Paket, das als relevant eingestuft wurde.
+     *
+     * @param data Die Daten des Pakets
+     * @param data Der Client, der das Paket geschickt hat.
+     */
+    private void computeApprovedPacket(byte[] data, Client client) {
+        byte cmd = data[5];
+        switch (cmd) {
+            case Settings.NET_UDP_CMD_INPUT:
+                client.getPlayer().clientMove((data[6] & 0x80) != 0, (data[6] & 0x40) != 0, (data[6] & 0x20) != 0, (data[6] & 0x10) != 0, (data[6] & 0x08) != 0);
+                break;
+            default:
+                System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
         }
     }
 
