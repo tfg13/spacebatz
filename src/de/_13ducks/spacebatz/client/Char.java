@@ -38,45 +38,21 @@ public class Char {
     }
 
     /**
-     * @return the x
+     * Liefert den aktuellen X-Wert zurück Bewegungen sind hier schon eingerechnet.
+     *
+     * @return die aktuelle X-Position
      */
     public double getX() {
-        return x;
+        return x + ((Client.gametick - startTick) * speed * vX);
     }
 
     /**
-     * Setzt X und gegebenenfalls die neue Richtung.
+     * Liefert den aktuellen Y-Wert zurück Bewegungen sind hier schon eingerechnet.
      *
-     * @param x the x to set
-     */
-    public void setX(double x) {
-        if (this.x < x) {
-            dir = 4;
-        } else if (this.x > x) {
-            dir = 0;
-        }
-        this.x = x;
-    }
-
-    /**
-     * @return the y
+     * @return die aktuelle Y-Position
      */
     public double getY() {
-        return y;
-    }
-
-    /**
-     * Setzt Y und gegebenenfalls die neue Richtung.
-     *
-     * @param y the y to set
-     */
-    public void setY(double y) {
-        if (this.y < y) {
-            dir = 6;
-        } else if (this.y > y) {
-            dir = 2;
-        }
-        this.y = y;
+        return y + ((Client.gametick - startTick) * speed * vY);
     }
 
     /**
@@ -87,10 +63,22 @@ public class Char {
     }
 
     /**
-     * @param dir the dir to set
+     * Wendet eine Bewegung auf diese Einheit an.
+     *
+     * @param sX Startposition, X
+     * @param sY Startposition, Y
+     * @param vX Richtung, X (normiert!)
+     * @param vY Richtung, Y (normiert!)
+     * @param startTick Startzeitpunkt in Logik-Ticks
+     * @param speed Bewegungsgeschwindigkeit
      */
-    public void setDir(int dir) {
-        this.dir = dir;
+    public void applyMove(double sX, double sY, double vX, double vY, int startTick, double speed) {
+        x = sX;
+        y = sY;
+        this.vX = vX;
+        this.vY = vY;
+        this.startTick = startTick;
+        this.speed = speed;
     }
 
     @Override

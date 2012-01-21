@@ -12,11 +12,6 @@ import java.util.Random;
 public class Player extends Char {
 
     /**
-     * Die normale Geschwindigkeit dieses Players.
-     */
-    private double speed = .2;
-
-    /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
      *
      * @param x Startkoordinate X

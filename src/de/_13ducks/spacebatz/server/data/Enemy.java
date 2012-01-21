@@ -2,14 +2,11 @@ package de._13ducks.spacebatz.server.data;
 
 /**
  * Ein Gegner.
+ *
  * @author J
  */
 public class Enemy extends Char {
 
-    /**
-     * Die normale Geschwindigkeit vom Enemy.
-     */
-    private double speed = .1;
     /**
      * ID des Gegnertyps
      */
@@ -28,6 +25,7 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int id) {
         super(x, y, id);
+        speed = .1;
     }
 
     /**

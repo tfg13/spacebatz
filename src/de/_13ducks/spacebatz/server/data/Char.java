@@ -20,7 +20,7 @@ public class Char {
     /**
      * Die Bewegungsgeschwindigkeit eines Chars. Einheit: Felder/Tick
      */
-    protected double speed;
+    protected double speed = .2;
     /**
      * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht bewegt.
      */
