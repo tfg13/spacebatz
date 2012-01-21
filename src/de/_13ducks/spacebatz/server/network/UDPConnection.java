@@ -4,11 +4,13 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Char;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -133,10 +135,27 @@ public class UDPConnection {
             if (tick > client.lastTick) {
                 client.lastTick = tick;
                 // Input auswerten:
-                client.getPlayer().clientMove((data[5] & 0x80) != 0, (data[5] & 0x40) != 0, (data[5] & 0x20) != 0, (data[5] & 0x10) != 0, (data[5] & 0x08) != 0);
+                computeApprovedPacket(data, client);
             }
         } else {
             System.out.println("INFO: Received data from unknown client. Ignoring. (id was " + data[0] + ")");
+        }
+    }
+
+    /**
+     * Verarbeitet ein Paket, das als relevant eingestuft wurde.
+     *
+     * @param data Die Daten des Pakets
+     * @param data Der Client, der das Paket geschickt hat.
+     */
+    private void computeApprovedPacket(byte[] data, Client client) {
+        byte cmd = data[5];
+        switch (cmd) {
+            case Settings.NET_UDP_CMD_INPUT:
+                client.getPlayer().clientMove((data[6] & 0x80) != 0, (data[6] & 0x40) != 0, (data[6] & 0x20) != 0, (data[6] & 0x10) != 0, (data[6] & 0x08) != 0);
+                break;
+            default:
+                System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
         }
     }
 
@@ -146,7 +165,15 @@ public class UDPConnection {
         while (iter.hasNext()) {
             Client client = iter.next();
             //TODO: Berechnen, welche chars dieser client wirklich sieht:
-            // Für den Anfang einfach mal alle senden:
+            ArrayList<Char> update = new ArrayList<>();
+            for (Char c : chars) {
+                // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
+                if (!client.getContext().knows(c, c.getMovement())) {
+                    // Nein, also senden
+                    update.add(c);
+                }
+            }
+            // Alle berechneten senden:
             int leftToSend = chars.size();
             while (leftToSend > 0) {
                 byte[] packet = new byte[32 + (32 * (leftToSend > 15 ? 15 : leftToSend))];
@@ -173,14 +200,21 @@ public class UDPConnection {
         // Anzahl setzen
         packet[5] = number;
         for (int i = 0; i < number; i++) {
+            Movement m = chars.get(offset + i).getMovement();
             // NETID
             Bits.putInt(packet, 32 + (i * 32), chars.get(offset + i).netID);
             // X
-            Bits.putFloat(packet, 36 + (i * 32), (float) chars.get(offset + i).getX());
+            Bits.putFloat(packet, 36 + (i * 32), (float) m.startX);
             // Y
-            Bits.putFloat(packet, 40 + (i * 32), (float) chars.get(offset + i).getY());
-            // Rot
-            // Rest
+            Bits.putFloat(packet, 40 + (i * 32), (float) m.startY);
+            // vecX
+            Bits.putFloat(packet, 44 + (i * 32), (float) m.vecX);
+            // vecY
+            Bits.putFloat(packet, 48 + (i * 32), (float) m.vecY);
+            // StartTick
+            Bits.putInt(packet, 52 + (i * 32), m.startTick);
+            // Speed
+            Bits.putFloat(packet, 56 + (i * 32), (float) m.speed);
         }
     }
 

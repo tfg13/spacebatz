@@ -64,7 +64,7 @@ public final class Settings {
     /**
      * Größe des Empfangspuffers für ein Clientpacket auf Serverseite. NICHT EINFACH VERÄNDERN!
      */
-    public static final int NET_UDP_CTS_SIZE = 7;
+    public static final int NET_UDP_CTS_SIZE = 8;
     /**
      * Größe des Empfangspuffers für ein Serverpacket auf Clientseite. NICHT EINFACH VERÄNDERN!
      */
@@ -74,9 +74,17 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_NORMAL_CHAR_UPDATE = 10;
     /**
-     * Bullet erzeugen
+     * Bullet erzeugen.
      */
     public static final byte NET_UDP_CMD_SPAWN_BULLET = 11;
+    /**
+     * Normales Input-an-Server-Schicken.
+     */
+    public static final byte NET_UDP_CMD_INPUT = -10;
+    /**
+     * Wieviele Ticks der Clienttick maximal hinter dem Server liegen darf, bevor er geupdated wird.
+     */
+    public static final int NET_TICKSYNC_MAX_DELAY = 5;
     /**
      * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
      */

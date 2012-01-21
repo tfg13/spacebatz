@@ -90,6 +90,8 @@ public class Game {
             Player player = new Player(10, 10, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
             chars.add(player);
+            // Dem Client die Tickrate schicken:
+            Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);
             Server.msgSender.sendNewPlayer(client);
             // Diesem Client alle anderen (alten) Chars schicken:

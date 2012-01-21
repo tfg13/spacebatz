@@ -40,7 +40,7 @@ public class Char {
     /**
      * Ob das aktuelle Movement stimmt.
      */
-    private boolean movementDirty = false;
+    private boolean movementDirty = true;
 
     /**
      * Konstruktor, erstellt einen neuen Char

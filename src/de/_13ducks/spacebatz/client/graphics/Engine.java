@@ -1,11 +1,7 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
-import de._13ducks.spacebatz.client.Bullet;
-import de._13ducks.spacebatz.client.Char;
-import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Enemy;
-import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -33,7 +29,7 @@ public class Engine {
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);
             fieldSysPath.set(null, null);
-        } catch (Exception ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             System.out.println("[ERROR]: Failed to set library lookup path! Details:");
             ex.printStackTrace();
         }
@@ -142,25 +138,26 @@ public class Engine {
      * Verarbeitet den Input, der UDP-Relevant ist.
      */
     private void directInput() {
-        byte[] udp = new byte[7];
+        byte[] udp = new byte[NET_UDP_CTS_SIZE];
         udp[0] = (byte) Client.getClientID();
         Bits.putInt(udp, 1, Client.gametick);
+        udp[5] = NET_UDP_CMD_INPUT;
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            udp[5] |= 0x20;
+            udp[6] |= 0x20;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            udp[5] |= 0x80;
+            udp[6] |= 0x80;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            udp[5] |= 0x40;
+            udp[6] |= 0x40;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            udp[5] |= 0x10;
+            udp[6] |= 0x10;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            udp[5] |= 0x08;
+            udp[6] |= 0x08;
         }
-        if (udp[5] != 0) {
+        if (udp[6] != 0) {
             Client.udpOut(udp);
         }
 
@@ -273,7 +270,7 @@ public class Engine {
                 i--;
             } else {
 
-                float radius = (float) bullet.getSpeed() * (Client.gametick - bullet.getSpawntick());
+                float radius = bullet.getSpeed() * (Client.gametick - bullet.getSpawntick());
                 float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
                 float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
 

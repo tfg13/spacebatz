@@ -11,13 +11,25 @@ public class Char {
      */
     public final int netID;
     /**
-     * Die Koordinaten.
+     * Die Startposition der Bewegung.
      */
     private double x, y;
     /**
      * Die Richtung, in die dieser Char schaut. (Tilemapsynchron) Automatisch bei setX/Y gesetzt.
      */
     private int dir = 0;
+    /**
+     * Die Richtung der Bewegung.
+     */
+    private double vX, vY;
+    /**
+     * Die Geschwindigkeit der Bewegung. (0 bei Stillstand)
+     */
+    private double speed;
+    /**
+     * Der Tick, zu dem die Bewegung begonnen hat.
+     */
+    private int startTick;
 
     public Char(int netID, double x, double y) {
         this.netID = netID;

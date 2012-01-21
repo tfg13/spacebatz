@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Char;
 import de._13ducks.spacebatz.server.data.Client;
@@ -83,5 +84,15 @@ public class MessageSender {
                 Server.serverNetwork.sendTcpData((byte) 26, b, client);
             }
         }
+    }
+
+    /**
+     * Sendet die Server-Tickrate an den Client.
+     * @param client der Client
+     */
+    public void sendTickrate(Client client) {
+        byte[] b = new byte[4];
+        Bits.putInt(b, 0, Settings.SERVER_TICKRATE);
+        Server.serverNetwork.sendTcpData((byte) 27, b, client);
     }
 }

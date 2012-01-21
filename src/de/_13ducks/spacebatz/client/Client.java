@@ -6,6 +6,8 @@ import de._13ducks.spacebatz.client.network.MessageInterpreter;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Die Hauptklasse des Clients
@@ -35,6 +37,10 @@ public class Client {
      */
     public static int gametick;
     /**
+     * Letzter, vom Server empfangener Gametick:
+     */
+    public static int serverGametick;
+    /**
      * Die clientID, die uns der Server zugewiesen hat.
      */
     private static int clientID;
@@ -42,10 +48,18 @@ public class Client {
      * Die Zuordnung von netID zu Char.
      */
     public static HashMap<Integer, Char> netIDMap;
-    /*
-     * List für alle aktuellen Bullets
+    /**
+     * List für alle aktuellen Bullets.
      */
     private static LinkedList<Bullet> BulletList = new LinkedList<>();
+    /**
+     * Die Logik-Tickrate.
+     */
+    public static int tickrate;
+    /**
+     * Der Thread, der die Ticks hochzählt.
+     */
+    private static Timer tickTimer;
 
     // Einstiegspunkt:
     public static void startClient(String ip) {
@@ -100,6 +114,7 @@ public class Client {
 
     /**
      * Schickt ein vollständiges, gültiges Paket an den Server.
+     *
      * @param packet udp-Paket
      */
     public static void udpOut(byte[] packet) {
@@ -122,5 +137,16 @@ public class Client {
      */
     public static ClientNetwork getNetwork() {
         return network;
+    }
+
+    public static void startTickCounting() {
+        tickTimer = new Timer(true);
+        tickTimer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                gametick++;
+            }
+        }, 0, 1000 / tickrate);
     }
 }

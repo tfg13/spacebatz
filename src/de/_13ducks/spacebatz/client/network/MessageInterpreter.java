@@ -32,9 +32,7 @@ public class MessageInterpreter {
                     Level myLevel = (Level) is.readObject();
                     Client.currentLevel = myLevel;
                     System.out.println("Level received and loaded!");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
                 break;
@@ -53,6 +51,7 @@ public class MessageInterpreter {
                     }
                 });
                 t.start();
+                Client.startTickCounting();
                 break;
             case 23:
                 // ClientID setzen
@@ -62,7 +61,6 @@ public class MessageInterpreter {
                 // Neuer, fremder Player
                 Player np = new Player(Bits.getInt(message, 0), 10, 10);
                 Client.netIDMap.put(np.netID, np);
-                System.out.println("ADDED " + np.netID);
                 break;
             case 25:
                 // Fremder Player mit Position
@@ -73,6 +71,14 @@ public class MessageInterpreter {
                 // Neuer Gegner
                 Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
                 Client.netIDMap.put(enemy.netID, enemy);
+                break;
+            case 27:
+                // Tickrate
+                int rate = Bits.getInt(message, 0);
+                if (rate > 0) {
+                    Client.tickrate = rate;
+                }
+                break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }

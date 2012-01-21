@@ -178,10 +178,14 @@ public class ClientNetwork {
         // Tick prüfen:
         int tick = Bits.getInt(data, 1);
         // Hier ist größer gleich wichtig, der Server kann mehrere schicken!
-        if (tick >= Client.gametick) {
+        if (tick >= Client.serverGametick) {
             // Paket interessiert uns!
             // Tick hochsetzen
-            Client.gametick = tick;
+            Client.serverGametick = tick;
+            if (Math.abs(Client.serverGametick - Client.gametick) > Settings.NET_TICKSYNC_MAX_DELAY) {
+                Client.gametick = Client.serverGametick;
+                System.out.println("WARNING: Tickdelay too big, resetting client-tick!");
+            }
             // Paket nach Typ verarbeiten:
             computeApprovedPacket(data);
         }
