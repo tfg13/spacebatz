@@ -52,7 +52,6 @@ public class Player extends Char {
         }
         if (space) {
             int thistick = Server.game.getTick();
-            System.out.println("this " + thistick + " attack " + AttackCooldownTick);
             if (thistick > AttackCooldownTick + 20) {
                 Random random = new Random(System.nanoTime());
 
