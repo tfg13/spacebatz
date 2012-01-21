@@ -161,14 +161,14 @@ public class Game {
                 }
 
                 if (chars.get(i).posX < chars.get(minplayer).posX - 1) {
-                    chars.get(i).setPosX(chars.get(i).getX() + 0.05f);
+                    chars.get(i).setStillX(chars.get(i).getX() + 0.05f);
                 } else if (chars.get(i).posX > chars.get(minplayer).posX + 1) {
-                    chars.get(i).setPosX(chars.get(i).getX() - 0.05f);
+                    chars.get(i).setStillX(chars.get(i).getX() - 0.05f);
                 }
                 if (chars.get(i).posY < chars.get(minplayer).posY - 1) {
-                    chars.get(i).setPosY(chars.get(i).getY() + 0.05f);
+                    chars.get(i).setStillY(chars.get(i).getY() + 0.05f);
                 } else if (chars.get(i).posY > chars.get(minplayer).posY + 1) {
-                    chars.get(i).setPosY(chars.get(i).getY() - 0.05f);
+                    chars.get(i).setStillY(chars.get(i).getY() - 0.05f);
                 }
 
             }

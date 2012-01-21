@@ -1,17 +1,34 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.Server;
+
 /**
  * Ein bewegliches Objekt. (z.B. ein Spieler, Mob etc)
  *
  * @author michael
  */
 public class Char {
-    protected double posX;
-    protected double posY;
+
     /**
      * Die ID des Chars.
      */
     public final int netID;
+    /**
+     * Die Position des Chars, solange er still steht. Die Startkoordinaten der Bewegung, solange er sich bewegt.
+     */
+    protected double posX, posY;
+    /**
+     * Die Bewegungsgeschwindigkeit eines Chars. Einheit: Felder/Tick
+     */
+    protected double speed;
+    /**
+     * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht bewegt.
+     */
+    protected int moveStartTick;
+    /**
+     * Die Richtung, in die die Einheit läuft. Normalisierte Werte! Nur relevant, wenn moveStartTick != -1;
+     */
+    protected double vecX, vecY;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -26,35 +43,123 @@ public class Char {
         this.netID = id;
     }
 
+    public boolean isMoving() {
+        return moveStartTick != -1;
+    }
+
     /**
-     * Liefert die X-Koordinate.
+     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht, wird die Bewegung abgebrochen.
      *
-     * @return die X-Koordinate.
+     * @param x die neue X-Position.
+     */
+    public void setStillX(double x) {
+        moveStartTick = -1;
+        posX = x;
+    }
+
+    /**
+     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht, wird die Bewegung abgebrochen.
+     *
+     * @param x die neue X-Position.
+     */
+    public void setStillY(double y) {
+        moveStartTick = -1;
+        posY = y;
+    }
+
+    /**
+     * Liefert die derzeitige Bewegungsrichtung dieser Einheit. Liefert null, wenn die Einheit sich gerade nicht bewegt.
+     *
+     * @return das Bewegungsrichtung oder null
+     */
+    public double[] getVector() {
+        if (isMoving()) {
+            return new double[]{vecX, vecY};
+        }
+        return null;
+    }
+
+    /**
+     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn die Einheit
+     * schon steht.
+     */
+    public void stopMovement() {
+        posX = getX();
+        posY = getY();
+        moveStartTick = -1;
+    }
+
+    /**
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
+     *
+     * @return Die echte Position X dieses Chars.
      */
     public double getX() {
+        if (isMoving()) {
+            return posX + ((Server.game.getTick() - moveStartTick) * speed * vecX);
+        }
         return posX;
     }
 
     /**
-     * Liefert die Y-Koordinate.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
      *
-     * @return die Y-Koordinate.
+     * @return Die echte Position X dieses Chars.
      */
     public double getY() {
+        if (isMoving()) {
+            return posY + ((Server.game.getTick() - moveStartTick) * speed * vecY);
+        }
         return posY;
     }
 
     /**
-     * @param posX the posX to set
+     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet falls nötig die aktuelle Position zuerst
+     * neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
      */
-    public void setPosX(double posX) {
-        this.posX = posX;
+    public void setVector(double x, double y) {
+        if (x == 0 && y == 0) {
+            throw new IllegalArgumentException("Cannot set moveVector, x = y = 0 is not allowed!");
+        }
+        if (isMoving()) {
+            stopMovement();
+        }
+        normalizeAndSetVector(x, y);
+        moveStartTick = Server.game.getTick();
     }
 
     /**
-     * @param posY the posY to set
+     * Liefert die Geschwindigkeit dieser Einheit zurück.
+     *
+     * @return die Geschwindigkeit dieser Einheit
      */
-    public void setPosY(double posY) {
-        this.posY = posY;
+    public double getSpeed() {
+        return speed;
+    }
+
+    /**
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt.
+     *
+     * @param speed die neue Geschwindigkeit > 0
+     */
+    public void setSpeed(double speed) {
+        if (speed <= 0) {
+            throw new IllegalArgumentException("Cannot set speed: Must be greater than zero");
+        }
+        this.speed = speed;
+    }
+
+    /**
+     * Normalisiert den Vektor (x, y) und setzt ihn anschließend.
+     *
+     * @param x X-Richtung
+     * @param y Y-Richtung
+     */
+    private void normalizeAndSetVector(double x, double y) {
+        // Länge berechnen (Pythagoras)
+        double length = Math.sqrt((x * x) + (y * y));
+        // Normalisieren und setzen
+        vecX = x / length;
+        vecY = y / length;
     }
 }
