@@ -82,6 +82,10 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_INPUT = -10;
     /**
+     * Die cmdID für Level-senden
+     */
+    public static final byte NET_TCP_CMD_TRANSFER_LEVEL = 20;
+    /**
      * Wieviele Ticks der Clienttick maximal hinter dem Server liegen darf, bevor er geupdated wird.
      */
     public static final int NET_TICKSYNC_MAX_DELAY = 5;
