@@ -135,7 +135,7 @@ public class UDPConnection {
             if (tick > client.lastTick) {
                 client.lastTick = tick;
                 // Input auswerten:
-                client.getPlayer().clientMove((data[5] & 0x80) != 0, (data[5] & 0x40) != 0, (data[5] & 0x20) != 0, (data[5] & 0x10) != 0);
+                client.getPlayer().clientMove((data[5] & 0x80) != 0, (data[5] & 0x40) != 0, (data[5] & 0x20) != 0, (data[5] & 0x10) != 0, (data[5] & 0x08) != 0);
             }
         } else {
             System.out.println("INFO: Received data from unknown client. Ignoring. (id was " + data[0] + ")");

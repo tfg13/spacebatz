@@ -26,6 +26,10 @@ public class Char {
      */
     protected int moveStartTick;
     /**
+     * Der Tick, ab dem wieder geschossen werden darf
+     */
+    protected int AttackCooldownTick;
+    /**
      * Die Richtung, in die die Einheit läuft. Normalisierte Werte! Nur relevant, wenn moveStartTick != -1;
      */
     protected double vecX, vecY;

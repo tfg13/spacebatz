@@ -67,7 +67,7 @@ public class Client {
         msgInterpreter = new MessageInterpreter();
         netIDMap = new HashMap<>();
         network = new ClientNetwork();
-        if (network.tryConnect(ip)) {
+        if (getNetwork().tryConnect(ip)) {
             // StartRequest per TCP an Server schicken
             //player = new Player(30, 30);
         } else {
@@ -121,14 +121,22 @@ public class Client {
         if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
             throw new IllegalArgumentException("Illegal packet!");
         }
-        network.udpSend(packet);
+        getNetwork().udpSend(packet);
     }
 
     /**
      * Leitet UDP-Ticks ans Netzwerksystem weiter.
      */
     public static void udpTick() {
-        network.udpTick();
+        getNetwork().udpTick();
+    }
+
+    /**
+     * Gibt das Netzwerkmodul zurück
+     * @return das Netzwerkmodul des Clients
+     */
+    public static ClientNetwork getNetwork() {
+        return network;
     }
 
     public static void startTickCounting() {
