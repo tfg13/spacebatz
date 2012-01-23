@@ -18,6 +18,7 @@ public class CollisionManager {
      */
     public static void computeCollision() {
         computeBulletCollision();
+        computeWallCollision();
 
     }
 
@@ -46,7 +47,21 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Wänden und Chars
      */
     private static void computeWallCollision() {
-        ArrayList<Wall> walls = Server.game.getServerLevel().getWalls();
+        ArrayList<Wall> walls = Server.game.getLevel().getWalls();
         ArrayList<Char> chars = Server.game.chars;
+
+        // Alle Chars, die sich bewegen auf Kollision prüfen:
+        for (Char mover : chars) {
+            if (mover.isMoving()) {
+                double futureX = mover.posX + mover.vecX * mover.getSpeed();
+                double futureY = mover.posY + mover.vecY * mover.getSpeed();
+
+                for (Wall wall : walls) {
+                    if (wall.containsPoint(futureX, futureY)) {
+                        mover.stopMovement();
+                    }
+                }
+            }
+        }
     }
 }

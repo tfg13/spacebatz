@@ -29,4 +29,14 @@ public class Wall {
         this.endX = x2;
         this.endX = y1;
     }
+
+    /**
+     * Prüft, ob ein Punkt in dieser wand enthalten ist
+     * @param x1 X-Koordinate des zu überprüfenden Punkts
+     * @param y1 Y-Koordinate des zu überprüfenden Punkts
+     * @return true, wenn der Punkt in dieser Wand liegt
+     */
+    public boolean containsPoint(double x1, double y1) {
+        return ((startX < x1 && x1 < endX) && (startY < y1 && y1 < endY));
+    }
 }

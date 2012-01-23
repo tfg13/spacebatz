@@ -46,10 +46,6 @@ public class Game {
      * Die nächste netID.
      */
     private int nextNetID = 1;
-    /**
-     * Das Level
-     */
-    private ServerLevel serverLevel;
 
     /**
      * Konstruktor
@@ -184,10 +180,10 @@ public class Game {
     }
 
     /**
-     * Gibt das aktuelle ServerLevel zurück
+     * Gibt das ServerLevel zurück
      * @return das ServerLevel
      */
-    public ServerLevel getServerLevel() {
-        return serverLevel;
+    public ServerLevel getLevel() {
+        return level;
     }
 }
