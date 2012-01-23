@@ -179,7 +179,7 @@ public class ClientNetwork {
      */
     private synchronized DatagramPacket getNextComputeable() {
         DatagramPacket p = sortedQueue.peek();
-        if (p != null && Bits.getInt(p.getData(), 1) <= Client.gametick) {
+        if (p != null && Bits.getInt(p.getData(), 1) <= Client.frozenGametick) {
             sortedQueue.removeFirst();
             return p;
         }

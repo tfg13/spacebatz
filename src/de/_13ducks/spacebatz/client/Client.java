@@ -33,9 +33,14 @@ public class Client {
      */
     public static Player player;
     /**
-     * aktueller Tick, wird einmal von Server empfangen werden...
+     * Aktuell gültiger Gametick.
+     * Heißt frozen, weil er während der Grafikberechnung eingefroren wird.
      */
-    public static int gametick;
+    public static int frozenGametick;
+    /**
+     * Interner (nur diese Klasse) Gametick, der niemals eingefroren wird.
+     */
+    private static int gametick;
     /**
      * Die clientID, die uns der Server zugewiesen hat.
      */
@@ -133,6 +138,10 @@ public class Client {
      */
     public static ClientNetwork getNetwork() {
         return network;
+    }
+    
+    public static void updateGametick() {
+        frozenGametick = gametick;
     }
 
     public static void startTickCounting(int serverStartTick) {
