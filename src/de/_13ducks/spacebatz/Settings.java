@@ -8,11 +8,6 @@ package de._13ducks.spacebatz;
 public final class Settings {
 
     /**
-     * Die Reichweite für Kollisionen
-     */
-    public static double COLLISION_DISTANCE = 1.0;
-
-    /**
      * Private, da Utility-Class
      */
     private Settings() {
@@ -109,4 +104,8 @@ public final class Settings {
      * Die Distanz, ab der arbeitslose Mobs Chars verfolgen
      */
     public static double MOB_AGGRO_RANGE = 7.0;
+    /**
+     * Die Reichweite für Kollisionen
+     */
+    public static double COLLISION_DISTANCE = 1.5;
 }

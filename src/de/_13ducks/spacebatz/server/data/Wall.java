@@ -39,6 +39,6 @@ public class Wall implements Serializable {
      * @return true, wenn der Punkt in dieser Wand liegt
      */
     public boolean containsPoint(double x1, double y1) {
-        return ((startX < x1 && x1 < endX) && (startY < y1 && y1 < endY));
+        return (((startX < x1 && x1 < endX) || (startX > x1 && x1 > endX)) && ((startY > y1 && y1 > endY) || (startY < y1 && y1 < endY)));
     }
 }

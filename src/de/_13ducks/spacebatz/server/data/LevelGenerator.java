@@ -44,11 +44,19 @@ public class LevelGenerator {
             ground[random.nextInt(xSize)][random.nextInt(ySize)] = 2;
         }
 
+        
+        createWall(0,0,1,ySize-1, level);
+        createWall(0,ySize-1,xSize-1,ySize-2, level);
+        createWall(xSize-1,ySize-1,xSize-2,0, level);
+        createWall(xSize-1,0,0,1, level);
+        
+        
+        
 
-        createWall(1, 1, 2, 15, level);
-        createWall(2, 15, 15, 16, level);
-        createWall(14, 1, 15, 16, level);
-        createWall(14, 1, 1, 2, level);
+        createWall(19,0,20,40, level);
+        createWall(20,39,39,40, level);
+        createWall(40,40,39,20, level);
+
 
 //        // Linien
 //        for (int i = 10; i <= 20; i++) {

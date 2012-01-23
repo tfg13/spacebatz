@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Bits;
+import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -56,8 +57,23 @@ public class Game {
         level = new ServerLevel();
         bullets = new ArrayList<>();
         LevelGenerator.generateLevel(level);
-        Enemy testenemy = new Enemy(8,9, newNetID());
+        Enemy testenemy = new Enemy(8, 9, newNetID());
         chars.add(testenemy);
+
+        // Platziert Gegner
+        Random r = new Random();
+        for (int i = 0; i < 90; i++) {
+            double posX = r.nextDouble() * level.getGround().length;
+            double posY = r.nextDouble() * level.getGround().length;
+
+            
+            if(10.0<Distance.getDistance(posX, posY, 3,3)){
+                chars.add(new Enemy(posX, posY, newNetID()));
+            }
+            
+        }
+
+
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
