@@ -51,7 +51,7 @@ public class MessageInterpreter {
                     }
                 });
                 t.start();
-                Client.startTickCounting();
+                Client.startTickCounting(Bits.getInt(message, 0));
                 break;
             case 23:
                 // ClientID setzen
