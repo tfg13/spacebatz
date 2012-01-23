@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
@@ -26,7 +27,7 @@ public class MessageInterpreter {
         System.out.println("RECEIVED: " + cmdId + " and " + message.length + " bytes of data: ");
 
         switch (cmdId) {
-            case 20:
+            case Settings.NET_TCP_CMD_TRANSFER_LEVEL:
                 try {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Level myLevel = (Level) is.readObject();

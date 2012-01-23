@@ -18,7 +18,7 @@ public class MessageSender {
      * Sendet das Level an einen Client
      */
     public void sendLevel(Client client) {
-        Server.serverNetwork.sendTcpData((byte) 20, Server.game.getSerializedLevel(), client);
+        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_LEVEL, Server.game.getSerializedLevel(), client);
         System.out.println("Level sent, length was: " + Server.game.getSerializedLevel().length);
     }
 
