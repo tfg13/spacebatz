@@ -46,6 +46,10 @@ public class Game {
      * Die nächste netID.
      */
     private int nextNetID = 1;
+    /**
+     * Das Level
+     */
+    private ServerLevel serverLevel;
 
     /**
      * Konstruktor
@@ -121,7 +125,7 @@ public class Game {
         // KI berechnen:
         AIManager.computeMobBehavior(this.chars);
         // Kollision berechnen:
-        CollisionManager.computeCollision(chars, bullets);
+        CollisionManager.computeCollision();
 
 
 
@@ -177,5 +181,13 @@ public class Game {
         for (int i = 0; i < clients.size(); i++) {
             Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
         }
+    }
+
+    /**
+     * Gibt das aktuelle ServerLevel zurück
+     * @return das ServerLevel
+     */
+    public ServerLevel getServerLevel() {
+        return serverLevel;
     }
 }

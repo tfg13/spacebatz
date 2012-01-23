@@ -47,6 +47,14 @@ public class Level implements java.io.Serializable {
      * @param collision die neue Kollisionsfläche
      */
     public void addWall(Wall collision) {
-        walls.add(collision);
+        getWalls().add(collision);
+    }
+
+    /**
+     * Gibt die Liste der Wände zurück
+     * @return die Liste der Wände
+     */
+    public ArrayList<Wall> getWalls() {
+        return walls;
     }
 }
