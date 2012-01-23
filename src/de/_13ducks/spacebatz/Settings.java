@@ -10,7 +10,7 @@ public final class Settings {
     /**
      * Die Reichweite für Kollisionen
      */
-    public static double COLLISION_DISTANCE = 2.0;
+    public static double COLLISION_DISTANCE = 1.0;
 
     /**
      * Private, da Utility-Class
@@ -95,9 +95,12 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
     /**
-     * Wieviele Ticks der Clienttick maximal hinter dem Server liegen darf, bevor er geupdated wird.
+     * Die maximale Ping, für die das Spiel noch flüssig läuft.
+     * Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht,
+     * und die eigene Spielfigur sich auch bei den anderen verzögert bewegt.
+     * Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
      */
-    public static final int NET_TICKSYNC_MAX_DELAY = 5;
+    public static final int NET_TICKSYNC_MAXPING = 100;
     /**
      * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
      */

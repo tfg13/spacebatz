@@ -1,6 +1,6 @@
 20 - Server schickt Level an Client Daten: Serialisiertes Level. Größe Variabel
 21 - Server setzt Hauptplayer eines Clients wieder. Daten: int netID, float X, floatY (12)
-22 - Server lässt Client jetzt starten Daten: keine
+22 - Server lässt Client jetzt starten Daten: int serverStartTick
 23 - Server setzt ClientID eines Clients Daten: byte clientID
 24 - Server added neuen, fremden Player Daten: int netID
 25 - Server added neuen Player Daten: int netID, float X, float Y

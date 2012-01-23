@@ -37,10 +37,6 @@ public class Client {
      */
     public static int gametick;
     /**
-     * Letzter, vom Server empfangener Gametick:
-     */
-    public static int serverGametick;
-    /**
      * Die clientID, die uns der Server zugewiesen hat.
      */
     private static int clientID;
@@ -139,7 +135,8 @@ public class Client {
         return network;
     }
 
-    public static void startTickCounting() {
+    public static void startTickCounting(int serverStartTick) {
+        gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / (1000 / tickrate));
         tickTimer = new Timer(true);
         tickTimer.scheduleAtFixedRate(new TimerTask() {
 

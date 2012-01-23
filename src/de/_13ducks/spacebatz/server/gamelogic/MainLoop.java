@@ -54,6 +54,7 @@ public class MainLoop {
     private void balanceTicks() {
         // Wie lange hat der letzte Durchlauf gedauert?
         long delta = System.nanoTime() - runStart;
+        long sleepStart = System.nanoTime();
         // Damit rechnen, dass der nächste Durchlauf auch so lange braucht.
         // Wie lange darf ein Durchlauf maximal gehen:
         long expected = 1000 / Settings.SERVER_TICKRATE;
@@ -71,14 +72,15 @@ public class MainLoop {
             }
         } else {
             timeDeficit += delta - (expected * 1000000);
+            delta = 0;
             // Defizit arg schlimm?
             if (timeDeficit >= Settings.SERVER_TICKMISS_MAX_NANOS) {
                 System.out.println("WARNING: Server too slow!");
                 timeDeficit = 0;
             }
         }
-        // Nächster Run startet genau jetzt!
-        runStart = System.nanoTime();
+        // Nächster Run startet zu dem Zeitpunkt, zu dem das Schlafen hätte vorbei sein müssen:
+        runStart = sleepStart + delta;
     }
 
     /**

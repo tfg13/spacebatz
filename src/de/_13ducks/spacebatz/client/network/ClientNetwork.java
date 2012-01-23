@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * Die Netzwerkkomponente des Clients
@@ -33,9 +33,9 @@ public class ClientNetwork {
      */
     private DatagramSocket udpSocket;
     /**
-     * Die FIFO-Schlange für eingehende Elemente
+     * Eingehende Elemente:
      */
-    private ConcurrentLinkedQueue<DatagramPacket> inputQueue;
+    private LinkedList<DatagramPacket> sortedQueue;
     /**
      * Die Adresse des Servers.
      */
@@ -46,7 +46,7 @@ public class ClientNetwork {
      */
     public ClientNetwork() {
         mySocket = new Socket();
-        inputQueue = new ConcurrentLinkedQueue<>();
+        sortedQueue = new LinkedList<>();
     }
 
     /**
@@ -145,7 +145,7 @@ public class ClientNetwork {
                     while (true) {
                         DatagramPacket pack = new DatagramPacket(new byte[Settings.NET_UDP_STC_MAX_SIZE], Settings.NET_UDP_STC_MAX_SIZE);
                         udpSocket.receive(pack);
-                        inputQueue.add(pack);
+                        insertInQueue(pack);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -157,15 +157,42 @@ public class ClientNetwork {
         udpQueuer.start();
     }
 
+    private synchronized void insertInQueue(DatagramPacket pack) {
+        ListIterator<DatagramPacket> iter = sortedQueue.listIterator();
+        int tick = Bits.getInt(pack.getData(), 1);
+        while (iter.hasNext()) {
+            if (Bits.getInt(iter.next().getData(), 1) > tick) {
+                break;
+            }
+        }
+        // Falls die Liste nicht leer ist eines zurück gehen und dann einfügen
+        if (iter.hasPrevious()) {
+            iter.previous();
+        }
+        iter.add(pack);
+    }
+
     /**
-     * Muss einmal pro Grafik-Frame aufgerufen werden, verarbeite die bisher angekommenen Pakete.
+     * Liefert ein neues Paket, das verarbeitet werden kann, falls ein solches existiert.
+     *
+     * @return ein verarbeitbares Paket, oder null
+     */
+    private synchronized DatagramPacket getNextComputeable() {
+        DatagramPacket p = sortedQueue.peek();
+        if (p != null && Bits.getInt(p.getData(), 1) <= Client.gametick) {
+            sortedQueue.removeFirst();
+            return p;
+        }
+        return null;
+    }
+
+    /**
+     * Muss einmal pro Grafik-Frame aufgerufen werden, verarbeitet alle für den aktuellen Gametick relevanten Pakete.
      */
     public void udpTick() {
-        Iterator<DatagramPacket> iter = inputQueue.iterator();
-        while (iter.hasNext()) {
-            DatagramPacket pack = iter.next();
-            iter.remove();
-            computePacket(pack);
+        DatagramPacket p;
+        while ((p = getNextComputeable()) != null) {
+            computePacket(p);
         }
     }
 
@@ -176,20 +203,9 @@ public class ClientNetwork {
      */
     private void computePacket(DatagramPacket pack) {
         byte[] data = pack.getData();
-        // Tick prüfen:
-        int tick = Bits.getInt(data, 1);
-        // Hier ist größer gleich wichtig, der Server kann mehrere schicken!
-        if (tick >= Client.serverGametick) {
-            // Paket interessiert uns!
-            // Tick hochsetzen
-            Client.serverGametick = tick;
-            if (Math.abs(Client.serverGametick - Client.gametick) > Settings.NET_TICKSYNC_MAX_DELAY) {
-                Client.gametick = Client.serverGametick;
-                System.out.println("WARNING: Tickdelay too big, resetting client-tick!");
-            }
-            // Paket nach Typ verarbeiten:
-            computeApprovedPacket(data);
-        }
+        //TODO: Client-Tickrate synchronisieren, viel zu alte Pakete löschen.
+        // Paket nach Typ verarbeiten:
+        computeApprovedPacket(data);
     }
 
     /**
