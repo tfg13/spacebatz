@@ -43,4 +43,11 @@ public class Enemy extends Char {
     public void setMyTarget(Char myTarget) {
         this.myTarget = myTarget;
     }
+
+    /**
+     * @return the enemytypeid
+     */
+    public int getEnemytypeid() {
+        return enemytypeid;
+    }
 }

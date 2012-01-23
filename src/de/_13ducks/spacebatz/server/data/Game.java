@@ -177,9 +177,6 @@ public class Game {
         for (int i = 0; i < clients.size(); i++) {
             Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
         }
-
-        Enemy testenemy = new Enemy(1, 2, newNetID());
-        chars.add(testenemy);
     }
 
     /**

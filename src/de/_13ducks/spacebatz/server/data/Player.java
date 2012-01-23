@@ -93,6 +93,11 @@ public class Player extends Char {
     }
 
     public void clientShoot(float angle) {
+                //TEsttesttest
+        Enemy enemy = new Enemy(1, 2, Server.game.newNetID());
+        Server.game.chars.add(enemy);
+        Server.msgSender.sendNewEnemy(enemy);
+        
         int thistick = Server.game.getTick();
         if (thistick > AttackCooldownTick + 20) {
             Random random = new Random(System.nanoTime());

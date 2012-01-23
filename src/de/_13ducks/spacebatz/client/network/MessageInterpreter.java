@@ -70,7 +70,7 @@ public class MessageInterpreter {
                 break;
             case 26:
                 // Neuer Gegner
-                Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
+                Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8), Bits.getInt(message, 12));
                 Client.netIDMap.put(enemy.netID, enemy);
                 break;
             case 27:
