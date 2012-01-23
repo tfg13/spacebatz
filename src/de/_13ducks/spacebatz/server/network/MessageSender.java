@@ -80,12 +80,20 @@ public class MessageSender {
         }
     }
 
+    public void killEnemy(int netID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[4];
+            Bits.putInt(b, 0, netID);
+            Server.serverNetwork.sendTcpData((byte) 28, b, c);
+        }
+    }
+
     public void sendAllChars(Client client) {
         for (Char c : Server.game.chars) {
             if (c.equals(client.getPlayer())) {
                 continue; // Den eigenen nicht.
             }
-            
+
             if (c instanceof Player) {
                 byte[] b = new byte[12];
                 Bits.putInt(b, 0, c.netID);

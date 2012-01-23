@@ -6,3 +6,4 @@
 25 - Server added neuen Player Daten: int netID, float X, float Y
 26 - Server added neuen Gegner Daten: int netID, float X, float Y
 27 - Server setzt Logic-Tickrate Daten: int tickrate
+28 - Server entfernt Gegner Daten: int netID
