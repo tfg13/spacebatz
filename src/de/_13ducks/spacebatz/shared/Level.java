@@ -23,6 +23,10 @@ public class Level implements java.io.Serializable {
     private int[][] ground;
     private int sizeX;
     private int sizeY;
+    /**
+     * Die Respawn-Position im Level
+     */
+    public int respawnX, respawnY;
 
     /*
      * Konstruktor, wird vom Levelgenerator augerufen
@@ -47,6 +51,14 @@ public class Level implements java.io.Serializable {
      * @param collision die neue Kollisionsfläche
      */
     public void addWall(Wall collision) {
-        walls.add(collision);
+        getWalls().add(collision);
+    }
+
+    /**
+     * Gibt die Liste der Wände zurück
+     * @return die Liste der Wände
+     */
+    public ArrayList<Wall> getWalls() {
+        return walls;
     }
 }

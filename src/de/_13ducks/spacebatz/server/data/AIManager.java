@@ -43,7 +43,18 @@ public class AIManager {
                         mob.stopMovement();
                     } else {
                         // wenn es in reichweite ist  hinbewegen:
-                        mob.setVector(mob.getMyTarget().posX - mob.getX(), mob.getMyTarget().posY - mob.getY());
+                        double vecX = mob.getMyTarget().posX - mob.getX();
+                        double vecY = mob.getMyTarget().posY - mob.getY();
+
+                        // Sicher gehen, dass die Vektoren nicht 0 sind:
+                        if (vecX == 0.0) {
+                            vecX = 0.1;
+                        }
+                        if (vecY == 0.0) {
+                            vecY = 0.1;
+                        }
+
+                        mob.setVector(vecX, vecY);
                     }
 
 

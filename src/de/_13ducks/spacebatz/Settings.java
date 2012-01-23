@@ -8,6 +8,11 @@ package de._13ducks.spacebatz;
 public final class Settings {
 
     /**
+     * Die Reichweite für Kollisionen
+     */
+    public static double COLLISION_DISTANCE = 1.0;
+
+    /**
      * Private, da Utility-Class
      */
     private Settings() {

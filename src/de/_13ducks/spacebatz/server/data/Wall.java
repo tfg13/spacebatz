@@ -1,10 +1,12 @@
 package de._13ducks.spacebatz.server.data;
 
+import java.io.Serializable;
+
 /**
  * Beschreibt eine Kollisionsfläche, z.B. eine Mauer, an der Bullets und Chars etc kollidieren
  * @author michael
  */
-public class Wall {
+public class Wall implements Serializable {
 
     /**
      * Koordinaten der linken oberen Ecke
@@ -27,6 +29,16 @@ public class Wall {
         this.startX = x1;
         this.startY = y1;
         this.endX = x2;
-        this.endX = y1;
+        this.endY = y2;
+    }
+
+    /**
+     * Prüft, ob ein Punkt in dieser wand enthalten ist
+     * @param x1 X-Koordinate des zu überprüfenden Punkts
+     * @param y1 Y-Koordinate des zu überprüfenden Punkts
+     * @return true, wenn der Punkt in dieser Wand liegt
+     */
+    public boolean containsPoint(double x1, double y1) {
+        return ((startX < x1 && x1 < endX) && (startY < y1 && y1 < endY));
     }
 }

@@ -29,6 +29,10 @@ public class LevelGenerator {
         int xSize = ground.length;
         int ySize = ground[0].length;
 
+        // Respawn-Koordinaten setzen:
+        level.respawnX = 3;
+        level.respawnY = 3;
+
         // Default-Bodentextur:
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
@@ -40,13 +44,19 @@ public class LevelGenerator {
             ground[random.nextInt(xSize)][random.nextInt(ySize)] = 2;
         }
 
-        // Linien
-        for (int i = 10; i <= 20; i++) {
-            ground[i][20] = 3;
-            ground[20][i] = 3;
-        }
 
-        
+        createWall(1, 1, 2, 15, level);
+        createWall(2, 15, 15, 16, level);
+        createWall(14, 1, 15, 16, level);
+        createWall(14, 1, 1, 2, level);
+
+//        // Linien
+//        for (int i = 10; i <= 20; i++) {
+//            ground[i][20] = 3;
+//            ground[20][i] = 3;
+//        }
+
+
 
 
 
@@ -137,15 +147,10 @@ public class LevelGenerator {
         return Returnthis;
     }
 
-    
-    
-    
-    
-    
     /**
      * Erzeug eine Mauer, mit Textur UND Kollisionsinformationen
      */
-    private void createWall(int x1, int y1, int x2, int y2, Level level) {
+    private static void createWall(int x1, int y1, int x2, int y2, Level level) {
         Wall collision = new Wall(x1, y1, x2, y2);
         drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), 3);
         level.addWall(collision);

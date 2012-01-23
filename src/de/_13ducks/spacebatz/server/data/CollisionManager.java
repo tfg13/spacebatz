@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.util.Distance;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +18,19 @@ public class CollisionManager {
      * @param chars die Liste der Chars, für die Kollision berechnet werden soll
      * @param bullets die Liste der Bullets, deren Kollisionen berechnet werden sollen
      */
-    public static void computeCollision(ArrayList<Char> chars, ArrayList<Bullet> bullets) {
+    public static void computeCollision() {
+        computeBulletCollision();
+        computeWallCollision();
+        computeMobCollission();
+
+    }
+
+    /**
+     * Berechnet Kollisionen zwischen Bullets und Cahrs
+     */
+    private static void computeBulletCollision() {
+        ArrayList<Bullet> bullets = Server.game.bullets;
+        ArrayList<Char> chars = Server.game.chars;
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
 
@@ -29,6 +43,55 @@ public class CollisionManager {
                     System.out.println("KOLLISION " + Server.game.getTick());
                 }
             }
+        }
+    }
+
+    /**
+     * Berechnet Kollisionen zwischen Wänden und Chars
+     */
+    private static void computeWallCollision() {
+        ArrayList<Wall> walls = Server.game.getLevel().getWalls();
+        ArrayList<Char> chars = Server.game.chars;
+
+        // Alle Chars, die sich bewegen auf Kollision prüfen:
+        for (int i = 0; i < chars.size(); i++) {
+            Char mover = Server.game.getChar(i);
+            if (mover.isMoving()) {
+                double futureX = mover.posX + mover.vecX * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
+                double futureY = mover.posY + mover.vecY * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
+
+                for (Wall wall : walls) {
+                    if (wall.containsPoint(futureX, futureY)) {
+                        mover.stopMovement();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Berechnet Kollision mit Mobs
+     */
+    private static void computeMobCollission() {
+        ArrayList<Char> chars = Server.game.chars;
+
+        // Alle Chars, die sich bewegen auf Kollision prüfen:
+        for (int i = 0; i < chars.size(); i++) {
+            Char mover = Server.game.getChar(i);
+            if (mover instanceof Player) {
+                for (int j = 0; j < chars.size(); j++) {
+                    Char mob = Server.game.getChar(j);
+                    if (mob instanceof Enemy) {
+                        double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
+                        if (distance < Settings.COLLISION_DISTANCE) {
+                            mover.setStillX(Server.game.getLevel().respawnX);
+                            mover.setStillY(Server.game.getLevel().respawnY);
+                        }
+
+                    }
+                }
+            }
+
         }
     }
 }

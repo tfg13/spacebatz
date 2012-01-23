@@ -56,7 +56,7 @@ public class Game {
         level = new ServerLevel();
         bullets = new ArrayList<>();
         LevelGenerator.generateLevel(level);
-        Enemy testenemy = new Enemy(1, 2, newNetID());
+        Enemy testenemy = new Enemy(8,9, newNetID());
         chars.add(testenemy);
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
@@ -87,7 +87,7 @@ public class Game {
             Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
-            Player player = new Player(10, 10, newNetID(), client);
+            Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
             chars.add(player);
             // Dem Client die Tickrate schicken:
@@ -121,7 +121,7 @@ public class Game {
         // KI berechnen:
         AIManager.computeMobBehavior(this.chars);
         // Kollision berechnen:
-        CollisionManager.computeCollision(chars, bullets);
+        CollisionManager.computeCollision();
 
 
 
@@ -180,5 +180,20 @@ public class Game {
 
         Enemy testenemy = new Enemy(1, 2, newNetID());
         chars.add(testenemy);
+    }
+
+    /**
+     * Gibt das ServerLevel zurück
+     * @return das ServerLevel
+     */
+    public ServerLevel getLevel() {
+        return level;
+    }
+
+    /**
+     * Gibt den Char am Index x zurück
+     */
+    public synchronized Char getChar(int x) {
+        return chars.get(x);
     }
 }
