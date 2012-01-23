@@ -16,7 +16,17 @@ public class CollisionManager {
      * @param chars die Liste der Chars, für die Kollision berechnet werden soll
      * @param bullets die Liste der Bullets, deren Kollisionen berechnet werden sollen
      */
-    public static void computeCollision(ArrayList<Char> chars, ArrayList<Bullet> bullets) {
+    public static void computeCollision() {
+        computeBulletCollision();
+
+    }
+
+    /**
+     * Berechnet Kollisionen zwischen Bullets und Cahrs
+     */
+    private static void computeBulletCollision() {
+        ArrayList<Bullet> bullets = Server.game.bullets;
+        ArrayList<Char> chars = Server.game.chars;
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
 
@@ -30,5 +40,13 @@ public class CollisionManager {
                 }
             }
         }
+    }
+
+    /**
+     * Berechnet Kollisionen zwischen Wänden und Chars
+     */
+    private static void computeWallCollision() {
+        ArrayList<Wall> walls = Server.game.getServerLevel().getWalls();
+        ArrayList<Char> chars = Server.game.chars;
     }
 }
