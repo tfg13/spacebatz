@@ -41,8 +41,10 @@ public class LevelGenerator {
         }
 
 
-        createWall(1, 1, 10, 10, level);
-
+        createWall(1, 1, 2, 15, level);
+        createWall(2,15, 15,16, level);
+        createWall(14,1,15,16, level);
+        createWall(14,1, 1,2, level);
 
 //        // Linien
 //        for (int i = 10; i <= 20; i++) {

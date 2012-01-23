@@ -54,12 +54,12 @@ public class CollisionManager {
         for (int i = 0; i < chars.size(); i++) {
             Char mover = Server.game.getChar(i);
             if (mover.isMoving()) {
-                double futureX = mover.posX + mover.vecX * mover.getSpeed() * mover.moveStartTick;
-                double futureY = mover.posY + mover.vecY * mover.getSpeed() * mover.moveStartTick;
+                double futureX = mover.posX + mover.vecX * mover.getSpeed() * (Server.game.getTick()+1 - mover.moveStartTick);
+                double futureY = mover.posY + mover.vecY * mover.getSpeed() * (Server.game.getTick()+1 - mover.moveStartTick);
 
                 for (Wall wall : walls) {
                     if (wall.containsPoint(futureX, futureY)) {
-                        System.out.println("KOLLISION!" + System.currentTimeMillis());
+                        mover.stopMovement();
                     }
                 }
             }

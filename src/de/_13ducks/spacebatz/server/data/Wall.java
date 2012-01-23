@@ -29,7 +29,7 @@ public class Wall implements Serializable {
         this.startX = x1;
         this.startY = y1;
         this.endX = x2;
-        this.endX = y1;
+        this.endY = y2;
     }
 
     /**
