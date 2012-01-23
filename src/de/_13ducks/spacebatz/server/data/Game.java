@@ -186,4 +186,11 @@ public class Game {
     public ServerLevel getLevel() {
         return level;
     }
+    
+    /**
+     * Gibt den Char am Index x zurück
+     */
+    public synchronized Char getChar(int x){
+        return chars.get(x);
+    }
 }

@@ -51,14 +51,15 @@ public class CollisionManager {
         ArrayList<Char> chars = Server.game.chars;
 
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        for (Char mover : chars) {
+        for (int i = 0; i < chars.size(); i++) {
+            Char mover = Server.game.getChar(i);
             if (mover.isMoving()) {
-                double futureX = mover.posX + mover.vecX * mover.getSpeed();
-                double futureY = mover.posY + mover.vecY * mover.getSpeed();
+                double futureX = mover.posX + mover.vecX * mover.getSpeed() * mover.moveStartTick;
+                double futureY = mover.posY + mover.vecY * mover.getSpeed() * mover.moveStartTick;
 
                 for (Wall wall : walls) {
                     if (wall.containsPoint(futureX, futureY)) {
-                        mover.stopMovement();
+                        System.out.println("KOLLISION!" + System.currentTimeMillis());
                     }
                 }
             }

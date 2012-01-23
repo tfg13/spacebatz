@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.shared.Level;
  * erweitert das ClientLevel um einige Infos die nur der Server braucht
  * @author michael
  */
-public class ServerLevel extends Level {
+public class ServerLevel extends Level  {
 
     /**
      * Konstruktor

@@ -1,10 +1,12 @@
 package de._13ducks.spacebatz.server.data;
 
+import java.io.Serializable;
+
 /**
  * Beschreibt eine Kollisionsfläche, z.B. eine Mauer, an der Bullets und Chars etc kollidieren
  * @author michael
  */
-public class Wall {
+public class Wall implements Serializable {
 
     /**
      * Koordinaten der linken oberen Ecke
