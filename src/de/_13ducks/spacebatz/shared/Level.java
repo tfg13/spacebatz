@@ -23,6 +23,10 @@ public class Level implements java.io.Serializable {
     private int[][] ground;
     private int sizeX;
     private int sizeY;
+    /**
+     * Die Respawn-Position im Level
+     */
+    public int respawnX, respawnY;
 
     /*
      * Konstruktor, wird vom Levelgenerator augerufen
