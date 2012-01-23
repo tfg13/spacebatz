@@ -32,10 +32,8 @@ public class Player extends Char {
      * @param s S-Button gedrückt.
      * @param d D-Button gedrückt.
      */
-        
-
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
-		double x = 0, y = 0;
+        double x = 0, y = 0;
 
         if (w) {
             y += 1;
@@ -93,11 +91,6 @@ public class Player extends Char {
     }
 
     public void clientShoot(float angle) {
-                //TEsttesttest
-        Enemy enemy = new Enemy(1, 2, Server.game.newNetID());
-        Server.game.chars.add(enemy);
-        Server.msgSender.sendNewEnemy(enemy);
-        
         int thistick = Server.game.getTick();
         if (thistick > AttackCooldownTick + 20) {
             Random random = new Random(System.nanoTime());
@@ -118,6 +111,11 @@ public class Player extends Char {
                 Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
             }
             AttackCooldownTick = thistick;
+
+            //Testtesttest
+            Enemy enemy = new Enemy(5, 5, Server.game.newNetID());
+            Server.game.chars.add(enemy);
+            Server.msgSender.sendNewEnemy(enemy);
         }
     }
 }
