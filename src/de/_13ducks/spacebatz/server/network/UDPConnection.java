@@ -169,8 +169,7 @@ public class UDPConnection {
             Client client = iter.next();
             //TODO: Berechnen, welche chars dieser client wirklich sieht:
             ArrayList<Char> update = new ArrayList<>();
-            for (int i = 0; i < Server.game.chars.size(); i++) {
-                Char c = Server.game.getChar(i);
+            for (Char c : Server.game.chars) {
                 // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
                 if (!client.getContext().knows(c, c.getMovement())) {
                     // Nein, also senden

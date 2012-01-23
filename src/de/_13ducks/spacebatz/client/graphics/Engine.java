@@ -115,11 +115,12 @@ public class Engine {
         lastFPS = getTime();
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
+            // Gametick updaten:
+            Client.updateGametick();
             // UDP-Input verarbeiten:
             Client.udpTick();
             // Render-Code
             render();
-
             // Fertig, Puffer swappen:
             Display.update();
             // Frames messen:
@@ -141,7 +142,7 @@ public class Engine {
     private void directInput() {
         byte[] udp = new byte[NET_UDP_CTS_SIZE];
         udp[0] = (byte) Client.getClientID();
-        Bits.putInt(udp, 1, Client.gametick);
+        Bits.putInt(udp, 1, Client.frozenGametick);
         udp[5] = NET_UDP_CMD_INPUT;
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             udp[6] |= 0x20;
@@ -158,7 +159,7 @@ public class Engine {
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
             udp2[0] = (byte) Client.getClientID();
-            Bits.putInt(udp2, 1, Client.gametick);
+            Bits.putInt(udp2, 1, Client.frozenGametick);
             udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
             double dx = Mouse.getX() - Display.getWidth() / 2;
             double dy = Mouse.getY() - Display.getHeight() / 2;
@@ -209,6 +210,7 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
+        long tick = Client.frozenGametick;
         //Client.incrementGametick();
         panX = (float) -Client.getPlayer().getX() + tilesX / 2;
         panY = (float) -Client.getPlayer().getY() + tilesY / 2;
@@ -273,13 +275,13 @@ public class Engine {
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
             Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
-            if (bullet.getDeletetick() < Client.gametick) {
+            if (bullet.getDeletetick() < Client.frozenGametick) {
 
                 Client.getBulletList().remove(i);
                 i--;
             } else {
 
-                float radius = bullet.getSpeed() * (Client.gametick - bullet.getSpawntick());
+                float radius = bullet.getSpeed() * (Client.frozenGametick - bullet.getSpawntick());
                 float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
                 float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
 
