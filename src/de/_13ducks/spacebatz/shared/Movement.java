@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.shared;
 
 /**
  * Repräsentiert eine Bewegung einer Einheit. Für die Netzwerksychronisierung notwendig.
