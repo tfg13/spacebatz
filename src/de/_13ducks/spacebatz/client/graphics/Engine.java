@@ -96,6 +96,8 @@ public class Engine {
             Client.updateGametick();
             // UDP-Input verarbeiten:
             Client.udpTick();
+            // TCP-Input verarbeiten:
+            Client.getMsgInterpreter().interpretAllTcpMessages();
             // Render-Code
             render();
             // Fertig, Puffer swappen:

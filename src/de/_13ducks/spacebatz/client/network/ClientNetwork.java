@@ -63,7 +63,7 @@ public class ClientNetwork {
             sendStream = new ObjectOutputStream(mySocket.getOutputStream());
             udpSocket = new DatagramSocket(Settings.CLIENT_UDPPORT);
             serverAdr = serverAddress.getAddress();
-
+            
             receiveData();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -115,30 +115,30 @@ public class ClientNetwork {
      */
     private void receiveData() {
         Thread receiveDataThread = new Thread(new Runnable() {
-
+            
             @Override
             public void run() {
                 try {
                     ObjectInputStream is = new ObjectInputStream(mySocket.getInputStream());
-
+                    
                     while (true) {
                         byte cmdId = is.readByte();
                         long packetSize = is.readLong();
                         byte data[] = new byte[(int) packetSize];
                         is.readFully(data);
-                        Client.getMsgInterpreter().interpretTcpMessage(cmdId, data);
+                        Client.getMsgInterpreter().addMessageToQueue(new TcpMessage(cmdId, data));
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
-
+                    
                 }
             }
         });
         receiveDataThread.setName("ReceiveDataThread");
         receiveDataThread.start();
-
+        
         Thread udpQueuer = new Thread(new Runnable() {
-
+            
             @Override
             public void run() {
                 try {
@@ -156,7 +156,7 @@ public class ClientNetwork {
         udpQueuer.setDaemon(true);
         udpQueuer.start();
     }
-
+    
     private synchronized void insertInQueue(DatagramPacket pack) {
         ListIterator<DatagramPacket> iter = sortedQueue.listIterator();
         int tick = Bits.getInt(pack.getData(), 1);
@@ -228,7 +228,7 @@ public class ClientNetwork {
                         // Bewegung setzen:
                         c.applyMove(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
                     } //else {
-                      //  System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
+                    //  System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
                     //}
                 }
                 break;
