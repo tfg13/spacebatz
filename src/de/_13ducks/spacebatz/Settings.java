@@ -103,9 +103,9 @@ public final class Settings {
     /**
      * Die Distanz, ab der arbeitslose Mobs Chars verfolgen
      */
-    public static double MOB_AGGRO_RANGE = 7.0;
+    public static double SERVER_MOB_AGGRO_RANGE = 7.0;
     /**
      * Die Reichweite für Kollisionen
      */
-    public static double COLLISION_DISTANCE = 1.5;
+    public static double SERVER_COLLISION_DISTANCE = 1.5;
 }

@@ -93,7 +93,7 @@ public class CollisionManager {
                     Char mob = Server.game.getChar(j);
                     if (mob instanceof Enemy) {
                         double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
-                        if (distance < Settings.COLLISION_DISTANCE) {
+                        if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                             mover.setStillX(Server.game.getLevel().respawnX);
                             mover.setStillY(Server.game.getLevel().respawnY);
                         }

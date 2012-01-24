@@ -11,6 +11,7 @@ import java.util.TimerTask;
 
 /**
  * Die Hauptklasse des Clients
+ * enthält statische Referenzen auf alle Module des Clients (Grafik, Netzwerk, etc).
  *
  * @author michael
  */
@@ -62,9 +63,11 @@ public class Client {
      */
     private static Timer tickTimer;
 
-    // Einstiegspunkt:
+    /**
+     * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
+     * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
+     */
     public static void startClient(String ip) {
-
         msgInterpreter = new MessageInterpreter();
         netIDMap = new HashMap<>();
         network = new ClientNetwork();
@@ -77,22 +80,23 @@ public class Client {
     }
 
     /**
-     * @return the BulletList
+     * Gibt die Liste mit Bullets zurück
+     * @return die Liste der Bullets
      */
     public static LinkedList<Bullet> getBulletList() {
         return BulletList;
     }
 
     /**
-     * @return the player
+     * Gibt den eigenen Spieler zurück
+     * @return der eigene Spieler
      */
     public static Player getPlayer() {
         return player;
     }
 
     /**
-     * Getter für den MessageInterpreter
-     *
+     * Gibt den MessageInterpreter zurück
      * @return der MessageInterpreter
      */
     public static MessageInterpreter getMsgInterpreter() {
@@ -100,22 +104,23 @@ public class Client {
     }
 
     /**
-     * @return the clientID
+     * Gibt die ClientID, die der Server uns zugewiesen hat, zurück
+     * @return unsere ClientID
      */
     public static int getClientID() {
         return clientID;
     }
 
     /**
-     * @param clientID the clientID to set
+     * Setzt die ClientID
+     * @param clientID die ClientID, die der Client verwenden soll
      */
     public static void setClientID(int clientID) {
         Client.clientID = clientID;
     }
 
     /**
-     * Schickt ein vollständiges, gültiges Paket an den Server.
-     *
+     * Schickt ein vollständiges, gültiges UDP-Paket an den Server.
      * @param packet udp-Paket
      */
     public static void udpOut(byte[] packet) {
@@ -139,6 +144,7 @@ public class Client {
     public static ClientNetwork getNetwork() {
         return network;
     }
+
     
     public static void updateGametick() {
         frozenGametick = gametick;
