@@ -82,4 +82,11 @@ public class Bullet {
     public int getDeletetick() {
         return deletetick;
     }
+
+    /**
+     * @return the netID
+     */
+    public int getNetID() {
+        return netID;
+    }
 }

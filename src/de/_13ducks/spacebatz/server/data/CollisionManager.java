@@ -43,7 +43,7 @@ public class CollisionManager {
                     if (chars.get(j) instanceof Enemy) {
                         Enemy e = (Enemy) chars.get(j);
                         // Schaden von HP abziehen
-                        if (e.decreaseHealthpoints(bullets.get(i).getDamage())) {
+                        if (e.decreaseHealthpoints(bullets.get(i).getNetID())) {
                             // Wenn Enemy stirbt, Index j um 1 zurücksetzen
                             j--;
                         }

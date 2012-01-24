@@ -59,16 +59,20 @@ public class Enemy extends Char {
      * @return true, wenn Enemy stirbt, sonst false
      */
     @Override
-    public boolean decreaseHealthpoints(int damage) {
-        System.out.println("HP: " + healthpoints + " ,Dmg: " + damage);
-        healthpoints -= damage;
+    public boolean decreaseHealthpoints(int netIDBullet) {
+        for (int i = 0; i < Server.game.bullets.size(); i++) {
+            if (Server.game.bullets.get(i).getNetID() == netIDBullet) {
+                healthpoints -= Server.game.bullets.get(i).getDamage();
+                break;
+            }
+        }
+
         if (healthpoints <= 0) {
-            Server.msgSender.sendHitChar(netID, damage, true);
+            Server.msgSender.sendHitChar(netID, netIDBullet, true);
             Server.game.chars.remove(this);
-            System.out.println("Server kill");
             return true;
         } else {
-            Server.msgSender.sendHitChar(netID, damage, false);
+            Server.msgSender.sendHitChar(netID, netIDBullet, false);
             return false;
         }
     }

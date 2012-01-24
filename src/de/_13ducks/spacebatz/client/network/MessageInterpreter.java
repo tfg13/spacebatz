@@ -83,17 +83,27 @@ public class MessageInterpreter {
             case 28:
                 // Bullet trifft Char
                 int netIDChar = Bits.getInt(message, 0); // netID des getroffenen Chars
-                int damage = Bits.getInt(message, 4); // Schaden, der abgezogen wird
+                int netIDBullet = Bits.getInt(message, 4); // netID von Bullet
                 boolean killed = false; // ob char stirbt
                 if (message[8] == 1) {
                     killed = true;
                 }
 
                 if (killed) {
+                    for (int i = 0; i < Client.getBulletList().size(); i++) {
+                        if (Client.getBulletList().get(i).getNetID() == netIDBullet) {
+                            Client.getBulletList().remove(i);
+                            break;
+                        }
+                    }
                     Client.netIDMap.remove(netIDChar);
-                    System.out.println("Client kill");
                 } else {
-                    System.out. println("Damage" + damage);
+                    for (int i = 0; i < Client.getBulletList().size(); i++) {
+                        if (Client.getBulletList().get(i).getNetID() == netIDBullet) {
+                            Client.getBulletList().remove(i);
+                            break;
+                        }
+                    }
                 }
                 break;
             default:

@@ -83,14 +83,14 @@ public class MessageSender {
     /**
      * Bullet trifft Char
      * @param netIDChar netID des getroffenen Char
-     * @param damage Schaden, den die Bullet macht
+     * @param netIDBullet netID des Bullets
      * @param killed Ob Bullet den Char tötet
      */
-    public void sendHitChar(int netIDChar, int damage, boolean killed) {
+    public void sendHitChar(int netIDChar, int netIDBullet, boolean killed) {
         for (Client c : Server.game.clients.values()) {
             byte[] b = new byte[9];
             Bits.putInt(b, 0, netIDChar);
-            Bits.putInt(b, 4, damage);
+            Bits.putInt(b, 4, netIDBullet);
             if (killed) {
                 b[8] = 1;
             } else {
