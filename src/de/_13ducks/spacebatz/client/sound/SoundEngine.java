@@ -10,6 +10,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.util.WaveData;
 
 public class SoundEngine {
 
@@ -63,7 +64,6 @@ public class SoundEngine {
             FileInputStream is = new FileInputStream("/home/michael/spacebatz/sound.wav");
             
             waveFile = WaveData.create("/home/michael/spacebatz/sound.wav");
-            System.out.println("ERROR: " + AL10.alGetString(AL10.alGetError()));
             
             
         } catch (Exception ex) {

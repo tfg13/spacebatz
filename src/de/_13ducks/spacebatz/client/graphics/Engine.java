@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
-import de._13ducks.spacebatz.client.sound.SoundEngine;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -70,9 +69,6 @@ public class Engine {
      * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
      */
     public void start() {
-        SoundEngine se = new SoundEngine();
-        se.execute();
-        
         // Fenster aufmachen:
         try {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
