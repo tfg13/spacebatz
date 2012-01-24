@@ -101,8 +101,6 @@ public class MessageInterpreter {
      */
     public void interpretTcpMessage(byte cmdId, byte message[]) {
 
-        System.out.println("RECEIVED: " + cmdId + " and " + message.length + " bytes of data: ");
-
         switch (cmdId) {
             case Settings.NET_TCP_CMD_TRANSFER_LEVEL:
                 try {
