@@ -218,15 +218,23 @@ public class Engine {
         enemyTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
+                Enemy enemy = (Enemy) c;
                 int dir = c.getDir();
+                int tilex;
+                // Bei Gegnertyp 0 andere Tiles benutzen
+                if (enemy.getEnemytypeid() == 0) {
+                    tilex = dir + 8;
+                } else {
+                    tilex = dir;
+                }
                 glBegin(GL_QUADS);
-                glTexCoord2f(0.0625f * dir, 0);
+                glTexCoord2f(0.0625f * tilex, 0);
                 glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
-                glTexCoord2f(0.0625f * (2 + dir), 0);
+                glTexCoord2f(0.0625f * (2 + tilex), 0);
                 glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
-                glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
+                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * 2);
                 glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
-                glTexCoord2f(0.0625f * dir, 0.0625f * 2);
+                glTexCoord2f(0.0625f * tilex, 0.0625f * 2);
                 glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
                 glEnd();
             }

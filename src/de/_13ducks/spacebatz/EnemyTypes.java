@@ -11,7 +11,7 @@ public class EnemyTypes implements java.io.Serializable{
     
     public EnemyTypes() {
         enemytypelist = new ArrayList<>();
-        enemytypelist.add(new EnemyTypeStats(180, 5, 0));
+        enemytypelist.add(new EnemyTypeStats(120, 5, 0));
         enemytypelist.add(new EnemyTypeStats(12, 1, 1));
     }
 

@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.MessageInterpreter;
@@ -46,6 +47,10 @@ public class Client {
      * Die clientID, die uns der Server zugewiesen hat.
      */
     private static byte clientID;
+    /**
+     * Liste aller Gegnertypen
+     */
+    public static EnemyTypes enemytypes;
     /**
      * Die Zuordnung von netID zu Char.
      */

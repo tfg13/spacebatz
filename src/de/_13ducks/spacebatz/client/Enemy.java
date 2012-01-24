@@ -18,4 +18,11 @@ public class Enemy extends Char {
         super(netID, x, y);
         this.enemytypeid = enemytypeid;
     }
+
+    /**
+     * @return the enemytypeid
+     */
+    public int getEnemytypeid() {
+        return enemytypeid;
+    }
 }

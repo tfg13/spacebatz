@@ -113,7 +113,11 @@ public class Game {
 
 
             if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
-                chars.add(new Enemy(posX, posY, newNetID(), 1));
+                int enemytype = r.nextInt(30);
+                if (enemytype > 1) {
+                    enemytype = 1;
+                }
+                chars.add(new Enemy(posX, posY, newNetID(), enemytype));
             }
 
         }

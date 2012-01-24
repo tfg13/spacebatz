@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Enemy;
@@ -184,9 +185,18 @@ public class MessageInterpreter {
                     }
                 }
                 break;
-            case 29:
-                
+            case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:
+                // EnemyTypes empfangen (nur einmal)       
+                try {
+                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+                    EnemyTypes et = (EnemyTypes) is.readObject();
+                    Client.enemytypes = et;
+                    System.out.println("Level received and loaded!");
+                } catch (IOException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
                 break;
+
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }
