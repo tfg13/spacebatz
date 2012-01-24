@@ -40,7 +40,11 @@ public class CollisionManager {
 
             for (int j = 0; j < chars.size(); j++) {
                 if (Math.abs(x - chars.get(j).posX) < 0.7 && Math.abs(y - chars.get(j).posY) < 0.7) {
-                    System.out.println("KOLLISION " + Server.game.getTick());
+                    if (chars.get(j) instanceof Enemy) {
+                        System.out.println("KOLLISION " + Server.game.getTick());
+                        Server.msgSender.killEnemy(chars.get(j).netID);
+                        chars.remove(j);
+                    }
                 }
             }
         }

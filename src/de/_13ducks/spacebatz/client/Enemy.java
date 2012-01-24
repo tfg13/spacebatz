@@ -9,8 +9,13 @@ package de._13ducks.spacebatz.client;
  * @author Joj
  */
 public class Enemy extends Char {
+    /**
+     * ID des Gegnertyps
+     */
+    private int enemytypeid = 1;
 
-    public Enemy(int netID, double x, double y) {
+    public Enemy(int netID, double x, double y, int enemytypeid) {
         super(netID, x, y);
+        this.enemytypeid = enemytypeid;
     }
 }

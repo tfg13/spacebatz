@@ -70,7 +70,7 @@ public class MessageInterpreter {
                 break;
             case 26:
                 // Neuer Gegner
-                Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8));
+                Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getFloat(message, 4), Bits.getFloat(message, 8), Bits.getInt(message, 12));
                 Client.netIDMap.put(enemy.netID, enemy);
                 break;
             case 27:
@@ -79,6 +79,10 @@ public class MessageInterpreter {
                 if (rate > 0) {
                     Client.tickrate = rate;
                 }
+                break;
+            case 28:
+                // Gegner löschen
+                Client.netIDMap.remove(Bits.getInt(message, 0));
                 break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
