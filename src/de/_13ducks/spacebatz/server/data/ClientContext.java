@@ -10,10 +10,26 @@ import java.util.HashMap;
  */
 public class ClientContext {
 
-    private HashMap<Char, Movement> moveMap;
+    private HashMap<Char, Movement> receivedMap;
+    private HashMap<Movement, Char> sentMap;
 
     public ClientContext() {
-        moveMap = new HashMap<>();
+        sentMap = new HashMap<>();
+        receivedMap = new HashMap<>();
+    }
+
+    /**
+     * Aufrufen, wenn ein Bewegungszustand zum Client geschickt wurde. Speichert diese Bewegung als versendet, überschreibt die möglicherweise zuletzt
+     * gesendete.
+     *
+     * @param c der Char
+     * @param m die Bewegung
+     */
+    public void sent(Char c, Movement m) {
+        if (c == null || m == null) {
+            throw new IllegalArgumentException(c + " " + m);
+        }
+        sentMap.put(m, c);
     }
 
     /**
@@ -27,19 +43,20 @@ public class ClientContext {
         if (c == null || m == null) {
             throw new IllegalArgumentException(c + " " + m);
         }
-        return m.equals(moveMap.get(c));
+        return m.equals(receivedMap.get(c));
     }
 
     /**
      * Setzt eine Bewegung als bekannt.
      *
-     * @param c die Einheit
-     * @param m die Bewegung
+     * @param movementHash der hashCode-Wert dieses Movements
      */
-    public void makeKnown(Char c, Movement m) {
-        if (c == null || m == null) {
-            throw new IllegalArgumentException(c + " " + m);
+    public void makeKnown(int movementHash) {
+        for (Movement m : sentMap.keySet()) {
+            if (m.hashCode() == movementHash) {
+                // Gefunden!
+                receivedMap.put(sentMap.get(m), m);
+            }
         }
-        moveMap.put(c, m);
     }
 }

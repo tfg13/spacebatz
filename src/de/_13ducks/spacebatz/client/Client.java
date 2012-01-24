@@ -45,7 +45,7 @@ public class Client {
     /**
      * Die clientID, die uns der Server zugewiesen hat.
      */
-    private static int clientID;
+    private static byte clientID;
     /**
      * Die Zuordnung von netID zu Char.
      */
@@ -107,7 +107,7 @@ public class Client {
      * Gibt die ClientID, die der Server uns zugewiesen hat, zurück
      * @return unsere ClientID
      */
-    public static int getClientID() {
+    public static byte getClientID() {
         return clientID;
     }
 
@@ -115,7 +115,7 @@ public class Client {
      * Setzt die ClientID
      * @param clientID die ClientID, die der Client verwenden soll
      */
-    public static void setClientID(int clientID) {
+    public static void setClientID(byte clientID) {
         Client.clientID = clientID;
     }
 

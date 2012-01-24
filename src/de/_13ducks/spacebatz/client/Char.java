@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.shared.Movement;
+
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
@@ -72,13 +74,13 @@ public class Char {
      * @param startTick Startzeitpunkt in Logik-Ticks
      * @param speed Bewegungsgeschwindigkeit
      */
-    public void applyMove(double sX, double sY, double vX, double vY, int startTick, double speed) {
-        x = sX;
-        y = sY;
-        this.vX = vX;
-        this.vY = vY;
-        this.startTick = startTick;
-        this.speed = speed;
+    public void applyMove(Movement m) {
+        x = m.startX;
+        y = m.startY;
+        this.vX = m.vecX;
+        this.vY = m.vecY;
+        this.startTick = m.startTick;
+        this.speed = m.speed;
     }
 
     @Override

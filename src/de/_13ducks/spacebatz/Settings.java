@@ -78,6 +78,10 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_SPAWN_BULLET = 11;
     /**
+     * Bestätigung, dass eine Bewegung vom Server beim Client angekommen ist.
+     */
+    public static final byte NET_UDP_CMD_ACK_MOVE = 12;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_INPUT = -10;

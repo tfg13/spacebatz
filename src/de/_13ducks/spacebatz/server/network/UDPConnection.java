@@ -157,6 +157,10 @@ public class UDPConnection {
             case Settings.NET_UDP_CMD_REQUEST_BULLET:
                 client.getPlayer().clientShoot(Bits.getFloat(data, 6));
                 break;
+            case Settings.NET_UDP_CMD_ACK_MOVE:
+                client.getContext().makeKnown(Bits.getInt(data, 6));
+                System.out.println("Client now knows about Movement " + Bits.getInt(data, 6));
+                break;
             default:
                 System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
         }
@@ -174,6 +178,10 @@ public class UDPConnection {
                 if (!client.getContext().knows(c, c.getMovement())) {
                     // Nein, also senden
                     update.add(c);
+                    client.getContext().sent(c, c.getMovement());
+                    System.out.println("(Re-)Sending " + c.getMovement().hashCode());
+                } else {
+                    System.out.println("Client knows " + c.getMovement().hashCode() + " nothing to do!");
                 }
             }
             // Alle berechneten senden:

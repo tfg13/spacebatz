@@ -68,7 +68,7 @@ public class Game {
 
 
             if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
-                chars.add(new Enemy(posX, posY, newNetID()));
+                //chars.add(new Enemy(posX, posY, newNetID()));
             }
 
         }
