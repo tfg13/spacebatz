@@ -31,6 +31,10 @@ public class Char {
      */
     protected int damage = 1;
     /**
+     * Die Sichtweite des Chars
+     */
+    protected int sightrange = 1;
+    /**
      * Die ID des Bildes für den Char
      */
     protected int pictureID = 0;
@@ -124,7 +128,7 @@ public class Char {
      */
     public double getX() {
         if (isMoving()) {
-            return posX + ((Server.game.getTick() - moveStartTick) * speed * vecX);
+            return posX + ((Server.game.getTick() - moveStartTick) * getSpeed() * vecX);
         }
         return posX;
     }
@@ -136,7 +140,7 @@ public class Char {
      */
     public double getY() {
         if (isMoving()) {
-            return posY + ((Server.game.getTick() - moveStartTick) * speed * vecY);
+            return posY + ((Server.game.getTick() - moveStartTick) * getSpeed() * vecY);
         }
         return posY;
     }
@@ -209,7 +213,7 @@ public class Char {
 
     private void computeMovement() {
         if (isMoving()) {
-            movement = new Movement(posX, posY, vecX, vecY, moveStartTick, speed);
+            movement = new Movement(posX, posY, vecX, vecY, moveStartTick, getSpeed());
         } else {
             movement = new Movement(posX, posY, 0, 0, -1, 0);
         }
@@ -243,5 +247,12 @@ public class Char {
      */
     public int getPictureID() {
         return pictureID;
+    }
+
+    /**
+     * @return the sigthrange
+     */
+    public int getSightrange() {
+        return sightrange;
     }
 }

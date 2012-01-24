@@ -34,6 +34,8 @@ public class Enemy extends Char {
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         this.healthpoints = estats.getHealthpoints();
         this.damage = estats.getDamage();
+        this.speed = estats.getSpeed();
+        this.sightrange = estats.getSightrange();
         this.pictureID = estats.getPicture();
         
     }

@@ -31,14 +31,14 @@ public class AIManager {
                     for (int j = 0; j < Server.game.chars.size(); j++) {
                         if (Server.game.chars.get(j) instanceof Player) {
                             Char theChar = Server.game.chars.get(j);
-                            if (Settings.SERVER_MOB_AGGRO_RANGE > Distance.getDistance(mob.getX(), mob.getY(), theChar.getX(), theChar.getY())) {
+                            if (mob.getSightrange() > Distance.getDistance(mob.getX(), mob.getY(), theChar.getX(), theChar.getY())) {
                                 mob.setMyTarget(theChar);
                             }
                         }
                     }
                 } else {
                     // wenn er eins hat schaut er ob es noch in reichweite ist:
-                    if (Settings.SERVER_MOB_AGGRO_RANGE < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
+                    if (mob.getSightrange() < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
                         mob.setMyTarget(null);
                         mob.stopMovement();
                     } else {

@@ -109,10 +109,6 @@ public final class Settings {
      */
     public static final int SERVER_MAXPLAYERS = 32;
     /**
-     * Die Distanz, ab der arbeitslose Mobs Chars verfolgen
-     */
-    public static double SERVER_MOB_AGGRO_RANGE = 7.0;
-    /**
      * Die Reichweite für Kollisionen
      */
     public static double SERVER_COLLISION_DISTANCE = 1.5;
