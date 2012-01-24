@@ -93,23 +93,7 @@ public class Player extends Char {
     public void clientShoot(float angle) {
         int thistick = Server.game.getTick();
         if (thistick > AttackCooldownTick + 20) {
-            Random random = new Random(System.nanoTime());
-
-            Bullet bullet = new Bullet(thistick, getX(), getY(), angle + random.nextGaussian() * Math.PI / 16, 0.15f, Server.game.newNetID());
-            Server.game.bullets.add(bullet);
-            byte[] bytearray = new byte[25];
-
-            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
-            Bits.putInt(bytearray, 1, bullet.getSpawntick());
-            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
-            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-            Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
-            Bits.putFloat(bytearray, 17, bullet.getSpeed());
-            Bits.putInt(bytearray, 21, bullet.getNetID());
-
-            for (int i = 0; i < Server.game.clients.size(); i++) {
-                Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
-            }
+            Server.game.fireBullet(this.getX(), this.getY(), angle);
             AttackCooldownTick = thistick;
 
             //Testtesttest
