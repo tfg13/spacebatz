@@ -62,7 +62,7 @@ public class Game {
 
         // Platziert Gegner
         Random r = new Random();
-        for (int i = 0; i < 90; i++) {
+        for (int i = 0; i < 120; i++) {
             double posX = r.nextDouble() * level.getGround().length;
             double posY = r.nextDouble() * level.getGround().length;
 
