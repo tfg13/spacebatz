@@ -1,9 +1,5 @@
 package de._13ducks.spacebatz.shared;
 
-import de._13ducks.spacebatz.server.data.Wall;
-import java.util.ArrayList;
-import java.util.Random;
-
 /**
  * Beschreibt ein Level.
  *
@@ -14,13 +10,13 @@ import java.util.Random;
 public class Level implements java.io.Serializable {
 
     /**
-     * Liste der Blockierten Flächen im Level
-     */
-    private ArrayList<Wall> walls;
-    /**
      * Die Bodentexturen. Indizes der Tiles
      */
     private int[][] ground;
+    /**
+     * Kollisionskarte, true = kollision, false = frei
+     */
+    private boolean collisionMap[][];
     private int sizeX;
     private int sizeY;
     /**
@@ -35,7 +31,7 @@ public class Level implements java.io.Serializable {
         this.sizeX = xSize;
         this.sizeY = ySize;
         ground = new int[xSize][ySize];
-        walls = new ArrayList<>();
+        collisionMap = new boolean[xSize][ySize];
     }
 
     public int[][] getGround() {
@@ -47,18 +43,10 @@ public class Level implements java.io.Serializable {
     }
 
     /**
-     * Fügt eine neue Kollisionsfläche hinzu
-     * @param collision die neue Kollisionsfläche
+     * Gibt die Kollisionskarte zurück
+     * @return die Kollisionskarte
      */
-    public void addWall(Wall collision) {
-        getWalls().add(collision);
-    }
-
-    /**
-     * Gibt die Liste der Wände zurück
-     * @return die Liste der Wände
-     */
-    public ArrayList<Wall> getWalls() {
-        return walls;
+    public boolean[][] getCollisionMap() {
+        return collisionMap;
     }
 }

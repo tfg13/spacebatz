@@ -20,7 +20,7 @@ public class Char {
     /**
      * Die Bewegungsgeschwindigkeit eines Chars. Einheit: Felder/Tick
      */
-    protected double speed = .1;
+    protected double speed = .17;
     /**
      * Die Lebenspunkte des Chars
      */

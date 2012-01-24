@@ -45,10 +45,19 @@ public class LevelGenerator {
         }
 
 
-        createWall(1, 1, 2, 15, level);
-        createWall(2, 15, 15, 16, level);
-        createWall(14, 1, 15, 16, level);
-        createWall(14, 1, 1, 2, level);
+        // Wände am Levelrand
+        createWall(0, 0, 1, ySize - 1, level);
+        createWall(0, ySize - 1, xSize - 1, ySize - 2, level);
+        createWall(xSize - 1, ySize - 1, xSize - 2, 0, level);
+        createWall(xSize - 1, 0, 0, 1, level);
+
+
+
+        // "Rennstrecke"
+        createWall(19, 0, 20, 40, level);
+        createWall(20, 39, 39, 40, level);
+        createWall(40, 40, 39, 20, level);
+
 
 //        // Linien
 //        for (int i = 10; i <= 20; i++) {
@@ -149,10 +158,28 @@ public class LevelGenerator {
 
     /**
      * Erzeug eine Mauer, mit Textur UND Kollisionsinformationen
+     * @param x1 X-Koordinate des Startpunktes der Wand
+     * @param y1 Y-Koordinate des Startpunktes der Wand
+     * @param x2 X-Koordinate des Endpunktes der Wand
+     * @param y2 Y-Koordinate des Endpunktes der Wand
+     * @param level das Level, dem die Wand hinzugefügt wird
      */
     private static void createWall(int x1, int y1, int x2, int y2, Level level) {
-        Wall collision = new Wall(x1, y1, x2, y2);
+
         drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), 3);
-        level.addWall(collision);
+        setCollision(findLine(new Position(x1, y1), new Position(x2, y2)), true, level);
+    }
+
+    /**
+     * Setzt die Kollision aller Felder in einer Liste
+     * @param positions die Liste der Positionen, deren Kollision gesezt werden soll
+     * @param collision der Kollisionswert den die Felder haben sollen, true oder false
+     * @param level das Level, auf dem die funktion operieren soll
+     */
+    private static void setCollision(ArrayList<Position> positions, boolean collision, Level level) {
+        for (Position p : positions) {
+            level.getCollisionMap()[(int) p.getX()][(int) p.getY()] = collision;
+
+        }
     }
 }

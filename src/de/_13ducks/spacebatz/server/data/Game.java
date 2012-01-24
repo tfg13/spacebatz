@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Bits;
+import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -56,8 +57,23 @@ public class Game {
         level = new ServerLevel();
         bullets = new ArrayList<>();
         LevelGenerator.generateLevel(level);
-        Enemy testenemy = new Enemy(8,9, newNetID());
+        Enemy testenemy = new Enemy(8, 9, newNetID());
         chars.add(testenemy);
+
+        // Platziert Gegner
+        Random r = new Random();
+        for (int i = 0; i < 90; i++) {
+            double posX = r.nextDouble() * level.getGround().length;
+            double posY = r.nextDouble() * level.getGround().length;
+
+
+            if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
+                chars.add(new Enemy(posX, posY, newNetID()));
+            }
+
+        }
+
+
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -160,13 +176,13 @@ public class Game {
      * @param direction die Richtung, in die das Bullet fliegt
      * @param speed die Geschwindigkeit des Bullets
      */
-    public void fireBullet(double posX, double posY, double direction, float speed) {
-        // Bullet erzeugen:
-        Bullet bullet = new Bullet(tick, posX, posY, direction, speed, newNetID());
-        bullets.add(bullet);
+    public void fireBullet(double posX, double posY, double direction) {
+        Random random = new Random(System.nanoTime());
 
-        // An die Clients schicken:
+        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction + random.nextGaussian() * Math.PI / 16, 0.15f, Server.game.newNetID());
+        Server.game.bullets.add(bullet);
         byte[] bytearray = new byte[25];
+
         bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
         Bits.putInt(bytearray, 1, bullet.getSpawntick());
         Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
@@ -174,8 +190,9 @@ public class Game {
         Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
         Bits.putFloat(bytearray, 17, bullet.getSpeed());
         Bits.putInt(bytearray, 21, bullet.getNetID());
-        for (int i = 0; i < clients.size(); i++) {
-            Server.serverNetwork.udp.sendPack(bytearray, clients.get(i));
+
+        for (int i = 0; i < Server.game.clients.size(); i++) {
+            Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
         }
     }
 
