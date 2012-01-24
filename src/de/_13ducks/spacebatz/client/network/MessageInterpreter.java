@@ -184,6 +184,9 @@ public class MessageInterpreter {
                     }
                 }
                 break;
+            case 29:
+                
+                break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");
         }

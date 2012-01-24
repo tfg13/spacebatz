@@ -24,6 +24,14 @@ public class MessageSender {
     }
 
     /**
+     * Sendet enemytypes an einen Client
+     */
+    public void sendEnemyTypes(Client client) {
+        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
+        System.out.println("EnemyTypes sent, length was: " + Server.game.getSerializedEnemyTypes().length);
+    }
+
+    /**
      * Schickt dem Client einen neuen Player.
      * @param client der Ziel-Client
      * @param player der neue Player

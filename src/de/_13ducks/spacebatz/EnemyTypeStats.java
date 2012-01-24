@@ -4,7 +4,7 @@ package de._13ducks.spacebatz;
  *
  * @author Jj
  */
-public class EnemyTypeStats {
+public class EnemyTypeStats implements java.io.Serializable{
     private int healthpoints;
     private int damage;
     private int picture;

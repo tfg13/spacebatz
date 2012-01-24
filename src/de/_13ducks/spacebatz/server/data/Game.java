@@ -45,6 +45,10 @@ public class Game {
      */
     private byte[] serializedLevel;
     /**
+     * Die serialistierten enemytypes
+     */
+    private byte[] serializedEnemyTypes;
+    /**
      * Der Server-Gametick.
      */
     private int tick;
@@ -79,12 +83,28 @@ public class Game {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        // Enemytypes serialisieren, damit es später schnell an Clients gesendet werden kann:
+        ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
+        ObjectOutputStream os2;
+        try {
+            os2 = new ObjectOutputStream(bs2);
+            os2.writeObject(enemytypes);
+            os2.flush();
+            bs2.flush();
+            bs2.close();
+            os2.close();
+            serializedEnemyTypes = bs2.toByteArray();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void addEnemies() {
         Enemy testenemy = new Enemy(3, 55, newNetID(), 0);
         chars.add(testenemy);
-        
+
         // Platziert Gegner
         Random r = new Random();
         for (int i = 0; i < 90; i++) {
@@ -110,6 +130,7 @@ public class Game {
             Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
+            Server.msgSender.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
             chars.add(player);
@@ -131,6 +152,15 @@ public class Game {
      */
     public byte[] getSerializedLevel() {
         return serializedLevel;
+    }
+
+    /**
+     * Gibt die bytes des serialisierten enemytypes zurück
+     *
+     * @return die bytes des serialisierten enemytypes
+     */
+    public byte[] getSerializedEnemyTypes() {
+        return serializedEnemyTypes;
     }
 
     public int getTick() {

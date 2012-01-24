@@ -6,7 +6,7 @@ import java.util.ArrayList;
  *
  * @author ojoj
  */
-public class EnemyTypes {
+public class EnemyTypes implements java.io.Serializable{
     private ArrayList<EnemyTypeStats> enemytypelist;
     
     public EnemyTypes() {
