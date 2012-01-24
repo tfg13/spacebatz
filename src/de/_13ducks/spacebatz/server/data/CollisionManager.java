@@ -54,7 +54,6 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Wänden und Chars
      */
     private static void computeWallCollision() {
-        ArrayList<Wall> walls = Server.game.getLevel().getWalls();
         ArrayList<Char> chars = Server.game.chars;
 
         // Alle Chars, die sich bewegen auf Kollision prüfen:
@@ -64,11 +63,11 @@ public class CollisionManager {
                 double futureX = mover.posX + mover.vecX * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
                 double futureY = mover.posY + mover.vecY * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
 
-                for (Wall wall : walls) {
-                    if (wall.containsPoint(futureX, futureY)) {
-                        mover.stopMovement();
-                    }
+
+                if (Server.game.getLevel().getCollisionMap()[(int) futureX][(int) futureY] == true) {
+                    mover.stopMovement();
                 }
+
             }
         }
     }
