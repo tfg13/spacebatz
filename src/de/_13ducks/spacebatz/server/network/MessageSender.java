@@ -80,10 +80,23 @@ public class MessageSender {
         }
     }
 
-    public void killEnemy(int netID) {
+    /**
+     * Bullet trifft Char
+     * @param netIDChar netID des getroffenen Char
+     * @param damage Schaden, den die Bullet macht
+     * @param killed Ob Bullet den Char tötet
+     */
+    public void sendHitChar(int netIDChar, int damage, boolean killed) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[4];
-            Bits.putInt(b, 0, netID);
+            byte[] b = new byte[9];
+            Bits.putInt(b, 0, netIDChar);
+            Bits.putInt(b, 4, damage);
+            if (killed) {
+                b[8] = 1;
+            } else {
+                b[8] = 0;
+            }
+            b[8] = 1;
             Server.serverNetwork.sendTcpData((byte) 28, b, c);
         }
     }

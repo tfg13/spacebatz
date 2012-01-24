@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.Server;
+
 /**
  * Ein Gegner.
  *
@@ -49,5 +51,24 @@ public class Enemy extends Char {
      */
     public int getEnemytypeid() {
         return enemytypeid;
+    }
+
+    /**
+     * Zieht Schadenspunkte von HPab, returned true wenn Einheit stirbt
+     * @param Schaden, der von Healthpoints abgezogen wird
+     * @return true, wenn Enemy stirbt, sonst false
+     */
+    @Override
+    public boolean decreaseHealthpoints(int damage) {
+        System.out.println("HP: " + healthpoints + " ,Dmg: " + damage);
+        healthpoints -= damage;
+        if (healthpoints <= 0) {
+            Server.msgSender.sendHitChar(netID, damage, true);
+            Server.game.chars.remove(this);
+            return true;
+        } else {
+            Server.msgSender.sendHitChar(netID, damage, false);
+            return false;
+        }
     }
 }

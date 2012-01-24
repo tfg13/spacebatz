@@ -41,9 +41,16 @@ public class CollisionManager {
             for (int j = 0; j < chars.size(); j++) {
                 if (Math.abs(x - chars.get(j).posX) < 0.7 && Math.abs(y - chars.get(j).posY) < 0.7) {
                     if (chars.get(j) instanceof Enemy) {
-                        System.out.println("KOLLISION " + Server.game.getTick());
-                        Server.msgSender.killEnemy(chars.get(j).netID);
-                        chars.remove(j);
+                        Enemy e = (Enemy) chars.get(j);
+                        // Schaden von HP abziehen
+                        if (e.decreaseHealthpoints(bullets.get(i).getDamage())) {
+                            // Wenn Enemy stirbt, Index j um 1 zurücksetzen
+                            j--;
+                        }
+                        // Testcode: Bullet kann nur einen Gegner treffen
+                        bullets.remove(i);
+                        i--;
+                        break;
                     }
                 }
             }

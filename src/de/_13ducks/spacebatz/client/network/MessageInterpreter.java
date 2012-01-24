@@ -81,8 +81,19 @@ public class MessageInterpreter {
                 }
                 break;
             case 28:
-                // Gegner löschen
-                Client.netIDMap.remove(Bits.getInt(message, 0));
+                // Bullet trifft Char
+                int netIDChar = Bits.getInt(message, 0); // netID des getroffenen Chars
+                int damage = Bits.getInt(message, 4); // Schaden, der abgezogen wird
+                boolean killed = false; // ob char stirbt
+                if (message[8] == 1) {
+                    killed = true;
+                }
+
+                if (killed) {
+                    Client.netIDMap.remove(netIDChar);
+                } else {
+                    System.out. println("Damage" + damage);
+                }
                 break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");

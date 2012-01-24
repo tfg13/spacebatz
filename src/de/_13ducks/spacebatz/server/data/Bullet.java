@@ -28,6 +28,10 @@ public class Bullet {
      */
     private float speed;
     /*
+     * Schaden
+     */
+    private int damage;
+    /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
@@ -44,6 +48,7 @@ public class Bullet {
         this.speed = speed;
         this.deletetick = spawntick + 600; // Nach 10 Sekunden löschen
         this.netID = netID;
+        this.damage = 4;
     }
 
     /**
@@ -100,5 +105,12 @@ public class Bullet {
      */
     public int getNetID() {
         return netID;
+    }
+
+    /**
+     * @return the damage
+     */
+    public int getDamage() {
+        return damage;
     }
 }

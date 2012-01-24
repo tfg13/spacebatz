@@ -22,6 +22,10 @@ public class Char {
      */
     protected double speed = .1;
     /**
+     * Die Lebenspunkte des Chars
+     */
+    protected int healthpoints = 10;
+    /**
      * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht bewegt.
      */
     protected int moveStartTick;
@@ -200,5 +204,21 @@ public class Char {
         } else {
             movement = new Movement(posX, posY, 0, 0, -1, 0);
         }
+    }
+
+    /**
+     * @return the healthpoints
+     */
+    public int getHealthpoints() {
+        return healthpoints;
+    }
+
+    /**
+     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
+     * @param Schaden, der von Healthpoints abgezogen wird
+     * @return true, wenn Enemy stirbt, sonst false
+     */
+    public boolean decreaseHealthpoints(int damage) {
+        return false;
     }
 }
