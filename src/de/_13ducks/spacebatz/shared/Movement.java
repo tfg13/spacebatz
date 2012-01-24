@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.shared;
 
 /**
  * Repräsentiert eine Bewegung einer Einheit. Für die Netzwerksychronisierung notwendig.
@@ -10,11 +10,11 @@ public class Movement {
     /**
      * Die Startposition der Bewegung.
      */
-    public final double startX, startY;
+    public final float startX, startY;
     /**
      * Die Richtung der Bewegung, normalisiert.
      */
-    public final double vecX, vecY;
+    public final float vecX, vecY;
     /**
      * Der startTick der Bewegung. Wenn -1 wird ein Stehen repräsentiert.
      */
@@ -22,15 +22,15 @@ public class Movement {
     /**
      * Die Geschwindigkeit der Bewegung.
      */
-    public final double speed;
+    public final float speed;
 
     public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed) {
-        this.startX = startX;
-        this.startY = startY;
-        this.vecX = vecX;
-        this.vecY = vecY;
+        this.startX = (float) startX;
+        this.startY = (float) startY;
+        this.vecX = (float) vecX;
+        this.vecY = (float) vecY;
         this.startTick = startTick;
-        this.speed = speed;
+        this.speed = (float) speed;
     }
 
     @Override
@@ -49,20 +49,19 @@ public class Movement {
 
     @Override
     public int hashCode() {
-        // Wie bei equals zwischen stehend und in Bewegung unterscheiden.
         if (startTick == -1) {
-            int hash = 3;
-            hash = 83 * hash + (int) (Double.doubleToLongBits(this.startX) ^ (Double.doubleToLongBits(this.startX) >>> 32));
-            hash = 83 * hash + (int) (Double.doubleToLongBits(this.startY) ^ (Double.doubleToLongBits(this.startY) >>> 32));
+            int hash = 5;
+            hash = 47 * hash + Float.floatToIntBits(this.startX);
+            hash = 47 * hash + Float.floatToIntBits(this.startY);
             return hash;
         } else {
-            int hash = 3;
-            hash = 37 * hash + (int) (Double.doubleToLongBits(this.startX) ^ (Double.doubleToLongBits(this.startX) >>> 32));
-            hash = 37 * hash + (int) (Double.doubleToLongBits(this.startY) ^ (Double.doubleToLongBits(this.startY) >>> 32));
-            hash = 37 * hash + (int) (Double.doubleToLongBits(this.vecX) ^ (Double.doubleToLongBits(this.vecX) >>> 32));
-            hash = 37 * hash + (int) (Double.doubleToLongBits(this.vecY) ^ (Double.doubleToLongBits(this.vecY) >>> 32));
-            hash = 37 * hash + this.startTick;
-            hash = 37 * hash + (int) (Double.doubleToLongBits(this.speed) ^ (Double.doubleToLongBits(this.speed) >>> 32));
+            int hash = 5;
+            hash = 73 * hash + Float.floatToIntBits(this.startX);
+            hash = 73 * hash + Float.floatToIntBits(this.startY);
+            hash = 73 * hash + Float.floatToIntBits(this.vecX);
+            hash = 73 * hash + Float.floatToIntBits(this.vecY);
+            hash = 73 * hash + this.startTick;
+            hash = 73 * hash + Float.floatToIntBits(this.speed);
             return hash;
         }
     }

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Position;
+import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -126,7 +127,7 @@ public class ClientNetwork {
                         long packetSize = is.readLong();
                         byte data[] = new byte[(int) packetSize];
                         is.readFully(data);
-                        Client.getMsgInterpreter().interpretTcpMessage(cmdId, data);
+                        Client.getMsgInterpreter().addMessageToQueue(new TcpMessage(cmdId, data));
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -145,6 +146,7 @@ public class ClientNetwork {
                     while (true) {
                         DatagramPacket pack = new DatagramPacket(new byte[Settings.NET_UDP_STC_MAX_SIZE], Settings.NET_UDP_STC_MAX_SIZE);
                         udpSocket.receive(pack);
+                        preExecutePacket(pack);
                         insertInQueue(pack);
                     }
                 } catch (Exception ex) {
@@ -157,16 +159,46 @@ public class ClientNetwork {
         udpQueuer.start();
     }
 
+    /**
+     * Pre-Executed dieses Paket. Manche Pakete müssen schon vor ihrerer eigenen Ausführung etwas tun, z.B. wird für MOVE_UPDATEs sofort ein ACK geschickt
+     * Verhindert NICHT die normale, verzögerte Ausführung.
+     *
+     * @param pack das Datenpaket
+     */
+    private synchronized void preExecutePacket(DatagramPacket pack) {
+        byte[] data = pack.getData();
+        byte cmd = data[0];
+        switch (cmd) {
+            case Settings.NET_UDP_CMD_NORMAL_CHAR_UPDATE:
+                // Dem Server sofort bestätigen
+                byte numberOfCharUpdates = data[5];
+                for (int i = 0; i < numberOfCharUpdates; i++) {
+                    // Bewegung setzen:
+                    ackMove(new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))));
+                }
+                break;
+            default:
+            // Do nothing, per default werden Pakete nicht preExecuted
+        }
+    }
+
+    /**
+     * Steckt das Paket an die richtige Stelle in die Queue.
+     *
+     * @param pack
+     */
     private synchronized void insertInQueue(DatagramPacket pack) {
         ListIterator<DatagramPacket> iter = sortedQueue.listIterator();
         int tick = Bits.getInt(pack.getData(), 1);
+        boolean reachedEnd = true;
         while (iter.hasNext()) {
             if (Bits.getInt(iter.next().getData(), 1) > tick) {
+                reachedEnd = false;
                 break;
             }
         }
-        // Falls die Liste nicht leer ist eines zurück gehen und dann einfügen
-        if (iter.hasPrevious()) {
+        // Falls wir nicht am Ende waren eines zurück gehen
+        if (!reachedEnd) {
             iter.previous();
         }
         iter.add(pack);
@@ -226,10 +258,9 @@ public class ClientNetwork {
                     Char c = Client.netIDMap.get(netID);
                     if (c != null) {
                         // Bewegung setzen:
-                        c.applyMove(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
-                    } //else {
-                      //  System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
-                    //}
+                        Movement m = new Movement(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
+                        c.applyMove(m);
+                    }
                 }
                 break;
             case Settings.NET_UDP_CMD_SPAWN_BULLET:
@@ -246,6 +277,20 @@ public class ClientNetwork {
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");
         }
+    }
+
+    /**
+     * Bestätigt dem Server den erhalt dieses Movements
+     *
+     * @param m das erhaltene Movement
+     */
+    private void ackMove(Movement m) {
+        byte[] b = new byte[10];
+        b[0] = Client.getClientID();
+        Bits.putInt(b, 1, Client.frozenGametick);
+        b[5] = Settings.NET_UDP_CMD_ACK_MOVE;
+        Bits.putInt(b, 6, m.hashCode());
+        udpSend(b);
     }
 
     /**

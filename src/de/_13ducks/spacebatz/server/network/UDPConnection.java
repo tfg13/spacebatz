@@ -4,7 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Char;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.Movement;
+import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -157,13 +157,15 @@ public class UDPConnection {
             case Settings.NET_UDP_CMD_REQUEST_BULLET:
                 client.getPlayer().clientShoot(Bits.getFloat(data, 6));
                 break;
+            case Settings.NET_UDP_CMD_ACK_MOVE:
+                client.getContext().makeKnown(Bits.getInt(data, 6));
+                break;
             default:
                 System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
         }
     }
 
     private void sendData() {
-        List<Char> chars = Server.game.chars;
         Iterator<Client> iter = clientMap.values().iterator();
         while (iter.hasNext()) {
             Client client = iter.next();
@@ -174,13 +176,14 @@ public class UDPConnection {
                 if (!client.getContext().knows(c, c.getMovement())) {
                     // Nein, also senden
                     update.add(c);
+                    client.getContext().sent(c, c.getMovement());
                 }
             }
             // Alle berechneten senden:
-            int leftToSend = chars.size();
+            int leftToSend = update.size();
             while (leftToSend > 0) {
                 byte[] packet = new byte[32 + (32 * (leftToSend > 15 ? 15 : leftToSend))];
-                packChar(packet, chars, (byte) (leftToSend > 15 ? 15 : leftToSend), leftToSend > 15 ? leftToSend - 15 : 0);
+                packChar(packet, update, (byte) (leftToSend > 15 ? 15 : leftToSend), leftToSend > 15 ? leftToSend - 15 : 0);
                 sendPack(packet, client);
                 leftToSend -= 15;
             }
@@ -207,17 +210,17 @@ public class UDPConnection {
             // NETID
             Bits.putInt(packet, 32 + (i * 32), chars.get(offset + i).netID);
             // X
-            Bits.putFloat(packet, 36 + (i * 32), (float) m.startX);
+            Bits.putFloat(packet, 36 + (i * 32), m.startX);
             // Y
-            Bits.putFloat(packet, 40 + (i * 32), (float) m.startY);
+            Bits.putFloat(packet, 40 + (i * 32), m.startY);
             // vecX
-            Bits.putFloat(packet, 44 + (i * 32), (float) m.vecX);
+            Bits.putFloat(packet, 44 + (i * 32), m.vecX);
             // vecY
-            Bits.putFloat(packet, 48 + (i * 32), (float) m.vecY);
+            Bits.putFloat(packet, 48 + (i * 32), m.vecY);
             // StartTick
             Bits.putInt(packet, 52 + (i * 32), m.startTick);
             // Speed
-            Bits.putFloat(packet, 56 + (i * 32), (float) m.speed);
+            Bits.putFloat(packet, 56 + (i * 32), m.speed);
         }
     }
 

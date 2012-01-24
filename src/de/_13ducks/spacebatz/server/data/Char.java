@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.server.Server;
 
 /**
