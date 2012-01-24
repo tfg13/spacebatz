@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Bits;
@@ -32,6 +33,10 @@ public class Game {
      */
     public ArrayList<Bullet> bullets;
     /**
+     * Liste aller Gegnertypen
+     */
+    public EnemyTypes enemytypes;
+    /**
      * Das Level
      */
     private ServerLevel level;
@@ -56,24 +61,8 @@ public class Game {
         chars = new ArrayList<>();
         level = new ServerLevel();
         bullets = new ArrayList<>();
+        enemytypes = new EnemyTypes();
         LevelGenerator.generateLevel(level);
-        Enemy testenemy = new Enemy(8, 9, newNetID());
-        chars.add(testenemy);
-
-        // Platziert Gegner
-        Random r = new Random();
-        for (int i = 0; i < 90; i++) {
-            double posX = r.nextDouble() * level.getGround().length;
-            double posY = r.nextDouble() * level.getGround().length;
-
-
-            if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
-                chars.add(new Enemy(posX, posY, newNetID()));
-            }
-
-        }
-
-
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -89,6 +78,24 @@ public class Game {
 
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void addEnemies() {
+        Enemy testenemy = new Enemy(3, 55, newNetID(), 0);
+        chars.add(testenemy);
+        
+        // Platziert Gegner
+        Random r = new Random();
+        for (int i = 0; i < 90; i++) {
+            double posX = r.nextDouble() * level.getGround().length;
+            double posY = r.nextDouble() * level.getGround().length;
+
+
+            if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
+                chars.add(new Enemy(posX, posY, newNetID(), 1));
+            }
+
         }
     }
 

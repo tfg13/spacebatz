@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.EnemyTypeStats;
 import de._13ducks.spacebatz.server.Server;
 
 /**
@@ -12,7 +13,7 @@ public class Enemy extends Char {
     /**
      * ID des Gegnertyps
      */
-    private int enemytypeid = 1;
+    private int enemytypeID = 0;
     /**
      * Der Char, den dieser Enemy gerade verfolgt
      */
@@ -23,11 +24,18 @@ public class Enemy extends Char {
      *
      * @param x Startkoordinate X
      * @param y Startkoordinate Y
-     * @param id netID, nicht mehr änderbar.
+     * @param netid netID, nicht mehr änderbar.
+     * @param typeid typeID gibt Gegnertyp an
      */
-    public Enemy(double x, double y, int id) {
-        super(x, y, id);
+    public Enemy(double x, double y, int netid, int enemytypeID) {
+        super(x, y, netid);
         speed = .045;
+        this.enemytypeID = enemytypeID;
+        EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
+        this.healthpoints = estats.getHealthpoints();
+        this.damage = estats.getDamage();
+        this.pictureID = estats.getPicture();
+        
     }
 
     /**
@@ -50,7 +58,7 @@ public class Enemy extends Char {
      * @return the enemytypeid
      */
     public int getEnemytypeid() {
-        return enemytypeid;
+        return enemytypeID;
     }
 
     /**

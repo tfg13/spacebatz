@@ -38,6 +38,7 @@ public final class Server {
      */
     public static void startServer() {
         game = new Game();
+        game.addEnemies();
         serverNetwork.startServer();
 
         MainLoop mainLoop = new MainLoop();

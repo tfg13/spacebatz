@@ -26,6 +26,14 @@ public class Char {
      */
     protected int healthpoints = 10;
     /**
+     * Der Schaden des Chars
+     */
+    protected int damage = 1;
+    /**
+     * Die ID des Bildes für den Char
+     */
+    protected int pictureID = 0;
+    /**
      * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht bewegt.
      */
     protected int moveStartTick;
@@ -220,5 +228,19 @@ public class Char {
      */
     public boolean decreaseHealthpoints(int damage) {
         return false;
+    }
+
+    /**
+     * @return the healthpoints
+     */
+    public int getDamage() {
+        return damage;
+    }
+
+    /**
+     * @return the pictureID
+     */
+    public int getPictureID() {
+        return pictureID;
     }
 }
