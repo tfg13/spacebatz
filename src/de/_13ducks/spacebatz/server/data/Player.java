@@ -97,9 +97,9 @@ public class Player extends Char {
             AttackCooldownTick = thistick;
 
             //Testtesttest
-            Enemy enemy = new Enemy(5, 5, Server.game.newNetID());
-            Server.game.chars.add(enemy);
-            Server.msgSender.sendNewEnemy(enemy);
+//            Enemy enemy = new Enemy(5, 5, Server.game.newNetID());
+//            Server.game.chars.add(enemy);
+//            Server.msgSender.sendNewEnemy(enemy);
         }
     }
 }

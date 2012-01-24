@@ -91,6 +91,7 @@ public class MessageInterpreter {
 
                 if (killed) {
                     Client.netIDMap.remove(netIDChar);
+                    System.out.println("Client kill");
                 } else {
                     System.out. println("Damage" + damage);
                 }

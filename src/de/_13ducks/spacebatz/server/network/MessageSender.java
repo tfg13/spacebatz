@@ -96,7 +96,6 @@ public class MessageSender {
             } else {
                 b[8] = 0;
             }
-            b[8] = 1;
             Server.serverNetwork.sendTcpData((byte) 28, b, c);
         }
     }

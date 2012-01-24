@@ -65,6 +65,7 @@ public class Enemy extends Char {
         if (healthpoints <= 0) {
             Server.msgSender.sendHitChar(netID, damage, true);
             Server.game.chars.remove(this);
+            System.out.println("Server kill");
             return true;
         } else {
             Server.msgSender.sendHitChar(netID, damage, false);

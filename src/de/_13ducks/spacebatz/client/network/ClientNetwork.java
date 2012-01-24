@@ -227,9 +227,9 @@ public class ClientNetwork {
                     if (c != null) {
                         // Bewegung setzen:
                         c.applyMove(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
-                    } else {
-                        System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
-                    }
+                    } //else {
+                      //  System.out.println("WARNING: CHAR_UPDATE for unknown char (id was " + netID + ")");
+                    //}
                 }
                 break;
             case Settings.NET_UDP_CMD_SPAWN_BULLET:
