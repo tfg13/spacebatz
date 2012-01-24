@@ -73,30 +73,6 @@ public class Engine {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
-
-            // Fähigkeiten ausgeben, bleibt mal noch drin.
-            ContextCapabilities con = GLContext.getCapabilities();
-            boolean FBOEnabled = con.GL_EXT_framebuffer_object;
-            System.out.println("OpenGL Major Version Support:");
-            System.out.println("OpenGL 1.1 Support: " + con.OpenGL11);
-            System.out.println("OpenGL 1.2 Support: " + con.OpenGL12);
-            System.out.println("OpenGL 1.3 Support: " + con.OpenGL13);
-            System.out.println("OpenGL 1.4 Support: " + con.OpenGL14);
-            System.out.println("OpenGL 1.5 Support: " + con.OpenGL15);
-            System.out.println("OpenGL 2.0 Support: " + con.OpenGL20);
-            System.out.println("OpenGL 2.1 Support: " + con.OpenGL21);
-            System.out.println("OpenGL 3.0 Support: " + con.OpenGL30);
-            System.out.println("OpenGL 3.1 Support: " + con.OpenGL31);
-            System.out.println("OpenGL 3.2 Support: " + con.OpenGL32);
-            System.out.println("OpenGL 3.3 Support: " + con.OpenGL33);
-            System.out.println("OpenGL 4.0 Support: " + con.OpenGL40);
-            System.out.println("OpenGL 4.1 Support: " + con.OpenGL41);
-            System.out.println("OpenGL 4.2 Support: " + con.OpenGL42);
-            System.out.println("---------------------------------------------");
-            System.out.println("Individual Feature support:");
-            System.out.println("FBO-Support: " + FBOEnabled);
-            System.out.println("VBO-Support: " + con.GL_ARB_vertex_buffer_object);
-            System.out.println("Max Number of VBO-Vertices: " + GL12.GL_MAX_ELEMENTS_VERTICES);
         } catch (LWJGLException ex) {
             ex.printStackTrace();
             return;
