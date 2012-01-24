@@ -92,7 +92,7 @@ public class Player extends Char {
 
     public void clientShoot(float angle) {
         int thistick = Server.game.getTick();
-        if (thistick > AttackCooldownTick + 20) {
+        if (thistick > AttackCooldownTick + 5) {
             Server.game.fireBullet(this.getX(), this.getY(), angle);
             AttackCooldownTick = thistick;
 

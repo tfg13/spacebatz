@@ -48,7 +48,7 @@ public class Bullet {
         this.speed = speed;
         this.deletetick = spawntick + 600; // Nach 10 Sekunden löschen
         this.netID = netID;
-        this.damage = 4;
+        this.damage = 3;
     }
 
     /**
