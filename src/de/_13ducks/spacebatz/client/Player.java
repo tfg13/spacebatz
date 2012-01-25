@@ -11,7 +11,7 @@ package de._13ducks.spacebatz.client;
  */
 public class Player extends Char {
 
-    public Player(int netID, double x, double y) {
-        super(netID, x, y);
+    public Player(int netID) {
+        super(netID);
     }
 }

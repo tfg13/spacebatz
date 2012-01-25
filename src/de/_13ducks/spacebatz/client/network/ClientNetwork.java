@@ -173,8 +173,11 @@ public class ClientNetwork {
                 // Dem Server sofort bestätigen
                 byte numberOfCharUpdates = data[5];
                 for (int i = 0; i < numberOfCharUpdates; i++) {
-                    // Bewegung setzen:
-                    ackMove(new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))));
+                    // Ist diese Einheit bekannt (kann ihre Position gesetzt werden?)
+                    if (Client.netIDMap.containsKey(Bits.getInt(data, 32 + (32 * i)))) {
+                        // Bestätigung verschicken.
+                        ackMove(new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))));
+                    }
                 }
                 break;
             default:

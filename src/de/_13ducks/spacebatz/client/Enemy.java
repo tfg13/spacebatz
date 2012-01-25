@@ -14,8 +14,8 @@ public class Enemy extends Char {
      */
     private int enemytypeid = 1;
 
-    public Enemy(int netID, double x, double y, int enemytypeid) {
-        super(netID, x, y);
+    public Enemy(int netID, int enemytypeid) {
+        super(netID);
         this.enemytypeid = enemytypeid;
     }
 
