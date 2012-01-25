@@ -28,7 +28,7 @@ public class Enemy extends Char {
      * @param typeid typeID gibt Gegnertyp an
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
-        super(x, y, netid);
+        super(x, y, netid, (byte) 3);
         speed = .045;
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);

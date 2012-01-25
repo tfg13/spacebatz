@@ -1,9 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.Bits;
-import java.util.Random;
 
 /**
  *
@@ -20,7 +17,7 @@ public class Player extends Char {
      * @param client der Client, dem dieser Player gehören soll.
      */
     public Player(double x, double y, int id, Client client) {
-        super(x, y, id);
+        super(x, y, id, (byte) 2);
         client.setPlayer(this);
     }
 
