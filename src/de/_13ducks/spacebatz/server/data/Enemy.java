@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.EnemyTypeStats;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Ein Gegner.
@@ -85,5 +86,15 @@ public class Enemy extends Char {
             Server.msgSender.sendHitChar(netID, netIDBullet, false);
             return false;
         }
+    }
+
+    @Override
+    protected int byteArraySize() {
+        return super.byteArraySize() + 4;
+    }
+
+    @Override
+    public void netPack(byte[] b) {
+        Bits.putInt(b, super.byteArraySize(), enemytypeID);
     }
 }
