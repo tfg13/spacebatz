@@ -191,6 +191,7 @@ public class Engine {
     private void render() {
         long tick = Client.frozenGametick;
         //Client.incrementGametick();
+        
         panX = (float) -Client.getPlayer().getX() + tilesX / 2;
         panY = (float) -Client.getPlayer().getY() + tilesY / 2;
 
@@ -229,13 +230,13 @@ public class Engine {
                 }
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * tilex, 0);
-                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
+                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
                 glTexCoord2f(0.0625f * (2 + tilex), 0);
-                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
+                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
                 glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * 2);
-                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
+                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
                 glTexCoord2f(0.0625f * tilex, 0.0625f * 2);
-                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
+                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
             }
         }
@@ -247,13 +248,13 @@ public class Engine {
                 int dir = c.getDir();
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * dir, 0);
-                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY + 2, 0);
+                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
                 glTexCoord2f(0.0625f * (2 + dir), 0);
-                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY + 2, 0);
+                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
                 glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
-                glVertex3f((float) c.getX() + panX + 2, (float) c.getY() + panY, 0);
+                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
                 glTexCoord2f(0.0625f * dir, 0.0625f * 2);
-                glVertex3f((float) c.getX() + panX, (float) c.getY() + panY, 0);
+                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
             }
         }
@@ -277,13 +278,13 @@ public class Engine {
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
-                glVertex3f(x + panX, y + panY, 0);
+                glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
                 glTexCoord2f(v + 0.25f, w + 0.25f);
-                glVertex3f(x + 1 + panX, y + panY, 0);
+                glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
                 glTexCoord2f(v + 0.25f, w);
-                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
                 glTexCoord2f(v, w);
-                glVertex3f(x + panX, y + 1 + panY, 0);
+                glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
 
             }
