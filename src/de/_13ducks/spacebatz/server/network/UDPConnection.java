@@ -158,7 +158,7 @@ public class UDPConnection {
                 client.getPlayer().clientShoot(Bits.getFloat(data, 6));
                 break;
             case Settings.NET_UDP_CMD_ACK_MOVE:
-                client.getContext().makeKnown(Bits.getInt(data, 6));
+                client.getContext().makeMovementKnown(Bits.getInt(data, 6));
                 break;
             default:
                 System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
@@ -173,10 +173,10 @@ public class UDPConnection {
             ArrayList<Char> update = new ArrayList<>();
             for (Char c : Server.game.chars) {
                 // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
-                if (!client.getContext().knows(c, c.getMovement())) {
+                if (!client.getContext().knowsMovement(c, c.getMovement())) {
                     // Nein, also senden
                     update.add(c);
-                    client.getContext().sent(c, c.getMovement());
+                    client.getContext().sentMovement(c, c.getMovement());
                 }
             }
             // Alle berechneten senden:

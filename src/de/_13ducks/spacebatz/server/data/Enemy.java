@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.EnemyTypeStats;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Ein Gegner.
@@ -28,7 +29,7 @@ public class Enemy extends Char {
      * @param typeid typeID gibt Gegnertyp an
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
-        super(x, y, netid);
+        super(x, y, netid, (byte) 3);
         speed = .045;
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
@@ -85,5 +86,15 @@ public class Enemy extends Char {
             Server.msgSender.sendHitChar(netID, netIDBullet, false);
             return false;
         }
+    }
+
+    @Override
+    protected int byteArraySize() {
+        return super.byteArraySize() + 4;
+    }
+
+    @Override
+    public void netPack(byte[] b) {
+        Bits.putInt(b, super.byteArraySize(), enemytypeID);
     }
 }

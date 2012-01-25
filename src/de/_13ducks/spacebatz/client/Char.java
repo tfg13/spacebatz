@@ -33,10 +33,10 @@ public class Char {
      */
     private int startTick;
 
-    public Char(int netID, double x, double y) {
+    public Char(int netID) {
         this.netID = netID;
-        this.x = x;
-        this.y = y;
+        this.x = 0;
+        this.y = 0;
     }
 
     /**
