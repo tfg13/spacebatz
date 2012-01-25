@@ -1,10 +1,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.Bullet;
-import de._13ducks.spacebatz.client.Char;
-import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Position;
+import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -180,6 +177,10 @@ public class ClientNetwork {
                     }
                 }
                 break;
+            case Settings.NET_UDP_CMD_ADD_CHAR:
+                // Sofort bestätigen
+                ackChar(Bits.getInt(data, 33));
+                break;
             default:
             // Do nothing, per default werden Pakete nicht preExecuted
         }
@@ -277,6 +278,23 @@ public class ClientNetwork {
                 Bullet bullet = new Bullet(spawntick, new Position(posx, posy), direction, speed, netID);
                 Client.getBulletList().add(bullet);
                 break;
+            case Settings.NET_UDP_CMD_ADD_CHAR:
+                if (!Client.netIDMap.containsKey(Bits.getInt(pack, 33))) {
+                    byte type = pack[32];
+                    switch (type) {
+                        case 2:
+                            Player pl = new Player(Bits.getInt(pack, 33));
+                            Client.netIDMap.put(pl.netID, pl);
+                            break;
+                        case 3:
+                            Enemy en = new Enemy(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
+                            Client.netIDMap.put(en.netID, en);
+                            break;
+                        default:
+                            System.out.println("WARN: Unknown charTypeID (was " + type + ")");
+                    }
+                }
+                break;
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");
         }
@@ -293,6 +311,20 @@ public class ClientNetwork {
         Bits.putInt(b, 1, Client.frozenGametick);
         b[5] = Settings.NET_UDP_CMD_ACK_MOVE;
         Bits.putInt(b, 6, m.hashCode());
+        udpSend(b);
+    }
+
+    /**
+     * Bestätigt dem Server den erhalt dieses Chars
+     *
+     * @param netID
+     */
+    private void ackChar(int netID) {
+        byte[] b = new byte[10];
+        b[0] = Client.getClientID();
+        Bits.putInt(b, 1, Client.frozenGametick);
+        b[5] = Settings.NET_UDP_CMD_ACK_CHAR;
+        Bits.putInt(b, 6, netID);
         udpSend(b);
     }
 

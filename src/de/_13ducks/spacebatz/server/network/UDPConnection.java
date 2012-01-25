@@ -160,6 +160,9 @@ public class UDPConnection {
             case Settings.NET_UDP_CMD_ACK_MOVE:
                 client.getContext().makeMovementKnown(Bits.getInt(data, 6));
                 break;
+            case Settings.NET_UDP_CMD_ACK_CHAR:
+                client.getContext().makeCharKnown(Bits.getInt(data, 6));
+                break;
             default:
                 System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
         }
@@ -172,6 +175,11 @@ public class UDPConnection {
             //TODO: Berechnen, welche chars dieser client wirklich sieht:
             ArrayList<Char> update = new ArrayList<>();
             for (Char c : Server.game.chars) {
+                // Kennt der Client diese Einheit?
+                if (!client.getContext().knowsChar(c)) {
+                    // Senden
+                    sendNewChar(client, c);
+                }
                 // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
                 if (!client.getContext().knowsMovement(c, c.getMovement())) {
                     // Nein, also senden
@@ -188,6 +196,19 @@ public class UDPConnection {
                 leftToSend -= 15;
             }
         }
+    }
+
+    /**
+     * Senden dem Client eine Nachricht, die ihn über die Existenz eines neuen Chars informiert.
+     * @param client der Client
+     * @param c der Char
+     */
+    private void sendNewChar(Client client, Char c) {
+        byte[] b = new byte[c.byteArraySize() + 32];
+        b[0] = Settings.NET_UDP_CMD_ADD_CHAR;
+        Bits.putInt(b, 1, Server.game.getTick());
+        c.netPack(b, 32);
+        sendPack(b, client);
     }
 
     /**

@@ -13,12 +13,12 @@ public class ClientContext {
 
     private HashMap<Char, Movement> receivedMap;
     private HashMap<Movement, Char> sentMap;
-    private HashSet<Char> knownCharMap;
+    private HashSet<Integer> charMap;
 
     public ClientContext() {
         sentMap = new HashMap<>();
         receivedMap = new HashMap<>();
-        knownCharMap = new HashSet<>();
+        charMap = new HashSet<>();
     }
 
     /**
@@ -70,7 +70,7 @@ public class ClientContext {
      * @return true, wenn bekannt, sonst false.
      */
     public boolean knowsChar(Char c) {
-        return knownCharMap.contains(c);
+        return charMap.contains(c.netID);
     }
 
     /**
@@ -78,9 +78,9 @@ public class ClientContext {
      * In Zukunft wird knowsChar also true liefern.
      * @param c der ab sofort bekannte Char.
      */
-    public void makeCharKnown(Char c) {
-        if (!knownCharMap.contains(c)) {
-            knownCharMap.add(c);
+    public void makeCharKnown(int netID) {
+        if (!charMap.contains(netID)) {
+            charMap.add(netID);
         }
     }
 }
