@@ -268,8 +268,8 @@ public abstract class Char {
      * Die Größe darf 512 - 32 auf keinen Fall überschreiten!
      * @return die größe des byte[]'s, das netPack() braucht.
      */
-    protected int byteArraySize() {
-        return 4;
+    public int byteArraySize() {
+        return 5;
     }
 
     /**
@@ -280,6 +280,7 @@ public abstract class Char {
      * @param b der Puffer, in den geschrieben ist.
      */
     public void netPack(byte[] b, int offset) {
-        Bits.putInt(b, offset, netID);
+        b[offset] = charTypeID;
+        Bits.putInt(b, offset + 1, netID);
     }
 }

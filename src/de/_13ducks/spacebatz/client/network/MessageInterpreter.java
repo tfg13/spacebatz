@@ -135,21 +135,6 @@ public class MessageInterpreter {
                 // ClientID setzen
                 Client.setClientID(message[0]);
                 break;
-            case 24:
-                // Neuer, fremder Player
-                Player np = new Player(Bits.getInt(message, 0));
-                Client.netIDMap.put(np.netID, np);
-                break;
-            case 25:
-                // Fremder Player mit Position
-                Player np2 = new Player(Bits.getInt(message, 0));
-                Client.netIDMap.put(np2.netID, np2);
-                break;
-            case 26:
-                // Neuer Gegner
-                Enemy enemy = new Enemy(Bits.getInt(message, 0), Bits.getInt(message, 12));
-                Client.netIDMap.put(enemy.netID, enemy);
-                break;
             case 27:
                 // Tickrate
                 int rate = Bits.getInt(message, 0);

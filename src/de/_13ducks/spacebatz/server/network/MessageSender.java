@@ -2,9 +2,7 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.Char;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.Enemy;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -63,32 +61,6 @@ public class MessageSender {
     }
 
     /**
-     * Benachrichtigt alle ANDEREN Clients, dass es einen neuen Player gibt.
-     * @param client der Client, dem das NICHT geschickt wird.
-     */
-    public void sendNewPlayer(Client client) {
-        for (Client c : Server.game.clients.values()) {
-            if (c.equals(client)) {
-                continue; // Der weiß das schon...
-            }
-            byte[] b = new byte[4];
-            Bits.putInt(b, 0, client.getPlayer().netID);
-            Server.serverNetwork.sendTcpData((byte) 24, b, c);
-        }
-    }
-
-    public void sendNewEnemy(Enemy enemy) {
-        for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[16];
-            Bits.putInt(b, 0, enemy.netID);
-            Bits.putFloat(b, 4, (float) enemy.getX());
-            Bits.putFloat(b, 8, (float) enemy.getY());
-            Bits.putInt(b, 12, enemy.getEnemytypeid());
-            Server.serverNetwork.sendTcpData((byte) 26, b, c);
-        }
-    }
-
-    /**
      * Bullet trifft Char
      * @param netIDChar netID des getroffenen Char
      * @param netIDBullet netID des Bullets
@@ -105,30 +77,6 @@ public class MessageSender {
                 b[8] = 0;
             }
             Server.serverNetwork.sendTcpData((byte) 28, b, c);
-        }
-    }
-
-    public void sendAllChars(Client client) {
-        for (Char c : Server.game.chars) {
-            if (c.equals(client.getPlayer())) {
-                continue; // Den eigenen nicht.
-            }
-
-            if (c instanceof Player) {
-                byte[] b = new byte[12];
-                Bits.putInt(b, 0, c.netID);
-                Bits.putFloat(b, 4, (float) c.getX());
-                Bits.putFloat(b, 8, (float) c.getY());
-                Server.serverNetwork.sendTcpData((byte) 25, b, client);
-            } else {
-                byte[] b = new byte[16];
-                Bits.putInt(b, 0, c.netID);
-                Bits.putFloat(b, 4, (float) c.getX());
-                Bits.putFloat(b, 8, (float) c.getY());
-                Enemy e = (Enemy) c;
-                Bits.putInt(b, 12, e.getEnemytypeid());
-                Server.serverNetwork.sendTcpData((byte) 26, b, client);
-            }
         }
     }
 

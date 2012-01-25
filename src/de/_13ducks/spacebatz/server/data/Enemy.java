@@ -89,12 +89,13 @@ public class Enemy extends Char {
     }
 
     @Override
-    protected int byteArraySize() {
+    public int byteArraySize() {
         return super.byteArraySize() + 4;
     }
 
     @Override
     public void netPack(byte[] b, int offset) {
+        super.netPack(b, offset);
         Bits.putInt(b, super.byteArraySize() + offset, enemytypeID);
     }
 }

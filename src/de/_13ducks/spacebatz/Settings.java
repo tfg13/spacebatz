@@ -78,9 +78,17 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_SPAWN_BULLET = 11;
     /**
+     * Char einfügen.
+     */
+    public static final byte NET_UDP_CMD_ADD_CHAR = 12;
+    /**
      * Bestätigung, dass eine Bewegung vom Server beim Client angekommen ist.
      */
-    public static final byte NET_UDP_CMD_ACK_MOVE = 12;
+    public static final byte NET_UDP_CMD_ACK_MOVE = -12;
+    /**
+     * Bestätigung, dass das Erstellen einer Einheit beim Client angekommen ist.
+     */
+    public static final byte NET_UDP_CMD_ACK_CHAR = -13;
     /**
      * Normales Input-an-Server-Schicken.
      */

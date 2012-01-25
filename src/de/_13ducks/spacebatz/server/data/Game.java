@@ -141,9 +141,6 @@ public class Game {
             // Dem Client die Tickrate schicken:
             Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);
-            Server.msgSender.sendNewPlayer(client);
-            // Diesem Client alle anderen (alten) Chars schicken:
-            Server.msgSender.sendAllChars(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
