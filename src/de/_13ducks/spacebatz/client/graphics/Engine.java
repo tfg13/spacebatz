@@ -279,11 +279,11 @@ public class Engine {
                 glTexCoord2f(v, w + 0.25f);
                 glVertex3f(x + panX, y + panY, 0);
                 glTexCoord2f(v + 0.25f, w + 0.25f);
-                glVertex3f(x + 2 + panX, y + panY, 0);
+                glVertex3f(x + 1 + panX, y + panY, 0);
                 glTexCoord2f(v + 0.25f, w);
-                glVertex3f(x + 2 + panX, y + 2 + panY, 0);
+                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
                 glTexCoord2f(v, w);
-                glVertex3f(x + panX, y + 2 + panY, 0);
+                glVertex3f(x + panX, y + 1 + panY, 0);
                 glEnd(); // Zeichnen des QUADs fertig } }
 
             }

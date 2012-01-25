@@ -220,7 +220,7 @@ public class Game {
     public void fireBullet(double posX, double posY, double direction) {
         Random random = new Random(System.nanoTime());
 
-        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction + random.nextGaussian() * Math.PI / 64, 0.25f, Server.game.newNetID());
+        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction + random.nextGaussian() * Math.PI / 64 * 0, 0.25f, Server.game.newNetID());
         Server.game.bullets.add(bullet);
         byte[] bytearray = new byte[25];
 
