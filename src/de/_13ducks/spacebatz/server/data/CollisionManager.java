@@ -34,6 +34,7 @@ public class CollisionManager {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             
+            // Bullet muss nach bestimmter Zeit gelöscht werden
             if (Server.game.getTick() > bullet.getSpawntick() + 60) {
                 bullets.remove(i);
                 i--;
@@ -52,6 +53,8 @@ public class CollisionManager {
                         if (e.decreaseHealthpoints(bullets.get(i).getNetID())) {
                             // Wenn Enemy stirbt, Index j um 1 zurücksetzen
                             j--;
+                        } else {
+                            e.setMyTarget(bullet.getOwner());
                         }
                         // Testcode: Bullet kann nur einen Gegner treffen
                         bullets.remove(i);
