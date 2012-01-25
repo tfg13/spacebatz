@@ -94,7 +94,7 @@ public class Enemy extends Char {
     }
 
     @Override
-    public void netPack(byte[] b) {
-        Bits.putInt(b, super.byteArraySize(), enemytypeID);
+    public void netPack(byte[] b, int offset) {
+        Bits.putInt(b, super.byteArraySize() + offset, enemytypeID);
     }
 }

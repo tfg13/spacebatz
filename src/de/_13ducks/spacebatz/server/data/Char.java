@@ -274,12 +274,12 @@ public abstract class Char {
 
     /**
      * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array.
-     * Das Array muss mindestens byteArraySize() groß sein.
+     * Das Array muss mindestens byteArraySize() + offset groß sein.
      * Unterklassen müssen diese Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen.
-     * Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann selber den Puffer ab super.byteArraySize() -1 befüllen.
+     * Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann selber den Puffer ab super.byteArraySize() -1 + offset befüllen.
      * @param b der Puffer, in den geschrieben ist.
      */
-    public void netPack(byte[] b) {
-        Bits.putInt(b, 0, netID);
+    public void netPack(byte[] b, int offset) {
+        Bits.putInt(b, offset, netID);
     }
 }
