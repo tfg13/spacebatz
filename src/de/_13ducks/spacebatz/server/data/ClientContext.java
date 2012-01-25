@@ -25,7 +25,7 @@ public class ClientContext {
      * @param c der Char
      * @param m die Bewegung
      */
-    public void sent(Char c, Movement m) {
+    public void sentMovement(Char c, Movement m) {
         if (c == null || m == null) {
             throw new IllegalArgumentException(c + " " + m);
         }
@@ -39,7 +39,7 @@ public class ClientContext {
      * @param m die Bewegung, um die es geht.
      * @return true, wenn bekannt
      */
-    public boolean knows(Char c, Movement m) {
+    public boolean knowsMovement(Char c, Movement m) {
         if (c == null || m == null) {
             throw new IllegalArgumentException(c + " " + m);
         }
@@ -51,7 +51,7 @@ public class ClientContext {
      *
      * @param movementHash der hashCode-Wert dieses Movements
      */
-    public void makeKnown(int movementHash) {
+    public void makeMovementKnown(int movementHash) {
         for (Movement m : sentMap.keySet()) {
             if (m.hashCode() == movementHash) {
                 // Gefunden!
