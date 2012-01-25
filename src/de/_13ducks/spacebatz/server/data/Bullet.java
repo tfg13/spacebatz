@@ -9,10 +9,11 @@ package de._13ducks.spacebatz.server.data;
  * @author J.K.
  */
 public class Bullet {
+    private Char owner;
+    
     /*
      * Tick, in dem die Bullet erstellt wurde
      */
-
     private int spawntick;
     /*
      * Ort, an dem die Bullet erstellt wurde
@@ -40,15 +41,16 @@ public class Bullet {
      */
     private int netID;
 
-    public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, float speed, int netID) {
+    public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, float speed, int netID, Char owner) {
         this.spawntick = spawntick;
         this.spawnposx = spawnposx;
         this.spawnposy = spawnposy;
         this.direction = direction;
         this.speed = speed;
-        this.deletetick = spawntick + 60; // Nach 5 Sekunden löschen
+        this.deletetick = spawntick + 60; // Nach 1 Sekunde löschen
         this.netID = netID;
         this.damage = 3;
+        this.owner = owner;
     }
 
     /**
@@ -112,5 +114,12 @@ public class Bullet {
      */
     public int getDamage() {
         return damage;
+    }
+
+    /**
+     * @return the client
+     */
+    public Char getOwner() {
+        return owner;
     }
 }

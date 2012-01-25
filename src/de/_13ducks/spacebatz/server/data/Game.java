@@ -215,12 +215,12 @@ public class Game {
      * @param posX die X-Koordinate an der das Bulelt erstellt wird
      * @param posY die Y-Koordinate an der das Bulelt erstellt wird
      * @param direction die Richtung, in die das Bullet fliegt
-     * @param speed die Geschwindigkeit des Bullets
+     * @param char Der Char, der es abgefeuert hat
      */
-    public void fireBullet(double posX, double posY, double direction) {
+    public void fireBullet(double posX, double posY, double direction, Char c) {
         Random random = new Random(System.nanoTime());
 
-        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction + random.nextGaussian() * Math.PI / 64 * 0, 0.25f, Server.game.newNetID());
+        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction + random.nextGaussian() * Math.PI / 64 * 0, 0.25f, Server.game.newNetID(), c);
         Server.game.bullets.add(bullet);
         byte[] bytearray = new byte[25];
 

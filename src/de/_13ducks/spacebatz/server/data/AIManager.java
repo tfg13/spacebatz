@@ -38,7 +38,7 @@ public class AIManager {
                     }
                 } else {
                     // wenn er eins hat schaut er ob es noch in reichweite ist:
-                    if (mob.getSightrange() < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
+                    if (mob.getSightrange() * 2 < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
                         mob.setMyTarget(null);
                         mob.stopMovement();
                     } else {
