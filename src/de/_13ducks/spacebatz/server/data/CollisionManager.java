@@ -33,6 +33,12 @@ public class CollisionManager {
         ArrayList<Char> chars = Server.game.chars;
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
+            
+            if (Server.game.getTick() > bullet.getSpawntick() + 60) {
+                bullets.remove(i);
+                i--;
+                continue;
+            }
 
             float radius = (float) bullet.getSpeed() * (Server.game.getTick() - bullet.getSpawntick());
             float x = (float) bullet.getSpawnposX() + radius * (float) Math.cos(bullet.getDirection());

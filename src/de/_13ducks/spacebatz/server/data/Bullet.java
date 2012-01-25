@@ -32,6 +32,10 @@ public class Bullet {
      */
     private int damage;
     /*
+     * Zeit, bis Bullet gelöscht wird
+     */
+    private int lifetime;
+    /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
@@ -112,5 +116,12 @@ public class Bullet {
      */
     public int getDamage() {
         return damage;
+    }
+
+    /**
+     * @return the lifetime
+     */
+    public int getLifetime() {
+        return lifetime;
     }
 }
