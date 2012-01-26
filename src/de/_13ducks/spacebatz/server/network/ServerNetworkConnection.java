@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.TcpMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -83,7 +84,7 @@ public class ServerNetworkConnection {
                 } else if (tcpReceiverStatus == RECEIVE_PACKET) {
                     int read = receiveStream.read(buffer, index, messageSize - index);
                     if (read + index == messageSize) {
-                        Server.msgInterpreter.interpretTCPMessage(buffer, myClient);
+                        Server.msgInterpreter.addTcpMessage(new TcpMessage(cmdId, buffer, myClient));
                         tcpReceiverStatus = RECEIVE_CMDID;
                         index = 0;
                         cmdId = 0;

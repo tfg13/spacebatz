@@ -1,11 +1,13 @@
-package de._13ducks.spacebatz.client.network;
+package de._13ducks.spacebatz.shared;
+
+import de._13ducks.spacebatz.server.data.Client;
 
 /**
  * Eine Klasse , um Tcp-Messages zwischenzuspeichern, bis der Hauptthread sie abarbeitet
  * 
  * @author michael
  */
-class TcpMessage {
+public class TcpMessage {
 
     /**
      * Die Kommando-ID des Packets
@@ -19,6 +21,11 @@ class TcpMessage {
      * Gibt an, ob die Nachricht schon verarbeitet wurde
      */
     private boolean computed;
+    /**
+     * Der Client, der die 'Nachricht gesendet hat
+     * (wird nur vom Server benötigt)
+     */
+    private Client sender;
 
     /**
      * Initialisiert das Packet mit Daten
@@ -29,6 +36,20 @@ class TcpMessage {
         this.cmdID = cmdID;
         this.data = data;
         computed = false;
+    }
+
+    /**
+     * Initialisiert das Packet mit Daten und einem Sender
+     * dieser Konstruktor wird vom Serve verwendet
+     * @param cmdID die KomamndoID
+     * @param data die Daten
+     * @param sender der Client der das Packet gesendet hat
+     */
+    public TcpMessage(byte cmdID, byte data[], Client sender) {
+        this.cmdID = cmdID;
+        this.data = data;
+        computed = false;
+        this.sender = sender;
     }
 
     /**
@@ -60,5 +81,13 @@ class TcpMessage {
      */
     public void setComputed() {
         this.computed = true;
+    }
+
+    /**
+     * Gibt den Client, der das Packet gesendet hat zurück
+     * @return der Client. der das Packet gesendet hat
+     */
+    public Client getSender() {
+        return sender;
     }
 }

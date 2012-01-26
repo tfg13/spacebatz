@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.shared.TcpMessage;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
