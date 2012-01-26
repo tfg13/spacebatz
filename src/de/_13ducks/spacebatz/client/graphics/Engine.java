@@ -192,8 +192,8 @@ public class Engine {
         long tick = Client.frozenGametick;
         //Client.incrementGametick();
         
-        panX = (float) -Client.getPlayer().getX() + tilesX / 2;
-        panY = (float) -Client.getPlayer().getY() + tilesY / 2;
+        panX = (float) -Client.getPlayer().getX() + tilesX / 2.0f;
+        panY = (float) -Client.getPlayer().getY() + tilesY / 2.0f;
 
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
