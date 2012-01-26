@@ -12,6 +12,7 @@ import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Die Empfangskomponente des Netzwerkmoduls
@@ -21,9 +22,9 @@ import java.util.ArrayList;
 public class MessageInterpreter {
 
     /**
-     * Puffer für eingehende Nachrichten
+     * Puffer für eingehende Tcp-Nachrichten
      */
-    private ArrayList<TcpMessage> messages;
+    private ConcurrentLinkedQueue<TcpMessage> messages;
     /**
      * Dieser Thread empfängt Tcp-Paketee, solange die Engine noch niht geladen ist
      * wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser Thrad wird deaktiviert
@@ -38,7 +39,7 @@ public class MessageInterpreter {
      * Initialisiert den Interpreter
      */
     public MessageInterpreter() {
-        messages = new ArrayList<>();
+        messages = new ConcurrentLinkedQueue<>();
 
         // Der Thread der anfangs TcpPackete empfängt:
         initTcpReceiverThread = new Thread(new Runnable() {
@@ -48,21 +49,15 @@ public class MessageInterpreter {
                 while (initTcpReceiverThreadRun) {
                     try {
 
-                        for (int i = 0; i < getMessages().size(); i++) {
-                            interpretTcpMessage(getMessages().get(i).getCmdID(), getMessages().get(i).getData());
-                            getMessages().get(i).setComputed();
+                        for (int i = 0; i < messages.size(); i++) {
+                            TcpMessage m = messages.poll();
+                            interpretTcpMessage(m.getCmdID(), m.getData());
+
                             if (!initTcpReceiverThreadRun) {
                                 break;
                             }
                         }
-                        // Die gelesene Anzahl an Nachrichten löschen.
-                        for (int i = 0; i < getMessages().size(); i++) {
-                            if (messages.get(i).isComputed()) {
-                                messages.remove(i);
-                                i--;
-                            }
 
-                        }
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
@@ -80,20 +75,18 @@ public class MessageInterpreter {
      * @param m die neue Nachricht
      */
     public void addMessageToQueue(TcpMessage m) {
-        getMessages().add(m);
+        messages.add(m);
     }
 
     /**
      * Wird vom Hauptthread aufgerufen, um alle angesammelten Tcp-Nachrichten zu berechnen
      */
     public void interpretAllTcpMessages() {
-        for (int i = 0; i < getMessages().size(); i++) {
-            interpretTcpMessage(getMessages().get(i).getCmdID(), getMessages().get(i).getData());
+        for (int i = 0; i < messages.size(); i++) {
+            TcpMessage m = messages.poll();
+            interpretTcpMessage(m.getCmdID(), m.getData());
         }
-        // Die gelesene Anzahl an Nachrichten löschen.
-        for (int i = 0; i < getMessages().size(); i++) {
-            getMessages().remove(0);
-        }
+
     }
 
     /**
@@ -193,14 +186,5 @@ public class MessageInterpreter {
      * @param message die bytes der Nachricht
      */
     public void interpretUdpMessage(byte message[]) {
-    }
-
-    /**
-     * Gibt die NachrihtenListe zurück
-     * Synchronisiert, weil Der TcpDAtaReceiverThread und der Hauptthread darauf zugreifen müssen
-     * @return die Nachrichetnliste
-     */
-    public synchronized ArrayList<TcpMessage> getMessages() {
-        return messages;
     }
 }
