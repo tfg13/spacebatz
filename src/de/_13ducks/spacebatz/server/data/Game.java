@@ -242,21 +242,7 @@ public class Game {
      * @param char Der Char, der es abgefeuert hat
      */
     public void fireBullet(double posX, double posY, double direction, Char c) {
-        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction, 0, Server.game.newNetID(), c);
-        Server.game.bullets.add(bullet);
-        byte[] bytearray = new byte[25];
 
-        bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
-        Bits.putInt(bytearray, 1, bullet.getSpawntick());
-        Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
-        Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-        Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
-        Bits.putInt(bytearray, 17, bullet.getTypeID());
-        Bits.putInt(bytearray, 21, bullet.getNetID());
-
-        for (int i = 0; i < Server.game.clients.size(); i++) {
-            Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
-        }
     }
 
     /**

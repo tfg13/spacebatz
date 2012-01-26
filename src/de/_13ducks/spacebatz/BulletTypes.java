@@ -13,6 +13,7 @@ public class BulletTypes implements java.io.Serializable{
         bullettypelist = new ArrayList<>();
         // damage, picture, numberofhits, speed, spread
         bullettypelist.add(new BulletTypeStats(3, 2, 1, 0.25f, (float) Math.PI / 80, 60));
+        bullettypelist.add(new BulletTypeStats(1, 2, 1, 0.15f, (float) 0, 60));
     }
 
     /**
