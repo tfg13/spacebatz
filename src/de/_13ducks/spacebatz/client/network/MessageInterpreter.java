@@ -146,21 +146,16 @@ public class MessageInterpreter {
                 }
 
                 if (killed) {
-                    for (int i = 0; i < Client.getBulletList().size(); i++) {
-                        if (Client.getBulletList().get(i).getNetID() == netIDBullet) {
-                            Client.getBulletList().remove(i);
-                            break;
-                        }
-                    }
                     Client.netIDMap.remove(netIDChar);
-                } else {
-                    for (int i = 0; i < Client.getBulletList().size(); i++) {
-                        if (Client.getBulletList().get(i).getNetID() == netIDBullet) {
-                            Client.getBulletList().remove(i);
-                            break;
-                        }
+                }
+
+                for (int i = 0; i < Client.getBulletList().size(); i++) {
+                    if (Client.getBulletList().get(i).getNetID() == netIDBullet) {
+                        Client.getBulletList().remove(i);
+                        break;
                     }
                 }
+
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:
                 // EnemyTypes empfangen (nur einmal)       
