@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.BulletTypeStats;
+
 /**
  * Ein Geschoss, dass vom Client gerendert werden muss
  * 
@@ -28,17 +30,23 @@ public class Bullet {
      */
     private int netID;
     /*
+     * ID vom Bullettyp
+     */
+    private int bullettypeID;
+    /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
 
-    public Bullet(int spawntick, Position spawnposition, float direction, float speed, int netID) {
+    public Bullet(int spawntick, Position spawnposition, float direction, int bullettypeID, int netID) {
+        BulletTypeStats stats = Client.bullettypes.getBullettypelist().get(bullettypeID);
         this.spawntick = spawntick;
         this.spawnposition = spawnposition;
         this.direction = direction;
-        this.speed = speed;
+        this.bullettypeID = bullettypeID;
         this.netID = netID;
-        this.deletetick = spawntick + 60; // Nach 10 Sekunden löschen
+        this.speed = stats.getSpeed();
+        this.deletetick = spawntick + stats.getLifetime(); // Nach 10 Sekunden löschen
     }
 
     /**
@@ -88,5 +96,12 @@ public class Bullet {
      */
     public int getNetID() {
         return netID;
+    }
+
+    /**
+     * @return the bullettypeID
+     */
+    public int getBullettypeID() {
+        return bullettypeID;
     }
 }

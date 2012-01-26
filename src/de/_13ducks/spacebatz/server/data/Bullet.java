@@ -4,6 +4,10 @@
  */
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.BulletTypeStats;
+import de._13ducks.spacebatz.server.Server;
+import java.util.Random;
+
 /**
  * Ein Geschoss
  * @author J.K.
@@ -33,6 +37,10 @@ public class Bullet {
      */
     private int damage;
     /*
+     * ID des BulletTypes
+     */
+    private int typeID;
+    /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
@@ -41,16 +49,20 @@ public class Bullet {
      */
     private int netID;
 
-    public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, float speed, int netID, Char owner) {
+    public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, int typeID, int netID, Char owner) {
+        Random random = new Random();
+        BulletTypeStats stats = Server.game.bullettypes.getBullettypelist().get(typeID);
+        this.typeID = typeID;
         this.spawntick = spawntick;
         this.spawnposx = spawnposx;
-        this.spawnposy = spawnposy;
-        this.direction = direction;
-        this.speed = speed;
-        this.deletetick = spawntick + 60; // Nach 1 Sekunde löschen
+        this.spawnposy = spawnposy;       
+        this.typeID = typeID;
         this.netID = netID;
-        this.damage = 3;
         this.owner = owner;
+        this.direction = direction + random.nextGaussian() * stats.getSpread();
+        this.deletetick = spawntick + stats.getLifetime();
+        this.damage = stats.getDamage();
+        this.speed = stats.getSpeed();
     }
 
     /**
@@ -121,5 +133,12 @@ public class Bullet {
      */
     public Char getOwner() {
         return owner;
+    }
+
+    /**
+     * @return the typeID
+     */
+    public int getTypeID() {
+        return typeID;
     }
 }

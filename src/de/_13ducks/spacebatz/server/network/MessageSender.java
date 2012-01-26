@@ -28,6 +28,14 @@ public class MessageSender {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
         System.out.println("EnemyTypes sent, length was: " + Server.game.getSerializedEnemyTypes().length);
     }
+    
+    /**
+     * Sendet bullettypes an einen Client
+     */
+    public void sendBulletTypes(Client client) {
+        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_BULLETTYPES, Server.game.getSerializedBulletTypes(), client);
+        System.out.println("BulletTypes sent, length was: " + Server.game.getSerializedBulletTypes().length);
+    }
 
     /**
      * Schickt dem Client einen neuen Player.

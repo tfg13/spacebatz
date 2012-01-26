@@ -273,7 +273,7 @@ public class Engine {
                 float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
                 float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
 
-                float v = 0.5f;
+                float v = Client.bullettypes.getBullettypelist().get(bullet.getBullettypeID()).getPicture() * 0.25f;
                 float w = 0.0f;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren

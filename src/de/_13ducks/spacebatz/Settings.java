@@ -100,7 +100,11 @@ public final class Settings {
     /**
      * Die cmdID für EnemyTypes-senden
      */
-    public static final byte NET_TCP_CMD_TRANSFER_ENEMYTYPES= 29;
+    public static final byte NET_TCP_CMD_TRANSFER_ENEMYTYPES = 29;
+    /**
+     * Die cmdID für EnemyTypes-senden
+     */
+    public static final byte NET_TCP_CMD_TRANSFER_BULLETTYPES = 30;
     /**
      * Normales Input-an-Server-Schicken.
      */

@@ -1,10 +1,10 @@
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.BulletTypes;
 import de._13ducks.spacebatz.shared.TcpMessage;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.Level;
@@ -168,7 +168,18 @@ public class MessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     EnemyTypes et = (EnemyTypes) is.readObject();
                     Client.enemytypes = et;
-                    System.out.println("Level received and loaded!");
+                    System.out.println("EnemyTypes received and loaded!");
+                } catch (IOException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case Settings.NET_TCP_CMD_TRANSFER_BULLETTYPES:
+                // BulletTypes empfangen (nur einmal)       
+                try {
+                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+                    BulletTypes bt = (BulletTypes) is.readObject();
+                    Client.bullettypes = bt;
+                    System.out.println("BulletTypes received and loaded!");
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
