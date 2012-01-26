@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.BulletTypes;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
@@ -37,6 +38,10 @@ public class Game {
      */
     public EnemyTypes enemytypes;
     /**
+     * Liste aller Bullettypen
+     */
+    public BulletTypes bullettypes;
+    /**
      * Das Level
      */
     private ServerLevel level;
@@ -48,6 +53,10 @@ public class Game {
      * Die serialistierten enemytypes
      */
     private byte[] serializedEnemyTypes;
+    /**
+     * Die serialistierten bullettypes
+     */
+    private byte[] serializedBulletTypes;
     /**
      * Der Server-Gametick.
      */
@@ -66,6 +75,7 @@ public class Game {
         level = new ServerLevel();
         bullets = new ArrayList<>();
         enemytypes = new EnemyTypes();
+        bullettypes = new BulletTypes();
         LevelGenerator.generateLevel(level);
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
@@ -95,6 +105,22 @@ public class Game {
             bs2.close();
             os2.close();
             serializedEnemyTypes = bs2.toByteArray();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        // Bullettypes serialisieren, damit es später schnell an Clients gesendet werden kann:
+        ByteArrayOutputStream bs3 = new ByteArrayOutputStream();
+        ObjectOutputStream os3;
+        try {
+            os3 = new ObjectOutputStream(bs3);
+            os3.writeObject(bullettypes);
+            os3.flush();
+            bs3.flush();
+            bs3.close();
+            os3.close();
+            serializedBulletTypes = bs3.toByteArray();
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -215,9 +241,7 @@ public class Game {
      * @param char Der Char, der es abgefeuert hat
      */
     public void fireBullet(double posX, double posY, double direction, Char c) {
-        Random random = new Random(System.nanoTime());
-
-        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction + random.nextGaussian() * Math.PI / 64 * 0, 0.25f, Server.game.newNetID(), c);
+        Bullet bullet = new Bullet(this.getTick(), posX, posY, direction, 0, Server.game.newNetID(), c);
         Server.game.bullets.add(bullet);
         byte[] bytearray = new byte[25];
 
@@ -247,5 +271,12 @@ public class Game {
      */
     public synchronized Char getChar(int x) {
         return chars.get(x);
+    }
+
+    /**
+     * @return the serializedBulletTypes
+     */
+    public byte[] getSerializedBulletTypes() {
+        return serializedBulletTypes;
     }
 }

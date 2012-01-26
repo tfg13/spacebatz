@@ -35,7 +35,7 @@ public class CollisionManager {
             Bullet bullet = bullets.get(i);
             
             // Bullet muss nach bestimmter Zeit gelöscht werden
-            if (Server.game.getTick() > bullet.getSpawntick() + 60) {
+            if (Server.game.getTick() > bullet.getDeletetick()) {
                 bullets.remove(i);
                 i--;
                 continue;
