@@ -273,9 +273,9 @@ public class ClientNetwork {
                 float posx = Bits.getFloat(pack, 5);
                 float posy = Bits.getFloat(pack, 9);
                 float direction = Bits.getFloat(pack, 13);
-                float speed = Bits.getFloat(pack, 17);
+                int bullettypeID = Bits.getInt(pack, 17);
                 int netID = Bits.getInt(pack, 21);
-                Bullet bullet = new Bullet(spawntick, new Position(posx, posy), direction, speed, netID);
+                Bullet bullet = new Bullet(spawntick, new Position(posx, posy), direction, bullettypeID, netID);
                 Client.getBulletList().add(bullet);
                 break;
             case Settings.NET_UDP_CMD_ADD_CHAR:

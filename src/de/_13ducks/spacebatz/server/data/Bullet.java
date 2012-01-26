@@ -134,4 +134,11 @@ public class Bullet {
     public Char getOwner() {
         return owner;
     }
+
+    /**
+     * @return the typeID
+     */
+    public int getTypeID() {
+        return typeID;
+    }
 }

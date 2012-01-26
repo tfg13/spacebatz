@@ -161,6 +161,7 @@ public class Game {
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
             Server.msgSender.sendEnemyTypes(client);
+            Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
             chars.add(player);
@@ -250,7 +251,7 @@ public class Game {
         Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
         Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
         Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
-        Bits.putFloat(bytearray, 17, bullet.getSpeed());
+        Bits.putInt(bytearray, 17, bullet.getTypeID());
         Bits.putInt(bytearray, 21, bullet.getNetID());
 
         for (int i = 0; i < Server.game.clients.size(); i++) {
