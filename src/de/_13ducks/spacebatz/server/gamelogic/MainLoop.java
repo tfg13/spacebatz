@@ -35,6 +35,9 @@ public class MainLoop {
                 while (true) {
                     // Input vom Client holen:
                     Server.serverNetwork.udp.receive();
+                    Server.msgInterpreter.interpretAllTcpMessages();
+                    // Wartende Clients akzeptieren:
+                    Server.serverNetwork.acceptPendingClients();
                     // Gamelogic berechnen:
                     calculateGameTick();
                     // Änderungen an den Server schicken.

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Die Netzwerkkomponente des Servers
@@ -30,6 +31,10 @@ public class ServerNetwork {
      * Das UDP-Netzwerksystem.
      */
     public UDPConnection udp;
+    /**
+     * Liste mit Clients, die verbunden sind und auf Bearbeitung durch die GameLogic warten
+     */
+    private ConcurrentLinkedQueue<Client> pendingClients;
 
     /**
      * Konstruktor
@@ -38,6 +43,7 @@ public class ServerNetwork {
     public ServerNetwork() {
         connections = new ArrayList<>();
         udp = new UDPConnection();
+        pendingClients = new ConcurrentLinkedQueue<>();
 
         // neuer thread, der über TCP daten empfängt:
         receiveTcpDataThread = new Thread(new Runnable() {
@@ -63,7 +69,7 @@ public class ServerNetwork {
                         Socket clientSocket = ss.accept();
                         ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
                         connections.add(client);
-                        Server.game.clientJoined(new Client(client, Server.game.newClientID()));
+                        pendingClients.add(new Client(client, Server.game.newClientID()));
                     }
 
 
@@ -76,6 +82,15 @@ public class ServerNetwork {
         clientAcceptorThread.setName("ClientAcceptorThread");
 
 
+    }
+
+    /**
+     * Akzeptiert alle wartenden Clients
+     */
+    public void acceptPendingClients() {
+        for (int i = 0; i < pendingClients.size(); i++) {
+            Server.game.clientJoined(pendingClients.poll());
+        }
     }
 
     /**
