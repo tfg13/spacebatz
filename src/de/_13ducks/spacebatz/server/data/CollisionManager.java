@@ -55,7 +55,9 @@ public class CollisionManager {
                                 // Wenn Enemy stirbt, Index j um 1 zurücksetzen
                                 j--;
                             } else {
-                                e.setMyTarget(bullet.getOwner());
+                                if (e.getMyTarget() == null) {
+                                    e.setMyTarget(bullet.getOwner());
+                                }
                             }
                         }
                         // Testcode: Bullet kann nur einen Gegner treffen
