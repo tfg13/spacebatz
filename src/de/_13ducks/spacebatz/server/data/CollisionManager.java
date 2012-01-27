@@ -22,6 +22,7 @@ public class CollisionManager {
         computeBulletCollision();
         computeWallCollision();
         computeMobCollission();
+        computeItemCollission();
 
     }
 
@@ -112,6 +113,33 @@ public class CollisionManager {
                         }
 
                     }
+                }
+            }
+
+        }
+    }
+    
+    /**
+     * Berechnet Kollision mit Items
+     */
+    private static void computeItemCollission() {
+        ArrayList<Char> chars = Server.game.chars;
+
+        // Alle Chars, die sich bewegen auf Kollision mit Items prüfen:
+        for (int i = 0; i < chars.size(); i++) {
+            Char mover = Server.game.getChar(i);
+            if (mover instanceof Player) {
+                for (int j = 0; j < Server.game.items.size(); j++) {
+                    Item item = Server.game.items.get(j);
+
+                        double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
+                        if (distance < Settings.SERVER_COLLISION_DISTANCE) {
+                            Server.game.items.remove(j);
+                            j--;
+                            System.out.println("item");
+                        }
+
+                    
                 }
             }
 

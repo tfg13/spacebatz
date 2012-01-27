@@ -43,6 +43,7 @@ public class Engine {
     private Texture playerTiles;
     private Texture enemyTiles;
     private Texture bulletTiles;
+    private Texture itemTiles;
     /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
@@ -309,5 +310,6 @@ public class Engine {
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
         enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
+        itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
     }
 }

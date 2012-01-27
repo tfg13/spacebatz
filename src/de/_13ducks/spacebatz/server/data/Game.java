@@ -33,6 +33,10 @@ public class Game {
      * Liste aller Geschosse
      */
     public ArrayList<Bullet> bullets;
+        /**
+     * Liste aller Items
+     */
+    public ArrayList<Item> items;
     /**
      * Liste aller Gegnertypen
      */
@@ -74,6 +78,7 @@ public class Game {
         chars = new ArrayList<>();
         level = new ServerLevel();
         bullets = new ArrayList<>();
+        items = new ArrayList<>();
         enemytypes = new EnemyTypes();
         bullettypes = new BulletTypes();
         LevelGenerator.generateLevel(level);
@@ -231,18 +236,6 @@ public class Game {
             }
         }
         return -1;
-    }
-
-    /**
-     * Erzeugt ein Bullet und schickt es an die Clients
-     * 
-     * @param posX die X-Koordinate an der das Bulelt erstellt wird
-     * @param posY die Y-Koordinate an der das Bulelt erstellt wird
-     * @param direction die Richtung, in die das Bullet fliegt
-     * @param char Der Char, der es abgefeuert hat
-     */
-    public void fireBullet(double posX, double posY, double direction, Char c) {
-
     }
 
     /**

@@ -81,11 +81,17 @@ public class Enemy extends Char {
         if (healthpoints <= 0) {
             Server.msgSender.sendHitChar(netID, netIDBullet, true);
             Server.game.chars.remove(this);
+            dropItem();
             return true;
         } else {
             Server.msgSender.sendHitChar(netID, netIDBullet, false);
             return false;
         }
+    }
+    
+    public void dropItem() {
+        Item item = new Item(getX(), getY(), (byte) 0, Server.game.newNetID());
+        Server.game.items.add(item);
     }
 
     @Override
