@@ -136,6 +136,7 @@ public class CollisionManager {
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         Server.game.items.remove(j);
                         j--;
+                        Server.msgSender.sendItemGrab(item.netID);
                     }
 
 

@@ -182,13 +182,23 @@ public class MessageInterpreter {
                 break;
             case Settings.NET_TCP_CMD_SPAWN_ITEM:
                 // Item wird gedroppt      
-
                 int netIDItem = Bits.getInt(message, 0); // netID des getroffenen Chars
                 byte itemtypeID = message[4]; // netID von Bullet
                 float itemx = Bits.getFloat(message, 5);
                 float itemy = Bits.getFloat(message, 9);
                 Item item = new Item(itemx, itemy, itemtypeID, netIDItem);
                 Client.getItemList().add(item);
+                break;
+            case Settings.NET_TCP_CMD_GRAB_ITEM:
+                // Item wird aufgesammelt
+                int netIDItem2 = Bits.getInt(message, 0); // netID des getroffenen Chars
+                // provisorisch:
+                for (int i = 0; i < Client.getItemList().size(); i++) {
+                    if (Client.getItemList().get(i).netID == netIDItem2) {
+                        Client.getItemList().remove(i);
+                        break;
+                    }
+                }
                 break;
 
             default:

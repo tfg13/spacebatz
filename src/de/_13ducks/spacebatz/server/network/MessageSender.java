@@ -103,6 +103,17 @@ public class MessageSender {
     }
 
     /**
+     * Item wird gedroppt
+     */
+    public void sendItemGrab(int netID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[4];
+            Bits.putInt(b, 0, netID);
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
+        }
+    }
+
+    /**
      * Sendet die Server-Tickrate an den Client.
      * @param client der Client
      */

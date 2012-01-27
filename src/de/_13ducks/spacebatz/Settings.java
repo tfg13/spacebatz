@@ -109,10 +109,14 @@ public final class Settings {
      * Die cmdID für ItemTypes-senden
      */
     public static final byte NET_TCP_CMD_TRANSFER_ITEMTYPES = 31;
-        /**
+    /**
      * Die cmdID für Item-Drop senden
      */
     public static final byte NET_TCP_CMD_SPAWN_ITEM = 32;
+    /**
+     * Die cmdID für Item-Aufsammeln senden
+     */
+    public static final byte NET_TCP_CMD_GRAB_ITEM = 33;
     /**
      * Normales Input-an-Server-Schicken.
      */
