@@ -65,6 +65,10 @@ public class Client {
      */
     private static LinkedList<Bullet> BulletList = new LinkedList<>();
     /**
+     * List für alle aktuellen Bullets.
+     */
+    private static LinkedList<Item> ItemList = new LinkedList<>();
+    /**
      * Die Logik-Tickrate.
      */
     public static int tickrate;
@@ -155,7 +159,6 @@ public class Client {
         return network;
     }
 
-    
     public static void updateGametick() {
         frozenGametick = gametick;
     }
@@ -170,5 +173,12 @@ public class Client {
                 gametick++;
             }
         }, 0, 1000 / tickrate);
+    }
+
+    /**
+     * @return the ItemList
+     */
+    public static LinkedList<Item> getItemList() {
+        return ItemList;
     }
 }

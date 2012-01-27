@@ -192,7 +192,7 @@ public class Engine {
     private void render() {
         long tick = Client.frozenGametick;
         //Client.incrementGametick();
-        
+
         panX = (float) -Client.getPlayer().getX() + tilesX / 2.0f;
         panY = (float) -Client.getPlayer().getY() + tilesY / 2.0f;
 
@@ -214,6 +214,31 @@ public class Engine {
                 glVertex3f(x + panX, y + panY, 0);
                 glEnd(); // Zeichnen des QUADs fertig
             }
+        }
+
+        // Items
+        itemTiles.bind();
+        for (int i = 0; i < Client.getItemList().size(); i++) {
+            Item item = Client.getItemList().get(i); // Zu alte Bullets löschen:
+
+                float x = (float) item.getPosX();
+                float y = (float) item.getPosY();
+
+                float v = 0.0f;
+                float w = 0.0f;
+
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.25f);
+                glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
+                glTexCoord2f(v + 0.25f, w + 0.25f);
+                glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
+                glTexCoord2f(v + 0.25f, w);
+                glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
+
+            
         }
 
         // Gegner:

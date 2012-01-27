@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.shared.TcpMessage;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Item;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.Level;
@@ -183,9 +184,11 @@ public class MessageInterpreter {
                 // Item wird gedroppt      
 
                 int netIDItem = Bits.getInt(message, 0); // netID des getroffenen Chars
-                int itemtypeID = Bits.getInt(message, 4); // netID von Bullet
-
-                System.out.println("ITEM!!1");
+                byte itemtypeID = message[4]; // netID von Bullet
+                float itemx = Bits.getFloat(message, 5);
+                float itemy = Bits.getFloat(message, 9);
+                Item item = new Item(itemx, itemy, itemtypeID, netIDItem);
+                Client.getItemList().add(item);
                 break;
 
             default:

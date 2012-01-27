@@ -38,7 +38,7 @@ public class Enemy extends Char {
         this.speed = estats.getSpeed();
         this.sightrange = estats.getSightrange();
         this.pictureID = estats.getPicture();
-        
+
     }
 
     /**
@@ -88,7 +88,7 @@ public class Enemy extends Char {
             return false;
         }
     }
-    
+
     public void dropItem() {
         Item item = new Item(getX(), getY(), (byte) 0, Server.game.newNetID());
         Server.game.items.add(item);

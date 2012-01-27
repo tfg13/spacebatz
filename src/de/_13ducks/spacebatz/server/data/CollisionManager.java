@@ -118,7 +118,7 @@ public class CollisionManager {
 
         }
     }
-    
+
     /**
      * Berechnet Kollision mit Items
      */
@@ -132,14 +132,13 @@ public class CollisionManager {
                 for (int j = 0; j < Server.game.items.size(); j++) {
                     Item item = Server.game.items.get(j);
 
-                        double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
-                        if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                            Server.game.items.remove(j);
-                            j--;
-                            System.out.println("item");
-                        }
+                    double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
+                    if (distance < Settings.SERVER_COLLISION_DISTANCE) {
+                        Server.game.items.remove(j);
+                        j--;
+                    }
 
-                    
+
                 }
             }
 

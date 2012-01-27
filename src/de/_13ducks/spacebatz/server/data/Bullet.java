@@ -13,8 +13,8 @@ import java.util.Random;
  * @author J.K.
  */
 public class Bullet {
+
     private Char owner;
-    
     /*
      * Tick, in dem die Bullet erstellt wurde
      */
@@ -55,7 +55,7 @@ public class Bullet {
         this.typeID = typeID;
         this.spawntick = spawntick;
         this.spawnposx = spawnposx;
-        this.spawnposy = spawnposy;       
+        this.spawnposy = spawnposy;
         this.typeID = typeID;
         this.netID = netID;
         this.owner = owner;

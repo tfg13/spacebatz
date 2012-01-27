@@ -1,8 +1,12 @@
-package de._13ducks.spacebatz.server.data;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de._13ducks.spacebatz.client;
 
 /**
  *
- * @author Jojo
+ * @author J.K.
  */
 public class Item {
 
@@ -17,10 +21,10 @@ public class Item {
     /*
      * Ort, an dem das Item erstellt wurde
      */
-    private double posX;
-    private double posY;
+    private float posX;
+    private float posY;
 
-    public Item(double posX, double posY, byte itemTypeID, int netID) {
+    public Item(float posX, float posY, byte itemTypeID, int netID) {
         this.posX = posX;
         this.posY = posY;
         this.itemTypeID = itemTypeID;
@@ -30,14 +34,14 @@ public class Item {
     /**
      * @return the posX
      */
-    public double getPosX() {
+    public float getPosX() {
         return posX;
     }
 
     /**
      * @return the posY
      */
-    public double getPosY() {
+    public float getPosY() {
         return posY;
     }
 }

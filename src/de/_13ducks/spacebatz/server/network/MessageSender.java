@@ -91,13 +91,13 @@ public class MessageSender {
     /**
      * Item wird gedroppt
      */
-    public void sendItemDrop(int netID, int itemtypeID, double x, double y) {
+    public void sendItemDrop(int netID, byte itemtypeID, double x, double y) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[16];
+            byte[] b = new byte[13];
             Bits.putInt(b, 0, netID);
-            Bits.putInt(b, 4, itemtypeID);
-            Bits.putFloat(b, 8, (float) x);
-            Bits.putFloat(b, 12, (float) y);
+            b[4] = itemtypeID;
+            Bits.putFloat(b, 5, (float) x);
+            Bits.putFloat(b, 9, (float) y);
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, b, c);
         }
     }
