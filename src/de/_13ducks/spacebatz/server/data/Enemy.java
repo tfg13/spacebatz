@@ -92,6 +92,7 @@ public class Enemy extends Char {
     public void dropItem() {
         Item item = new Item(getX(), getY(), (byte) 0, Server.game.newNetID());
         Server.game.items.add(item);
+        Server.msgSender.sendItemDrop(item.netID, item.itemTypeID, item.getPosX(), item.getPosY());
     }
 
     @Override

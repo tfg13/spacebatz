@@ -179,6 +179,14 @@ public class MessageInterpreter {
                     ex.printStackTrace();
                 }
                 break;
+            case Settings.NET_TCP_CMD_SPAWN_ITEM:
+                // Item wird gedroppt      
+
+                int netIDItem = Bits.getInt(message, 0); // netID des getroffenen Chars
+                int itemtypeID = Bits.getInt(message, 4); // netID von Bullet
+
+                System.out.println("ITEM!!1");
+                break;
 
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command");

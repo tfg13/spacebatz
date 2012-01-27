@@ -106,6 +106,14 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_TRANSFER_BULLETTYPES = 30;
     /**
+     * Die cmdID für ItemTypes-senden
+     */
+    public static final byte NET_TCP_CMD_TRANSFER_ITEMTYPES = 31;
+        /**
+     * Die cmdID für Item-Drop senden
+     */
+    public static final byte NET_TCP_CMD_SPAWN_ITEM = 32;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

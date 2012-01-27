@@ -28,7 +28,7 @@ public class MessageSender {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
         System.out.println("EnemyTypes sent, length was: " + Server.game.getSerializedEnemyTypes().length);
     }
-    
+
     /**
      * Sendet bullettypes an einen Client
      */
@@ -85,6 +85,20 @@ public class MessageSender {
                 b[8] = 0;
             }
             Server.serverNetwork.sendTcpData((byte) 28, b, c);
+        }
+    }
+
+    /**
+     * Item wird gedroppt
+     */
+    public void sendItemDrop(int netID, int itemtypeID, double x, double y) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[16];
+            Bits.putInt(b, 0, netID);
+            Bits.putInt(b, 4, itemtypeID);
+            Bits.putFloat(b, 8, (float) x);
+            Bits.putFloat(b, 12, (float) y);
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, b, c);
         }
     }
 
