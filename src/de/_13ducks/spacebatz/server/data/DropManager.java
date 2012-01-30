@@ -28,6 +28,11 @@ public class DropManager {
     public static void dropItem(double x, double y, int droplevel) {
         Random random = new Random(System.nanoTime());
 
+        // Warscheinlichkeit von Drop abhängig von Spielerzahl
+        if (random.nextFloat() > (0.8f - 0.5f /(float) Server.game.clients.size())) {
+            return;
+        }
+
         ArrayList<ItemTypeStats> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
             if ((int) itemtypelist.get(i).itemStats.get("quality") <= droplevel) {

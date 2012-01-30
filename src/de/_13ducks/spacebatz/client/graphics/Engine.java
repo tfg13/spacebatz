@@ -26,7 +26,7 @@ import org.newdawn.slick.util.ResourceLoader;
 public class Engine {
 
     static {
-        // Hack, um nachträglich java.library.path zu setzen.
+        // Hack, um nachtrÃ¤glich java.library.path zu setzen.
         try {
             System.setProperty("java.library.path", "native/");
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
@@ -45,6 +45,7 @@ public class Engine {
     private Texture enemyTiles;
     private Texture bulletTiles;
     private Texture itemTiles;
+    private Texture inventoryPic;
     /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
@@ -61,6 +62,10 @@ public class Engine {
      * Scrollen des Bildschirms, in Feldern.
      */
     private float panX, panY;
+    /**
+     * Sagt, ob Inventar gerade geöffnet ist (Taste i)
+     */
+    private boolean showinventory;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -68,7 +73,7 @@ public class Engine {
     }
 
     /**
-     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
+     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbststÃ¤ndig!).
      */
     public void start() {
         // Fenster aufmachen:
@@ -152,6 +157,19 @@ public class Engine {
             Client.udpOut(udp2);
         }
         Client.udpOut(udp);
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKey() == Keyboard.KEY_I) {
+                if (Keyboard.getEventKeyState()) {
+                    showinventory = !showinventory;
+                }
+            } else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+                if (Keyboard.getEventKeyState()) {
+                    showinventory = false;
+                }
+            }
+
+            
+        }
     }
 
     /**
@@ -182,7 +200,7 @@ public class Engine {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Überschreiben stellen
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Ãœberschreiben stellen
         glEnable(GL_BLEND); // Transparenz in Texturen erlauben
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
@@ -220,28 +238,28 @@ public class Engine {
         // Items
         itemTiles.bind();
         for (int i = 0; i < Client.getItemList().size(); i++) {
-            Item item = Client.getItemList().get(i); // Zu alte Bullets löschen:
+            Item item = Client.getItemList().get(i); // Zu alte Bullets lÃ¶schen:
 
-                float x = (float) item.getPosX();
-                float y = (float) item.getPosY();
+            float x = (float) item.getPosX();
+            float y = (float) item.getPosY();
 
-                float v = 0.0f;
-                float w = 0.0f;
-                
-                v = 0.25f * (int) item.stats.itemStats.get("pic");
+            float v = 0.0f;
+            float w = 0.0f;
 
-                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                glTexCoord2f(v, w + 0.25f);
-                glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
-                glTexCoord2f(v + 0.25f, w + 0.25f);
-                glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
-                glTexCoord2f(v + 0.25f, w);
-                glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
-                glTexCoord2f(v, w);
-                glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
-                glEnd(); // Zeichnen des QUADs fertig } }
+            v = 0.25f * (int) item.stats.itemStats.get("pic");
 
-            
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(v, w + 0.25f);
+            glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
+            glTexCoord2f(v + 0.25f, w + 0.25f);
+            glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
+            glTexCoord2f(v + 0.25f, w);
+            glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
+            glTexCoord2f(v, w);
+            glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
+            glEnd(); // Zeichnen des QUADs fertig } }
+
+
         }
 
         // Gegner:
@@ -291,7 +309,7 @@ public class Engine {
         // Bullets
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
+            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets lÃ¶schen:
             if (bullet.getDeletetick() < Client.frozenGametick) {
 
                 Client.getBulletList().remove(i);
@@ -318,6 +336,29 @@ public class Engine {
 
             }
         }
+
+        // Inventory
+        inventoryPic.bind();
+        if (showinventory) {
+            //System.out.println("inventory");
+
+            float x = (float) 1.0f;
+            float y = (float) 1.0f;
+
+            float v = 0.0f;
+            float w = 0.0f;
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 1);
+        glVertex3f(0, 0, 0);
+        glTexCoord2f(1, 1);
+        glVertex3f(tilesX, 0, 0);
+        glTexCoord2f(1, 0);
+        glVertex3f(tilesX, tilesY, 0);
+        glTexCoord2f(0, 0);
+        glVertex3f(0, tilesY, 0);
+        glEnd();
+        }
     }
 
     private int texAt(int[][] layer, int x, int y) {
@@ -329,15 +370,16 @@ public class Engine {
     }
 
     /**
-     * Läd alle benötigten Texturen
+     * LÃ¤d alle benÃ¶tigten Texturen
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
-        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃ¶ÃŸern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
+        // sondern einfach den nÃ¤chstbesten nehmen. Das sort fÃ¼r den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
         enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
+        inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
     }
 }
