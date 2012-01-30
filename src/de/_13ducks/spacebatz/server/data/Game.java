@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.BulletTypes;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;

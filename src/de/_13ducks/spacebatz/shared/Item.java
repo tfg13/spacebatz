@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.ItemTypeStats;
 
@@ -6,7 +6,7 @@ import de._13ducks.spacebatz.ItemTypeStats;
  *
  * @author Jojo
  */
-public class Item {
+public class Item implements java.io.Serializable {
 
     public ItemTypeStats stats;
     /**

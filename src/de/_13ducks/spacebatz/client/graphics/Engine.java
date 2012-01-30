@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -226,6 +227,8 @@ public class Engine {
 
                 float v = 0.0f;
                 float w = 0.0f;
+                
+                v = 0.25f * (int) item.stats.itemStats.get("pic");
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);

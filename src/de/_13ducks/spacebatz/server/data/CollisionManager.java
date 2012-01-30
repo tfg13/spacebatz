@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Distance;

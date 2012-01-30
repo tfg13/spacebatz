@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.MessageInterpreter;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -1,13 +1,14 @@
 package de._13ducks.spacebatz;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author Jojo
  */
-public class ItemTypeStats {
-    public HashMap<String, Object> itemStats;
+public class ItemTypeStats implements java.io.Serializable{
+    public HashMap<String, Serializable> itemStats;
     
     public ItemTypeStats(String name, int pic, int itemclass, int quality, int amount, int damage, float attackspeed, float range, int armor, int itemtypeID) {
         itemStats = new HashMap<>();

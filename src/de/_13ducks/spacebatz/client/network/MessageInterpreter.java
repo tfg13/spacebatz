@@ -5,14 +5,13 @@ import de._13ducks.spacebatz.shared.TcpMessage;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Item;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -182,12 +181,14 @@ public class MessageInterpreter {
                 break;
             case Settings.NET_TCP_CMD_SPAWN_ITEM:
                 // Item wird gedroppt      
-                int netIDItem = Bits.getInt(message, 0); // netID des getroffenen Chars
-                byte itemtypeID = message[4]; // netID von Bullet
-                float itemx = Bits.getFloat(message, 5);
-                float itemy = Bits.getFloat(message, 9);
-                Item item = new Item(itemx, itemy, itemtypeID, netIDItem);
-                Client.getItemList().add(item);
+                try {
+                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+                    Item item = (Item) is.readObject();
+                    Client.getItemList().add(item);
+                } catch (IOException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM:
                 // Item wird aufgesammelt
@@ -201,7 +202,7 @@ public class MessageInterpreter {
                     }
                 }
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
-                
+
                 break;
 
             default:
