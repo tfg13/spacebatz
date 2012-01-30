@@ -191,7 +191,8 @@ public class MessageInterpreter {
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM:
                 // Item wird aufgesammelt
-                int netIDItem2 = Bits.getInt(message, 0); // netID des getroffenen Chars
+                int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
+                int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
                 // provisorisch:
                 for (int i = 0; i < Client.getItemList().size(); i++) {
                     if (Client.getItemList().get(i).netID == netIDItem2) {
@@ -199,6 +200,8 @@ public class MessageInterpreter {
                         break;
                     }
                 }
+                // Item ins Client-Inventar verschieben, wenn eigene clientID
+                
                 break;
 
             default:

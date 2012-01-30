@@ -22,6 +22,10 @@ public class Client {
      */
     public final int clientID;
     /**
+     * Das Inventar des Clients
+     */
+    private Inventory inventory;
+        /**
      * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
      * verarbeitet wurde.
      */
@@ -40,6 +44,7 @@ public class Client {
         this.connection = connection;
         this.clientID = clientID;
         context = new ClientContext();
+        this.inventory = new Inventory();
     }
 
     /**
@@ -69,5 +74,12 @@ public class Client {
 
     public ClientContext getContext() {
         return context;
+    }
+
+    /**
+     * @return the inventory
+     */
+    public Inventory getInventory() {
+        return inventory;
     }
 }

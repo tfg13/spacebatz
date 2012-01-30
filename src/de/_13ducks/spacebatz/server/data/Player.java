@@ -7,6 +7,10 @@ import de._13ducks.spacebatz.server.Server;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Player extends Char {
+    /*
+     * Der, Client, dem der Player gehört
+     */
+    private Client client;
     
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -20,6 +24,7 @@ public class Player extends Char {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         client.getContext().makeCharKnown(netID);
+        this.client = client;
     }
 
     /**
@@ -63,5 +68,12 @@ public class Player extends Char {
                 setVector(x, y);
             }
         }
+    }
+
+    /**
+     * @return the client
+     */
+    public Client getClient() {
+        return client;
     }
 }

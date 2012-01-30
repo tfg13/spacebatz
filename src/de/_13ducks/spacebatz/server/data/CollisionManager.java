@@ -134,9 +134,11 @@ public class CollisionManager {
 
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
+                        Player player = (Player) mover;
+                        player.getClient().getInventory().addMoney(1);
                         Server.game.items.remove(j);
-                        j--;
-                        Server.msgSender.sendItemGrab(item.netID);
+                        j--;                        
+                        Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
                     }
 
 
