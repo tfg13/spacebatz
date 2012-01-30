@@ -10,13 +10,15 @@ public class EnemyTypeStats implements java.io.Serializable{
     private int picture;
     private float speed;
     private int sightrange;
+    private int enemylevel;
     
-    public EnemyTypeStats(int healthpoints, int damage, int picture, float speed, int sightrange) {
+    public EnemyTypeStats(int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel) {
         this.healthpoints = healthpoints;
         this.damage = damage;
         this.picture = picture;
         this.speed = speed;
         this.sightrange = sightrange;
+        this.enemylevel = enemylevel;
     }
 
     /**
@@ -59,5 +61,12 @@ public class EnemyTypeStats implements java.io.Serializable{
      */
     public int getSightrange() {
         return sightrange;
+    }
+
+    /**
+     * @return the enemylevel
+     */
+    public int getEnemylevel() {
+        return enemylevel;
     }
 }

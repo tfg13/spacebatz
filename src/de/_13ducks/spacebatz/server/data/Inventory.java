@@ -36,24 +36,12 @@ public class Inventory {
     }
 
     /**
-     * @return the money
+     * @param items the items to add
      */
-    public int getMoney() {
-        return money;
-    }
-
-    /**
-     * @param money the money to set
-     */
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
-    /**
-     * @param money the money to add
-     */
-    public void addMoney(int money) {
-        this.money += money;
-        System.out.println("money " + this.money);
+    public void addItem(Item item) {
+        this.items.add(item);
+        if (item.stats.itemStats.get("itemclass") == 0) {
+            money += (int) item.stats.itemStats.get("amount");
+        }
     }
 }

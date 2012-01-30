@@ -19,6 +19,8 @@ public class Enemy extends Char {
      * Der Char, den dieser Enemy gerade verfolgt
      */
     private Char myTarget;
+    
+    private int enemylevel;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -38,7 +40,7 @@ public class Enemy extends Char {
         this.speed = estats.getSpeed();
         this.sightrange = estats.getSightrange();
         this.pictureID = estats.getPicture();
-
+        this.enemylevel = estats.getEnemylevel();
     }
 
     /**
@@ -81,18 +83,12 @@ public class Enemy extends Char {
         if (healthpoints <= 0) {
             Server.msgSender.sendHitChar(netID, netIDBullet, true);
             Server.game.chars.remove(this);
-            dropItem();
+            DropManager.dropItem(posX, posY, enemylevel);
             return true;
         } else {
             Server.msgSender.sendHitChar(netID, netIDBullet, false);
             return false;
         }
-    }
-
-    public void dropItem() {
-        Item item = new Item(getX(), getY(), (byte) 0, Server.game.newNetID());
-        Server.game.items.add(item);
-        Server.msgSender.sendItemDrop(item.netID, item.itemTypeID, item.getPosX(), item.getPosY());
     }
 
     @Override

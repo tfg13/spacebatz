@@ -1,11 +1,14 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.ItemTypeStats;
+
 /**
  *
  * @author Jojo
  */
 public class Item {
 
+    public ItemTypeStats stats;
     /**
      * Typ des Items.
      */
@@ -20,10 +23,10 @@ public class Item {
     private double posX;
     private double posY;
 
-    public Item(double posX, double posY, byte itemTypeID, int netID) {
+    public Item(double posX, double posY, ItemTypeStats stats, int netID) {
         this.posX = posX;
         this.posY = posY;
-        this.itemTypeID = itemTypeID;
+        this.stats = stats;
         this.netID = netID;
     }
 
