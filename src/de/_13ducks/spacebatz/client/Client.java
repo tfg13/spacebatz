@@ -4,7 +4,7 @@ import de._13ducks.spacebatz.BulletTypes;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
-import de._13ducks.spacebatz.client.network.MessageInterpreter;
+import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class Client {
     /**
      * Der Nachrichteninterpreter.
      */
-    private static MessageInterpreter msgInterpreter;
+    private static ClientMessageInterpreter msgInterpreter;
     /**
      * Der Spieler.
      */
@@ -83,7 +83,7 @@ public class Client {
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
     public static void startClient(String ip) {
-        msgInterpreter = new MessageInterpreter();
+        msgInterpreter = new ClientMessageInterpreter();
         netIDMap = new HashMap<>();
         network = new ClientNetwork();
         if (getNetwork().tryConnect(ip)) {
@@ -114,7 +114,7 @@ public class Client {
      * Gibt den MessageInterpreter zurück
      * @return der MessageInterpreter
      */
-    public static MessageInterpreter getMsgInterpreter() {
+    public static ClientMessageInterpreter getMsgInterpreter() {
         return msgInterpreter;
     }
 

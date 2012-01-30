@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.BulletTypes;
-import de._13ducks.spacebatz.shared.TcpMessage;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
@@ -19,12 +18,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author michael
  */
-public class MessageInterpreter {
+public class ClientMessageInterpreter {
 
     /**
      * Puffer für eingehende Tcp-Nachrichten
      */
-    private ConcurrentLinkedQueue<TcpMessage> messages;
+    private ConcurrentLinkedQueue<ClientTcpMessage> messages;
     /**
      * Dieser Thread empfängt Tcp-Paketee, solange die Engine noch niht geladen ist
      * wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser Thrad wird deaktiviert
@@ -38,7 +37,7 @@ public class MessageInterpreter {
     /**
      * Initialisiert den Interpreter
      */
-    public MessageInterpreter() {
+    public ClientMessageInterpreter() {
         messages = new ConcurrentLinkedQueue<>();
 
         // Der Thread der anfangs TcpPackete empfängt:
@@ -50,7 +49,7 @@ public class MessageInterpreter {
                     try {
 
                         for (int i = 0; i < messages.size(); i++) {
-                            TcpMessage m = messages.poll();
+                            ClientTcpMessage m = messages.poll();
                             interpretTcpMessage(m.getCmdID(), m.getData());
 
                             if (!initTcpReceiverThreadRun) {
@@ -74,7 +73,7 @@ public class MessageInterpreter {
      * Stopft eine neue Nachricht in die Liste, damit der Hauptthread sie später abarbeitet
      * @param m die neue Nachricht
      */
-    public void addMessageToQueue(TcpMessage m) {
+    public void addMessageToQueue(ClientTcpMessage m) {
         messages.add(m);
     }
 
@@ -83,7 +82,7 @@ public class MessageInterpreter {
      */
     public void interpretAllTcpMessages() {
         for (int i = 0; i < messages.size(); i++) {
-            TcpMessage m = messages.poll();
+            ClientTcpMessage m = messages.poll();
             interpretTcpMessage(m.getCmdID(), m.getData());
         }
 

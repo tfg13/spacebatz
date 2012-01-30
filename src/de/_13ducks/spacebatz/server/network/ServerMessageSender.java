@@ -11,7 +11,7 @@ import de._13ducks.spacebatz.util.Bits;
  * Kümmert sich darum, gescheite Pakete zu backen.
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class MessageSender {
+public class ServerMessageSender {
 
     /**
      * Sendet das Level an einen Client

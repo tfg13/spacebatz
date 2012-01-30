@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.shared.TcpMessage;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.shared.Movement;
@@ -125,7 +124,7 @@ public class ClientNetwork {
                         long packetSize = is.readLong();
                         byte data[] = new byte[(int) packetSize];
                         is.readFully(data);
-                        Client.getMsgInterpreter().addMessageToQueue(new TcpMessage(cmdId, data));
+                        Client.getMsgInterpreter().addMessageToQueue(new ClientTcpMessage(cmdId, data));
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
