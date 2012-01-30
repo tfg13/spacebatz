@@ -2,8 +2,8 @@ package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.server.data.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
-import de._13ducks.spacebatz.server.network.MessageInterpreter;
-import de._13ducks.spacebatz.server.network.MessageSender;
+import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
+import de._13ducks.spacebatz.server.network.ServerMessageSender;
 import de._13ducks.spacebatz.server.network.ServerNetwork;
 
 /**
@@ -16,7 +16,7 @@ public final class Server {
     /**
      * Globale Referenz auf den MessageInterpreter
      */
-    public static MessageInterpreter msgInterpreter = new MessageInterpreter();
+    public static ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
     /**
      * Das laufende Spiel
      */
@@ -29,7 +29,7 @@ public final class Server {
     /**
      * Die Sendekomponente des Netzwerkmoduls
      */
-    public static MessageSender msgSender = new MessageSender();
+    public static ServerMessageSender msgSender = new ServerMessageSender();
 
     /**
      * Einstiegspunkt

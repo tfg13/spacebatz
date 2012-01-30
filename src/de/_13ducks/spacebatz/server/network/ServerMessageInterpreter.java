@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.shared.TcpMessage;
+import de._13ducks.spacebatz.client.network.ClientTcpMessage;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -9,17 +9,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author michael
  */
-public class MessageInterpreter {
+public class ServerMessageInterpreter {
 
     /**
      * Queue, die die empfangenen Datenpackete zwischen speichert.
      */
-    private ConcurrentLinkedQueue<TcpMessage> messages;
+    private ConcurrentLinkedQueue<ClientTcpMessage> messages;
 
     /**
      * Konstruktor
      */
-    public MessageInterpreter() {
+    public ServerMessageInterpreter() {
         messages = new ConcurrentLinkedQueue<>();
     }
 
@@ -28,7 +28,7 @@ public class MessageInterpreter {
      */
     public void interpretAllTcpMessages() {
         for (int i = 0; i < messages.size(); i++) {
-            TcpMessage m = messages.poll();
+            ClientTcpMessage m = messages.poll();
             interpretTCPMessage(m.getData(), m.getSender());
         }
     }
@@ -36,7 +36,7 @@ public class MessageInterpreter {
     /**
      * Schiebt eine neue Tcp-Nachritch in den Puffer
      */
-    public void addTcpMessage(TcpMessage message) {
+    public void addTcpMessage(ClientTcpMessage message) {
         messages.add(message);
     }
 

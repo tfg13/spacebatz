@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.shared;
+package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.server.data.Client;
 
@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.server.data.Client;
  * 
  * @author michael
  */
-public class TcpMessage {
+public class ClientTcpMessage {
 
     /**
      * Die Kommando-ID des Packets
@@ -32,7 +32,7 @@ public class TcpMessage {
      * @param cmdID die KomamndoID
      * @param data die Daten
      */
-    public TcpMessage(byte cmdID, byte data[]) {
+    public ClientTcpMessage(byte cmdID, byte data[]) {
         this.cmdID = cmdID;
         this.data = data;
         computed = false;
@@ -45,7 +45,7 @@ public class TcpMessage {
      * @param data die Daten
      * @param sender der Client der das Packet gesendet hat
      */
-    public TcpMessage(byte cmdID, byte data[], Client sender) {
+    public ClientTcpMessage(byte cmdID, byte data[], Client sender) {
         this.cmdID = cmdID;
         this.data = data;
         computed = false;
