@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -66,7 +67,7 @@ public class Client {
      */
     private static LinkedList<Bullet> BulletList = new LinkedList<>();
     /**
-     * List für alle aktuellen Bullets.
+     * List für alle aktuellen Items.
      */
     private static LinkedList<Item> ItemList = new LinkedList<>();
     /**
@@ -181,5 +182,13 @@ public class Client {
      */
     public static LinkedList<Item> getItemList() {
         return ItemList;
+    }
+
+    /**
+     * @param aItemList the ItemList to set
+     */
+    public static void setItemList(ArrayList<Item> aItemList) {
+        ItemList.addAll(aItemList);
+        System.out.println("Items auf Map: " + aItemList.size());
     }
 }

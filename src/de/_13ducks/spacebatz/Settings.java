@@ -118,6 +118,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_GRAB_ITEM = 33;
     /**
+     * Die cmdID für komplette Liste der herumliegenden Items
+     */
+    public static final byte NET_TCP_CMD_TRANSFER_ITEMS = 34;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

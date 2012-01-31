@@ -5,7 +5,6 @@ import de._13ducks.spacebatz.BulletTypes;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class Game {
      * Liste aller Geschosse
      */
     public ArrayList<Bullet> bullets;
-        /**
+    /**
      * Liste aller Items
      */
     public ArrayList<Item> items;
@@ -115,7 +114,7 @@ public class Game {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
+
         // Bullettypes serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs3 = new ByteArrayOutputStream();
         ObjectOutputStream os3;
@@ -166,6 +165,7 @@ public class Game {
             Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
+            Server.msgSender.sendAllItems(client, items);
             Server.msgSender.sendEnemyTypes(client);
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
@@ -186,6 +186,31 @@ public class Game {
      */
     public byte[] getSerializedLevel() {
         return serializedLevel;
+    }
+
+    /**
+     * Gibt die bytes der serialisierten Itemliste zurück
+     *
+     * @return die bytes des serialisierten levels
+     */
+    public byte[] getSerializedItems() {
+        byte[] serializedItems;
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        ObjectOutputStream os;
+        try {
+            os = new ObjectOutputStream(bs);
+            os.writeObject(items);
+            os.flush();
+            bs.flush();
+            bs.close();
+            os.close();
+            serializedItems = bs.toByteArray();
+            return serializedItems;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     /**

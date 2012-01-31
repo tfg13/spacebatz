@@ -11,6 +11,7 @@ import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -202,6 +203,16 @@ public class ClientMessageInterpreter {
                 }
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
 
+                break;
+            case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
+                try {
+                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+                    ArrayList<Item> items = (ArrayList<Item>) is.readObject();
+                    Client.setItemList(items);
+                    System.out.println("Level received and loaded!");
+                } catch (IOException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
                 break;
 
             default:

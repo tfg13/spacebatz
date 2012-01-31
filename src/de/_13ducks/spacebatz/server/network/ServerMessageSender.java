@@ -4,7 +4,9 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
+import java.util.ArrayList;
 
 /**
  * Sendet Daten übers Netzwerk.
@@ -107,6 +109,10 @@ public class ServerMessageSender {
             Bits.putInt(b, 4, clientID);
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
         }
+    }
+    
+    public void sendAllItems(Client client, ArrayList<Item> items) {
+        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
     }
 
     /**
