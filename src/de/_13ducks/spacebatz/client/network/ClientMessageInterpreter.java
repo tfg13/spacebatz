@@ -209,7 +209,7 @@ public class ClientMessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     ArrayList<Item> items = (ArrayList<Item>) is.readObject();
                     Client.setItemList(items);
-                    System.out.println("Level received and loaded!");
+                    System.out.println("Items received and loaded! client");
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }

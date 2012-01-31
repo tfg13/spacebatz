@@ -113,6 +113,7 @@ public class ServerMessageSender {
     
     public void sendAllItems(Client client, ArrayList<Item> items) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
+        System.out.println("Items sent and loaded! server");
     }
 
     /**
