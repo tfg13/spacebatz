@@ -14,7 +14,7 @@ public class ItemTypeStats implements java.io.Serializable{
         itemStats = new HashMap<>();
         itemStats.put("name", name);
         itemStats.put("pic", pic);
-        itemStats.put("itemclass", itemclass); // 0 - Geld/Meterial, 1 - Rüstung, 2 - Waffe
+        itemStats.put("itemclass", itemclass); // 0 - Geld/Meterial, 1 - Waffe, 2 - Rüstung
         itemStats.put("quality", quality); // 0 - wird nicht zufällig gedroppt, sonst: kann gedroppt werden wenn quality <= gegnerlevel
         itemStats.put("amount", amount);
         itemStats.put("damage", damage);

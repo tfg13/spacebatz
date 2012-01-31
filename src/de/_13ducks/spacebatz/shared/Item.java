@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.shared;
 
+import de._13ducks.spacebatz.ItemAttribute;
 import de._13ducks.spacebatz.ItemTypeStats;
+import java.util.ArrayList;
 
 /**
  *
@@ -22,12 +24,17 @@ public class Item implements java.io.Serializable {
      */
     private double posX;
     private double posY;
+    /**
+     * Attribute des Items
+     */
+    private ArrayList<ItemAttribute> itemattributes;
 
     public Item(double posX, double posY, ItemTypeStats stats, int netID) {
         this.posX = posX;
         this.posY = posY;
         this.stats = stats;
         this.netID = netID;
+        itemattributes = new ArrayList<>();
     }
 
     /**
@@ -42,5 +49,19 @@ public class Item implements java.io.Serializable {
      */
     public double getPosY() {
         return posY;
+    }
+
+    /**
+     * @return the itemattributes
+     */
+    public ArrayList<ItemAttribute> getItemattributes() {
+        return itemattributes;
+    }
+
+    /**
+     * @param itemattributes the itemattributes to set
+     */
+    public void setItemattributes(ArrayList<ItemAttribute> itemattributes) {
+        this.itemattributes = itemattributes;
     }
 }
