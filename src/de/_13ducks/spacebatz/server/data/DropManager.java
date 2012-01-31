@@ -123,7 +123,7 @@ public class DropManager {
             ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
             if (!addattributes.contains(randomatt)) {
                 addattributes.add(randomatt);
-                System.out.println("Attribute " + randomatt.getName());
+                System.out.println("- " + randomatt.getName());
             }
         }
         
