@@ -4,10 +4,9 @@
  */
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Distance;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Berechnet das Verhalten der Mobs
@@ -20,7 +19,7 @@ public class AIManager {
      * 
      * @param mobs die Liste aller mobs deren Verhalten berechnet werden soll 
      */
-    public static void computeMobBehavior(ArrayList<Char> mobs) {
+    public static void computeMobBehavior(List<Char> mobs) {
         for (int i = 0; i < mobs.size(); i++) {
             if (mobs.get(i) instanceof Enemy) {
                 Enemy mob = (Enemy) mobs.get(i);
@@ -28,9 +27,8 @@ public class AIManager {
                 // Hat der Mob ein Ziel?
                 if (mob.getMyTarget() == null) {
                     // wenn er kein Ziel hat sucht er ob eines in dwer Nähe ist:
-                    for (int j = 0; j < Server.game.chars.size(); j++) {
-                        if (Server.game.chars.get(j) instanceof Player) {
-                            Char theChar = Server.game.chars.get(j);
+                    for (Char theChar : Server.game.netIDMap.values()) {
+                        if (theChar instanceof Player) {
                             if (mob.getSightrange() > Distance.getDistance(mob.getX(), mob.getY(), theChar.getX(), theChar.getY())) {
                                 mob.setMyTarget(theChar);
                             }

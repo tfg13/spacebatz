@@ -26,9 +26,9 @@ public class Game {
      */
     public HashMap<Integer, Client> clients;
     /**
-     * Liste aller dynamischen Objekte (z.B. Spieler, Mobs, ...)
+     * Alle dynamischen Objekte
      */
-    public ArrayList<Char> chars;
+    public HashMap<Integer, Char> netIDMap;
     /**
      * Liste aller Geschosse
      */
@@ -75,7 +75,7 @@ public class Game {
      */
     public Game() {
         clients = new HashMap<>();
-        chars = new ArrayList<>();
+        netIDMap = new HashMap<>();
         level = new ServerLevel();
         bullets = new ArrayList<>();
         items = new ArrayList<>();
@@ -134,7 +134,7 @@ public class Game {
 
     public void addEnemies() {
         Enemy testenemy = new Enemy(3, 55, newNetID(), 0);
-        chars.add(testenemy);
+        netIDMap.put(testenemy.netID, testenemy);
 
         // Platziert Gegner
         Random r = new Random();
@@ -148,7 +148,8 @@ public class Game {
                 if (enemytype > 1) {
                     enemytype = 1;
                 }
-                chars.add(new Enemy(posX, posY, newNetID(), enemytype));
+                Enemy e = new Enemy(posX, posY, newNetID(), enemytype);
+                netIDMap.put(e.netID, e);
             }
 
         }
@@ -170,7 +171,7 @@ public class Game {
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
-            chars.add(player);
+            netIDMap.put(player.netID, player);
             // Dem Client die Tickrate schicken:
             Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);
@@ -231,7 +232,7 @@ public class Game {
      */
     public void gameTick() {
         // KI berechnen:
-        AIManager.computeMobBehavior(this.chars);
+        AIManager.computeMobBehavior(new ArrayList<>(netIDMap.values()));
         // Kollision berechnen:
         CollisionManager.computeCollision();
 
@@ -270,13 +271,6 @@ public class Game {
      */
     public ServerLevel getLevel() {
         return level;
-    }
-
-    /**
-     * Gibt den Char am Index x zurück
-     */
-    public synchronized Char getChar(int x) {
-        return chars.get(x);
     }
 
     /**

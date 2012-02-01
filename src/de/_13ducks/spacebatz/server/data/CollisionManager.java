@@ -1,21 +1,22 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Berechnet Kollisionen zwischen Chars, Enemys und Bullets.
- * 
+ *
  * @author michael
  */
 public class CollisionManager {
 
     /**
      * Berechnet Kollision für Bullets
-     * 
+     *
      * @param chars die Liste der Chars, für die Kollision berechnet werden soll
      * @param bullets die Liste der Bullets, deren Kollisionen berechnet werden sollen
      */
@@ -32,7 +33,6 @@ public class CollisionManager {
      */
     private static void computeBulletCollision() {
         ArrayList<Bullet> bullets = Server.game.bullets;
-        ArrayList<Char> chars = Server.game.chars;
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
 
@@ -43,19 +43,19 @@ public class CollisionManager {
                 continue;
             }
 
-            float radius = (float) bullet.getSpeed() * (Server.game.getTick() - bullet.getSpawntick());
+            float radius = bullet.getSpeed() * (Server.game.getTick() - bullet.getSpawntick());
             float x = (float) bullet.getSpawnposX() + radius * (float) Math.cos(bullet.getDirection());
             float y = (float) bullet.getSpawnposY() + radius * (float) Math.sin(bullet.getDirection());
 
-            for (int j = 0; j < chars.size(); j++) {
-                if (Math.abs(x - chars.get(j).posX) < 0.7 && Math.abs(y - chars.get(j).posY) < 0.7) {
-                    if (!chars.get(j).equals(bullet.getOwner())) {
-                        if (chars.get(j) instanceof Enemy) {
-                            Enemy e = (Enemy) chars.get(j);
+            Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+            while (iter.hasNext()) {
+                Char c = iter.next();
+                if (Math.abs(x - c.posX) < 0.7 && Math.abs(y - c.posY) < 0.7) {
+                    if (!c.equals(bullet.getOwner())) {
+                        if (c instanceof Enemy) {
+                            Enemy e = (Enemy) c;
                             // Schaden von HP abziehen
-                            if (e.decreaseHealthpoints(bullets.get(i).getNetID())) {
-                                // Wenn Enemy stirbt, Index j um 1 zurücksetzen
-                                j--;
+                            if (e.decreaseHealthpoints(bullets.get(i))) {
                             } else {
                                 if (e.getMyTarget() == null) {
                                     e.setMyTarget(bullet.getOwner());
@@ -67,6 +67,7 @@ public class CollisionManager {
                         i--;
                         break;
                     }
+
                 }
             }
         }
@@ -76,11 +77,10 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Wänden und Chars
      */
     private static void computeWallCollision() {
-        ArrayList<Char> chars = Server.game.chars;
-
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        for (int i = 0; i < chars.size(); i++) {
-            Char mover = Server.game.getChar(i);
+        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        while (iter.hasNext()) {
+            Char mover = iter.next();
             if (mover.isMoving()) {
                 double futureX = mover.posX + mover.vecX * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
                 double futureY = mover.posY + mover.vecY * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
@@ -98,21 +98,20 @@ public class CollisionManager {
      * Berechnet Kollision mit Mobs
      */
     private static void computeMobCollission() {
-        ArrayList<Char> chars = Server.game.chars;
-
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        for (int i = 0; i < chars.size(); i++) {
-            Char mover = Server.game.getChar(i);
+        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        while (iter.hasNext()) {
+            Char mover = iter.next();
             if (mover instanceof Player) {
-                for (int j = 0; j < chars.size(); j++) {
-                    Char mob = Server.game.getChar(j);
+                Iterator<Char> iter2 = Server.game.netIDMap.values().iterator();
+                while (iter2.hasNext()) {
+                    Char mob = iter2.next();
                     if (mob instanceof Enemy) {
                         double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                             mover.setStillX(Server.game.getLevel().respawnX);
                             mover.setStillY(Server.game.getLevel().respawnY);
                         }
-
                     }
                 }
             }
@@ -124,11 +123,9 @@ public class CollisionManager {
      * Berechnet Kollision mit Items
      */
     private static void computeItemCollission() {
-        ArrayList<Char> chars = Server.game.chars;
-
-        // Alle Chars, die sich bewegen auf Kollision mit Items prüfen:
-        for (int i = 0; i < chars.size(); i++) {
-            Char mover = Server.game.getChar(i);
+        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        while (iter.hasNext()) {
+            Char mover = iter.next();
             if (mover instanceof Player) {
                 for (int j = 0; j < Server.game.items.size(); j++) {
                     Item item = Server.game.items.get(j);
@@ -138,7 +135,7 @@ public class CollisionManager {
                         Player player = (Player) mover;
                         player.getClient().getInventory().addItem(item);
                         Server.game.items.remove(j);
-                        j--;                        
+                        j--;
                         Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
                     }
                 }
