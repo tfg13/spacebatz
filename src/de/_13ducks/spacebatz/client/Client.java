@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.client;
 
-import de._13ducks.spacebatz.BulletTypes;
-import de._13ducks.spacebatz.EnemyTypes;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
@@ -67,9 +67,13 @@ public class Client {
      */
     private static LinkedList<Bullet> BulletList = new LinkedList<>();
     /**
-     * List für alle aktuellen Items.
+     * Zuordnung von netID zu Item.
      */
-    private static LinkedList<Item> ItemList = new LinkedList<>();
+    private static HashMap<Integer, Item> ItemMap = new HashMap<>();
+    /**
+     * Inventar des Clients
+     */
+    private static ArrayList<Item> inventory = new ArrayList<>();
     /**
      * Die Logik-Tickrate.
      */
@@ -177,18 +181,25 @@ public class Client {
         }, 0, 1000 / tickrate);
     }
 
-    /**
-     * @return the ItemList
-     */
-    public static LinkedList<Item> getItemList() {
-        return ItemList;
+    public static HashMap<Integer, Item> getItemMap() {
+        return ItemMap;
+    }
+
+    public static void setItemMap(HashMap<Integer, Item> aItemMap) {
+        ItemMap = aItemMap;
     }
 
     /**
-     * @param aItemList the ItemList to set
+     * @return the inventory
      */
-    public static void setItemList(ArrayList<Item> aItemList) {
-        ItemList.addAll(aItemList);
-        System.out.println("Items auf Map: " + aItemList.size());
+    public static ArrayList<Item> getInventory() {
+        return inventory;
+    }
+
+    /**
+     * @param aInventory the inventory to set
+     */
+    public static void setInventory(ArrayList<Item> aInventory) {
+        inventory = aInventory;
     }
 }

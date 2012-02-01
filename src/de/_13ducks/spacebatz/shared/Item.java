@@ -1,7 +1,5 @@
 package de._13ducks.spacebatz.shared;
 
-import de._13ducks.spacebatz.ItemAttribute;
-import de._13ducks.spacebatz.ItemTypeStats;
 import java.util.ArrayList;
 
 /**

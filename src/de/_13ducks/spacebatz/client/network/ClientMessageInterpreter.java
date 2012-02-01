@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.BulletTypes;
-import de._13ducks.spacebatz.EnemyTypes;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
@@ -12,6 +12,7 @@ import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -180,11 +181,12 @@ public class ClientMessageInterpreter {
                 }
                 break;
             case Settings.NET_TCP_CMD_SPAWN_ITEM:
-                // Item wird gedroppt      
+                // Item wird gedroppt    
+                System.out.println("dropmanager");
                 try {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Item item = (Item) is.readObject();
-                    Client.getItemList().add(item);
+                    Client.getItemMap().put(item.netID, item);
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
@@ -194,21 +196,18 @@ public class ClientMessageInterpreter {
                 // Item wird aufgesammelt
                 int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
                 int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
-                // provisorisch:
-                for (int i = 0; i < Client.getItemList().size(); i++) {
-                    if (Client.getItemList().get(i).netID == netIDItem2) {
-                        Client.getItemList().remove(i);
-                        break;
-                    }
-                }
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
-
+                if (clientID == Client.getClientID()) {
+                    Client.getInventory().add(Client.getItemMap().get(netIDItem2));
+                }
+                Client.getItemMap().remove(netIDItem2);
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
+                // alle aktuell herumliegenden Items an neuen Client geschickt
                 try {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
-                    ArrayList<Item> items = (ArrayList<Item>) is.readObject();
-                    Client.setItemList(items);
+                    HashMap<Integer, Item> items = (HashMap<Integer, Item>) is.readObject();
+                    Client.setItemMap(items);
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }

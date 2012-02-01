@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz;
+package de._13ducks.spacebatz.shared;
 
 /**
  *

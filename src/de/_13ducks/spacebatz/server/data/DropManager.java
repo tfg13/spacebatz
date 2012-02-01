@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.ItemAttribute;
-import de._13ducks.spacebatz.ItemAttributeWeapon;
-import de._13ducks.spacebatz.ItemAttributeTypes;
+import de._13ducks.spacebatz.shared.ItemAttribute;
+import de._13ducks.spacebatz.shared.ItemAttributeWeapon;
+import de._13ducks.spacebatz.shared.ItemAttributeTypes;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.ItemTypeStats;
-import de._13ducks.spacebatz.ItemTypes;
+import de._13ducks.spacebatz.shared.ItemTypeStats;
+import de._13ducks.spacebatz.shared.ItemTypes;
 import de._13ducks.spacebatz.server.Server;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,7 +22,6 @@ public class DropManager {
     private final static ItemTypes itemtypes = new ItemTypes();
     private final static ItemAttributeTypes itemattribute = new ItemAttributeTypes();
     private static ArrayList<ItemTypeStats> itemtypelist = itemtypes.getItemtypelist();
-    private static ArrayList<ItemAttributeWeapon> attributelist = itemattribute.getWeaponattributelist();
 
     /**
      * dropItem wÃ¤hlt Item aus, dass von diesem Gegner gedroppt wird
@@ -34,9 +33,9 @@ public class DropManager {
         Random random = new Random(System.nanoTime());
 
         // Warscheinlichkeit von Drop abhÃ¤ngig von Spielerzahl
-        if (random.nextFloat() > (0.8f - 0.5f / (float) Server.game.clients.size())) {
-            return;
-        }
+//        if (random.nextFloat() > (0.8f - 0.5f / (float) Server.game.clients.size())) {
+//            return;
+//        }
 
         ArrayList<ItemTypeStats> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
@@ -54,7 +53,7 @@ public class DropManager {
             item = addAttributes(item, droplevel);
         }
 
-        Server.game.items.add(item);
+        Server.game.getItemMap().put(item.netID, item);
 
         byte[] serializedItem = null;
         ByteArrayOutputStream bs = new ByteArrayOutputStream();

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Berechnet Kollisionen zwischen Chars, Enemys und Bullets.
@@ -130,17 +131,20 @@ public class CollisionManager {
         for (int i = 0; i < chars.size(); i++) {
             Char mover = Server.game.getChar(i);
             if (mover instanceof Player) {
-                for (int j = 0; j < Server.game.items.size(); j++) {
-                    Item item = Server.game.items.get(j);
 
+                Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
+
+                while (iterator.hasNext()) {
+                    Item item = iterator.next();
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         Player player = (Player) mover;
                         player.getClient().getInventory().addItem(item);
-                        Server.game.items.remove(j);
-                        j--;                        
+                        iterator.remove();
                         Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
                     }
+
+
                 }
             }
         }

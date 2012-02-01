@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -237,8 +238,10 @@ public class Engine {
 
         // Items
         itemTiles.bind();
-        for (int i = 0; i < Client.getItemList().size(); i++) {
-            Item item = Client.getItemList().get(i); // Zu alte Bullets lÃ¶schen:
+        Iterator<Item> iterator = Client.getItemMap().values().iterator();
+        
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
 
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
@@ -309,7 +312,7 @@ public class Engine {
         // Bullets
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets lÃ¶schen:
+            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
             if (bullet.getDeletetick() < Client.frozenGametick) {
 
                 Client.getBulletList().remove(i);

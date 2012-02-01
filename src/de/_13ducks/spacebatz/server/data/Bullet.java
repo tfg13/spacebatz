@@ -4,7 +4,7 @@
  */
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.BulletTypeStats;
+import de._13ducks.spacebatz.shared.BulletTypeStats;
 import de._13ducks.spacebatz.server.Server;
 import java.util.Random;
 
