@@ -78,7 +78,7 @@ public class Client {
     /**
      * Items des Inventars des Clients
      */
-    private static InventorySlot[] inventorySlots = new InventorySlot[100];
+    private static InventorySlot[] inventorySlots = new InventorySlot[96];
     /**
      * Die Logik-Tickrate.
      */
