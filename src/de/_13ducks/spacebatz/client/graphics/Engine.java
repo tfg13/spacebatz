@@ -193,6 +193,7 @@ public class Engine {
             if (Keyboard.getEventKey() == Keyboard.KEY_I) {
                 if (Keyboard.getEventKeyState()) {
                     showinventory = !showinventory;
+                    inventorypage = 0;
                 }
             } else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
                 if (Keyboard.getEventKeyState()) {

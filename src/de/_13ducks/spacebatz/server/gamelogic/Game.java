@@ -1,9 +1,7 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.BulletTypes;
 import de._13ducks.spacebatz.shared.EnemyTypes;
-import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Bullet;
