@@ -2,9 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Char;
+import de._13ducks.spacebatz.server.data.Enemy;
+import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.List;
 
@@ -41,8 +44,8 @@ public class AIManager {
                         mob.stopMovement();
                     } else {
                         // wenn es in reichweite ist  hinbewegen:
-                        double vecX = mob.getMyTarget().posX - mob.getX();
-                        double vecY = mob.getMyTarget().posY - mob.getY();
+                        double vecX = mob.getMyTarget().getX() - mob.getX();
+                        double vecY = mob.getMyTarget().getY() - mob.getY();
 
                         // Sicher gehen, dass die Vektoren nicht 0 sind:
                         if (vecX == 0.0) {

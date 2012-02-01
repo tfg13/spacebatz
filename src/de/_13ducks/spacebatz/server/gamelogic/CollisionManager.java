@@ -1,7 +1,11 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Bullet;
+import de._13ducks.spacebatz.server.data.Char;
+import de._13ducks.spacebatz.server.data.Enemy;
+import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.ArrayList;
@@ -50,7 +54,7 @@ public class CollisionManager {
             Iterator<Char> iter = Server.game.netIDMap.values().iterator();
             while (iter.hasNext()) {
                 Char c = iter.next();
-                if (Math.abs(x - c.posX) < 0.7 && Math.abs(y - c.posY) < 0.7) {
+                if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
                     if (!c.equals(bullet.getOwner())) {
                         if (c instanceof Enemy) {
                             Enemy e = (Enemy) c;
@@ -78,7 +82,17 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+       
+        /*
+         * Code aufgrund von massivem Pfusch auskommentiert.
+         * Grund:
+         *  - Nicht aufgeheime Variablen von Char zugreifen.
+         * 
+         * Bitte beheben.
+         */
+        
+        
+     /*   Iterator<Char> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Char mover = iter.next();
             if (mover.isMoving()) {
@@ -91,7 +105,7 @@ public class CollisionManager {
                 }
 
             }
-        }
+        } */
     }
 
     /**

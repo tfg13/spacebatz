@@ -1,9 +1,16 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.gamelogic;
 
+import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.BulletTypes;
 import de._13ducks.spacebatz.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Bullet;
+import de._13ducks.spacebatz.server.data.Char;
+import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.Enemy;
+import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
