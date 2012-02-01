@@ -82,30 +82,18 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-       
-        /*
-         * Code aufgrund von massivem Pfusch auskommentiert.
-         * Grund:
-         *  - Nicht aufgeheime Variablen von Char zugreifen.
-         * 
-         * Bitte beheben.
-         */
-        
-        
-     /*   Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Char mover = iter.next();
             if (mover.isMoving()) {
-                double futureX = mover.posX + mover.vecX * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
-                double futureY = mover.posY + mover.vecY * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
-
-
+                double futureX = mover.extrapolateX(1);
+                double futureY = mover.extrapolateY(1);
                 if (Server.game.getLevel().getCollisionMap()[(int) futureX][(int) futureY] == true) {
                     mover.stopMovement();
                 }
 
             }
-        } */
+        }
     }
 
     /**
