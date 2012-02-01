@@ -195,9 +195,12 @@ public class ClientMessageInterpreter {
                 int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
                 if (clientID == Client.getClientID()) {
-                    Client.getInventory().add(Client.getItemMap().get(netIDItem2));
+                    Item item = Client.getItemMap().get(netIDItem2);
+                    boolean success = Client.addToInventory(item);
+                    if (success) {
+                        Client.getItemMap().remove(netIDItem2);
+                    }
                 }
-                Client.getItemMap().remove(netIDItem2);
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
                 // alle aktuell herumliegenden Items an neuen Client geschickt

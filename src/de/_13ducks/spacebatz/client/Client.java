@@ -9,6 +9,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,15 +66,19 @@ public class Client {
     /**
      * List für alle aktuellen Bullets.
      */
-    private static LinkedList<Bullet> BulletList = new LinkedList<>();
+    private static LinkedList<Bullet> bulletList = new LinkedList<>();
     /**
      * Zuordnung von netID zu Item.
      */
-    private static HashMap<Integer, Item> ItemMap = new HashMap<>();
+    private static HashMap<Integer, Item> itemMap = new HashMap<>();
     /**
-     * Inventar des Clients
+     * Items des Inventars des Clients
      */
-    private static ArrayList<Item> inventory = new ArrayList<>();
+    private static HashMap<Integer, Item> inventoryItems = new HashMap<>();
+    /**
+     * Items des Inventars des Clients
+     */
+    private static InventorySlot[] inventorySlots = new InventorySlot[100];
     /**
      * Die Logik-Tickrate.
      */
@@ -104,7 +109,7 @@ public class Client {
      * @return die Liste der Bullets
      */
     public static LinkedList<Bullet> getBulletList() {
-        return BulletList;
+        return bulletList;
     }
 
     /**
@@ -182,24 +187,58 @@ public class Client {
     }
 
     public static HashMap<Integer, Item> getItemMap() {
-        return ItemMap;
+        return itemMap;
     }
 
     public static void setItemMap(HashMap<Integer, Item> aItemMap) {
-        ItemMap = aItemMap;
+        itemMap = aItemMap;
+    }
+
+    public static void setInventory(HashMap<Integer, Item> aInventory) {
+        inventoryItems = aInventory;
+        Iterator iterator = inventoryItems.values().iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Item item = (Item) iterator.next();
+            inventorySlots[i] = new InventorySlot(item);
+            i++;
+        }
     }
 
     /**
      * @return the inventory
      */
-    public static ArrayList<Item> getInventory() {
-        return inventory;
+    public static HashMap<Integer, Item> getInventoryItems() {
+        return inventoryItems;
     }
 
     /**
-     * @param aInventory the inventory to set
+     * @return the inventorySlots
      */
-    public static void setInventory(ArrayList<Item> aInventory) {
-        inventory = aInventory;
+    public static InventorySlot[] getInventorySlots() {
+        return inventorySlots;
+    }
+
+    /**
+     * Item in das Spielerinventar aufnehmen
+     * @param item Item das geaddet werden soll
+     * @return falls wenn nicht möglich (Inventar voll)
+     */
+    public static boolean addToInventory(Item item) {
+        boolean success = false;
+        for (int i = 0; i < inventorySlots.length; i++) {
+            if (inventorySlots[i] == null) {
+                inventorySlots[i] = new InventorySlot(item);
+                inventoryItems.put(item.netID, item);
+                success = true;
+                break;
+            }
+        }
+        return success;
+    }
+
+    public static void removeFromInventory(int slot) {
+        inventoryItems.remove(inventorySlots[slot].getItem().netID);
+        inventorySlots[slot] = null;
     }
 }

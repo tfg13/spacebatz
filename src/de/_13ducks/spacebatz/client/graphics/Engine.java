@@ -27,7 +27,7 @@ import org.newdawn.slick.util.ResourceLoader;
 public class Engine {
 
     static {
-        // Hack, um nachtrÃ¤glich java.library.path zu setzen.
+        // Hack, um nachtrÃƒÂ¤glich java.library.path zu setzen.
         try {
             System.setProperty("java.library.path", "native/");
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
@@ -64,7 +64,7 @@ public class Engine {
      */
     private float panX, panY;
     /**
-     * Sagt, ob Inventar gerade geöffnet ist (Taste i)
+     * Sagt, ob Inventar gerade geÃ¶ffnet ist (Taste i)
      */
     private boolean showinventory;
 
@@ -74,7 +74,7 @@ public class Engine {
     }
 
     /**
-     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbststÃ¤ndig!).
+     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbststÃƒÂ¤ndig!).
      */
     public void start() {
         // Fenster aufmachen:
@@ -157,6 +157,14 @@ public class Engine {
             Bits.putFloat(udp2, 6, (float) (dir));
             Client.udpOut(udp2);
         }
+//        if (Mouse.isButtonDown(0)) {
+//            if (showinventory) {
+//                int x = Mouse.getX();
+//                int y = Mouse.getY();
+//                System.out.println("x " + x + ",y " + y);
+//            }
+//        }
+
         Client.udpOut(udp);
         while (Keyboard.next()) {
             if (Keyboard.getEventKey() == Keyboard.KEY_I) {
@@ -169,7 +177,7 @@ public class Engine {
                 }
             }
 
-            
+
         }
     }
 
@@ -201,7 +209,7 @@ public class Engine {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Ãœberschreiben stellen
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf ÃƒÅ“berschreiben stellen
         glEnable(GL_BLEND); // Transparenz in Texturen erlauben
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
@@ -236,10 +244,10 @@ public class Engine {
             }
         }
 
-        // Items
+        // Items auf der Map
         itemTiles.bind();
         Iterator<Item> iterator = Client.getItemMap().values().iterator();
-        
+
         while (iterator.hasNext()) {
             Item item = iterator.next();
 
@@ -312,7 +320,7 @@ public class Engine {
         // Bullets
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
+            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets lÃ¶schen:
             if (bullet.getDeletetick() < Client.frozenGametick) {
 
                 Client.getBulletList().remove(i);
@@ -345,22 +353,56 @@ public class Engine {
         if (showinventory) {
             //System.out.println("inventory");
 
-            float x = 1.0f;
-            float y = 1.0f;
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 1);
+            glVertex3f(0, 0, 0);
+            glTexCoord2f(1, 1);
+            glVertex3f(tilesX, 0, 0);
+            glTexCoord2f(1, 0);
+            glVertex3f(tilesX, tilesY, 0);
+            glTexCoord2f(0, 0);
+            glVertex3f(0, tilesY, 0);
+            glEnd();
+        }
 
-            float v = 0.0f;
-            float w = 0.0f;
+        // Items im Inventory
+        itemTiles.bind();
+        if (showinventory) {
 
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        glVertex3f(0, 0, 0);
-        glTexCoord2f(1, 1);
-        glVertex3f(tilesX, 0, 0);
-        glTexCoord2f(1, 0);
-        glVertex3f(tilesX, tilesY, 0);
-        glTexCoord2f(0, 0);
-        glVertex3f(0, tilesY, 0);
-        glEnd();
+            for (int i = 0; i < 12; i++) {
+                if (Client.getInventorySlots()[i] == null) {
+                    continue;
+                }
+                System.out.println("engine " + Client.getInventoryItems().size());
+
+                Item item = Client.getInventorySlots()[i].getItem();
+
+                float x = (float) (0.115f + 0.135f * (i % 6)) * tilesX;
+
+                float y;
+                if (i < 6) {
+                    y = 0.15f * tilesX;
+                } else {
+                    y = 0.04f * tilesY;
+                }
+
+                float size = 0.1f;
+                float v;
+                float w = 0.0f;
+                v = 0.25f * (int) item.stats.itemStats.get("pic");
+
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.25f);
+                glVertex3f(x, y, 0.0f);
+                glTexCoord2f(v + 0.25f, w + 0.25f);
+                glVertex3f(x + tilesX * size, y, 0.0f);
+                glTexCoord2f(v + 0.25f, w);
+                glVertex3f(x + tilesX * size, y + tilesX * size, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x, y + tilesX * size, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
+
+            }
         }
     }
 
@@ -373,11 +415,11 @@ public class Engine {
     }
 
     /**
-     * LÃ¤d alle benÃ¶tigten Texturen
+     * LÃƒÂ¤d alle benÃƒÂ¶tigten Texturen
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃ¶ÃŸern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
-        // sondern einfach den nÃ¤chstbesten nehmen. Das sort fÃ¼r den Indie-Pixelart-Look
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃƒÂ¶ÃƒÅ¸ern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
+        // sondern einfach den nÃƒÂ¤chstbesten nehmen. Das sort fÃƒÂ¼r den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
         enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
