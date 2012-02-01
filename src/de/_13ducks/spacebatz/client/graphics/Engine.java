@@ -128,7 +128,7 @@ public class Engine {
      */
     private void directInput() {
         byte[] udp = new byte[NET_UDP_CTS_SIZE];
-        udp[0] = (byte) Client.getClientID();
+        udp[0] = Client.getClientID();
         Bits.putInt(udp, 1, Client.frozenGametick);
         udp[5] = NET_UDP_CMD_INPUT;
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
@@ -145,7 +145,7 @@ public class Engine {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
-            udp2[0] = (byte) Client.getClientID();
+            udp2[0] = Client.getClientID();
             Bits.putInt(udp2, 1, Client.frozenGametick);
             udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
             double dx = Mouse.getX() - Display.getWidth() / 2;
@@ -246,7 +246,7 @@ public class Engine {
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
 
-            float v = 0.0f;
+            float v;
             float w = 0.0f;
 
             v = 0.25f * (int) item.stats.itemStats.get("pic");
@@ -345,8 +345,8 @@ public class Engine {
         if (showinventory) {
             //System.out.println("inventory");
 
-            float x = (float) 1.0f;
-            float y = (float) 1.0f;
+            float x = 1.0f;
+            float y = 1.0f;
 
             float v = 0.0f;
             float w = 0.0f;

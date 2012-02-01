@@ -21,7 +21,6 @@ public class ServerMessageSender {
      */
     public void sendLevel(Client client) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_LEVEL, Server.game.getSerializedLevel(), client);
-        System.out.println("Level sent, length was: " + Server.game.getSerializedLevel().length);
     }
 
     /**
@@ -29,7 +28,6 @@ public class ServerMessageSender {
      */
     public void sendEnemyTypes(Client client) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
-        System.out.println("EnemyTypes sent, length was: " + Server.game.getSerializedEnemyTypes().length);
     }
 
     /**
@@ -37,7 +35,6 @@ public class ServerMessageSender {
      */
     public void sendBulletTypes(Client client) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_BULLETTYPES, Server.game.getSerializedBulletTypes(), client);
-        System.out.println("BulletTypes sent, length was: " + Server.game.getSerializedBulletTypes().length);
     }
 
     /**

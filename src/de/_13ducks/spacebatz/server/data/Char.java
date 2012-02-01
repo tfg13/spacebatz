@@ -236,10 +236,10 @@ public abstract class Char {
     /**
      * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
      *
-     * @param Schaden, der von Healthpoints abgezogen wird
+     * @param b, Bullet das Schaden zufügt
      * @return true, wenn Enemy stirbt, sonst false
      */
-    public boolean decreaseHealthpoints(int damage) {
+    public boolean decreaseHealthpoints(Bullet b) {
         return false;
     }
 

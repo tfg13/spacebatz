@@ -1,6 +1,7 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.client.Position;
+import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.ArrayList;
 import java.util.Random;

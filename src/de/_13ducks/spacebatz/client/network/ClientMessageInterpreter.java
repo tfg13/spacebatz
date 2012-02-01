@@ -103,7 +103,6 @@ public class ClientMessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Level myLevel = (Level) is.readObject();
                     Client.currentLevel = myLevel;
-                    System.out.println("Level received and loaded!");
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
@@ -164,7 +163,6 @@ public class ClientMessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     EnemyTypes et = (EnemyTypes) is.readObject();
                     Client.enemytypes = et;
-                    System.out.println("EnemyTypes received and loaded!");
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
@@ -175,7 +173,6 @@ public class ClientMessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     BulletTypes bt = (BulletTypes) is.readObject();
                     Client.bullettypes = bt;
-                    System.out.println("BulletTypes received and loaded!");
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }

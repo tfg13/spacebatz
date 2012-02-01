@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.shared.ItemAttribute;
 import de._13ducks.spacebatz.shared.ItemAttributeWeapon;

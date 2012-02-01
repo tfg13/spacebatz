@@ -174,7 +174,9 @@ public class UDPConnection {
             Client client = iter.next();
             //TODO: Berechnen, welche chars dieser client wirklich sieht:
             ArrayList<Char> update = new ArrayList<>();
-            for (Char c : Server.game.chars) {
+            Iterator<Char> iterC = Server.game.netIDMap.values().iterator();
+            while (iterC.hasNext()) {
+                Char c = iterC.next();
                 // Kennt der Client diese Einheit?
                 if (!client.getContext().knowsChar(c)) {
                     // Senden

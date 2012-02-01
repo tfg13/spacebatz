@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -19,7 +20,6 @@ public class Enemy extends Char {
      * Der Char, den dieser Enemy gerade verfolgt
      */
     private Char myTarget;
-    
     private int enemylevel;
 
     /**
@@ -45,6 +45,7 @@ public class Enemy extends Char {
 
     /**
      * Gibt den Char, den dieser Enemy gerade verfolgt, zurück.
+     *
      * @return der Char der gerade verfolgt wird
      */
     public Char getMyTarget() {
@@ -53,6 +54,7 @@ public class Enemy extends Char {
 
     /**
      * Setzt den Char, den dieser Enemy gerade verfolgt.
+     *
      * @param der Char den dieser Enemy verfolgen soll
      */
     public void setMyTarget(Char myTarget) {
@@ -68,25 +70,21 @@ public class Enemy extends Char {
 
     /**
      * Zieht Schadenspunkte von HPab, returned true wenn Einheit stirbt
+     *
      * @param Schaden, der von Healthpoints abgezogen wird
      * @return true, wenn Enemy stirbt, sonst false
      */
     @Override
-    public boolean decreaseHealthpoints(int netIDBullet) {
-        for (int i = 0; i < Server.game.bullets.size(); i++) {
-            if (Server.game.bullets.get(i).getNetID() == netIDBullet) {
-                healthpoints -= Server.game.bullets.get(i).getDamage();
-                break;
-            }
-        }
+    public boolean decreaseHealthpoints(Bullet b) {
+        healthpoints -= b.getDamage();
 
         if (healthpoints <= 0) {
-            Server.msgSender.sendHitChar(netID, netIDBullet, true);
-            Server.game.chars.remove(this);
+            Server.msgSender.sendHitChar(netID, b.getNetID(), true);
+            Server.game.netIDMap.remove(netID);
             DropManager.dropItem(posX, posY, enemylevel);
             return true;
         } else {
-            Server.msgSender.sendHitChar(netID, netIDBullet, false);
+            Server.msgSender.sendHitChar(netID, b.getNetID(), false);
             return false;
         }
     }
