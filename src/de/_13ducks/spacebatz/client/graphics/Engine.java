@@ -67,6 +67,8 @@ public class Engine {
      * Sagt, ob Inventar gerade geÃ¶ffnet ist (Taste i)
      */
     private boolean showinventory;
+    private boolean lmbpressed; // linke maustaste gedrückt
+    private int inventorypage;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -157,13 +159,34 @@ public class Engine {
             Bits.putFloat(udp2, 6, (float) (dir));
             Client.udpOut(udp2);
         }
-//        if (Mouse.isButtonDown(0)) {
-//            if (showinventory) {
-//                int x = Mouse.getX();
-//                int y = Mouse.getY();
-//                System.out.println("x " + x + ",y " + y);
-//            }
-//        }
+        // Mausklick suchen
+        if (Mouse.isButtonDown(0)) {
+            if (!lmbpressed) {
+                lmbpressed = true;
+                if (showinventory) {
+                    float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
+                    float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
+                    //System.out.println("x " + x + ",y " + y);
+                    if (y > 0.14 && y < 0.22) {
+                        if (x < 0.1) {
+                            if (inventorypage <= 0) {
+                                inventorypage = 0;
+                            } else {
+                                inventorypage--;
+                            }
+                        } else if (x > 0.9) {
+                            if (inventorypage >= 7) {
+                                inventorypage = 7;
+                            } else {
+                                inventorypage++;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            lmbpressed = false;
+        }
 
         Client.udpOut(udp);
         while (Keyboard.next()) {
@@ -369,18 +392,17 @@ public class Engine {
         itemTiles.bind();
         if (showinventory) {
 
-            for (int i = 0; i < 12; i++) {
+            for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
                 if (Client.getInventorySlots()[i] == null) {
                     continue;
                 }
-                System.out.println("engine " + Client.getInventoryItems().size());
 
                 Item item = Client.getInventorySlots()[i].getItem();
 
                 float x = (float) (0.115f + 0.135f * (i % 6)) * tilesX;
 
                 float y;
-                if (i < 6) {
+                if (i % 12 < 6) {
                     y = 0.15f * tilesX;
                 } else {
                     y = 0.04f * tilesY;
