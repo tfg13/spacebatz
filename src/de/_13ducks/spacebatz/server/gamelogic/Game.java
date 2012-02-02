@@ -1,8 +1,7 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
-import de._13ducks.spacebatz.BulletTypes;
-import de._13ducks.spacebatz.EnemyTypes;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Bullet;
@@ -41,9 +40,9 @@ public class Game {
      */
     public ArrayList<Bullet> bullets;
     /**
-     * Liste aller Items
+     * HashMap ordnet netID Items zu
      */
-    public ArrayList<Item> items;
+    private HashMap<Integer, Item> itemMap;
     /**
      * Liste aller Gegnertypen
      */
@@ -85,7 +84,7 @@ public class Game {
         netIDMap = new HashMap<>();
         level = new ServerLevel();
         bullets = new ArrayList<>();
-        items = new ArrayList<>();
+        itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
         bullettypes = new BulletTypes();
         LevelGenerator.generateLevel(level);
@@ -173,7 +172,7 @@ public class Game {
             Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
-            Server.msgSender.sendAllItems(client, items);
+            Server.msgSender.sendAllItems(client, getItemMap());
             Server.msgSender.sendEnemyTypes(client);
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
@@ -207,7 +206,7 @@ public class Game {
         ObjectOutputStream os;
         try {
             os = new ObjectOutputStream(bs);
-            os.writeObject(items);
+            os.writeObject(getItemMap());
             os.flush();
             bs.flush();
             bs.close();
@@ -242,9 +241,6 @@ public class Game {
         AIManager.computeMobBehavior(new ArrayList<>(netIDMap.values()));
         // Kollision berechnen:
         CollisionManager.computeCollision();
-
-
-
     }
 
     /**
@@ -285,5 +281,12 @@ public class Game {
      */
     public byte[] getSerializedBulletTypes() {
         return serializedBulletTypes;
+    }
+
+    /**
+     * @return the itemMap
+     */
+    public HashMap<Integer, Item> getItemMap() {
+        return itemMap;
     }
 }

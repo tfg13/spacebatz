@@ -42,7 +42,21 @@ public class Inventory {
     public void addItem(Item item) {
         this.items.add(item);
         if (item.stats.itemStats.get("itemclass") == 0) {
-            money += (int) item.stats.itemStats.get("amount");
+            setMoney(getMoney() + (int) item.stats.itemStats.get("amount"));
         }
+    }
+
+    /**
+     * @return the money
+     */
+    public int getMoney() {
+        return money;
+    }
+
+    /**
+     * @param money the money to set
+     */
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

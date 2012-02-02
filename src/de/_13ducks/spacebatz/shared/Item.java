@@ -1,7 +1,5 @@
 package de._13ducks.spacebatz.shared;
 
-import de._13ducks.spacebatz.ItemAttribute;
-import de._13ducks.spacebatz.ItemTypeStats;
 import java.util.ArrayList;
 
 /**
@@ -19,6 +17,10 @@ public class Item implements java.io.Serializable {
      * Die ID des Items.
      */
     public int netID;
+    /**
+     * Menge des Items, wichtig bei stackbaren Materialien / Geld
+     */
+    private int amount;
     /*
      * Ort, an dem das Item erstellt wurde
      */
@@ -34,6 +36,7 @@ public class Item implements java.io.Serializable {
         this.posY = posY;
         this.stats = stats;
         this.netID = netID;
+        this.amount = 1;
         itemattributes = new ArrayList<>();
     }
 
@@ -63,5 +66,19 @@ public class Item implements java.io.Serializable {
      */
     public void setItemattributes(ArrayList<ItemAttribute> itemattributes) {
         this.itemattributes = itemattributes;
+    }
+
+    /**
+     * @return the amount
+     */
+    public int getAmount() {
+        return amount;
+    }
+
+    /**
+     * @param amount the amount to set
+     */
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

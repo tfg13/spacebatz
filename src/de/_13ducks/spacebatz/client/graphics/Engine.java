@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -66,6 +67,8 @@ public class Engine {
      * Sagt, ob Inventar gerade geöffnet ist (Taste i)
      */
     private boolean showinventory;
+    private boolean lmbpressed; // linke maustaste gedrückt
+    private int inventorypage;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -156,19 +159,70 @@ public class Engine {
             Bits.putFloat(udp2, 6, (float) (dir));
             Client.udpOut(udp2);
         }
+        // Mausklick suchen
+        if (Mouse.isButtonDown(0)) {
+            if (!lmbpressed) {
+                lmbpressed = true;
+                if (showinventory) {
+                    float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
+                    float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
+                    //System.out.println("x " + x + ",y " + y);
+
+                    // nächste / vorherige Seite
+                    if (y > 0.14 && y < 0.22) {
+                        if (x < 0.1) {
+                            if (inventorypage <= 0) {
+                                inventorypage = 0;
+                            } else {
+                                inventorypage--;
+                            }
+                        } else if (x > 0.9) {
+                            if (inventorypage >= 7) {
+                                inventorypage = 7;
+                            } else {
+                                inventorypage++;
+                            }
+                        }
+                    }
+
+                    // Inventarslot angeklickt?
+                    int slot = -1;
+                    if (y > 0.1812 && y <= 0.3156) {
+                        for (int i = 0; i < 6; i++) {
+                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                                slot = i;
+                                break;
+                            }
+                        }
+                    } else if (y > 0.05156 && y <= 0.1813) {
+                        for (int i = 0; i < 6; i++) {
+                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                                slot = i + 6;
+                                break;
+                            }
+                        }
+                    }
+                    if (slot != -1) {
+                        System.out.println(slot);
+                    }
+                }
+            }
+        } else {
+            lmbpressed = false;
+        }
+
         Client.udpOut(udp);
         while (Keyboard.next()) {
             if (Keyboard.getEventKey() == Keyboard.KEY_I) {
                 if (Keyboard.getEventKeyState()) {
                     showinventory = !showinventory;
+                    inventorypage = 0;
                 }
             } else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
                 if (Keyboard.getEventKeyState()) {
                     showinventory = false;
                 }
             }
-
-            
         }
     }
 
@@ -235,10 +289,12 @@ public class Engine {
             }
         }
 
-        // Items
+        // Items auf der Map
         itemTiles.bind();
-        for (int i = 0; i < Client.getItemList().size(); i++) {
-            Item item = Client.getItemList().get(i); // Zu alte Bullets löschen:
+        Iterator<Item> iterator = Client.getItemMap().values().iterator();
+
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
 
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
@@ -342,22 +398,55 @@ public class Engine {
         if (showinventory) {
             //System.out.println("inventory");
 
-            float x = 1.0f;
-            float y = 1.0f;
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 1);
+            glVertex3f(0, 0, 0);
+            glTexCoord2f(1, 1);
+            glVertex3f(tilesX, 0, 0);
+            glTexCoord2f(1, 0);
+            glVertex3f(tilesX, tilesY, 0);
+            glTexCoord2f(0, 0);
+            glVertex3f(0, tilesY, 0);
+            glEnd();
+        }
 
-            float v = 0.0f;
-            float w = 0.0f;
+        // Items im Inventory
+        itemTiles.bind();
+        if (showinventory) {
 
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        glVertex3f(0, 0, 0);
-        glTexCoord2f(1, 1);
-        glVertex3f(tilesX, 0, 0);
-        glTexCoord2f(1, 0);
-        glVertex3f(tilesX, tilesY, 0);
-        glTexCoord2f(0, 0);
-        glVertex3f(0, tilesY, 0);
-        glEnd();
+            for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
+                if (Client.getInventorySlots()[i] == null) {
+                    continue;
+                }
+
+                Item item = Client.getInventorySlots()[i].getItem();
+
+                float x = (float) (0.115f + 0.135f * (i % 6)) * tilesX;
+
+                float y;
+                if (i % 12 < 6) {
+                    y = 0.15f * tilesX;
+                } else {
+                    y = 0.04f * tilesY;
+                }
+
+                float size = 0.1f;
+                float v;
+                float w = 0.0f;
+                v = 0.25f * (int) item.stats.itemStats.get("pic");
+
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.25f);
+                glVertex3f(x, y, 0.0f);
+                glTexCoord2f(v + 0.25f, w + 0.25f);
+                glVertex3f(x + tilesX * size, y, 0.0f);
+                glTexCoord2f(v + 0.25f, w);
+                glVertex3f(x + tilesX * size, y + tilesX * size, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x, y + tilesX * size, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
+
+            }
         }
     }
 

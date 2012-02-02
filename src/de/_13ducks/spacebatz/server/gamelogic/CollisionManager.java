@@ -82,30 +82,18 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-       
-        /*
-         * Code aufgrund von massivem Pfusch auskommentiert.
-         * Grund:
-         *  - Nicht aufgeheime Variablen von Char zugreifen.
-         * 
-         * Bitte beheben.
-         */
-        
-        
-     /*   Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Char mover = iter.next();
             if (mover.isMoving()) {
-                double futureX = mover.posX + mover.vecX * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
-                double futureY = mover.posY + mover.vecY * mover.getSpeed() * (Server.game.getTick() + 1 - mover.moveStartTick);
-
-
+                double futureX = mover.extrapolateX(1);
+                double futureY = mover.extrapolateY(1);
                 if (Server.game.getLevel().getCollisionMap()[(int) futureX][(int) futureY] == true) {
                     mover.stopMovement();
                 }
 
             }
-        } */
+        }
     }
 
     /**
@@ -141,17 +129,26 @@ public class CollisionManager {
         while (iter.hasNext()) {
             Char mover = iter.next();
             if (mover instanceof Player) {
-                for (int j = 0; j < Server.game.items.size(); j++) {
-                    Item item = Server.game.items.get(j);
 
+                Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
+
+                while (iterator.hasNext()) {
+                    Item item = iterator.next();
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         Player player = (Player) mover;
-                        player.getClient().getInventory().addItem(item);
-                        Server.game.items.remove(j);
-                        j--;
-                        Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
+                        if (item.stats.itemStats.get("name").equals("Money")) {
+                            player.getClient().getInventory().setMoney(player.getClient().getInventory().getMoney() + item.getAmount());
+                            iterator.remove();
+                            Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
+                        } else if (player.getClient().getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
+                            player.getClient().getInventory().addItem(item);
+                            iterator.remove();
+                            Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
+                        }
                     }
+
+
                 }
             }
         }

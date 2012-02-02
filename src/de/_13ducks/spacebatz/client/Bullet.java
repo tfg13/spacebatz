@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client;
 
-import de._13ducks.spacebatz.BulletTypeStats;
+import de._13ducks.spacebatz.shared.BulletTypeStats;
 
 /**
  * Ein Geschoss, dass vom Client gerendert werden muss

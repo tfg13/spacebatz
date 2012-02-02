@@ -1,14 +1,14 @@
 package de._13ducks.spacebatz.client;
 
-import de._13ducks.spacebatz.BulletTypes;
-import de._13ducks.spacebatz.EnemyTypes;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,11 +65,23 @@ public class Client {
     /**
      * List für alle aktuellen Bullets.
      */
-    private static LinkedList<Bullet> BulletList = new LinkedList<>();
+    private static LinkedList<Bullet> bulletList = new LinkedList<>();
     /**
-     * List für alle aktuellen Items.
+     * Zuordnung von netID zu Item.
      */
-    private static LinkedList<Item> ItemList = new LinkedList<>();
+    private static HashMap<Integer, Item> itemMap = new HashMap<>();
+    /**
+     * Items des Inventars des Clients
+     */
+    private static HashMap<Integer, Item> inventoryItems = new HashMap<>();
+    /**
+     * belegte Slots des Inventars des Clients
+     */
+    private static InventorySlot[] inventorySlots = new InventorySlot[Settings.INVENTORY_SIZE];
+    /**
+     * Wieviel Geld der Spieler gerade besitzt
+     */
+    private static int money;
     /**
      * Die Logik-Tickrate.
      */
@@ -100,7 +112,7 @@ public class Client {
      * @return die Liste der Bullets
      */
     public static LinkedList<Bullet> getBulletList() {
-        return BulletList;
+        return bulletList;
     }
 
     /**
@@ -177,18 +189,64 @@ public class Client {
         }, 0, 1000 / tickrate);
     }
 
-    /**
-     * @return the ItemList
-     */
-    public static LinkedList<Item> getItemList() {
-        return ItemList;
+    public static HashMap<Integer, Item> getItemMap() {
+        return itemMap;
+    }
+
+    public static void setItemMap(HashMap<Integer, Item> aItemMap) {
+        itemMap = aItemMap;
+    }
+
+    public static void setInventory(HashMap<Integer, Item> aInventory) {
+        inventoryItems = aInventory;
+        Iterator iterator = inventoryItems.values().iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Item item = (Item) iterator.next();
+            inventorySlots[i] = new InventorySlot(item);
+            i++;
+        }
     }
 
     /**
-     * @param aItemList the ItemList to set
+     * @return the inventory
      */
-    public static void setItemList(ArrayList<Item> aItemList) {
-        ItemList.addAll(aItemList);
-        System.out.println("Items auf Map: " + aItemList.size());
+    public static HashMap<Integer, Item> getInventoryItems() {
+        return inventoryItems;
+    }
+
+    /**
+     * @return the inventorySlots
+     */
+    public static InventorySlot[] getInventorySlots() {
+        return inventorySlots;
+    }
+
+    /**
+     * Item in das Spielerinventar aufnehmen
+     * @param item Item das geaddet werden soll
+     */
+    public static void addToInventory(Item item) {
+        for (int i = 0; i < inventorySlots.length; i++) {
+            if (inventorySlots[i] == null) {
+                inventorySlots[i] = new InventorySlot(item);
+                inventoryItems.put(item.netID, item);
+                break;
+            }
+        }
+    }
+
+    public static void removeFromInventory(int slot) {
+        inventoryItems.remove(inventorySlots[slot].getItem().netID);
+        inventorySlots[slot] = null;
+    }
+
+    public static int getMoney() {
+        return money;
+    }
+
+    public static void addMoney(int amount) {
+        money += amount;
+        System.out.println("money: " + money);
     }
 }
