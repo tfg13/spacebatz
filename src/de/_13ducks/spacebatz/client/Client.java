@@ -7,7 +7,6 @@ import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -78,7 +77,7 @@ public class Client {
     /**
      * belegte Slots des Inventars des Clients
      */
-    private static InventorySlot[] inventorySlots = new InventorySlot[96];
+    private static InventorySlot[] inventorySlots = new InventorySlot[Settings.INVENTORY_SIZE];
     /**
      * Wieviel Geld der Spieler gerade besitzt
      */
