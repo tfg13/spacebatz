@@ -198,13 +198,10 @@ public class ClientMessageInterpreter {
                     // Geld oder normales Item?
                     if (item.stats.itemStats.get("name").equals("Money")) {
                         Client.addMoney(item.getAmount());
-                        Client.getItemMap().remove(netIDItem2);
                     } else {
-                        boolean success = Client.addToInventory(item);
-                        if (success) {
-                            Client.getItemMap().remove(netIDItem2);
-                        }
+                        Client.addToInventory(item);
                     }
+                    Client.getItemMap().remove(netIDItem2);
                 }
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:

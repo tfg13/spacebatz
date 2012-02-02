@@ -226,19 +226,15 @@ public class Client {
     /**
      * Item in das Spielerinventar aufnehmen
      * @param item Item das geaddet werden soll
-     * @return falls wenn nicht möglich (Inventar voll)
      */
-    public static boolean addToInventory(Item item) {
-        boolean success = false;
+    public static void addToInventory(Item item) {
         for (int i = 0; i < inventorySlots.length; i++) {
             if (inventorySlots[i] == null) {
                 inventorySlots[i] = new InventorySlot(item);
                 inventoryItems.put(item.netID, item);
-                success = true;
                 break;
             }
         }
-        return success;
     }
 
     public static void removeFromInventory(int slot) {

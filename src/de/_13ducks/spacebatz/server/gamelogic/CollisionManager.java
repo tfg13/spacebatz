@@ -137,9 +137,15 @@ public class CollisionManager {
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         Player player = (Player) mover;
-                        player.getClient().getInventory().addItem(item);
-                        iterator.remove();
-                        Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
+                        if (item.stats.itemStats.get("name").equals("Money")) {
+                            player.getClient().getInventory().setMoney(player.getClient().getInventory().getMoney() + item.getAmount());
+                            iterator.remove();
+                            Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
+                        } else if (player.getClient().getInventory().getItems().size() < 96) {
+                            player.getClient().getInventory().addItem(item);
+                            iterator.remove();
+                            Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
+                        }
                     }
 
 

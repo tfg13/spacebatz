@@ -137,6 +137,10 @@ public final class Settings {
      */
     public static final int SERVER_MAXPLAYERS = 32;
     /**
+     * Größe des Inventar jedes Spielers
+     */
+    public static final int INVENTORY_SIZE = 96;
+    /**
      * Die Reichweite für Kollisionen
      */
     public static double SERVER_COLLISION_DISTANCE = 1.5;

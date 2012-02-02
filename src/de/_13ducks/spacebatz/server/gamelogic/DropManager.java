@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.shared.ItemAttribute;
-import de._13ducks.spacebatz.shared.ItemAttributeWeapon;
 import de._13ducks.spacebatz.shared.ItemAttributeTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.ItemTypeStats;
@@ -32,7 +31,7 @@ public class DropManager {
     public static void dropItem(double x, double y, int droplevel) {
         Random random = new Random(System.nanoTime());
 
-        // Warscheinlichkeit von Drop abhÃ¤ngig von Spielerzahl
+        //Warscheinlichkeit von Drop abhÃ¤ngig von Spielerzahl
 //        if (random.nextFloat() > (0.8f - 0.5f / (float) Server.game.clients.size())) {
 //            return;
 //        }
@@ -51,6 +50,8 @@ public class DropManager {
 
         if ((int) stats.itemStats.get("itemclass") != 0) {
             item = addAttributes(item, droplevel);
+        } else {
+            item = addAmount(item, droplevel);
         }
 
         Server.game.getItemMap().put(item.netID, item);
@@ -83,22 +84,22 @@ public class DropManager {
         ArrayList<ItemAttribute> attributesofrightclass = new ArrayList<>();
         ArrayList<ItemAttribute> qualityallowedattributes = new ArrayList<>();
         ArrayList<ItemAttribute> addattributes = new ArrayList<>();
-        
+
         if (item.stats.itemStats.get("itemclass") == 1) {
             // Waffe
             attributesofrightclass.addAll(itemattribute.getWeaponattributelist());
         } else {
             // Rüstung
-            attributesofrightclass.addAll(itemattribute.getArmorattributelist());      
+            attributesofrightclass.addAll(itemattribute.getArmorattributelist());
         }
-        
+
         for (int i = 0; i < attributesofrightclass.size(); i++) {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
             if (attributesofrightclass.get(i).getQuality() <= droplevel) {
                 qualityallowedattributes.add(attributesofrightclass.get(i));
             }
         }
-        
+
         Random random = new Random();
         int rand = random.nextInt(21);
 
@@ -125,8 +126,21 @@ public class DropManager {
                 System.out.println("- " + randomatt.getName());
             }
         }
-        
+
         item.setItemattributes(addattributes);
+        return item;
+    }
+
+    /**
+     * Item das gedroppt werden soll eine Anzahl hinzufügen (Geld, Material)
+     * @param item Das Item
+     * @param droplevel Das Level vom Monster, das es gedroppt hat
+     * @return wieder das Item
+     */
+    private static Item addAmount(Item item, int droplevel) {
+        Random random = new Random();
+        int amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
+        item.setAmount(amount);
         return item;
     }
 }
