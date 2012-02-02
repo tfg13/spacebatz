@@ -5,7 +5,9 @@ import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -39,7 +41,7 @@ public class Engine {
         }
     }
     /**
-     * Tilemaps
+     * Tilemaps.
      */
     private Texture groundTiles;
     private Texture playerTiles;
@@ -47,6 +49,15 @@ public class Engine {
     private Texture bulletTiles;
     private Texture itemTiles;
     private Texture inventoryPic;
+    private Texture font;
+    /**
+     * Charset, zum Textoutput-Encoding
+     */
+    private Charset charset;
+    /**
+     * Wieviel Platz die einzelnen Buchstaben brauchen.
+     */
+    private byte[] spaceing;
     /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
@@ -73,6 +84,7 @@ public class Engine {
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+        charset = Charset.forName("cp437");
     }
 
     /**
@@ -90,9 +102,10 @@ public class Engine {
         }
         // OpenGL-Init
         initGL();
-        // Texturen laden
+        // Daten laden
         try {
             loadTex();
+            loadBin();
         } catch (IOException ex) {
             ex.printStackTrace();
             Display.destroy();
@@ -263,8 +276,6 @@ public class Engine {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     private void render() {
-        long tick = Client.frozenGametick;
-        //Client.incrementGametick();
 
         panX = (float) -Client.getPlayer().getX() + tilesX / 2.0f;
         panY = (float) -Client.getPlayer().getY() + tilesY / 2.0f;
@@ -450,6 +461,38 @@ public class Engine {
         }
     }
 
+    /**
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     *
+     * @param text Der zu zeichnende Text
+     * @param x PositionX (unten links)
+     * @param y PositionY (unten rechts)
+     */
+    private void renderText(String text, float x, float y) {
+        float next = 0;
+        byte[] chars = text.getBytes(charset);
+        font.bind();
+        for (int i = 0; i < chars.length; i++) {
+            byte c = chars[i];
+            int tileX = c % 16;
+            int tileY = c / 16;
+            float tx = tileX / 16f;
+            float ty = tileY / 16f;
+            glBegin(GL_QUADS);
+            glTexCoord2f(tx, ty);
+            glVertex3f(x + next, y + .5f, 0.0f);
+            glTexCoord2f(tx + .0625f, ty);
+            glVertex3f(x + next + .5f, y + .5f, 0.0f);
+            glTexCoord2f(tx + .0625f, ty + .0625f);
+            glVertex3f(x + next + .5f, y, 0.0f);
+            glTexCoord2f(tx, ty + .0635f);
+            glVertex3f(x + next, y, 0.0f);
+            glEnd();
+            // Spacing dieses chars weiter gehen:
+            next += spaceing[c] / 16f;
+        }
+    }
+
     private int texAt(int[][] layer, int x, int y) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer.length) {
             return 0;
@@ -459,7 +502,8 @@ public class Engine {
     }
 
     /**
-     * Läd alle benötigten Texturen
+     * Läd alle benötigten Texturen.
+     * @throws IOException Wenn was schief geht
      */
     private void loadTex() throws IOException {
         // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
@@ -470,5 +514,20 @@ public class Engine {
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
+        font = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
+    }
+
+    /**
+     * Läd alle benötigten Binärdateien, die keine Bilder sind.
+     * @throws IOException Wenn was schief geht
+     */
+    private void loadBin() throws IOException {
+        spaceing = new byte[256];
+        InputStream r = ResourceLoader.getResourceAsStream("tex/font_spacing.bin");
+        int b;
+        int i = 0;
+        while ((b = r.read()) != -1) {
+            spaceing[i++] = (byte) b;
+        }
     }
 }
