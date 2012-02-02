@@ -141,5 +141,5 @@ public final class Settings {
     /**
      * Die Größe der Chars für Kollision
      */
-    public static final double CHARSIZE = 1.0;
+    public static final double CHARSIZE = 0.8;
 }
