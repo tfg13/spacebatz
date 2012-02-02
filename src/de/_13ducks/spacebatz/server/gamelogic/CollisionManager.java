@@ -141,7 +141,7 @@ public class CollisionManager {
                             player.getClient().getInventory().setMoney(player.getClient().getInventory().getMoney() + item.getAmount());
                             iterator.remove();
                             Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
-                        } else if (player.getClient().getInventory().getItems().size() < 96) {
+                        } else if (player.getClient().getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
                             player.getClient().getInventory().addItem(item);
                             iterator.remove();
                             Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);

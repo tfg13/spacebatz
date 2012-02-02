@@ -167,6 +167,8 @@ public class Engine {
                     float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
+
+                    // nächste / vorherige Seite
                     if (y > 0.14 && y < 0.22) {
                         if (x < 0.1) {
                             if (inventorypage <= 0) {
@@ -181,6 +183,27 @@ public class Engine {
                                 inventorypage++;
                             }
                         }
+                    }
+
+                    // Inventarslot angeklickt?
+                    int slot = -1;
+                    if (y > 0.1812 && y <= 0.3156) {
+                        for (int i = 0; i < 6; i++) {
+                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                                slot = i;
+                                break;
+                            }
+                        }
+                    } else if (y > 0.05156 && y <= 0.1813) {
+                        for (int i = 0; i < 6; i++) {
+                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                                slot = i + 6;
+                                break;
+                            }
+                        }
+                    }
+                    if (slot != -1) {
+                        System.out.println(slot);
                     }
                 }
             }
