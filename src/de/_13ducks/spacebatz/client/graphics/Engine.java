@@ -421,7 +421,7 @@ public class Engine {
 
                 Item item = Client.getInventorySlots()[i].getItem();
 
-                float x = (float) (0.115f + 0.135f * (i % 6)) * tilesX;
+                float x = (0.115f + 0.135f * (i % 6)) * tilesX;
 
                 float y;
                 if (i % 12 < 6) {
