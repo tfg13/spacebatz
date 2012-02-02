@@ -201,8 +201,8 @@ public class ClientMessageInterpreter {
                     } else {
                         Client.addToInventory(item);
                     }
-                    Client.getItemMap().remove(netIDItem2);
                 }
+                Client.getItemMap().remove(netIDItem2);
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
                 // alle aktuell herumliegenden Items an neuen Client geschickt
