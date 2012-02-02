@@ -449,12 +449,12 @@ public class Engine {
             glVertex3f(0, tilesY, 0);
             glEnd();
         }
-        
+
         // Items im Inventory
         if (showinventory) {
             renderText(String.valueOf(Client.getMoney()), 0.12f * tilesX, 0.44f * tilesY);
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
-                
+
                 // Slot leer oder gerade ausgewählt
                 if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {
                     continue;
@@ -512,6 +512,32 @@ public class Engine {
             glTexCoord2f(v, w);
             glVertex3f(x - tilesX * size / 2, y + tilesX * size / 2, 0.0f);
             glEnd(); // Zeichnen des QUADs fertig } }
+        }
+
+        // Mousehover über Item?
+        float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
+        float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
+
+        int slothovered = -1;
+        if (y > 0.1812 && y <= 0.3156) {
+            for (int i = 0; i < 6; i++) {
+                if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                    slothovered = i + inventorypage * 12;
+                    break;
+                }
+            }
+        } else if (y > 0.05156 && y <= 0.1813) {
+            for (int i = 0; i < 6; i++) {
+                if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                    slothovered = i + 6 + inventorypage * 12;
+                    break;
+                }
+            }
+        }
+        if (slothovered != -1 && slothovered != selecteditemslot) {
+            if (Client.getInventorySlots()[slothovered] != null) {
+                renderText((String) Client.getInventorySlots()[slothovered].getItem().stats.itemStats.get("name"), x * tilesX, y * tilesX);
+            }
         }
     }
 
