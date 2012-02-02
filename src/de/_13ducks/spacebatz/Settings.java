@@ -29,14 +29,12 @@ public final class Settings {
      */
     public static final int CLIENT_GFX_TILEZOOM = 2;
     /**
-     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit,
-     * vsync)
+     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
      */
     public static final int CLIENT_GFX_FRAMELIMIT = 60;
     /**
-     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen wird die
-     * Framerate durch diese Option 60. Hinweis: Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer min(framelimit,
-     * vsync)
+     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen wird die Framerate durch diese Option 60. Hinweis:
+     * Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
     /**
@@ -44,13 +42,11 @@ public final class Settings {
      */
     public static final int SERVER_TCPPORT = 10000;
     /**
-     * Auf diesem Port ist der Server per UDP zu erreichen.
-     * Darf nicht der gleiche sein, wie CLIENT_UDPPORT
+     * Auf diesem Port ist der Server per UDP zu erreichen. Darf nicht der gleiche sein, wie CLIENT_UDPPORT
      */
     public static final int SERVER_UDPPORT = 13947;
     /**
-     * Auf diesem Port ist der Client per UDP zu erreichen.
-     * Darf nicht der gleiche sein, wie SERVER_UDPPORT
+     * Auf diesem Port ist der Client per UDP zu erreichen. Darf nicht der gleiche sein, wie SERVER_UDPPORT
      */
     public static final int CLIENT_UDPPORT = 13948;
     /**
@@ -126,10 +122,8 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
     /**
-     * Die maximale Ping, für die das Spiel noch flüssig läuft.
-     * Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht,
-     * und die eigene Spielfigur sich auch bei den anderen verzögert bewegt.
-     * Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
+     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene Spielfigur sich auch bei den anderen
+     * verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
      */
     public static final int NET_TICKSYNC_MAXPING = 100;
     /**
@@ -144,4 +138,8 @@ public final class Settings {
      * Die Reichweite für Kollisionen
      */
     public static double SERVER_COLLISION_DISTANCE = 1.5;
+    /**
+     * Die Größe der Chars für Kollision
+     */
+    public static final double CHARSIZE = 1.0;
 }

@@ -13,8 +13,7 @@ import de._13ducks.spacebatz.util.Bits;
 public abstract class Char {
 
     /**
-     * Tpy des Chars. Fürs Netzwerksystem. 1 - Char (reserviert, eigentlich ein
-     * ungültiger Wert!) 2 - Player 3 - Enemy
+     * Tpy des Chars. Fürs Netzwerksystem. 1 - Char (reserviert, eigentlich ein ungültiger Wert!) 2 - Player 3 - Enemy
      */
     public final byte charTypeID;
     /**
@@ -22,8 +21,7 @@ public abstract class Char {
      */
     public final int netID;
     /**
-     * Die Position des Chars, solange er still steht. Die Startkoordinaten der
-     * Bewegung, solange er sich bewegt.
+     * Die Position des Chars, solange er still steht. Die Startkoordinaten der Bewegung, solange er sich bewegt.
      */
     protected double posX, posY;
     /**
@@ -47,8 +45,7 @@ public abstract class Char {
      */
     protected int pictureID = 0;
     /**
-     * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht
-     * bewegt.
+     * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht bewegt.
      */
     protected int moveStartTick;
     /**
@@ -56,19 +53,21 @@ public abstract class Char {
      */
     protected int AttackCooldownTick;
     /**
-     * Die Richtung, in die die Einheit läuft. Normalisierte Werte! Nur
-     * relevant, wenn moveStartTick != -1;
+     * Die Richtung, in die die Einheit läuft. Normalisierte Werte! Nur relevant, wenn moveStartTick != -1;
      */
     protected double vecX, vecY;
     /**
-     * Die aktuelle Bewegung nocheinmal repräsentiert. Nur aktuell wenn
-     * moveDirty == false.
+     * Die aktuelle Bewegung nocheinmal repräsentiert. Nur aktuell wenn moveDirty == false.
      */
     private Movement movement;
     /**
      * Ob das aktuelle Movement stimmt.
      */
     private boolean movementDirty = true;
+    /**
+     * Die Größe des Chars (für Kollision)
+     */
+    private double size;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -82,6 +81,7 @@ public abstract class Char {
         this.posX = x;
         this.posY = y;
         this.netID = netID;
+        size = Settings.CHARSIZE;
     }
 
     public boolean isMoving() {
@@ -89,8 +89,7 @@ public abstract class Char {
     }
 
     /**
-     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht,
-     * wird die Bewegung abgebrochen.
+     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht, wird die Bewegung abgebrochen.
      *
      * @param x die neue X-Position.
      */
@@ -101,8 +100,7 @@ public abstract class Char {
     }
 
     /**
-     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht,
-     * wird die Bewegung abgebrochen.
+     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht, wird die Bewegung abgebrochen.
      *
      * @param x die neue X-Position.
      */
@@ -113,8 +111,7 @@ public abstract class Char {
     }
 
     /**
-     * Liefert die derzeitige Bewegungsrichtung dieser Einheit. Liefert null,
-     * wenn die Einheit sich gerade nicht bewegt.
+     * Liefert die derzeitige Bewegungsrichtung dieser Einheit. Liefert null, wenn die Einheit sich gerade nicht bewegt.
      *
      * @return das Bewegungsrichtung oder null
      */
@@ -126,9 +123,7 @@ public abstract class Char {
     }
 
     /**
-     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des
-     * aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts,
-     * wenn die Einheit schon steht.
+     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn die Einheit schon steht.
      */
     public void stopMovement() {
         posX = getX();
@@ -138,8 +133,7 @@ public abstract class Char {
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet
-     * Bewegungen anhand des aktuellen Gameticks mit ein.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
      *
      * @return Die echte Position X dieses Chars.
      */
@@ -151,8 +145,7 @@ public abstract class Char {
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet
-     * Bewegungen anhand des aktuellen Gameticks mit ein.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
      *
      * @return Die echte Position X dieses Chars.
      */
@@ -164,11 +157,8 @@ public abstract class Char {
     }
 
     /**
-     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach
-     * dem Aufruf in diese Richtung. Berechnet falls nötig die aktuelle Position
-     * zuerst neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit
-     * nicht beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht
-     * beide 0 sein!
+     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet falls nötig die aktuelle Position zuerst neu. Der Vektor wird normalisiert, kann
+     * also die Geschwindigkeit nicht beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
         if (x == 0 && y == 0) {
@@ -192,9 +182,7 @@ public abstract class Char {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt.
-     * Initialisiert die Bewegung einer Einheit neu, damit
-     * Geschwindigkeitsänderungen während der Bewegung möglich sind. Sollte
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit neu, damit Geschwindigkeitsänderungen während der Bewegung möglich sind. Sollte
      * daher wenn möglich vor dem Start der Bewegung aufgerufen werden.
      *
      * @param speed die neue Geschwindigkeit > 0
@@ -281,8 +269,7 @@ public abstract class Char {
     }
 
     /**
-     * Wie groß die Byte-Representation dieses Chars ist. Die Größe darf 512 -
-     * 32 auf keinen Fall überschreiten!
+     * Wie groß die Byte-Representation dieses Chars ist. Die Größe darf 512 - 32 auf keinen Fall überschreiten!
      *
      * @return die größe des byte[]'s, das netPack() braucht.
      */
@@ -291,13 +278,9 @@ public abstract class Char {
     }
 
     /**
-     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses
-     * Chars in das gegebene Array. Das Array muss mindestens byteArraySize() +
-     * offset groß sein. Unterklassen müssen diese Methode überschreiben, falls
-     * sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes
-     * oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack()
-     * aufrufen, und dann selber den Puffer ab super.byteArraySize() -1 + offset
-     * befüllen.
+     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese
+     * Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann
+     * selber den Puffer ab super.byteArraySize() -1 + offset befüllen.
      *
      * @param b der Puffer, in den geschrieben ist.
      */
@@ -331,8 +314,7 @@ public abstract class Char {
     }
 
     /**
-     * Extrapoliert die Bewegung dieses Chars, d.h. berechnet die Position für
-     * einige Ticks vorraus.
+     * Extrapoliert die Bewegung dieses Chars, d.h. berechnet die Position für einige Ticks vorraus.
      *
      * @return die X-Koordinate des Chars nach der angegebenen Zahl Ticks
      */
@@ -341,12 +323,20 @@ public abstract class Char {
     }
 
     /**
-     * Extrapoliert die Bewegung dieses Chars, d.h. berechnet die Position für
-     * einige Ticks vorraus.
+     * Extrapoliert die Bewegung dieses Chars, d.h. berechnet die Position für einige Ticks vorraus.
      *
      * @return die Y-Koordinate des Chars nach der angegebenen Zahl Ticks
      */
     public double extrapolateY(int ticks) {
         return getY() + vecY * getSpeed() * (Server.game.getTick() + ticks - moveStartTick);
+    }
+
+    /**
+     * Gibt die Kollisionsgröße dieses Chars zurück
+     *
+     * @return die Kollisionsgröße
+     */
+    public double getSize() {
+        return size;
     }
 }
