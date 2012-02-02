@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.Settings;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.shared.Item;
@@ -448,16 +449,17 @@ public class Engine {
             glVertex3f(0, tilesY, 0);
             glEnd();
         }
-
+        
         // Items im Inventory
-        itemTiles.bind();
         if (showinventory) {
-
+            renderText(String.valueOf(Client.getMoney()), 0.12f * tilesX, 0.44f * tilesY);
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
+                
                 // Slot leer oder gerade ausgewählt
                 if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {
                     continue;
                 }
+                itemTiles.bind();
 
                 Item item = Client.getInventorySlots()[i].getItem();
 
@@ -485,12 +487,12 @@ public class Engine {
                 glTexCoord2f(v, w);
                 glVertex3f(x, y + tilesX * size, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
-
             }
         }
 
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
+            itemTiles.bind();
             Item item = Client.getInventorySlots()[selecteditemslot].getItem();
             float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * tilesX;
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * tilesY;
