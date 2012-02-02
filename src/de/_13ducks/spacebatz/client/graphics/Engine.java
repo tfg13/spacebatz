@@ -200,8 +200,6 @@ public class Engine {
                     showinventory = false;
                 }
             }
-
-
         }
     }
 

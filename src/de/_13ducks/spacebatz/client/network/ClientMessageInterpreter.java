@@ -179,7 +179,6 @@ public class ClientMessageInterpreter {
                 break;
             case Settings.NET_TCP_CMD_SPAWN_ITEM:
                 // Item wird gedroppt    
-                System.out.println("dropmanager");
                 try {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Item item = (Item) is.readObject();
@@ -196,9 +195,15 @@ public class ClientMessageInterpreter {
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
                 if (clientID == Client.getClientID()) {
                     Item item = Client.getItemMap().get(netIDItem2);
-                    boolean success = Client.addToInventory(item);
-                    if (success) {
+                    // Geld oder normales Item?
+                    if (item.stats.itemStats.get("name").equals("Money")) {
+                        Client.addMoney(item.getAmount());
                         Client.getItemMap().remove(netIDItem2);
+                    } else {
+                        boolean success = Client.addToInventory(item);
+                        if (success) {
+                            Client.getItemMap().remove(netIDItem2);
+                        }
                     }
                 }
                 break;

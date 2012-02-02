@@ -76,9 +76,13 @@ public class Client {
      */
     private static HashMap<Integer, Item> inventoryItems = new HashMap<>();
     /**
-     * Items des Inventars des Clients
+     * belegte Slots des Inventars des Clients
      */
     private static InventorySlot[] inventorySlots = new InventorySlot[96];
+    /**
+     * Wieviel Geld der Spieler gerade besitzt
+     */
+    private static int money;
     /**
      * Die Logik-Tickrate.
      */
@@ -240,5 +244,14 @@ public class Client {
     public static void removeFromInventory(int slot) {
         inventoryItems.remove(inventorySlots[slot].getItem().netID);
         inventorySlots[slot] = null;
+    }
+
+    public static int getMoney() {
+        return money;
+    }
+
+    public static void addMoney(int amount) {
+        money += amount;
+        System.out.println("money: " + money);
     }
 }
