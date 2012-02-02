@@ -77,14 +77,16 @@ public class Engine {
     /**
      * Sagt, ob Inventar gerade geöffnet ist (Taste i)
      */
-    private boolean showinventory;
+    private boolean showinventory; // wird Inventar gerade gerendert
     private boolean lmbpressed; // linke maustaste gedrückt
-    private int inventorypage;
+    private int inventorypage; // aktuelle Inventarseite
+    private int selecteditemslot; // zuletzt angeklickter Inventarslot
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         charset = Charset.forName("cp437");
+        selecteditemslot = -1;
     }
 
     /**
@@ -181,6 +183,53 @@ public class Engine {
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
 
+                    // Inventarslot angeklickt?
+                    int slotklicked = -1;
+                    if (y > 0.1812 && y <= 0.3156) {
+                        for (int i = 0; i < 6; i++) {
+                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                                slotklicked = i + inventorypage * 12;
+                                break;
+                            }
+                        }
+                    } else if (y > 0.05156 && y <= 0.1813) {
+                        for (int i = 0; i < 6; i++) {
+                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                                slotklicked = i + 6 + inventorypage * 12;
+                                break;
+                            }
+                        }
+                    }
+                    //Client.getInventorySlots()[islot].getItem().netID
+                    //Client.getInventorySlots()[islot] = null;
+
+                    if (slotklicked != -1) {
+                        // gültiger Inventar-Slot angeklickt
+
+                        if (selecteditemslot == -1) {
+                            // zur Zeit war kein Slot ausgewählt -> der hier wird
+                            if (Client.getInventorySlots()[slotklicked] != null) {
+                                // nur wenn hier ein item drin ist
+                                selecteditemslot = slotklicked;
+                            }
+
+                        } else {
+                            // es war bereits ein Slot ausgewählt
+                            if (Client.getInventorySlots()[slotklicked] == null) {
+                                // angeklickter Slot leer -> Item verschieben
+                                Client.getInventorySlots()[slotklicked] = Client.getInventorySlots()[selecteditemslot];
+                                Client.getInventorySlots()[selecteditemslot] = null;
+                                selecteditemslot = -1;
+                            } else {
+                                // angeklickter Slot belegt -> Items tauschen
+                                InventorySlot swapSlot = Client.getInventorySlots()[slotklicked];
+                                Client.getInventorySlots()[slotklicked] = Client.getInventorySlots()[selecteditemslot];
+                                Client.getInventorySlots()[selecteditemslot] = swapSlot;
+                                selecteditemslot = -1;
+                            }
+                        }
+                    }
+
                     // nächste / vorherige Seite
                     if (y > 0.14 && y < 0.22) {
                         if (x < 0.1) {
@@ -196,27 +245,6 @@ public class Engine {
                                 inventorypage++;
                             }
                         }
-                    }
-
-                    // Inventarslot angeklickt?
-                    int slot = -1;
-                    if (y > 0.1812 && y <= 0.3156) {
-                        for (int i = 0; i < 6; i++) {
-                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                                slot = i;
-                                break;
-                            }
-                        }
-                    } else if (y > 0.05156 && y <= 0.1813) {
-                        for (int i = 0; i < 6; i++) {
-                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                                slot = i + 6;
-                                break;
-                            }
-                        }
-                    }
-                    if (slot != -1) {
-                        System.out.println(slot);
                     }
                 }
             }
@@ -404,7 +432,7 @@ public class Engine {
             }
         }
 
-        // Inventory
+        // Inventory-Hintergrund
         inventoryPic.bind();
         if (showinventory) {
             //System.out.println("inventory");
@@ -426,7 +454,8 @@ public class Engine {
         if (showinventory) {
 
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
-                if (Client.getInventorySlots()[i] == null) {
+                // Slot leer oder gerade ausgewählt
+                if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {
                     continue;
                 }
 
@@ -458,6 +487,29 @@ public class Engine {
                 glEnd(); // Zeichnen des QUADs fertig } }
 
             }
+        }
+
+        // selected Item zum Mauszeiger zeichnen
+        if (selecteditemslot != -1) {
+            Item item = Client.getInventorySlots()[selecteditemslot].getItem();
+            float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * tilesX;
+            float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * tilesY;
+
+            float size = 0.07f;
+            float v;
+            float w = 0.0f;
+            v = 0.25f * (int) item.stats.itemStats.get("pic");
+
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(v, w + 0.25f);
+            glVertex3f(x - tilesX * size / 2, y - tilesX * size / 2, 0.0f);
+            glTexCoord2f(v + 0.25f, w + 0.25f);
+            glVertex3f(x + tilesX * size / 2, y - tilesX * size / 2, 0.0f);
+            glTexCoord2f(v + 0.25f, w);
+            glVertex3f(x + tilesX * size / 2, y + tilesX * size / 2, 0.0f);
+            glTexCoord2f(v, w);
+            glVertex3f(x - tilesX * size / 2, y + tilesX * size / 2, 0.0f);
+            glEnd(); // Zeichnen des QUADs fertig } }
         }
     }
 

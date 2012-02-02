@@ -139,14 +139,13 @@ public class Game {
     }
 
     public void addEnemies() {
-        Enemy testenemy = new Enemy(3, 55, newNetID(), 0);
-        netIDMap.put(testenemy.netID, testenemy);
+        
 
         // Platziert Gegner
         Random r = new Random();
         for (int i = 0; i < 90; i++) {
-            double posX = r.nextDouble() * level.getGround().length;
-            double posY = r.nextDouble() * level.getGround().length;
+            double posX = 5 + (r.nextDouble() * (level.getGround().length - 10));
+            double posY = 5 + (r.nextDouble() * (level.getGround().length - 10));
 
 
             if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
@@ -252,6 +251,7 @@ public class Game {
 
     /**
      * Gibt eine neue netID, die noch frei ist, zurück
+     *
      * @return eine neue netID
      */
     public final synchronized int newNetID() {
@@ -270,6 +270,7 @@ public class Game {
 
     /**
      * Gibt das ServerLevel zurück
+     *
      * @return das ServerLevel
      */
     public ServerLevel getLevel() {

@@ -88,7 +88,31 @@ public class CollisionManager {
             if (mover.isMoving()) {
                 double futureX = mover.extrapolateX(1);
                 double futureY = mover.extrapolateY(1);
-                if (Server.game.getLevel().getCollisionMap()[(int) futureX][(int) futureY] == true) {
+
+                int leftX = (int) (futureX - mover.getSize());
+                int leftY = (int) (futureY);
+
+                int topX = (int) (futureX);
+                int topY = (int) (futureY + mover.getSize());
+
+                int rightX = (int) (futureX + mover.getSize());
+                int rightY = (int) (futureY);
+
+                int botX = (int) (futureX);
+                int botY = (int) (futureY - mover.getSize());
+
+
+
+                if (Server.game.getLevel().getCollisionMap()[leftX][leftY] == true) {
+                    mover.stopMovement();
+                }
+                if (Server.game.getLevel().getCollisionMap()[topX][topY] == true) {
+                    mover.stopMovement();
+                }
+                if (Server.game.getLevel().getCollisionMap()[rightX][rightY] == true) {
+                    mover.stopMovement();
+                }
+                if (Server.game.getLevel().getCollisionMap()[botX][botY] == true) {
                     mover.stopMovement();
                 }
 
