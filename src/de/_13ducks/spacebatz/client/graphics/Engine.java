@@ -26,7 +26,7 @@ import org.newdawn.slick.util.ResourceLoader;
 public class Engine {
 
     static {
-        // Hack, um nachtrÃ¤glich java.library.path zu setzen.
+        // Hack, um nachträglich java.library.path zu setzen.
         try {
             System.setProperty("java.library.path", "native/");
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
@@ -73,7 +73,7 @@ public class Engine {
     }
 
     /**
-     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbststÃ¤ndig!).
+     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
      */
     public void start() {
         // Fenster aufmachen:
@@ -200,7 +200,7 @@ public class Engine {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Ãœberschreiben stellen
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Überschreiben stellen
         glEnable(GL_BLEND); // Transparenz in Texturen erlauben
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
@@ -238,7 +238,7 @@ public class Engine {
         // Items
         itemTiles.bind();
         for (int i = 0; i < Client.getItemList().size(); i++) {
-            Item item = Client.getItemList().get(i); // Zu alte Bullets lÃ¶schen:
+            Item item = Client.getItemList().get(i); // Zu alte Bullets löschen:
 
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
@@ -309,7 +309,7 @@ public class Engine {
         // Bullets
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets lÃ¶schen:
+            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
             if (bullet.getDeletetick() < Client.frozenGametick) {
 
                 Client.getBulletList().remove(i);
@@ -370,11 +370,11 @@ public class Engine {
     }
 
     /**
-     * LÃ¤d alle benÃ¶tigten Texturen
+     * Läd alle benötigten Texturen
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃ¶ÃŸern/verkleinern nicht aus mittelwerten von mehreren berechnen soll,
-        // sondern einfach den nÃ¤chstbesten nehmen. Das sort fÃ¼r den Indie-Pixelart-Look
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
+        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
         enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
