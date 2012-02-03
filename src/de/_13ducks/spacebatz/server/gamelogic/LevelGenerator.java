@@ -55,10 +55,11 @@ public class LevelGenerator {
 
 
         // "Rennstrecke"
-        createWall(19, 0, 20, 40, level);
-        createWall(20, 39, 39, 40, level);
-        createWall(40, 40, 39, 20, level);
-
+        createWall(3,19, 40, 19, level);
+        createWall(40, 19, 40, 40, level);
+        createWall(40, 40, 20, 40, level);
+        ground[2][19] = 3;
+        ground[1][19] = 3;
 
 //        // Linien
 //        for (int i = 10; i <= 20; i++) {
