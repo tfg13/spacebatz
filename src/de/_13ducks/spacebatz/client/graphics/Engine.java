@@ -30,7 +30,7 @@ import org.newdawn.slick.util.ResourceLoader;
 public class Engine {
 
     static {
-        // Hack, um nachträglich java.library.path zu setzen.
+        // Hack, um nachtrÃƒÂ¤glich java.library.path zu setzen.
         try {
             System.setProperty("java.library.path", "native/");
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
@@ -76,10 +76,10 @@ public class Engine {
      */
     private float panX, panY;
     /**
-     * Sagt, ob Inventar gerade geöffnet ist (Taste i)
+     * Sagt, ob Inventar gerade geÃƒÂ¶ffnet ist (Taste i)
      */
     private boolean showinventory; // wird Inventar gerade gerendert
-    private boolean lmbpressed; // linke maustaste gedrückt
+    private boolean lmbpressed; // linke maustaste gedrÃƒÂ¼ckt
     private int inventorypage; // aktuelle Inventarseite
     private int selecteditemslot; // zuletzt angeklickter Inventarslot
 
@@ -91,7 +91,7 @@ public class Engine {
     }
 
     /**
-     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
+     * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbststÃƒÂ¤ndig!).
      */
     public void start() {
         // Fenster aufmachen:
@@ -205,17 +205,17 @@ public class Engine {
                     //Client.getInventorySlots()[islot] = null;
 
                     if (slotklicked != -1) {
-                        // gültiger Inventar-Slot angeklickt
+                        // gÃƒÂ¼ltiger Inventar-Slot angeklickt
 
                         if (selecteditemslot == -1) {
-                            // zur Zeit war kein Slot ausgewählt -> der hier wird
+                            // zur Zeit war kein Slot ausgewÃƒÂ¤hlt -> der hier wird
                             if (Client.getInventorySlots()[slotklicked] != null) {
                                 // nur wenn hier ein item drin ist
                                 selecteditemslot = slotklicked;
                             }
 
                         } else {
-                            // es war bereits ein Slot ausgewählt
+                            // es war bereits ein Slot ausgewÃƒÂ¤hlt
                             if (Client.getInventorySlots()[slotklicked] == null) {
                                 // angeklickter Slot leer -> Item verschieben
                                 Client.getInventorySlots()[slotklicked] = Client.getInventorySlots()[selecteditemslot];
@@ -231,7 +231,7 @@ public class Engine {
                         }
                     }
 
-                    // nächste / vorherige Seite
+                    // nÃƒÂ¤chste / vorherige Seite
                     if (y > 0.14 && y < 0.22) {
                         if (x < 0.1) {
                             if (inventorypage <= 0) {
@@ -296,7 +296,7 @@ public class Engine {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf Überschreiben stellen
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf ÃƒÅ“berschreiben stellen
         glEnable(GL_BLEND); // Transparenz in Texturen erlauben
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
@@ -405,7 +405,7 @@ public class Engine {
         // Bullets
         bulletTiles.bind();
         for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
+            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets lÃƒÂ¶schen:
             if (bullet.getDeletetick() < Client.frozenGametick) {
 
                 Client.getBulletList().remove(i);
@@ -455,7 +455,7 @@ public class Engine {
             renderText(String.valueOf(Client.getMoney()), 0.12f * tilesX, 0.44f * tilesY);
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
-                // Slot leer oder gerade ausgewählt
+                // Slot leer oder gerade ausgewÃƒÂ¤hlt
                 if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {
                     continue;
                 }
@@ -514,29 +514,31 @@ public class Engine {
             glEnd(); // Zeichnen des QUADs fertig } }
         }
 
-        // Mousehover über Item?
-        float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
-        float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
+        // Mousehover ÃƒÂ¼ber Item?
+        if (showinventory) {
+            float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
+            float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
 
-        int slothovered = -1;
-        if (y > 0.1812 && y <= 0.3156) {
-            for (int i = 0; i < 6; i++) {
-                if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                    slothovered = i + inventorypage * 12;
-                    break;
+            int slothovered = -1;
+            if (y > 0.1812 && y <= 0.3156) {
+                for (int i = 0; i < 6; i++) {
+                    if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                        slothovered = i + inventorypage * 12;
+                        break;
+                    }
+                }
+            } else if (y > 0.05156 && y <= 0.1813) {
+                for (int i = 0; i < 6; i++) {
+                    if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
+                        slothovered = i + 6 + inventorypage * 12;
+                        break;
+                    }
                 }
             }
-        } else if (y > 0.05156 && y <= 0.1813) {
-            for (int i = 0; i < 6; i++) {
-                if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                    slothovered = i + 6 + inventorypage * 12;
-                    break;
+            if (slothovered != -1 && slothovered != selecteditemslot) {
+                if (Client.getInventorySlots()[slothovered] != null) {
+                    renderText((String) Client.getInventorySlots()[slothovered].getItem().stats.itemStats.get("name"), x * tilesX, y * tilesX);
                 }
-            }
-        }
-        if (slothovered != -1 && slothovered != selecteditemslot) {
-            if (Client.getInventorySlots()[slothovered] != null) {
-                renderText((String) Client.getInventorySlots()[slothovered].getItem().stats.itemStats.get("name"), x * tilesX, y * tilesX);
             }
         }
     }
@@ -582,12 +584,12 @@ public class Engine {
     }
 
     /**
-     * Läd alle benötigten Texturen.
+     * LÃƒÂ¤d alle benÃƒÂ¶tigten Texturen.
      * @throws IOException Wenn was schief geht
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
-        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃƒÂ¶ÃƒÅ¸ern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
+        // sondern einfach den nÃƒÂ¤chstbesten nehmen. Das sort fÃƒÂ¼r den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
         enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
@@ -598,7 +600,7 @@ public class Engine {
     }
 
     /**
-     * Läd alle benötigten Binärdateien, die keine Bilder sind.
+     * LÃƒÂ¤d alle benÃƒÂ¶tigten BinÃƒÂ¤rdateien, die keine Bilder sind.
      * @throws IOException Wenn was schief geht
      */
     private void loadBin() throws IOException {
