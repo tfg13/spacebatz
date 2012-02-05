@@ -11,7 +11,6 @@ import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -183,6 +182,7 @@ public class ClientMessageInterpreter {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Item item = (Item) is.readObject();
                     Client.getItemMap().put(item.netID, item);
+
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }

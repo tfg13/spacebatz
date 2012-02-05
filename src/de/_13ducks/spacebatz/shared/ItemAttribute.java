@@ -8,7 +8,7 @@ package de._13ducks.spacebatz.shared;
  *
  * @author Jojo
  */
-public class ItemAttribute {
+public class ItemAttribute  implements java.io.Serializable {
 
     protected String name;
     protected int quality;

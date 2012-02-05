@@ -537,7 +537,12 @@ public class Engine {
             }
             if (slothovered != -1 && slothovered != selecteditemslot) {
                 if (Client.getInventorySlots()[slothovered] != null) {
-                    renderText((String) Client.getInventorySlots()[slothovered].getItem().stats.itemStats.get("name"), x * tilesX, y * tilesX);
+                    Item item = Client.getInventorySlots()[slothovered].getItem();
+                    for (int i = 0; i < item.getItemattributes().size() ; i++) {
+                        renderText(String.valueOf(item.getItemattributes().get(i).getQuality()) , x * tilesX, y * tilesY);
+                        y += 0.05f;
+                    }
+                    renderText((String) Client.getInventorySlots()[slothovered].getItem().stats.itemStats.get("name"), x * tilesX, y * tilesY);
                 }
             }
         }
