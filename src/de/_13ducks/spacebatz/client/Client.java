@@ -79,6 +79,10 @@ public class Client {
      */
     private static InventorySlot[] inventorySlots = new InventorySlot[Settings.INVENTORY_SIZE];
     /**
+     * Hier kommen die Items rein, die gerade angelegt sind
+     */
+    private static Item[] equippedItems = new Item[3];
+    /**
      * Wieviel Geld der Spieler gerade besitzt
      */
     private static int money;
@@ -248,5 +252,19 @@ public class Client {
     public static void addMoney(int amount) {
         money += amount;
         System.out.println("money: " + money);
+    }
+
+    /**
+     * @return the equippedSlots
+     */
+    public static Item[] getEquippedItems() {
+        return equippedItems;
+    }
+
+    /**
+     * @param aEquippedSlots the equippedSlots to set
+     */
+    public static void setEquippedItems(Item[] aEquippedSlots) {
+        equippedItems = aEquippedSlots;
     }
 }

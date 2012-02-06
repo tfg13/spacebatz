@@ -185,6 +185,55 @@ public class Engine {
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
 
+                    // Equipslot angeklickt?
+                    if (x > 0.4 && x < 0.54) {
+                        if (y > 0.8 && y < 0.92) {
+                            // Hut-Slot
+                            if (selecteditemslot != -1) {
+                                Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
+                                if ((int) selecteditem.stats.itemStats.get("itemclass") == 2) {
+                                    if (Client.getEquippedItems()[2] == null) {
+                                        // Slot war vorher nicht belegt -> verschieben
+                                        Client.getEquippedItems()[2] = selecteditem;
+                                        Client.getInventoryItems().values().remove(selecteditem);
+                                        Client.getInventorySlots()[selecteditemslot] = null;
+                                        selecteditemslot = -1;
+                                    } else {
+                                        // Slot war belegt -> tauschen
+                                        Item swapItem = Client.getEquippedItems()[2];
+                                        Client.getEquippedItems()[2] = selecteditem;
+                                        Client.getInventoryItems().values().remove(selecteditem);
+                                        Client.getInventoryItems().put(swapItem.netID, swapItem);
+                                        Client.getInventorySlots()[selecteditemslot] = new InventorySlot(swapItem);
+                                        selecteditemslot = -1;
+                                    }
+                                }
+                            }
+                        } else if (y > 0.61 && y < 0.74) {
+                            // Waffenslot
+                            if (selecteditemslot != -1) {
+                                Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
+                                if ((int) selecteditem.stats.itemStats.get("itemclass") == 1) {
+                                    if (Client.getEquippedItems()[1] == null) {
+                                        // Slot war vorher nicht belegt -> verschieben
+                                        Client.getEquippedItems()[1] = selecteditem;
+                                        Client.getInventoryItems().values().remove(selecteditem);
+                                        Client.getInventorySlots()[selecteditemslot] = null;
+                                        selecteditemslot = -1;
+                                    } else {
+                                        // Slot war belegt -> tauschen
+                                        Item swapItem = Client.getEquippedItems()[1];
+                                        Client.getEquippedItems()[1] = selecteditem;
+                                        Client.getInventoryItems().values().remove(selecteditem);
+                                        Client.getInventoryItems().put(swapItem.netID, swapItem);
+                                        Client.getInventorySlots()[selecteditemslot] = new InventorySlot(swapItem);
+                                        selecteditemslot = -1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     // Inventarslot angeklickt?
                     int slotklicked = -1;
                     if (y > 0.1812 && y <= 0.3156) {
@@ -202,8 +251,6 @@ public class Engine {
                             }
                         }
                     }
-                    //Client.getInventorySlots()[islot].getItem().netID
-                    //Client.getInventorySlots()[islot] = null;
 
                     if (slotklicked != -1) {
                         // gültiger Inventar-Slot angeklickt
@@ -492,6 +539,36 @@ public class Engine {
             }
         }
 
+        // angelegte Items in ihre Slots im Inventar zeichnen
+        if (showinventory) {
+            itemTiles.bind();
+            for (int i = 1; i <= 2; i++) {
+                Item item = Client.getEquippedItems()[i];
+                if (item != null) {
+                    // Item zeichnen;
+                    float x = 0.41f * tilesX;
+                    float y = (0.61f + 0.2f * (i - 1)) * tilesY;
+
+                    float width = 0.11f * tilesX;
+                    float height = 0.11f * tilesY;
+                    float v;
+                    float w = 0.0f;
+                    v = 0.25f * (int) item.stats.itemStats.get("pic");
+
+                    glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                    glTexCoord2f(v, w + 0.25f);
+                    glVertex3f(x, y, 0.0f);
+                    glTexCoord2f(v + 0.25f, w + 0.25f);
+                    glVertex3f(x + width, y, 0.0f);
+                    glTexCoord2f(v + 0.25f, w);
+                    glVertex3f(x + width, y + height, 0.0f);
+                    glTexCoord2f(v, w);
+                    glVertex3f(x, y + height, 0.0f);
+                    glEnd(); // Zeichnen des QUADs fertig } }
+                }
+            }
+        }
+
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
             itemTiles.bind();
@@ -542,9 +619,9 @@ public class Engine {
                     Item item = Client.getInventorySlots()[slothovered].getItem();
 
                     glDisable(GL_TEXTURE_2D);
-
                     glColor3f(0.9f, 0.9f, 0.9f);
-                    glRectf(x * tilesX, y * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (1 + item.getItemattributes().size())) * tilesY);
+                    glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (0.7f + item.getItemattributes().size())) * tilesY);
+                    glEnable(GL_TEXTURE_2D);
 
                     for (int i = 0; i < item.getItemattributes().size(); i++) {
                         renderText(String.valueOf(item.getItemattributes().get(i).getName()), x * tilesX, y * tilesY);
