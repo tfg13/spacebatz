@@ -40,7 +40,7 @@ public final class Server {
      */
     public static void startServer() {
         game = new Game();
-        //game.addEnemies();
+        game.addEnemies();
         game.addPlants();
         serverNetwork.startServer();
 
