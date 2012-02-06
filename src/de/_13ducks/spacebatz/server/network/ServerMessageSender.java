@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.Plant;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
@@ -10,8 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Sendet Daten übers Netzwerk.
- * Kümmert sich darum, gescheite Pakete zu backen.
+ * Sendet Daten übers Netzwerk. Kümmert sich darum, gescheite Pakete zu backen.
+ *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class ServerMessageSender {
@@ -39,6 +40,7 @@ public class ServerMessageSender {
 
     /**
      * Schickt dem Client einen neuen Player.
+     *
      * @param client der Ziel-Client
      * @param player der neue Player
      */
@@ -52,6 +54,7 @@ public class ServerMessageSender {
 
     /**
      * Lässt den Client das Spiel starten.
+     *
      * @param client der Ziel-Client
      */
     public void sendStartGame(Client client) {
@@ -62,6 +65,7 @@ public class ServerMessageSender {
 
     /**
      * Setzt die ClientID eines Clients auf dem Client.
+     *
      * @param client der Client, dessen ID an ihn gesendet wird.
      */
     public void sendSetClientID(Client client) {
@@ -70,6 +74,7 @@ public class ServerMessageSender {
 
     /**
      * Bullet trifft Char
+     *
      * @param netIDChar netID des getroffenen Char
      * @param netIDBullet netID des Bullets
      * @param killed Ob Bullet den Char tötet
@@ -115,11 +120,38 @@ public class ServerMessageSender {
 
     /**
      * Sendet die Server-Tickrate an den Client.
+     *
      * @param client der Client
      */
     public void sendTickrate(Client client) {
         byte[] b = new byte[4];
         Bits.putInt(b, 0, Settings.SERVER_TICKRATE);
         Server.serverNetwork.sendTcpData((byte) 27, b, client);
+    }
+
+    /**
+     * Sendet eine Veränderung am Boden
+     *
+     * @param x X-Koordinate des geännderten Felds
+     * @param y Y-Koordinate des geännderten Felds
+     * @param newGround neuer wert des bodens
+     */
+    public void broadcastGroundChange(int x, int y, int newGround) {
+        byte[] b = new byte[12];
+        Bits.putInt(b, 0, x);
+        Bits.putInt(b, 4, y);
+        Bits.putInt(b, 8, newGround);
+        for (Client c : Server.game.clients.values()) {
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_GROUND, b, c);
+        }
+    }
+
+    /**
+     * Sendet Alle Pflanzen an den Client
+     */
+    public void sendAllPlants() {
+        for (Plant p : Server.game.getPlants()) {
+            broadcastGroundChange(p.getX(), p.getY(), p.getTex());
+        }
     }
 }

@@ -44,9 +44,21 @@ public class Level implements java.io.Serializable {
 
     /**
      * Gibt die Kollisionskarte zurück
+     *
      * @return die Kollisionskarte
      */
     public boolean[][] getCollisionMap() {
         return collisionMap;
+    }
+
+    /**
+     * Ändert den Wert einer eines einzelnen Feldes
+     *
+     * @param x X-Koordinate des Feldes
+     * @param y Y-Koordinate des Feldes
+     * @param value der neue Wert des Feldes
+     */
+    public void setSingleTile(int x, int y, int value) {
+        this.ground[x][y] = value;
     }
 }

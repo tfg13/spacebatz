@@ -118,6 +118,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_TRANSFER_ITEMS = 34;
     /**
+     * Die cmdID für geänderten Boden
+     */
+    public static final byte NET_TCP_CMD_CHANGE_GROUND = 35;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

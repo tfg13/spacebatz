@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 /**
  * Die Empfangskomponente des Netzwerkmoduls
@@ -26,8 +27,7 @@ public class ClientMessageInterpreter {
      */
     private ConcurrentLinkedQueue<ClientTcpMessage> messages;
     /**
-     * Dieser Thread empfängt Tcp-Paketee, solange die Engine noch niht geladen ist
-     * wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser Thrad wird deaktiviert
+     * Dieser Thread empfängt Tcp-Paketee, solange die Engine noch niht geladen ist wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser Thrad wird deaktiviert
      */
     private Thread initTcpReceiverThread;
     /**
@@ -72,6 +72,7 @@ public class ClientMessageInterpreter {
 
     /**
      * Stopft eine neue Nachricht in die Liste, damit der Hauptthread sie später abarbeitet
+     *
      * @param m die neue Nachricht
      */
     public void addMessageToQueue(ClientTcpMessage m) {
@@ -95,7 +96,6 @@ public class ClientMessageInterpreter {
      * @param message die bytes der NAchricht
      */
     public void interpretTcpMessage(byte cmdId, byte message[]) {
-
         switch (cmdId) {
             case Settings.NET_TCP_CMD_TRANSFER_LEVEL:
                 try {
@@ -215,8 +215,18 @@ public class ClientMessageInterpreter {
                 }
                 break;
 
+            case Settings.NET_TCP_CMD_CHANGE_GROUND:
+                // Geänderten Boden übernehmen:
+                int x = Bits.getInt(message, 0);
+                int y = Bits.getInt(message, 4);
+                int newGround = Bits.getInt(message, 8);
+                Client.currentLevel.getGround()[x][y] = newGround;
+                break;
+
+
             default:
-                System.out.println("WARNING: Client received unknown TCP-Command");
+                System.out.println(
+                        "WARNING: Client received unknown TCP-Command");
         }
 
     }

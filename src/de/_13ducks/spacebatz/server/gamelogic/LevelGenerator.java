@@ -55,7 +55,7 @@ public class LevelGenerator {
 
 
         // "Rennstrecke"
-        createWall(3,19, 40, 19, level);
+        createWall(3, 19, 40, 19, level);
         createWall(40, 19, 40, 40, level);
         createWall(40, 40, 20, 40, level);
         ground[2][19] = 3;
@@ -160,6 +160,7 @@ public class LevelGenerator {
 
     /**
      * Erzeug eine Mauer, mit Textur UND Kollisionsinformationen
+     *
      * @param x1 X-Koordinate des Startpunktes der Wand
      * @param y1 Y-Koordinate des Startpunktes der Wand
      * @param x2 X-Koordinate des Endpunktes der Wand
@@ -174,6 +175,7 @@ public class LevelGenerator {
 
     /**
      * Setzt die Kollision aller Felder in einer Liste
+     *
      * @param positions die Liste der Positionen, deren Kollision gesezt werden soll
      * @param collision der Kollisionswert den die Felder haben sollen, true oder false
      * @param level das Level, auf dem die funktion operieren soll

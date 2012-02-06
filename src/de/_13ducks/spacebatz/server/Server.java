@@ -30,6 +30,8 @@ public final class Server {
      * Die Sendekomponente des Netzwerkmoduls
      */
     public static ServerMessageSender msgSender = new ServerMessageSender();
+    
+    
 
     /**
      * Einstiegspunkt
@@ -38,7 +40,8 @@ public final class Server {
      */
     public static void startServer() {
         game = new Game();
-        game.addEnemies();
+        //game.addEnemies();
+        game.addPlants();
         serverNetwork.startServer();
 
         MainLoop mainLoop = new MainLoop();
