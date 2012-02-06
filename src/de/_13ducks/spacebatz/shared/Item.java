@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.shared;
 import java.util.ArrayList;
 
 /**
- *
+ * Ein Item, dass auf der Map oder in einem Inventar liegt
  * @author Jojo
  */
 public class Item implements java.io.Serializable {

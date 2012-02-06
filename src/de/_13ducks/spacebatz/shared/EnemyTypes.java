@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.shared;
 import java.util.ArrayList;
 
 /**
- *
+ * Enthält eine Liste mit Werten der verschiedenen Gegnersorten
  * @author ojoj
  */
 public class EnemyTypes implements java.io.Serializable{

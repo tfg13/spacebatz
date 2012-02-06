@@ -5,7 +5,7 @@
 package de._13ducks.spacebatz.shared;
 
 /**
- *
+ * Items können ein oder mehrere Attribute besitzen, die die Itemstats verändern.
  * @author Jojo
  */
 public class ItemAttribute  implements java.io.Serializable {

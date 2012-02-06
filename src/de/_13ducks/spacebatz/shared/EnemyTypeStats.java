@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.shared;
 
 /**
- *
+ * Die Werte, die eine bestimmte Gegnersortesorte hat
  * @author Jj
  */
 public class EnemyTypeStats implements java.io.Serializable{

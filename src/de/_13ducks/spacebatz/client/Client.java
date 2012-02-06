@@ -55,7 +55,7 @@ public class Client {
      */
     public static EnemyTypes enemytypes;
     /**
-     * Liste aller Gegnertypen
+     * Liste aller Bullettypen
      */
     public static BulletTypes bullettypes;
     /**

@@ -3,9 +3,8 @@ package de._13ducks.spacebatz.shared;
 import java.util.ArrayList;
 
 /**
- *
+ * Die Werte, die ein bestimmtes Attribut hat
  * @author Jojo
-public class ItemAttributeTypes {
  */
 public class ItemAttributeTypes {
         private ArrayList<ItemAttributeWeapon> weaponattributelist;

@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.shared;
 import java.util.ArrayList;
 
 /**
- *
+ * Enthält eine Liste mit Werten der verschiedenen Bulletsorten
  * @author bla
  */
 public class BulletTypes implements java.io.Serializable{

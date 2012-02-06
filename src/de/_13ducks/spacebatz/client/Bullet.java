@@ -11,7 +11,6 @@ public class Bullet {
     /*
      * Tick, in dem die Bullet erstellt wurde
      */
-
     private int spawntick;
     /*
      * Ort, an dem die Bullet erstellt wurde
