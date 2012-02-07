@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
+import de._13ducks.spacebatz.shared.Item;
 
 /**
  * Diese Klasse stellt einen Client dar
@@ -25,7 +26,11 @@ public class Client {
      * Das Inventar des Clients
      */
     private Inventory inventory;
-        /**
+    /**
+     * Hier kommen die Items rein, die gerade angelegt sind
+     */
+    private Item[] equippedItems;
+    /**
      * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
      * verarbeitet wurde.
      */
@@ -44,7 +49,9 @@ public class Client {
         this.connection = connection;
         this.clientID = clientID;
         context = new ClientContext();
-        this.inventory = new Inventory();
+        inventory = new Inventory();
+        equippedItems = new Item[3];
+        System.out.println("equippedItems");
     }
 
     /**
@@ -81,5 +88,12 @@ public class Client {
      */
     public Inventory getInventory() {
         return inventory;
+    }
+
+    /**
+     * @return the equippedItems
+     */
+    public Item[] getEquippedItems() {
+        return equippedItems;
     }
 }

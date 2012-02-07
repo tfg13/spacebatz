@@ -3,6 +3,9 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.client.network.ClientTcpMessage;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.util.Bits;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -53,7 +56,11 @@ public class ServerMessageInterpreter {
 
         switch (cmdID) {
             case Settings.NET_TCP_CMD_EQUIP_ITEM:
-                System.out.println("Der Client will Item equippen!");
+                int netID = Bits.getInt(message, 0);
+                int slot = Bits.getInt(message, 4);
+                Item item = (Item) Server.game.getItemMap().get(netID);
+                sender.getEquippedItems()[slot] = item;
+                System.out.println("Der Client will Item equippen!" + item.stats.itemStats.get("name"));
                 break;
         }
     }

@@ -95,7 +95,9 @@ public class Client {
      * Der Thread, der die Ticks hochzählt.
      */
     private static Timer tickTimer;
-    
+    /**
+     * TCP-Sender zum Server
+     */
     private static ClientMessageSender msgSender;
 
     /**
