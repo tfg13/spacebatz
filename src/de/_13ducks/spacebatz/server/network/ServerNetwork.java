@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Die Netzwerkkomponente des Servers
+ *
  * @author michael
  */
 public class ServerNetwork {
@@ -37,8 +38,7 @@ public class ServerNetwork {
     private ConcurrentLinkedQueue<Client> pendingClients;
 
     /**
-     * Konstruktor
-     * initialisiert die Datenempfangs-Threads
+     * Konstruktor initialisiert die Datenempfangs-Threads
      */
     public ServerNetwork() {
         connections = new ArrayList<>();
@@ -68,8 +68,10 @@ public class ServerNetwork {
                     while (true) {
                         Socket clientSocket = ss.accept();
                         ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
+                        Client newClient = new Client(client, Server.game.newClientID());
+                        client.setClient(newClient);
                         connections.add(client);
-                        pendingClients.add(new Client(client, Server.game.newClientID()));
+                        pendingClients.add(newClient);
                     }
 
 
@@ -94,8 +96,7 @@ public class ServerNetwork {
     }
 
     /**
-     * Stellt eine Verbindung mit jedem anfragenden Client her.
-     * Forkt sofort.
+     * Stellt eine Verbindung mit jedem anfragenden Client her. Forkt sofort.
      */
     public void startServer() {
         clientAcceptorThread.start();

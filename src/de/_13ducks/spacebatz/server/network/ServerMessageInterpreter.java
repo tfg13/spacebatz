@@ -14,7 +14,7 @@ public class ServerMessageInterpreter {
     /**
      * Queue, die die empfangenen Datenpackete zwischen speichert.
      */
-    private ConcurrentLinkedQueue<ClientTcpMessage> messages;
+    private ConcurrentLinkedQueue<ServerTcpMessage> messages;
 
     /**
      * Konstruktor
@@ -28,7 +28,7 @@ public class ServerMessageInterpreter {
      */
     public void interpretAllTcpMessages() {
         for (int i = 0; i < messages.size(); i++) {
-            ClientTcpMessage m = messages.poll();
+            ServerTcpMessage m = messages.poll();
             interpretTCPMessage(m.getData(), m.getSender());
         }
     }
@@ -36,7 +36,7 @@ public class ServerMessageInterpreter {
     /**
      * Schiebt eine neue Tcp-Nachritch in den Puffer
      */
-    public void addTcpMessage(ClientTcpMessage message) {
+    public void addTcpMessage(ServerTcpMessage message) {
         messages.add(message);
     }
 
