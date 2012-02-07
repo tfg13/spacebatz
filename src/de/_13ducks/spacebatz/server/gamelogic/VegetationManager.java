@@ -19,7 +19,7 @@ public class VegetationManager {
             if (Math.random() < 0.0001) {
                 int dx = -1 + (int) (Math.random() * 3);
                 int dy = -1 + (int) (Math.random() * 3);
-                if (0 < p.getX() && p.getX() < Server.game.getLevel().getGround().length && 0 < p.getY() && p.getY() < Server.game.getLevel().getGround()[0].length);
+                if (0 < p.getX() && p.getX() < Server.game.getLevel().getGround().length && 0 < p.getY() && p.getY() < Server.game.getLevel().getGround()[0].length)
                 {
                     Server.game.getPlants().add(new Plant(p.getX() + dx, p.getY() + dy));
                 }
