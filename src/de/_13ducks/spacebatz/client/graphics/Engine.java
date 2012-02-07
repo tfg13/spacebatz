@@ -192,6 +192,10 @@ public class Engine {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.stats.itemStats.get("itemclass") == 2) {
+                                    
+                                    // an Server senden
+                                    Client.getMsgSender().sendEquipItem(selecteditem, 2); // 2 = Hut-Slot
+
                                     if (Client.getEquippedItems()[2] == null) {
                                         // Slot war vorher nicht belegt -> verschieben
                                         Client.getEquippedItems()[2] = selecteditem;
@@ -214,6 +218,11 @@ public class Engine {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.stats.itemStats.get("itemclass") == 1) {
+                                    
+                                    // an Server senden
+                                    Client.getMsgSender().sendEquipItem(selecteditem, 1); // 1 = Waffen-Slot
+
+                                    
                                     if (Client.getEquippedItems()[1] == null) {
                                         // Slot war vorher nicht belegt -> verschieben
                                         Client.getEquippedItems()[1] = selecteditem;

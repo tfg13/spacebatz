@@ -143,7 +143,7 @@ public class Game {
 
         // Platziert Gegner
         Random r = new Random();
-        for (int i = 0; i < 90; i++) {
+        for (int i = 0; i < 200; i++) {
             double posX = 5 + (r.nextDouble() * (level.getGround().length - 10));
             double posY = 5 + (r.nextDouble() * (level.getGround().length - 10));
 
