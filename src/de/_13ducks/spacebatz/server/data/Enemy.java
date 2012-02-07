@@ -32,12 +32,12 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
-        speed = .045;
+
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         this.healthpoints = estats.getHealthpoints();
         this.damage = estats.getDamage();
-        this.speed = estats.getSpeed();
+        setSpeed(estats.getSpeed());
         this.sightrange = estats.getSightrange();
         this.pictureID = estats.getPicture();
         this.enemylevel = estats.getEnemylevel();
@@ -79,12 +79,12 @@ public class Enemy extends Char {
         healthpoints -= b.getDamage();
 
         if (healthpoints <= 0) {
-            Server.msgSender.sendHitChar(netID, b.getNetID(), true);
-            Server.game.netIDMap.remove(netID);
-            DropManager.dropItem(posX, posY, enemylevel);
+            Server.msgSender.sendHitChar(getNetID(), b.getNetID(), true);
+            Server.game.netIDMap.remove(getNetID());
+            DropManager.dropItem(getX(), getY(), enemylevel);
             return true;
         } else {
-            Server.msgSender.sendHitChar(netID, b.getNetID(), false);
+            Server.msgSender.sendHitChar(getNetID(), b.getNetID(), false);
             return false;
         }
     }

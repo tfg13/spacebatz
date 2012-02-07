@@ -154,7 +154,7 @@ public class Game {
                     enemytype = 1;
                 }
                 Enemy e = new Enemy(posX, posY, newNetID(), enemytype);
-                netIDMap.put(e.netID, e);
+                netIDMap.put(e.getNetID(), e);
             }
 
         }
@@ -191,7 +191,7 @@ public class Game {
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
-            netIDMap.put(player.netID, player);
+            netIDMap.put(player.getNetID(), player);
             // Dem Client die Tickrate schicken:
             Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);

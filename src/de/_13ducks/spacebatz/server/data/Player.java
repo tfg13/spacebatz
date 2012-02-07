@@ -10,8 +10,9 @@ public class Player extends Char {
     /*
      * Der, Client, dem der Player gehört
      */
+
     private Client client;
-    
+
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
      *
@@ -23,7 +24,7 @@ public class Player extends Char {
     public Player(double x, double y, int id, Client client) {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
-        client.getContext().makeCharKnown(netID);
+        client.getContext().makeCharKnown(getNetID());
         this.client = client;
     }
 

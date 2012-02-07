@@ -70,7 +70,7 @@ public class ClientContext {
      * @return true, wenn bekannt, sonst false.
      */
     public boolean knowsChar(Char c) {
-        return charMap.contains(c.netID);
+        return charMap.contains(c.getNetID());
     }
 
     /**
