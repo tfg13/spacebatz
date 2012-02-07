@@ -76,7 +76,7 @@ public class ClientNetwork {
      * @param cmdId die commandoid der nachricht
      * @param message der Byte-Array der gesendet werden soll
      */
-    public void sendData(byte cmdId, byte message[]) {
+    public void sendTcpData(byte cmdId, byte message[]) {
         try {
             int blocks = message.length / 100;
             int rest = message.length % 100;

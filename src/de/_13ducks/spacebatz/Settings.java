@@ -122,8 +122,12 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_CHANGE_GROUND = 35;
     /**
-     * Normales Input-an-Server-Schicken.
+     * Client will was anziehen, muss dafür aber erst Server fragen
      */
+    public static final byte NET_TCP_CMD_EQUIP_ITEM = 36;
+    /**
+     * Normales Input-an-Server-Schicken.
+     */    
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
     /**
      * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene Spielfigur sich auch bei den anderen
