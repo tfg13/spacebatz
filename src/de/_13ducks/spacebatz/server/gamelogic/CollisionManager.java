@@ -48,8 +48,8 @@ public class CollisionManager {
             }
 
             float radius = (float) bullet.getSpeed() * (Server.game.getTick() - bullet.getSpawntick());
-            float x = (float) bullet.getSpawnposX() + radius * (float) Math.cos(bullet.getDirectionX());
-            float y = (float) bullet.getSpawnposY() + radius * (float) Math.sin(bullet.getDirectionY());
+            float x = (float) bullet.getSpawnposX() + radius * (float) bullet.getDirectionX();
+            float y = (float) bullet.getSpawnposY() + radius * (float) bullet.getDirectionY();
 
             Iterator<Char> iter = Server.game.netIDMap.values().iterator();
             while (iter.hasNext()) {
