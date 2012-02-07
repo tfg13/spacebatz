@@ -128,7 +128,7 @@ public abstract class Char extends Entity {
             Bits.putInt(bytearray, 1, bullet.getSpawntick());
             Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
             Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-            Bits.putFloat(bytearray, 13, (float) bullet.getDirection());
+            Bits.putFloat(bytearray, 13, (float) Math.atan2( bullet.getDirectionY(),bullet.getDirectionX()));
             Bits.putInt(bytearray, 17, bullet.getTypeID());
             Bits.putInt(bytearray, 21, bullet.getNetID());
 

@@ -25,11 +25,11 @@ public class Entity {
     /**
      * Die Geschwindigkeit der Bewegung
      */
-    private double speed = .17;
+    protected double speed = .17;
     /**
      * Der Gametick in dem die Bewegung gestartet wurde
      */
-    private int moveStartTick;
+    protected int moveStartTick;
     /**
      * Die X-Koordinate des Bewegungsvektors
      */
@@ -86,8 +86,6 @@ public class Entity {
         posY = y;
         movementDirty = true;
     }
-
-    
 
     /**
      * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn die Einheit schon steht.

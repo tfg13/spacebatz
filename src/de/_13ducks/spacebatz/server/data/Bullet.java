@@ -4,34 +4,18 @@
  */
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.shared.BulletTypeStats;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.BulletTypeStats;
 import java.util.Random;
 
 /**
  * Ein Geschoss
+ *
  * @author J.K.
  */
-public class Bullet {
+public class Bullet extends Entity {
 
     private Char owner;
-    /*
-     * Tick, in dem die Bullet erstellt wurde
-     */
-    private int spawntick;
-    /*
-     * Ort, an dem die Bullet erstellt wurde
-     */
-    private double spawnposx;
-    private double spawnposy;
-    /*
-     * Richtung der Bullet
-     */
-    private double direction;
-    /*
-     * Geschwindigkeit
-     */
-    private float speed;
     /*
      * Schaden
      */
@@ -44,67 +28,60 @@ public class Bullet {
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
-    /*
-     * netID.
-     */
-    private int netID;
 
     public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, int typeID, int netID, Char owner) {
+        super(spawnposx, spawnposy, netID);
+        moveStartTick = spawntick;
+
         Random random = new Random();
         BulletTypeStats stats = Server.game.bullettypes.getBullettypelist().get(typeID);
         this.typeID = typeID;
-        this.spawntick = spawntick;
-        this.spawnposx = spawnposx;
-        this.spawnposy = spawnposy;
-        this.typeID = typeID;
-        this.netID = netID;
+
+        double angle = direction + random.nextGaussian() * stats.getSpread();
+        setVector(Math.cos(angle), Math.sin(angle));
+        setSpeed(stats.getSpeed());
+
+
         this.owner = owner;
-        this.direction = direction + random.nextGaussian() * stats.getSpread();
+
         this.deletetick = spawntick + stats.getLifetime();
         this.damage = stats.getDamage();
-        this.speed = stats.getSpeed();
+        
     }
 
     /**
      * @return the spawntick
      */
     public int getSpawntick() {
-        return spawntick;
-    }
-
-    /**
-     * @param spawntick the spawntick to set
-     */
-    public void setSpawntick(int spawntick) {
-        this.spawntick = spawntick;
+        return moveStartTick;
     }
 
     /**
      * @return the spawnposition x
      */
     public double getSpawnposX() {
-        return spawnposx;
+        return getX();
     }
 
     /**
      * @return the spawnposition y
      */
     public double getSpawnposY() {
-        return spawnposy;
+        return getY();
     }
 
     /**
      * @return the direction
      */
-    public double getDirection() {
-        return direction;
+    public double getDirectionX() {
+        return vecX;
     }
 
     /**
-     * @return the speed
+     * @return the direction
      */
-    public float getSpeed() {
-        return speed;
+    public double getDirectionY() {
+        return vecY;
     }
 
     /**
@@ -112,13 +89,6 @@ public class Bullet {
      */
     public int getDeletetick() {
         return deletetick;
-    }
-
-    /**
-     * @return the netID
-     */
-    public int getNetID() {
-        return netID;
     }
 
     /**
