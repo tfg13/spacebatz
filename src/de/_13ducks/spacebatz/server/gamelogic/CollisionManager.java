@@ -47,9 +47,9 @@ public class CollisionManager {
                 continue;
             }
 
-            float radius = (float) bullet.getSpeed() * (Server.game.getTick() - bullet.getSpawntick());
-            float x = (float) bullet.getSpawnposX() + radius * (float) bullet.getDirectionX();
-            float y = (float) bullet.getSpawnposY() + radius * (float) bullet.getDirectionY();
+
+            double x = bullet.getX();
+            double y = bullet.getY();
 
             Iterator<Char> iter = Server.game.netIDMap.values().iterator();
             while (iter.hasNext()) {
