@@ -16,7 +16,7 @@ public final class Server {
     /**
      * Globale Referenz auf den MessageInterpreter
      */
-    public static ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
+    public static final ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
     /**
      * Das laufende Spiel
      */
@@ -24,12 +24,12 @@ public final class Server {
     /**
      * Das Netzwerkmodul des Servers
      */
-    public static ServerNetwork serverNetwork = new ServerNetwork();
+    public static final ServerNetwork serverNetwork = new ServerNetwork();
     
     /**
      * Die Sendekomponente des Netzwerkmoduls
      */
-    public static ServerMessageSender msgSender = new ServerMessageSender();
+    public static final ServerMessageSender msgSender = new ServerMessageSender();
     
     
 
