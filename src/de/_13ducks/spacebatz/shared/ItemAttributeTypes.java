@@ -1,45 +1,77 @@
 package de._13ducks.spacebatz.shared;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
- * Die Werte, die ein bestimmtes Attribut hat
+ * Die Itemwerte, die ein bestimmtes Attribut ändert
  * @author Jojo
  */
 public class ItemAttributeTypes {
-        private ArrayList<ItemAttributeWeapon> weaponattributelist;
-        private ArrayList<ItemAttributeArmor> armorattributelist;
-    
+
+    private ArrayList<ItemAttribute> attributelist;
+
     public ItemAttributeTypes() {
-        weaponattributelist = new ArrayList<>();
-        // name, quality, damage, attackspeed, range
-        weaponattributelist.add(new ItemAttributeWeapon("More Damage", 1, 0.2f, 0.0f, 0.0f));
-        weaponattributelist.add(new ItemAttributeWeapon("Even More Damage", 2, 0.5f, 0.0f, 0.0f));
-        weaponattributelist.add(new ItemAttributeWeapon("More Attackspeed", 3, 0.0f, 0.2f, 0.0f));
-        weaponattributelist.add(new ItemAttributeWeapon("Even More Attackspeed", 4, 0.0f, 0.5f, 0.0f));
-        weaponattributelist.add(new ItemAttributeWeapon("More Range", 5, 0.0f, 0.0f, 0.2f));
-        weaponattributelist.add(new ItemAttributeWeapon("Everything", 6, 0.3f, 0.3f, 0.1f));
+        attributelist = new ArrayList<>();
+        // name, quality, damage, attackspeed, range, armor, movespeed
         
-        armorattributelist = new ArrayList<>();
-        // name, quality, armor, movespeed
-        armorattributelist.add(new ItemAttributeArmor("More Armor", 1, 0.2f, 0.0f));
-        armorattributelist.add(new ItemAttributeArmor("Even More Armor", 2, 0.5f, 0.0f));
-        armorattributelist.add(new ItemAttributeArmor("More Movespeed", 3, 0.0f, 0.1f));
-        armorattributelist.add(new ItemAttributeArmor("Unusual", 4, 0.0f, 0.1f));
+
+        HashMap<String, Double> moreDamage = new HashMap<>();
+        moreDamage.put("quality", 1.0);
+        moreDamage.put("damage", 0.1);
+        attributelist.add(new ItemAttribute("More Damage", moreDamage));
+
+        HashMap<String, Double> evenMoreDamage = new HashMap<>();
+        evenMoreDamage.put("quality", 2.0);
+        evenMoreDamage.put("damage", 0.3);
+        attributelist.add(new ItemAttribute("Even More Damage", evenMoreDamage));
+
+        HashMap<String, Double> moreAttackSpeed = new HashMap<>();
+        moreAttackSpeed.put("quality", 1.0);
+        moreAttackSpeed.put("attackspeed", 0.1);
+        attributelist.add(new ItemAttribute("More Attackspeed", moreAttackSpeed));
+
+        HashMap<String, Double> evenMoreAttackSpeed = new HashMap<>();
+        evenMoreAttackSpeed.put("quality", 2.0);
+        evenMoreAttackSpeed.put("attackspeed", 0.3);
+        attributelist.add(new ItemAttribute("Even More Attackspeed", evenMoreAttackSpeed));
+
+        HashMap<String, Double> moreRange = new HashMap<>();
+        moreRange.put("quality", 2.0);
+        moreRange.put("range", 0.2);
+        attributelist.add(new ItemAttribute("More Range", moreRange));
+
+        HashMap<String, Double> moreEverything = new HashMap<>();
+        moreEverything.put("quality", 3.0);
+        moreEverything.put("damage", 0.1);
+        moreEverything.put("attackspeed", 0.1);
+        moreEverything.put("range", 0.1);
+        attributelist.add(new ItemAttribute("More Everything", moreEverything));
+
+        HashMap<String, Double> moreArmor = new HashMap<>();
+        moreArmor.put("quality", 1.0);
+        moreArmor.put("armor", 0.1);
+        attributelist.add(new ItemAttribute("More Armor", moreArmor));
+        
+        HashMap<String, Double> evenMoreArmor = new HashMap<>();
+        evenMoreArmor.put("quality", 2.0);
+        evenMoreArmor.put("armor", 0.3);
+        attributelist.add(new ItemAttribute("Even More Armor", evenMoreArmor));
+
+        HashMap<String, Double> moreMovespeed = new HashMap<>();
+        moreMovespeed.put("quality", 2.0);
+        moreMovespeed.put("movespeed", 0.2);
+        attributelist.add(new ItemAttribute("More Movespeed", moreMovespeed));
+        
+        HashMap<String, Double> unusual = new HashMap<>();
+        unusual.put("quality", 2.0);
+        attributelist.add(new ItemAttribute("Unusual", unusual));
     }
 
     /**
-     * @return the weaponattributelist
+     * @return the attributelist
      */
-    public ArrayList<ItemAttributeWeapon> getWeaponattributelist() {
-        return weaponattributelist;
+    public ArrayList<ItemAttribute> getAttributelist() {
+        return attributelist;
     }
-
-    /**
-     * @return the armorattributelist
-     */
-    public ArrayList<ItemAttributeArmor> getArmorattributelist() {
-        return armorattributelist;
-    }
-
 }

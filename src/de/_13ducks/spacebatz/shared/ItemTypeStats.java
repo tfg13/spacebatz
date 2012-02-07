@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- *
+ * Die Werte, die ein bestimmter Itemtyp standardmäßig hat (können durch Attribute noch verändert werden)
  * @author Jojo
  */
 public class ItemTypeStats implements java.io.Serializable{
@@ -21,7 +21,7 @@ public class ItemTypeStats implements java.io.Serializable{
         itemStats.put("attackspeed", attackspeed);
         itemStats.put("range", range);
         itemStats.put("armor", armor);
-        itemStats.put("itemtypeID", itemtypeID);
+        itemStats.put("itemtypeID", itemtypeID); // wird evtl nicht mehr benutzt, da Items serialisiert werden
     }
     
     

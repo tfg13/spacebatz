@@ -85,17 +85,13 @@ public class DropManager {
         ArrayList<ItemAttribute> qualityallowedattributes = new ArrayList<>();
         ArrayList<ItemAttribute> addattributes = new ArrayList<>();
 
-        if (item.stats.itemStats.get("itemclass") == 1) {
-            // Waffe
-            attributesofrightclass.addAll(itemattribute.getWeaponattributelist());
-        } else {
-            // Rüstung
-            attributesofrightclass.addAll(itemattribute.getArmorattributelist());
-        }
+        attributesofrightclass.addAll(itemattribute.getAttributelist());
+
 
         for (int i = 0; i < attributesofrightclass.size(); i++) {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
-            if (attributesofrightclass.get(i).getQuality() <= droplevel) {
+            double test = attributesofrightclass.get(i).getStats().get("quality");
+            if (test <= droplevel) {
                 qualityallowedattributes.add(attributesofrightclass.get(i));
             }
         }
@@ -132,7 +128,7 @@ public class DropManager {
     }
 
     /**
-     * Item das gedroppt werden soll eine Anzahl hinzufügen (Geld, Material)
+     * Dem Item das gedroppt werden soll eine Anzahl hinzufügen (z.B. bei Geld)
      * @param item Das Item
      * @param droplevel Das Level vom Monster, das es gedroppt hat
      * @return wieder das Item
