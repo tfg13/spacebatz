@@ -4,20 +4,27 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import java.util.HashMap;
+
 /**
- * Items können ein oder mehrere Attribute besitzen, die die Itemstats verändern.
+ * Items können Attribute besitzen, die jeweils einen oder mehrere Itemwerte verändern.
  * @author Jojo
  */
-public class ItemAttribute  implements java.io.Serializable {
+public class ItemAttribute implements java.io.Serializable {
 
-    protected String name;
-    protected int quality;
     /**
-     * Was für eine Art Attribut es ist
-     * 1 - Waffe
-     * 2 - Armor
+     * Name des Attributs
      */
-    protected int attributeclass;
+    private String name;
+    /**
+     * Werte, die durch dieses Attribut geändert werden
+     */
+    private HashMap<String, Double> stats;
+
+    public ItemAttribute(String name, HashMap<String, Double> stats) {
+        this.name = name;
+        this.stats = stats;
+    }
 
     /**
      * @return the name
@@ -27,16 +34,9 @@ public class ItemAttribute  implements java.io.Serializable {
     }
 
     /**
-     * @return the quality
+     * @return the stats
      */
-    public int getQuality() {
-        return quality;
-    }
-
-    /**
-     * @return the attributeType
-     */
-    public int getAttributeType() {
-        return attributeclass;
+    public HashMap<String, Double> getStats() {
+        return stats;
     }
 }
