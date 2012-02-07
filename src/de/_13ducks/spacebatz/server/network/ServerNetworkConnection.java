@@ -9,8 +9,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
- * Eine Verbindung mit einem Client
- * Verwaltet den Socket und das einlesen/schreiben von Daten
+ * Eine Verbindung mit einem Client Verwaltet den Socket und das einlesen/schreiben von Daten
+ *
  * @author michael
  */
 public class ServerNetworkConnection {
@@ -32,20 +32,25 @@ public class ServerNetworkConnection {
      */
     private Client myClient;
     /**
-     * Der Status des TCP-Empfangsthreads
-     * (cmdId empfangen, PacketLänge empfangen oder DAten empfangen)
+     * Der Status des TCP-Empfangsthreads (cmdId empfangen, PacketLänge empfangen oder DAten empfangen)
      */
     private int tcpReceiverStatus;
-    /** cmdId empfangen */
+    /**
+     * cmdId empfangen
+     */
     final static int RECEIVE_CMDID = 0;
-    /** Packetgröße empfangen */
+    /**
+     * Packetgröße empfangen
+     */
     final static int RECEIVE_PACKETSIZE = 1;
-    /** PacketDaten empfangen */
+    /**
+     * PacketDaten empfangen
+     */
     final static int RECEIVE_PACKET = 2;
 
     /**
      * Konstruktor, erstellt einen neuen Client
-     * 
+     *
      * @param socket der Socket, der mit dem Client verbunden ist
      */
     public ServerNetworkConnection(Socket socket) {
@@ -59,8 +64,7 @@ public class ServerNetworkConnection {
     }
 
     /**
-     * Empfängt Daten vom Client.
-     * Wenn genug Daten für ein Packet da sind wird das Packet an den MessageInterpreter weitergeleitet.
+     * Empfängt Daten vom Client. Wenn genug Daten für ein Packet da sind wird das Packet an den MessageInterpreter weitergeleitet.
      */
     public void receiveData() {
         try {
@@ -84,7 +88,7 @@ public class ServerNetworkConnection {
                 } else if (tcpReceiverStatus == RECEIVE_PACKET) {
                     int read = receiveStream.read(buffer, index, messageSize - index);
                     if (read + index == messageSize) {
-                        Server.msgInterpreter.addTcpMessage(new ClientTcpMessage(cmdId, buffer, myClient));
+                        Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
                         tcpReceiverStatus = RECEIVE_CMDID;
                         index = 0;
                         cmdId = 0;
@@ -100,6 +104,7 @@ public class ServerNetworkConnection {
 
     /**
      * Gibt den mit dem Client verbundenen Socket zurück
+     *
      * @return der Socket
      */
     public Socket getSocket() {
@@ -108,6 +113,7 @@ public class ServerNetworkConnection {
 
     /**
      * gibt den zugehörigen Client zurück
+     *
      * @return der Client
      */
     public Client getClient() {
@@ -116,9 +122,19 @@ public class ServerNetworkConnection {
 
     /**
      * Gibt den Sendstream zurück, mit dem DAten gesendet werden können
+     *
      * @return the sendStream
      */
     public ObjectOutputStream getSendStream() {
         return sendStream;
+    }
+
+    /**
+     * Setzt den Client
+     *
+     * @param client
+     */
+    void setClient(Client client) {
+        this.myClient = client;
     }
 }
