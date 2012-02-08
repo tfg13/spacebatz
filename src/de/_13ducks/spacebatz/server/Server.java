@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.data.EntityMap;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
@@ -22,16 +23,17 @@ public final class Server {
      */
     public static Game game;
     /**
+     * EntityMap, für performante Zugriffe auf Entitys
+     */
+    public static EntityMap entityMap;
+    /**
      * Das Netzwerkmodul des Servers
      */
     public static ServerNetwork serverNetwork = new ServerNetwork();
-    
     /**
      * Die Sendekomponente des Netzwerkmoduls
      */
     public static ServerMessageSender msgSender = new ServerMessageSender();
-    
-    
 
     /**
      * Einstiegspunkt
@@ -40,6 +42,7 @@ public final class Server {
      */
     public static void startServer() {
         game = new Game();
+        entityMap = new EntityMap();
         game.addEnemies();
         game.addPlants();
         serverNetwork.startServer();
