@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.shared.Item;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Das Inventar eines Clients, serverseitig
@@ -10,37 +10,37 @@ import java.util.ArrayList;
 public class Inventory {
 
     /**
-     * Liste aller Items
+     * Hashmap, weist netID Item zu
      */
-    private ArrayList<Item> items;
+    private HashMap<Integer, Item> items;
     /**
      * Wieviel Geld im Inventar ist
      */
     private int money;
 
     public Inventory() {
-        items = new ArrayList<>();
+        items = new HashMap<>();
     }
 
     /**
      * @return the items
      */
-    public ArrayList<Item> getItems() {
+    public HashMap<Integer, Item> getItems() {
         return items;
     }
 
     /**
      * @param items the items to set
      */
-    public void setItems(ArrayList<Item> items) {
+    public void setItems(HashMap<Integer, Item> items) {
         this.items = items;
     }
 
     /**
      * @param items the items to add
      */
-    public void addItem(Item item) {
-        this.items.add(item);
+    public void putItem(int netID, Item item) {
+        this.items.put(netID, item);
         if (item.stats.itemStats.get("itemclass") == 0) {
             setMoney(getMoney() + (int) item.stats.itemStats.get("amount"));
         }

@@ -166,7 +166,7 @@ public class CollisionManager {
                             iterator.remove();
                             Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
                         } else if (player.getClient().getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
-                            player.getClient().getInventory().addItem(item);
+                            player.getClient().getInventory().putItem(item.netID, item);
                             iterator.remove();
                             Server.msgSender.sendItemGrab(item.netID, player.getClient().clientID);
                         }
