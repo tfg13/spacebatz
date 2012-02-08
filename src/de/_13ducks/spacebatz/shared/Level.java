@@ -61,4 +61,22 @@ public class Level implements java.io.Serializable {
     public void setSingleTile(int x, int y, int value) {
         this.ground[x][y] = value;
     }
+
+    /**
+     * Gibt die Breite des Levels (in Tiles) zurück.
+     *
+     * @return die Breite des Levels
+     */
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    /**
+     * Gibt die Höhe des Levels (in Tiles) zurück.
+     *
+     * @return die Höhe des Levels
+     */
+    public int getSizeY() {
+        return sizeY;
+    }
 }
