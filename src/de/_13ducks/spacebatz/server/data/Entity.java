@@ -59,9 +59,10 @@ public class Entity {
      * @param netID die netId der Entity
      */
     public Entity(double x, double y, int netID) {
-        Server.entityMap.addEntity(this);
+
         this.posX = x;
         this.posY = y;
+        Server.entityMap.addEntity(this);
         this.netID = netID;
     }
 

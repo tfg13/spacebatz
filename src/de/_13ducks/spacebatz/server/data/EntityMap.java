@@ -18,14 +18,27 @@ public class EntityMap {
      * Die Karte der Sektoren, die das Level bilden
      */
     private EntityMapSector[][] sectors;
+    /**
+     * Die Breite des Levels
+     */
+    private double width;
+    /**
+     * die Höhe des Levels
+     */
+    private double height;
 
     /**
      * Konstruktor, initialisiert die EntityMap
+     *
+     * @param width die Breite des Levels
+     * @param height die Höhe des Levels
      */
-    public EntityMap() {
+    public EntityMap(double width, double height) {
+        this.height = height;
+        this.width = width;
         // Die Größe des Levels durch die Sektorgröße, durch den Int-Cast abgerundet und mit +1 am Ende zum ausgleichen
-        int xSectors = (int) (Server.game.getLevel().getSizeX() / ENTITYMAP_SECTORSIZE) + 1;
-        int ySectors = (int) (Server.game.getLevel().getSizeY() / ENTITYMAP_SECTORSIZE) + 1;
+        int xSectors = (int) (width / ENTITYMAP_SECTORSIZE) + 1;
+        int ySectors = (int) (height / ENTITYMAP_SECTORSIZE) + 1;
 
         // Sektoren initialisieren:
         sectors = new EntityMapSector[xSectors][ySectors];
@@ -40,6 +53,7 @@ public class EntityMap {
         for (int x = 0; x < xSectors; x++) {
             for (int y = 0; y < xSectors; y++) {
                 EntityMapSector sector = sectors[x][y];
+                sector.addNeighborSector(sector);// den Sektor selber in die Liste reinhaun
                 for (int innerX = x - 1; innerX < x + 1; innerX++) {
                     for (int innerY = y - 1; innerY < y + 1; innerY++) {
                         if (0 < innerX && innerX < sectors.length && 0 < innerY && innerY < sectors[0].length) {
@@ -117,11 +131,13 @@ public class EntityMap {
      * @return der Sektor, der die Position enthält
      */
     private EntityMapSector getSector(double x, double y) {
-        if (x < 0 || Server.game.getLevel().getSizeX() < x || 0 > y || y > Server.game.getLevel().getSizeY()) {
+        if (x < 0 || width < x || y < 0 || height < y) {
             throw new IllegalArgumentException("Point " + x + "/" + y + " Is outside the Level!");
         }
-        int sectorX = (int) (x / ENTITYMAP_SECTORSIZE);
-        int sectorY = (int) (x / ENTITYMAP_SECTORSIZE);
+        double doubleX = (x / ENTITYMAP_SECTORSIZE);
+        double doubleY = (y / ENTITYMAP_SECTORSIZE);
+        int sectorX = (int) doubleX;
+        int sectorY = (int) doubleY;
         return sectors[sectorX][sectorY];
     }
 }
