@@ -21,14 +21,6 @@ public class InventorySlot {
      */
     private int amount;
     
-    /**
-     * Konstruktor
-     */
-    public InventorySlot(Item item, int amount) {
-        this.item = item;
-        this.amount = amount;
-    }
-    
     public InventorySlot(Item item) {
         this.item = item;
         this.amount = 1;

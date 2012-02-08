@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.shared;
 
+import de._13ducks.spacebatz.client.InventorySlot;
 import java.util.ArrayList;
 
 /**
@@ -30,6 +31,10 @@ public class Item implements java.io.Serializable {
      * Attribute des Items
      */
     private ArrayList<ItemAttribute> itemattributes;
+    /**
+     * Inventarplatz des Items, nur für Client wichtig
+     */
+    private InventorySlot inventoryslot;
 
     public Item(double posX, double posY, ItemTypeStats stats, int netID) {
         this.posX = posX;
@@ -80,5 +85,19 @@ public class Item implements java.io.Serializable {
      */
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    /**
+     * @return the inventoryslot
+     */
+    public InventorySlot getInventoryslot() {
+        return inventoryslot;
+    }
+
+    /**
+     * @param inventoryslot the inventoryslot to set
+     */
+    public void setInventoryslot(InventorySlot inventoryslot) {
+        this.inventoryslot = inventoryslot;
     }
 }

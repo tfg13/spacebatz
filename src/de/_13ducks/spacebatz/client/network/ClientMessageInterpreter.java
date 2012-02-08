@@ -218,17 +218,25 @@ public class ClientMessageInterpreter {
                 int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
                 int clientID3 = Bits.getInt(message, 4); // clientID des Spielers
                 if (clientID3 == Client.getClientID()) {
-                    System.out.println("Client darf sich Item anlegen.");
-
+                    Item item = Client.getInventoryItems().get(netIDItem3);
+                    Client.getEquippedItems()[(int) item.stats.itemStats.get("itemclass")] = item;
+                    for (int i = 0; i < Client.getInventorySlots().length; i++) {
+                        if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
+                            Client.getInventorySlots()[i] = null;
+                        }
+                    }
+                    Client.getInventoryItems().values().remove(item);
                 }
                 break;
             case Settings.NET_TCP_CMD_DEQUIP_ITEM:
-                // Ein Client will ein bestimmtes Item anlegen
+                // Ein Client will ein bestimmtes Item ablegen
                 int slot = Bits.getInt(message, 0); // netID des  Items
                 int clientID2 = Bits.getInt(message, 4); // clientID des Spielers
                 if (clientID2 == Client.getClientID()) {
                     System.out.println("Client darf Item ablegen.");
-                    
+                    Item item = Client.getEquippedItems()[slot];
+                    Client.getEquippedItems()[slot] = null;
+                    Client.addToInventory(item);
                 }
                 break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:
