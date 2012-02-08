@@ -219,6 +219,16 @@ public class ClientMessageInterpreter {
                 int clientID3 = Bits.getInt(message, 4); // clientID des Spielers
                 if (clientID3 == Client.getClientID()) {
                     System.out.println("Client darf sich Item anlegen.");
+
+                }
+                break;
+            case Settings.NET_TCP_CMD_DEQUIP_ITEM:
+                // Ein Client will ein bestimmtes Item anlegen
+                int slot = Bits.getInt(message, 0); // netID des  Items
+                int clientID2 = Bits.getInt(message, 4); // clientID des Spielers
+                if (clientID2 == Client.getClientID()) {
+                    System.out.println("Client darf Item ablegen.");
+                    
                 }
                 break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:

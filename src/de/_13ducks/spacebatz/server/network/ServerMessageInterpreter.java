@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.client.network.ClientTcpMessage;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
@@ -60,7 +59,6 @@ public class ServerMessageInterpreter {
                 int netID = Bits.getInt(message, 0);
                 int slot = Bits.getInt(message, 4);
                 Item item = sender.getInventory().getItems().get(netID);
-                sender.getEquippedItems()[slot] = item;
 
                 // richtiger Itemtyp für diesen Slot?
                 if (item.stats.itemStats.get("itemclass") == slot) {
@@ -68,7 +66,9 @@ public class ServerMessageInterpreter {
                         // da ist schon ein Item -> ins Inventar
                         Item moveitem = sender.getEquippedItems()[slot];
                         sender.getInventory().getItems().put(moveitem.netID, moveitem);
+                        Server.msgSender.sendItemDequip(slot, sender.clientID);
                     }
+                    sender.getEquippedItems()[slot] = item;
                     // Jetzt neues Item anlegen
                     sender.getEquippedItems()[slot] = item;
                     sender.getInventory().getItems().remove(item.netID);

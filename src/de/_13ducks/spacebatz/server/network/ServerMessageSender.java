@@ -125,6 +125,18 @@ public class ServerMessageSender {
         }
     }
 
+    /**
+     * Item wird von Client abgelegt (zurück ins Inventar)
+     */
+    public void sendItemDequip(int slot, int clientID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[8];
+            Bits.putInt(b, 0, slot);
+            Bits.putInt(b, 4, clientID);
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
+        }
+    }
+
     public void sendAllItems(Client client, HashMap<Integer, Item> items) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
     }

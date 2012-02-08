@@ -129,6 +129,10 @@ public final class Settings {
      * Server sagt, dass Client Item anzieht
      */
     public static final byte NET_TCP_CMD_EQUIP_ITEM = 37;
+        /**
+     * Server sagt, dass Client Item auszieht
+     */
+    public static final byte NET_TCP_CMD_DEQUIP_ITEM = 38;
     /**
      * Normales Input-an-Server-Schicken.
      */
