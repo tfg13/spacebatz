@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -15,12 +16,17 @@ public class EntityMapSector {
      * Die Liste mit Entities die gerade in diesem Sektor registriert sind.
      */
     private LinkedList<Entity> habitants;
+    /**
+     * Eine Liste mit diesem Sektor und seinen Nachbarsektoren
+     */
+    private ArrayList<EntityMapSector> meAndMyNeighborSectors;
 
     /**
      * Konstruktor, erstellt einen neuen Sektor
      */
     public EntityMapSector() {
         habitants = new LinkedList<>();
+        meAndMyNeighborSectors = new ArrayList<>();
     }
 
     /**
@@ -30,6 +36,7 @@ public class EntityMapSector {
      */
     public LinkedList<Entity> getEntities() {
         return habitants;
+
     }
 
     /**
@@ -57,5 +64,23 @@ public class EntityMapSector {
         } else {
             throw new IllegalArgumentException("Cannot remove Entity, it is not contained in this Sector!");
         }
+    }
+
+    /**
+     * Eine Liste mit diesem Sektor und seinen Nachbarsektoren
+     *
+     * @return die Liste mit diesem und seinne NachbarSektoren
+     */
+    public ArrayList<EntityMapSector> getMeAndMyNeighborSectors() {
+        return meAndMyNeighborSectors;
+    }
+
+    /**
+     * Fügt einen neuen NachbarSektor hinzu
+     *
+     * @param neighbor der neue NachbarSektor
+     */
+    public void addNeighborSector(EntityMapSector neighbor) {
+        meAndMyNeighborSectors.add(neighbor);
     }
 }
