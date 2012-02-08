@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
 
@@ -14,7 +13,7 @@ public class Entity {
     /**
      * Die netID der Entity.
      */
-    public final int netID;
+    private int netID;
     /**
      * Die Bewegungsgeschwindigkeit eine Entity. Einheit: Felder/Tick
      */
@@ -26,7 +25,7 @@ public class Entity {
     /**
      * Die Geschwindigkeit der Bewegung
      */
-    protected double speed = Settings.CHARSPEED;
+    protected double speed = .17;
     /**
      * Der Gametick in dem die Bewegung gestartet wurde
      */
@@ -60,6 +59,7 @@ public class Entity {
      * @param netID die netId der Entity
      */
     public Entity(double x, double y, int netID) {
+        Server.entityMap.addEntity(this);
         this.posX = x;
         this.posY = y;
         this.netID = netID;
@@ -92,7 +92,8 @@ public class Entity {
     }
 
     /**
-     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn die Einheit schon steht.
+     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn
+     * die Einheit schon steht.
      */
     public void stopMovement() {
         posX = getX();
@@ -126,8 +127,9 @@ public class Entity {
     }
 
     /**
-     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet falls nötig die aktuelle Position zuerst neu. Der Vektor wird normalisiert, kann
-     * also die Geschwindigkeit nicht beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
+     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet falls nötig die aktuelle
+     * Position zuerst neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen. Das geht nur mit setSpeed. Die Werte
+     * dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
         if (x == 0 && y == 0) {
@@ -151,8 +153,8 @@ public class Entity {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit neu, damit Geschwindigkeitsänderungen während der Bewegung möglich sind. Sollte
-     * daher wenn möglich vor dem Start der Bewegung aufgerufen werden.
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit neu, damit
+     * Geschwindigkeitsänderungen während der Bewegung möglich sind. Sollte daher wenn möglich vor dem Start der Bewegung aufgerufen werden.
      *
      * @param speed die neue Geschwindigkeit > 0
      */
@@ -215,6 +217,15 @@ public class Entity {
      */
     public double extrapolateY(int ticks) {
         return getY() + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
+    }
+
+    /**
+     * Gibt die netID der Entity zurück.
+     *
+     * @return die netID der Entity
+     */
+    public int getNetID() {
+        return netID;
     }
 
     /**

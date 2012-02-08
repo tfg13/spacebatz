@@ -117,8 +117,8 @@ public class EntityMap {
      * @return der Sektor, der die Position enthält
      */
     private EntityMapSector getSector(double x, double y) {
-        if (0 < x || x < Server.game.getLevel().getSizeX() || 0 < y || y < Server.game.getLevel().getSizeY()) {
-            throw new IllegalArgumentException("Point " + x + "/" + y + "Is outside the Level!");
+        if (x < 0 || Server.game.getLevel().getSizeX() < x || 0 > y || y > Server.game.getLevel().getSizeY()) {
+            throw new IllegalArgumentException("Point " + x + "/" + y + " Is outside the Level!");
         }
         int sectorX = (int) (x / ENTITYMAP_SECTORSIZE);
         int sectorY = (int) (x / ENTITYMAP_SECTORSIZE);
