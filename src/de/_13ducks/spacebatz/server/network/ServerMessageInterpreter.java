@@ -48,11 +48,11 @@ public class ServerMessageInterpreter {
      * @param message die Nachricht als byte-array
      */
     public void interpretTCPMessage(byte cmdID, byte message[], Client sender) {
-        System.out.print("TCP received: " + cmdID + " , ");
-        for (int i = 0; i < message.length; i++) {
-            System.out.print((int) message[i]);
-        }
-        System.out.print("\n");
+//        System.out.print("TCP received: " + cmdID + " , ");
+//        for (int i = 0; i < message.length; i++) {
+//            System.out.print((int) message[i]);
+//        }
+//        System.out.print("\n");
 
         switch (cmdID) {
             case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
@@ -74,7 +74,14 @@ public class ServerMessageInterpreter {
                     sender.getInventory().getItems().remove(item.netID);
                     // Item-Anleg-Befehl zum Client senden
                     Server.msgSender.sendItemEquip(item.netID, sender.clientID);
-                    System.out.println("Der Client " + sender.clientID + " will Item equippen: " + item.stats.itemStats.get("name"));
+                }
+                break;
+            case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
+                int slot2 = Bits.getInt(message, 0);
+                if (sender.getEquippedItems()[slot2] != null) {
+                    sender.getInventory().getItems().put(sender.getEquippedItems()[slot2].netID, sender.getEquippedItems()[slot2]);
+                    sender.getEquippedItems()[slot2] = null;
+                    Server.msgSender.sendItemDequip(slot2, sender.clientID);
                 }
 
                 break;

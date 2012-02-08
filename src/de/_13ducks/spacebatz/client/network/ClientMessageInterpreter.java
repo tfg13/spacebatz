@@ -233,7 +233,6 @@ public class ClientMessageInterpreter {
                 int slot = Bits.getInt(message, 0); // netID des  Items
                 int clientID2 = Bits.getInt(message, 4); // clientID des Spielers
                 if (clientID2 == Client.getClientID()) {
-                    System.out.println("Client darf Item ablegen.");
                     Item item = Client.getEquippedItems()[slot];
                     Client.getEquippedItems()[slot] = null;
                     Client.addToInventory(item);

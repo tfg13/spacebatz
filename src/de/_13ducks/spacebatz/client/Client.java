@@ -214,6 +214,7 @@ public class Client {
         while (iterator.hasNext()) {
             Item item = (Item) iterator.next();
             inventorySlots[i] = new InventorySlot(item);
+            item.setInventoryslot(inventorySlots[i]);
             i++;
         }
     }
@@ -241,6 +242,7 @@ public class Client {
             if (inventorySlots[i] == null) {
                 inventorySlots[i] = new InventorySlot(item);
                 inventoryItems.put(item.netID, item);
+                item.setInventoryslot(inventorySlots[i]);
                 break;
             }
         }

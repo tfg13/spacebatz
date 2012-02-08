@@ -191,27 +191,12 @@ public class Engine {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.stats.itemStats.get("itemclass") == 2) {
-
-                                    // an Server senden
                                     Client.getMsgSender().sendEquipItem(selecteditem, 2); // 2 = Hut-Slot
                                     selecteditemslot = -1;
-
-//                                    if (Client.getEquippedItems()[2] == null) {
-//                                        // Slot war vorher nicht belegt -> verschieben
-//                                        Client.getEquippedItems()[2] = selecteditem;
-//                                        Client.getInventoryItems().values().remove(selecteditem);
-//                                        Client.getInventorySlots()[selecteditemslot] = null;
-//                                        selecteditemslot = -1;
-//                                    } else {
-//                                        // Slot war belegt -> tauschen
-//                                        Item swapItem = Client.getEquippedItems()[2];
-//                                        Client.getEquippedItems()[2] = selecteditem;
-//                                        Client.getInventoryItems().values().remove(selecteditem);
-//                                        Client.getInventoryItems().put(swapItem.netID, swapItem);
-//                                        Client.getInventorySlots()[selecteditemslot] = new InventorySlot(swapItem);
-//                                        swapItem.setInventoryslot(Client.getInventorySlots()[selecteditemslot]);
-//                                        selecteditemslot = -1;
-//                                    }
+                                }
+                            } else {
+                                if (Client.getEquippedItems()[2] != null) {
+                                    Client.getMsgSender().sendDequipItem(2); // 2 = Hut-Slot
                                 }
                             }
                         } else if (y > 0.61 && y < 0.74) {
@@ -219,27 +204,12 @@ public class Engine {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.stats.itemStats.get("itemclass") == 1) {
-
-                                    // an Server senden
                                     Client.getMsgSender().sendEquipItem(selecteditem, 1); // 1 = Waffen-Slot
                                     selecteditemslot = -1;
-
-//                                    if (Client.getEquippedItems()[1] == null) {
-//                                        // Slot war vorher nicht belegt -> verschieben
-//                                        Client.getEquippedItems()[1] = selecteditem;
-//                                        Client.getInventoryItems().values().remove(selecteditem);
-//                                        Client.getInventorySlots()[selecteditemslot] = null;
-//                                        selecteditemslot = -1;
-//                                    } else {
-//                                        // Slot war belegt -> tauschen
-//                                        Item swapItem = Client.getEquippedItems()[1];
-//                                        Client.getEquippedItems()[1] = selecteditem;
-//                                        Client.getInventoryItems().values().remove(selecteditem);
-//                                        Client.getInventoryItems().put(swapItem.netID, swapItem);
-//                                        Client.getInventorySlots()[selecteditemslot] = new InventorySlot(swapItem);
-//                                        swapItem.setInventoryslot(Client.getInventorySlots()[selecteditemslot]);
-//                                        selecteditemslot = -1;
-//                                    }
+                                }
+                            } else {
+                                if (Client.getEquippedItems()[1] != null) {
+                                    Client.getMsgSender().sendDequipItem(1); // 1 = Waffen-Slot
                                 }
                             }
                         }
