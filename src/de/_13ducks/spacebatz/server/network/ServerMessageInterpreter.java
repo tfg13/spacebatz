@@ -59,9 +59,14 @@ public class ServerMessageInterpreter {
             case Settings.NET_TCP_CMD_EQUIP_ITEM:
                 int netID = Bits.getInt(message, 0);
                 int slot = Bits.getInt(message, 4);
-                Item item = (Item) Server.game.getItemMap().get(netID);
+                Item item = null;
+                for (int i = 0; i < sender.getInventory().getItems().size(); i++) {
+                    if (sender.getInventory().getItems().get(i).netID == netID) {
+                        item = sender.getInventory().getItems().get(i);
+                    }
+                }
                 sender.getEquippedItems()[slot] = item;
-                System.out.println("Der Client will Item equippen!" + item.stats.itemStats.get("name"));
+                System.out.println("Der Client " + sender.clientID + " will Item equippen: " + item.stats.itemStats.get("name"));
                 break;
         }
     }
