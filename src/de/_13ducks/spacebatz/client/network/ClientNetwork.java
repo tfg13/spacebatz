@@ -86,7 +86,7 @@ public class ClientNetwork {
 
 
             // Packetlänge senden
-            sendStream.writeLong(message.length);
+            sendStream.writeShort(message.length);
 
             // alle Hunderterblöcke senden:
             byte msg[] = new byte[100];

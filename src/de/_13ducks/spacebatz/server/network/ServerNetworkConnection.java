@@ -2,17 +2,13 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.client.network.ClientTcpMessage;
-import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Eine Verbindung mit einem Client Verwaltet den Socket und das einlesen/schreiben von Daten
+ * Eine Verbindung mit einem Client. Verwaltet den Socket und das Senden/Empfangen von Daten mit diesem Client.
  *
  * @author michael
  */
@@ -23,21 +19,17 @@ public class ServerNetworkConnection {
      */
     private Socket mySocket;
     /**
-     * Sendet bytes, longs etc.
+     * Der Stream zum Senden von Daten
      */
     private ObjectOutputStream sendStream;
     /**
-     * Der Stream zum empfangen von DAten
+     * Der Stream zum empfangen von Daten
      */
     private ObjectInputStream receiveStream;
     /**
      * Der Client der zu dieser Verbindung gehört
      */
     private Client myClient;
-    /**
-     * Der Status des TCP-Empfangsthreads (cmdId empfangen, PacketLänge empfangen oder DAten empfangen)
-     */
-    private int tcpReceiverStatus;
     /**
      * Die bytes die für die aktuelle Message noch gelesen werden müssen
      */
@@ -55,6 +47,12 @@ public class ServerNetworkConnection {
      */
     private int index = 0;
     /**
+     * Der Status des TCP-Empfangsthreads (cmdId empfangen, PacketLänge empfangen oder Daten empfangen)
+     *
+     * Gültige Werte sind RECEIVE_CMDID, RECEIVE_PACKETSIZE und RECEIVE_PACKET
+     */
+    private int tcpReceiverStatus;
+    /**
      * 'Status: cmdId empfangen
      */
     final static int RECEIVE_CMDID = 0;
@@ -68,7 +66,7 @@ public class ServerNetworkConnection {
     final static int RECEIVE_PACKET = 2;
 
     /**
-     * Konstruktor, erstellt einen neuen Client
+     * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
      *
      * @param socket der Socket, der mit dem Client verbunden ist
      */
@@ -84,7 +82,9 @@ public class ServerNetworkConnection {
     }
 
     /**
-     * Empfängt Daten vom Client. Wenn genug Daten für ein Packet da sind wird das Packet an den MessageInterpreter weitergeleitet.
+     * Empfängt Daten vom Client.
+     *
+     * Liest alle empfangenen Daten ein. Wenn genug Daten für ein Packet da sind wird eine neue ServerTcpMessage erstellt und an den MessageInterpreter weitergeleitet.
      */
     public void receiveData() {
 
@@ -140,7 +140,7 @@ public class ServerNetworkConnection {
     }
 
     /**
-     * gibt den zugehörigen Client zurück
+     * Gibt den zugehörigen Client zurück
      *
      * @return der Client
      */
@@ -149,7 +149,7 @@ public class ServerNetworkConnection {
     }
 
     /**
-     * Gibt den Sendstream zurück, mit dem DAten gesendet werden können
+     * Gibt den Sendstream zurück, mit dem Daten gesendet werden können
      *
      * @return the sendStream
      */
