@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Logger;
 
 /**
  * Die Empfangskomponente des Netzwerkmoduls
@@ -214,7 +213,14 @@ public class ClientMessageInterpreter {
                     ex.printStackTrace();
                 }
                 break;
-
+            case Settings.NET_TCP_CMD_EQUIP_ITEM:
+                // Ein Client will ein bestimmtes Item anlegen
+                int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
+                int clientID3 = Bits.getInt(message, 4); // clientID des Spielers
+                if (clientID3 == Client.getClientID()) {
+                    System.out.println("Client darf sich Item anlegen.");
+                }
+                break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:
                 // Geänderten Boden übernehmen:
                 int x = Bits.getInt(message, 0);
@@ -225,8 +231,7 @@ public class ClientMessageInterpreter {
 
 
             default:
-                System.out.println(
-                        "WARNING: Client received unknown TCP-Command");
+                System.out.println("WARNING: Client received unknown TCP-Command " + cmdId);
         }
 
     }

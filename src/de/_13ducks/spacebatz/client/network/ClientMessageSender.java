@@ -18,6 +18,6 @@ public class ClientMessageSender {
         byte[] b = new byte[8];
         Bits.putInt(b, 0, item.netID);
         Bits.putInt(b, 4, equipslot);
-        Client.getNetwork().sendTcpData((byte) Settings.NET_TCP_CMD_EQUIP_ITEM, b); 
+        Client.getNetwork().sendTcpData((byte) Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b); 
     }
 }

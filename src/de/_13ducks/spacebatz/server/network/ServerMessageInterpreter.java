@@ -56,12 +56,27 @@ public class ServerMessageInterpreter {
         System.out.print("\n");
 
         switch (cmdID) {
-            case Settings.NET_TCP_CMD_EQUIP_ITEM:
+            case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
                 int netID = Bits.getInt(message, 0);
                 int slot = Bits.getInt(message, 4);
                 Item item = sender.getInventory().getItems().get(netID);
                 sender.getEquippedItems()[slot] = item;
-                System.out.println("Der Client " + sender.clientID + " will Item equippen: " + item.stats.itemStats.get("name"));
+
+                // richtiger Itemtyp für diesen Slot?
+                if (item.stats.itemStats.get("itemclass") == slot) {
+                    if (sender.getEquippedItems()[slot] != null) {
+                        // da ist schon ein Item -> ins Inventar
+                        Item moveitem = sender.getEquippedItems()[slot];
+                        sender.getInventory().getItems().put(moveitem.netID, moveitem);
+                    }
+                    // Jetzt neues Item anlegen
+                    sender.getEquippedItems()[slot] = item;
+                    sender.getInventory().getItems().remove(item.netID);
+                    // Item-Anleg-Befehl zum Client senden
+                    Server.msgSender.sendItemEquip(item.netID, sender.clientID);
+                    System.out.println("Der Client " + sender.clientID + " will Item equippen: " + item.stats.itemStats.get("name"));
+                }
+
                 break;
         }
     }
