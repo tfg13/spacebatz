@@ -3,10 +3,13 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.client.network.ClientTcpMessage;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Eine Verbindung mit einem Client Verwaltet den Socket und das einlesen/schreiben von Daten
@@ -36,15 +39,31 @@ public class ServerNetworkConnection {
      */
     private int tcpReceiverStatus;
     /**
-     * cmdId empfangen
+     * Die bytes die für die aktuelle Message noch gelesen werden müssen
+     */
+    private short messageSize;
+    /**
+     * Die cmdId der message, die gerade empfangen wird
+     */
+    private byte cmdId;
+    /**
+     * Der Puffer, in den die Daten der aktuellen Message gelesen werden
+     */
+    private byte buffer[];
+    /**
+     * Die Zahl der bytes, die bereits in den Puffer gelesen wurden
+     */
+    private int index = 0;
+    /**
+     * 'Status: cmdId empfangen
      */
     final static int RECEIVE_CMDID = 0;
     /**
-     * Packetgröße empfangen
+     * Status: Packetgröße empfangen
      */
     final static int RECEIVE_PACKETSIZE = 1;
     /**
-     * PacketDaten empfangen
+     * Status: PacketDaten empfangen
      */
     final static int RECEIVE_PACKET = 2;
 
@@ -55,6 +74,7 @@ public class ServerNetworkConnection {
      */
     public ServerNetworkConnection(Socket socket) {
         mySocket = socket;
+        tcpReceiverStatus = RECEIVE_CMDID;
         try {
             sendStream = new ObjectOutputStream(socket.getOutputStream());
             receiveStream = new ObjectInputStream(socket.getInputStream());
@@ -67,38 +87,46 @@ public class ServerNetworkConnection {
      * Empfängt Daten vom Client. Wenn genug Daten für ein Packet da sind wird das Packet an den MessageInterpreter weitergeleitet.
      */
     public void receiveData() {
+
         try {
-            int messageSize = 0;            // Die bytes die noch gelesen werden müssen
-            byte cmdId = 0;                 // Die cmdId
-            byte buffer[] = new byte[0];    // der puffer
-            int index = 0;                  // der index, bis zu dem der puffer schon gefüllt ist
+            while (receiveStream.available() > 0) {
+                switch (tcpReceiverStatus) {
+                    case RECEIVE_CMDID:
+                        if (receiveStream.available() > 0) {
+                            cmdId = receiveStream.readByte();
+                            tcpReceiverStatus = RECEIVE_PACKETSIZE;
+                        } else {
+                            return;
+                        }
+                        break;
+                    case RECEIVE_PACKETSIZE:
+                        if (receiveStream.available() > 1) {
+                            messageSize = receiveStream.readShort();
+                            buffer = new byte[messageSize];
+                            tcpReceiverStatus = RECEIVE_PACKET;
+                        } else {
+                            return;
+                        }
+                        break;
+                    case RECEIVE_PACKET:
+                        if (receiveStream.available() > 0) {
+                            index += receiveStream.read(buffer, index, messageSize - index);
+                            if (index == messageSize) {
+                                tcpReceiverStatus = RECEIVE_CMDID;
+                                Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
+                                buffer = null;
+                                cmdId = 0;
+                                index = 0;
+                            }
 
-            tcpReceiverStatus = RECEIVE_CMDID;
-
-            while (true) {
-                if (tcpReceiverStatus == RECEIVE_CMDID) {
-                    cmdId = receiveStream.readByte();
-                    tcpReceiverStatus = RECEIVE_PACKETSIZE;
-
-                } else if (tcpReceiverStatus == RECEIVE_PACKETSIZE) {
-                    messageSize = (int) receiveStream.readLong();
-                    buffer = new byte[messageSize];
-                    tcpReceiverStatus = RECEIVE_PACKET;
-
-                } else if (tcpReceiverStatus == RECEIVE_PACKET) {
-                    int read = receiveStream.read(buffer, index, messageSize - index);
-                    if (read + index == messageSize) {
-                        Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
-                        tcpReceiverStatus = RECEIVE_CMDID;
-                        index = 0;
-                        cmdId = 0;
-                        messageSize = 0;
-                    }
+                        } else {
+                            return;
+                        }
+                        break;
                 }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-
         }
     }
 
