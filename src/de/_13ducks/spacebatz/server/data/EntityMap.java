@@ -27,10 +27,26 @@ public class EntityMap {
         int xSectors = (int) (Server.game.getLevel().getSizeX() / ENTITYMAP_SECTORSIZE) + 1;
         int ySectors = (int) (Server.game.getLevel().getSizeY() / ENTITYMAP_SECTORSIZE) + 1;
 
+        // Sektoren initialisieren:
         sectors = new EntityMapSector[xSectors][ySectors];
         for (int x = 0; x < xSectors; x++) {
             for (int y = 0; y < xSectors; y++) {
                 sectors[x][y] = new EntityMapSector();
+            }
+        }
+
+        // Nachbarsektoren registrieren:
+        // Diese Schleife geht nur die Elemente
+        for (int x = 0; x < xSectors; x++) {
+            for (int y = 0; y < xSectors; y++) {
+                EntityMapSector sector = sectors[x][y];
+                for (int innerX = x - 1; innerX < x + 1; innerX++) {
+                    for (int innerY = y - 1; innerY < y + 1; innerY++) {
+                        if (0 < innerX && innerX < sectors.length && 0 < innerY && innerY < sectors[0].length) {
+                            sector.addNeighborSector(sectors[innerX][innerY]);
+                        }
+                    }
+                }
             }
         }
     }
@@ -41,6 +57,10 @@ public class EntityMap {
      * @param e die neue Entity
      */
     public void addEntity(Entity e) {
+        if (e.getSector() != null) {
+            throw new IllegalArgumentException("Diese Entity ist bereits in der EntityMap registriert!");
+        }
+        getSector(e.getX(), e.getY()).addEntity(e);
     }
 
     /**
@@ -49,25 +69,44 @@ public class EntityMap {
      * @param e die Entity die entfernt werden soll
      */
     public void removeEntity(Entity e) {
+        if (e.getSector() == null) {
+            throw new IllegalArgumentException("Diese Entity ist gar nicht in der EntityMap registriert!");
+        }
+        getSector(e.getX(), e.getY()).removeEntity(e);
     }
 
     /**
-     * Registriert eine Bewegung einer Entity und bestimmt deren Sektor neu. MUSS aufgerufen werden, wenn sich eine Entity bewegt
+     * MUSS aufgerufen werden, wenn sich eine Entity bewegt. Prüft, ob die Eintity ihren Sektor verlassen hat, und aktualisiert den Sektor falls ja.
      *
      * @param e die Entity die überprüft werden soll
      */
     public void entityMoved(Entity e) {
+        if (e.getSector() == null) {
+            throw new IllegalArgumentException("Diese Entity hat keinen Sektor! Sie muss zuerst mit EntityMap.addEntity() registriert werden!");
+        }
+        EntityMapSector newSector = getSector(e.getX(), e.getY());
+        if (e.getSector().equals(newSector)) {
+            e.getSector().removeEntity(e);
+            newSector.addEntity(e);
+            e.setSector(newSector);
+        }
     }
 
     /**
-     * Gibt eine Liste mit allen Entities im Abstand von höchstens ENTITYMAP_SECTORSIZE vom angegebenen Punkt zurück.
+     * Gibt eine Liste mit midestens allen Entities im Abstand von ENTITYMAP_SECTORSIZE vom angegebenen Punkt zurück.
      *
      * @param x die X-Koordinate der Position
      * @param y die Y-Koordinate der Position
      * @return eine Liste mit allen Entities nahe dem Punkt
      */
     public LinkedList<Entity> getEntitiesAroundPoint(double x, double y) {
-        return null;
+        LinkedList<Entity> entities = new LinkedList<>();
+        EntityMapSector thisSector = getSector(x, y);
+
+        for (EntityMapSector s : thisSector.getMeAndMyNeighborSectors()) {
+            entities.addAll(s.getEntities());
+        }
+        return entities;
     }
 
     /**
