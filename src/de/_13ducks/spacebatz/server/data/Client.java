@@ -51,7 +51,6 @@ public class Client {
         context = new ClientContext();
         inventory = new Inventory();
         equippedItems = new Item[3];
-        System.out.println("equippedItems");
     }
 
     /**

@@ -7,7 +7,6 @@ import de._13ducks.spacebatz.server.data.Plant;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -111,6 +110,18 @@ public class ServerMessageSender {
             Bits.putInt(b, 0, itemnetID);
             Bits.putInt(b, 4, clientID);
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
+        }
+    }
+
+    /**
+     * Item wird von Client angelegt
+     */
+    public void sendItemEquip(int itemnetID, int clientID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[8];
+            Bits.putInt(b, 0, itemnetID);
+            Bits.putInt(b, 4, clientID);
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_EQUIP_ITEM, b, c);
         }
     }
 
