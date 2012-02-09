@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.shared.BulletTypes;
-import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
@@ -66,6 +66,7 @@ public class ClientMessageInterpreter {
             }
         });
         initTcpReceiverThread.setName("initialTcpReceiverThread");
+        initTcpReceiverThread.setDaemon(true);
         initTcpReceiverThread.start();
     }
 
@@ -119,6 +120,7 @@ public class ClientMessageInterpreter {
                         new Engine().start();
                     }
                 });
+                t.setName("CLIENT_ENGINE");
                 t.start();
                 Client.startTickCounting(Bits.getInt(message, 0));
                 initTcpReceiverThreadRun = false;

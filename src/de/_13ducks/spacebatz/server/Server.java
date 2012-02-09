@@ -63,5 +63,7 @@ public final class Server {
     public static void disconnectClient(Client client) {
         Player pl = client.getPlayer();
         game.netIDMap.remove(pl.netID);
+        game.clients.remove(client.clientID);
+        serverNetwork.udp.removeClient((byte) client.clientID);
     }
 }

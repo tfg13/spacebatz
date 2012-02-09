@@ -133,6 +133,7 @@ public class ClientNetwork {
             }
         });
         receiveDataThread.setName("ReceiveDataThread");
+        receiveDataThread.setDaemon(true);
         receiveDataThread.start();
 
         Thread udpQueuer = new Thread(new Runnable() {

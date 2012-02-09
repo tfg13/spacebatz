@@ -78,8 +78,12 @@ public class ServerMessageInterpreter {
                     sender.getEquippedItems()[slot2] = null;
                     Server.msgSender.sendItemDequip(slot2, sender.clientID);
                 }
-
                 break;
+            case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
+                Server.disconnectClient(sender);
+                break;
+            default:
+                System.out.println("WARNING: Received CTS-TCP with unknown cmdid! (was " + cmdID + ")");
         }
     }
 }

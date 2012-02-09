@@ -138,6 +138,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_DEQUIP_ITEM = 39;
     /**
+     * Client geht offline und meldet sich ab.
+     */
+    public static final byte NET_TCP_CMD_CLIENT_DISCONNECT = 40;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

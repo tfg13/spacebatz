@@ -31,7 +31,7 @@ public class ClientMessageSender {
     }
 
     public void sendDisconnect() {
-        Client.getNetwork().sendTcpData((byte) 55, new byte[0]);
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
     }
 
 }

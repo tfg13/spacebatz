@@ -25,7 +25,7 @@ public class MainLoop {
     /**
      * Ob schonmal Clients connected waren. Wenn ja, und alle Clients gehen offline, dann Server beenden.
      */
-    private boolean hadClients;
+    private boolean hadClients = false;
 
     /**
      * Konstruktor, initialisiert den Thread
@@ -67,10 +67,10 @@ public class MainLoop {
             if (Server.game.clients.isEmpty()) {
                 System.out.println("No clients left, shutting server down.");
                 return true;
-            } else {
-                // Jetzt welche da?
-                hadClients = Server.game.clients.isEmpty();
             }
+        } else {
+            // Jetzt welche da?
+            hadClients = !Server.game.clients.isEmpty();
         }
         return false;
     }
