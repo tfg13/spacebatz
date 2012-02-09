@@ -38,6 +38,7 @@ public class ClientNetwork {
      * Die Adresse des Servers.
      */
     private InetAddress serverAdr;
+    public int etd;
 
     /**
      * Konstruktor
@@ -164,6 +165,7 @@ public class ClientNetwork {
      * @param pack das Datenpaket
      */
     private synchronized void preExecutePacket(DatagramPacket pack) {
+        etd = Client.frozenGametick - Bits.getInt(pack.getData(), 1);
         byte[] data = pack.getData();
         byte cmd = data[0];
         switch (cmd) {
