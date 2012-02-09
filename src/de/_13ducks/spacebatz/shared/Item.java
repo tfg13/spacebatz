@@ -5,19 +5,16 @@ import java.util.ArrayList;
 
 /**
  * Ein Item, dass auf der Map oder in einem Inventar liegt
+ *
  * @author Jojo
  */
 public class Item implements java.io.Serializable {
 
-    public ItemTypeStats stats;
+    private ItemTypeStats stats;
     /**
-     * Typ des Items.
+     * Die netID des Items.
      */
-    public byte itemTypeID;
-    /**
-     * Die ID des Items.
-     */
-    public int netID;
+    private int netID;
     /**
      * Menge des Items, wichtig bei stackbaren Materialien / Geld
      */
@@ -60,6 +57,20 @@ public class Item implements java.io.Serializable {
     }
 
     /**
+     * @param posX the posX to set
+     */
+    public void setPosX(double posX) {
+        this.posX = posX;
+    }
+
+    /**
+     * @param posY the posY to set
+     */
+    public void setPosY(double posY) {
+        this.posY = posY;
+    }
+
+    /**
      * @return the itemattributes
      */
     public ArrayList<ItemAttribute> getItemattributes() {
@@ -99,5 +110,19 @@ public class Item implements java.io.Serializable {
      */
     public void setInventoryslot(InventorySlot inventoryslot) {
         this.inventoryslot = inventoryslot;
+    }
+
+    /**
+     * @return the netID
+     */
+    public int getNetID() {
+        return netID;
+    }
+
+    /**
+     * @return the stats
+     */
+    public ItemTypeStats getStats() {
+        return stats;
     }
 }

@@ -241,7 +241,7 @@ public class Client {
         for (int i = 0; i < inventorySlots.length; i++) {
             if (inventorySlots[i] == null) {
                 inventorySlots[i] = new InventorySlot(item);
-                inventoryItems.put(item.netID, item);
+                inventoryItems.put(item.getNetID(), item);
                 item.setInventoryslot(inventorySlots[i]);
                 break;
             }
@@ -249,7 +249,7 @@ public class Client {
     }
 
     public static void removeFromInventory(int slot) {
-        inventoryItems.remove(inventorySlots[slot].getItem().netID);
+        inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
         inventorySlots[slot] = null;
     }
 

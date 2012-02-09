@@ -54,7 +54,7 @@ public class DropManager {
             item = addAmount(item, droplevel);
         }
 
-        Server.game.getItemMap().put(item.netID, item);
+        Server.game.getItemMap().put(item.getNetID(), item);
 
         byte[] serializedItem = null;
         ByteArrayOutputStream bs = new ByteArrayOutputStream();

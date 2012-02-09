@@ -190,7 +190,7 @@ public class Engine {
                             // Hut-Slot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                if ((int) selecteditem.stats.itemStats.get("itemclass") == 2) {
+                                if ((int) selecteditem.getStats().itemStats.get("itemclass") == 2) {
                                     Client.getMsgSender().sendEquipItem(selecteditem, 2); // 2 = Hut-Slot
                                     selecteditemslot = -1;
                                 }
@@ -203,7 +203,7 @@ public class Engine {
                             // Waffenslot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                if ((int) selecteditem.stats.itemStats.get("itemclass") == 1) {
+                                if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
                                     Client.getMsgSender().sendEquipItem(selecteditem, 1); // 1 = Waffen-Slot
                                     selecteditemslot = -1;
                                 }
@@ -371,7 +371,7 @@ public class Engine {
             float v;
             float w = 0.0f;
 
-            v = 0.25f * (int) item.stats.itemStats.get("pic");
+            v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -505,7 +505,7 @@ public class Engine {
                 float height = 0.11f * tilesY;
                 float v;
                 float w = 0.0f;
-                v = 0.25f * (int) item.stats.itemStats.get("pic");
+                v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
@@ -534,7 +534,7 @@ public class Engine {
                     float height = 0.11f * tilesY;
                     float v;
                     float w = 0.0f;
-                    v = 0.25f * (int) item.stats.itemStats.get("pic");
+                    v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
                     glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                     glTexCoord2f(v, w + 0.25f);
@@ -560,7 +560,7 @@ public class Engine {
             float size = 0.08f;
             float v;
             float w = 0.0f;
-            v = 0.25f * (int) item.stats.itemStats.get("pic");
+            v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -621,7 +621,7 @@ public class Engine {
                     y += 0.05f;
                 }
                 // Itemname
-                renderText((String) item.stats.itemStats.get("name"), x * tilesX, y * tilesY);
+                renderText((String) item.getStats().itemStats.get("name"), x * tilesX, y * tilesY);
             }
         }
     }

@@ -41,8 +41,8 @@ public class Inventory {
      */
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
-        if (item.stats.itemStats.get("itemclass") == 0) {
-            setMoney(getMoney() + (int) item.stats.itemStats.get("amount"));
+        if (item.getStats().itemStats.get("itemclass") == 0) {
+            setMoney(getMoney() + (int) item.getStats().itemStats.get("amount"));
         }
     }
 

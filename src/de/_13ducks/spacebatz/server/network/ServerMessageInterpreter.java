@@ -61,25 +61,25 @@ public class ServerMessageInterpreter {
                 Item item = sender.getInventory().getItems().get(netID);
 
                 // richtiger Itemtyp für diesen Slot?
-                if (item.stats.itemStats.get("itemclass") == slot) {
+                if (item.getStats().itemStats.get("itemclass") == slot) {
                     if (sender.getEquippedItems()[slot] != null) {
                         // da ist schon ein Item -> ins Inventar
                         Item moveitem = sender.getEquippedItems()[slot];
-                        sender.getInventory().getItems().put(moveitem.netID, moveitem);
+                        sender.getInventory().getItems().put(moveitem.getNetID(), moveitem);
                         Server.msgSender.sendItemDequip(slot, sender.clientID);
                     }
                     sender.getEquippedItems()[slot] = item;
                     // Jetzt neues Item anlegen
                     sender.getEquippedItems()[slot] = item;
-                    sender.getInventory().getItems().remove(item.netID);
+                    sender.getInventory().getItems().remove(item.getNetID());
                     // Item-Anleg-Befehl zum Client senden
-                    Server.msgSender.sendItemEquip(item.netID, sender.clientID);
+                    Server.msgSender.sendItemEquip(item.getNetID(), sender.clientID);
                 }
                 break;
             case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
                 int slot2 = Bits.getInt(message, 0);
                 if (sender.getEquippedItems()[slot2] != null) {
-                    sender.getInventory().getItems().put(sender.getEquippedItems()[slot2].netID, sender.getEquippedItems()[slot2]);
+                    sender.getInventory().getItems().put(sender.getEquippedItems()[slot2].getNetID(), sender.getEquippedItems()[slot2]);
                     sender.getEquippedItems()[slot2] = null;
                     Server.msgSender.sendItemDequip(slot2, sender.clientID);
                 }

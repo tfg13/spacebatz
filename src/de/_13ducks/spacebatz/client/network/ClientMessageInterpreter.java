@@ -180,7 +180,7 @@ public class ClientMessageInterpreter {
                 try {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Item item = (Item) is.readObject();
-                    Client.getItemMap().put(item.netID, item);
+                    Client.getItemMap().put(item.getNetID(), item);
 
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
@@ -195,7 +195,7 @@ public class ClientMessageInterpreter {
                 if (clientID == Client.getClientID()) {
                     Item item = Client.getItemMap().get(netIDItem2);
                     // Geld oder normales Item?
-                    if (item.stats.itemStats.get("name").equals("Money")) {
+                    if (item.getStats().itemStats.get("name").equals("Money")) {
                         Client.addMoney(item.getAmount());
                     } else {
                         Client.addToInventory(item);
@@ -219,7 +219,7 @@ public class ClientMessageInterpreter {
                 int clientID3 = Bits.getInt(message, 4); // clientID des Spielers
                 if (clientID3 == Client.getClientID()) {
                     Item item = Client.getInventoryItems().get(netIDItem3);
-                    Client.getEquippedItems()[(int) item.stats.itemStats.get("itemclass")] = item;
+                    Client.getEquippedItems()[(int) item.getStats().itemStats.get("itemclass")] = item;
                     for (int i = 0; i < Client.getInventorySlots().length; i++) {
                         if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
                             Client.getInventorySlots()[i] = null;
