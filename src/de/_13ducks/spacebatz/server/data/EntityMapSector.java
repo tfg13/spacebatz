@@ -45,10 +45,12 @@ public class EntityMapSector {
      * @param e die neue Entity
      */
     public void addEntity(Entity e) {
-        if (!habitants.contains(e)) {
-            habitants.add(e);
-        } else {
+        if (e == null) {
+            throw new IllegalArgumentException("Kann NULL nicht hinzufügen!");
+        } else if (habitants.contains(e)) {
             throw new IllegalArgumentException("Sector already contains Entity!");
+        } else {
+            habitants.add(e);
         }
 
     }
@@ -59,10 +61,12 @@ public class EntityMapSector {
      * @param e die zu entfernende Entity
      */
     public void removeEntity(Entity e) {
-        if (habitants.contains(e)) {
-            habitants.remove(e);
-        } else {
+        if (e == null) {
+            throw new IllegalArgumentException("Kann NULL nicht entfernen!");
+        } else if (!habitants.contains(e)) {
             throw new IllegalArgumentException("Cannot remove Entity, it is not contained in this Sector!");
+        } else {
+            habitants.remove(e);
         }
     }
 

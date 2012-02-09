@@ -70,10 +70,14 @@ public class EntityMap {
      * @param e die neue Entity
      */
     public void addEntity(Entity e) {
-        if (e.getSector() != null) {
+        if (e == null) {
+            throw new IllegalArgumentException("Kann NULL nicht registrieren!");
+        } else if (e.getSector() != null) {
             throw new IllegalArgumentException("Diese Entity ist bereits in der EntityMap registriert!");
         }
-        getSector(e.getX(), e.getY()).addEntity(e);
+        EntityMapSector sector = getSector(e.getX(), e.getY());
+        sector.addEntity(e);
+        e.setSector(sector);
     }
 
     /**
@@ -82,10 +86,14 @@ public class EntityMap {
      * @param e die Entity die entfernt werden soll
      */
     public void removeEntity(Entity e) {
-        if (e.getSector() == null) {
+        if (e == null) {
+            throw new IllegalArgumentException("Kann NULL nicht entfernen!");
+        } else if (e.getSector() == null) {
             throw new IllegalArgumentException("Diese Entity ist gar nicht in der EntityMap registriert!");
         }
-        getSector(e.getX(), e.getY()).removeEntity(e);
+        
+        e.getSector().removeEntity(e);
+        e.setSector(null);
     }
 
     /**
@@ -94,7 +102,9 @@ public class EntityMap {
      * @param e die Entity die überprüft werden soll
      */
     public void entityMoved(Entity e) {
-        if (e.getSector() == null) {
+        if (e == null) {
+            throw new IllegalArgumentException("Kann NULL nicht neu berechnen!");
+        } else if (e.getSector() == null) {
             throw new IllegalArgumentException("Diese Entity hat keinen Sektor! Sie muss zuerst mit EntityMap.addEntity() registriert werden!");
         }
         EntityMapSector newSector = getSector(e.getX(), e.getY());
@@ -115,7 +125,7 @@ public class EntityMap {
     public LinkedList<Entity> getEntitiesAroundPoint(double x, double y) {
         LinkedList<Entity> entities = new LinkedList<>();
         EntityMapSector thisSector = getSector(x, y);
-
+        
         for (EntityMapSector s : thisSector.getMeAndMyNeighborSectors()) {
             entities.addAll(s.getEntities());
         }
