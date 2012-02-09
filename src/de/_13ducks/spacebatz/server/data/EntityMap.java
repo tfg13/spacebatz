@@ -53,11 +53,11 @@ public class EntityMap {
         for (int x = 0; x < xSectors; x++) {
             for (int y = 0; y < xSectors; y++) {
                 EntityMapSector sector = sectors[x][y];
-                sector.addNeighborSector(sector);// den Sektor selber in die Liste reinhaun
-                for (int innerX = x - 1; innerX < x + 1; innerX++) {
-                    for (int innerY = y - 1; innerY < y + 1; innerY++) {
-                        if (0 < innerX && innerX < sectors.length && 0 < innerY && innerY < sectors[0].length) {
+                for (int innerX = x - 1; innerX <= x + 1; innerX++) {
+                    for (int innerY = y - 1; innerY <= y + 1; innerY++) {
+                        if (0 <= innerX && innerX < xSectors && 0 <= innerY && innerY < ySectors) {
                             sector.addNeighborSector(sectors[innerX][innerY]);
+                            System.out.println("Sektor " + x + "/" + y + " kriegt nachbar: " + innerX + "/" + innerY);
                         }
                     }
                 }
