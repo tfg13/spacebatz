@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.EntityMap;
+import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
@@ -51,5 +53,15 @@ public final class Server {
 
         // GO! GO! GO!
         mainLoop.startGameLogic();
+    }
+
+    /**
+     * Entfernt einen Client aus dem Spiel.
+     * Der Client erhält darüber keinerlei Benachrichtigung.
+     * @param client der zu entfernende Client.
+     */
+    public static void disconnectClient(Client client) {
+        Player pl = client.getPlayer();
+        game.netIDMap.remove(pl.netID);
     }
 }

@@ -13,7 +13,7 @@ public class Entity {
     /**
      * Die netID der Entity.
      */
-    private int netID;
+    public final int netID;
     /**
      * Die Bewegungsgeschwindigkeit eine Entity. Einheit: Felder/Tick
      */
@@ -59,7 +59,6 @@ public class Entity {
      * @param netID die netId der Entity
      */
     public Entity(double x, double y, int netID) {
-
         this.posX = x;
         this.posY = y;
         this.netID = netID;
@@ -215,15 +214,6 @@ public class Entity {
      */
     public double extrapolateY(int ticks) {
         return getY() + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
-    }
-
-    /**
-     * Gibt die netID der Entity zurück.
-     *
-     * @return die netID der Entity
-     */
-    public int getNetID() {
-        return netID;
     }
 
     /**

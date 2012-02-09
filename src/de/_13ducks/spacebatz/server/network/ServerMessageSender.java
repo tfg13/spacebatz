@@ -45,7 +45,7 @@ public class ServerMessageSender {
      */
     public void sendSetPlayer(Client client, Player player) {
         byte[] b = new byte[12];
-        Bits.putInt(b, 0, player.getNetID());
+        Bits.putInt(b, 0, player.netID);
         Bits.putFloat(b, 4, (float) player.getX());
         Bits.putFloat(b, 8, (float) player.getY());
         Server.serverNetwork.sendTcpData((byte) 21, b, client);

@@ -1,7 +1,5 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.server.Server;
-
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
@@ -24,7 +22,7 @@ public class Player extends Char {
     public Player(double x, double y, int id, Client client) {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
-        client.getContext().makeCharKnown(getNetID());
+        client.getContext().makeCharKnown(netID);
         this.client = client;
     }
 

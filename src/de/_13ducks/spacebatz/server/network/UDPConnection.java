@@ -232,7 +232,7 @@ public class UDPConnection {
         for (int i = 0; i < number; i++) {
             Movement m = chars.get(offset + i).getMovement();
             // NETID
-            Bits.putInt(packet, 32 + (i * 32), chars.get(offset + i).getNetID());
+            Bits.putInt(packet, 32 + (i * 32), chars.get(offset + i).netID);
             // X
             Bits.putFloat(packet, 36 + (i * 32), m.startX);
             // Y

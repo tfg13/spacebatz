@@ -111,7 +111,7 @@ public abstract class Char extends Entity {
      */
     public void netPack(byte[] b, int offset) {
         b[offset] = charTypeID;
-        Bits.putInt(b, offset + 1, getNetID());
+        Bits.putInt(b, offset + 1, netID);
     }
 
     public void clientShoot(float angle) {
@@ -130,7 +130,7 @@ public abstract class Char extends Entity {
             Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
             Bits.putFloat(bytearray, 13, (float) Math.atan2( bullet.getDirectionY(),bullet.getDirectionX()));
             Bits.putInt(bytearray, 17, bullet.getTypeID());
-            Bits.putInt(bytearray, 21, bullet.getNetID());
+            Bits.putInt(bytearray, 21, bullet.netID);
 
             for (int i = 0; i < Server.game.clients.size(); i++) {
                 Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
