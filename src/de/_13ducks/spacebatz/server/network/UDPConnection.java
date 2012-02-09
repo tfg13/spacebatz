@@ -156,7 +156,7 @@ public class UDPConnection {
                 client.getPlayer().clientMove((data[6] & 0x80) != 0, (data[6] & 0x40) != 0, (data[6] & 0x20) != 0, (data[6] & 0x10) != 0);
                 break;
             case Settings.NET_UDP_CMD_REQUEST_BULLET:
-                client.getPlayer().clientShoot(Bits.getFloat(data, 6));
+                client.getPlayer().playerShoot(Bits.getFloat(data, 6));
                 break;
             case Settings.NET_UDP_CMD_ACK_MOVE:
                 client.getContext().makeMovementKnown(Bits.getInt(data, 6));
