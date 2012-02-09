@@ -1,6 +1,11 @@
+STC
+
 20 - Server schickt Level an Client Daten: Serialisiertes Level. Größe Variabel
 21 - Server setzt Hauptplayer eines Clients wieder. Daten: int netID, float X, floatY (12)
 22 - Server lässt Client jetzt starten Daten: int serverStartTick
 23 - Server setzt ClientID eines Clients Daten: byte clientID
 27 - Server setzt Logic-Tickrate Daten: int tickrate
 28 - Server entfernt Gegner Daten: int netID
+
+CTS
+55 - Client geht offline Daten: keine

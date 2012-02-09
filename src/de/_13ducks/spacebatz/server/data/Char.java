@@ -125,7 +125,7 @@ public abstract class Char extends Entity {
      */
     public void netPack(byte[] b, int offset) {
         b[offset] = charTypeID;
-        Bits.putInt(b, offset + 1, getNetID());
+        Bits.putInt(b, offset + 1, netID);
     }
 
     /**

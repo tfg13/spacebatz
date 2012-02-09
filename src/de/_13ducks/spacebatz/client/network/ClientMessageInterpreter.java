@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.shared.BulletTypes;
-import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.Bits;
@@ -66,6 +66,7 @@ public class ClientMessageInterpreter {
             }
         });
         initTcpReceiverThread.setName("initialTcpReceiverThread");
+        initTcpReceiverThread.setDaemon(true);
         initTcpReceiverThread.start();
     }
 
@@ -119,6 +120,8 @@ public class ClientMessageInterpreter {
                         new Engine().start();
                     }
                 });
+                t.setName("CLIENT_ENGINE");
+                t.setDaemon(false);
                 t.start();
                 Client.startTickCounting(Bits.getInt(message, 0));
                 initTcpReceiverThreadRun = false;
@@ -136,16 +139,7 @@ public class ClientMessageInterpreter {
                 break;
             case 28:
                 // Bullet trifft Char
-                int netIDChar = Bits.getInt(message, 0); // netID des getroffenen Chars
                 int netIDBullet = Bits.getInt(message, 4); // netID von Bullet
-                boolean killed = false; // ob char stirbt
-                if (message[8] == 1) {
-                    killed = true;
-                }
-
-                if (killed) {
-                    Client.netIDMap.remove(netIDChar);
-                }
 
                 for (int i = 0; i < Client.getBulletList().size(); i++) {
                     if (Client.getBulletList().get(i).getNetID() == netIDBullet) {

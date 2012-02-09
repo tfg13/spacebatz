@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * @author bla
  */
 public class BulletTypes implements java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private ArrayList<BulletTypeStats> bullettypelist;
     
     public BulletTypes() {

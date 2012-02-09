@@ -22,6 +22,10 @@ public class MainLoop {
      * Wieviel "Schulden" der Server schon angehäuft hat. Eine Art Tick-Miss-Counter
      */
     private long timeDeficit;
+    /**
+     * Ob schonmal Clients connected waren. Wenn ja, und alle Clients gehen offline, dann Server beenden.
+     */
+    private boolean hadClients = false;
 
     /**
      * Konstruktor, initialisiert den Thread
@@ -33,6 +37,9 @@ public class MainLoop {
             public void run() {
                 runStart = System.nanoTime();
                 while (true) {
+                    if (checkClientsLeft()) {
+                        break;
+                    }
                     // Input vom Client holen:
                     Server.serverNetwork.udp.receive();
                     Server.msgInterpreter.interpretAllTcpMessages();
@@ -49,6 +56,23 @@ public class MainLoop {
             }
         });
         mainLoopThread.setName("GameLogicThread");
+    }
+
+    /**
+     * Liefert true, wenn die Mainloop beendet werden soll, weil keine Clients mehr da sind.
+     */
+    private boolean checkClientsLeft() {
+        // Noch Clients da?
+        if (hadClients) {
+            if (Server.game.clients.isEmpty()) {
+                System.out.println("No clients left, shutting server down.");
+                return true;
+            }
+        } else {
+            // Jetzt welche da?
+            hadClients = !Server.game.clients.isEmpty();
+        }
+        return false;
     }
 
     /**

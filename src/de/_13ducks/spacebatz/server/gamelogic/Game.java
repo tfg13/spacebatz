@@ -1,10 +1,10 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.shared.BulletTypes;
-import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
+import de._13ducks.spacebatz.shared.BulletTypes;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
@@ -154,7 +154,7 @@ public class Game {
                     enemytype = 1;
                 }
                 Enemy e = new Enemy(posX, posY, newNetID(), enemytype);
-                netIDMap.put(e.getNetID(), e);
+                netIDMap.put(e.netID, e);
             }
 
         }
@@ -191,7 +191,8 @@ public class Game {
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
-            netIDMap.put(player.getNetID(), player);
+            netIDMap.put(player.netID, player);
+            client.getContext().makeCharKnown(player.netID);
             // Dem Client die Tickrate schicken:
             Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);

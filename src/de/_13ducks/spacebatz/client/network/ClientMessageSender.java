@@ -18,7 +18,7 @@ public class ClientMessageSender {
         byte[] b = new byte[8];
         Bits.putInt(b, 0, item.getNetID());
         Bits.putInt(b, 4, equipslot);
-        Client.getNetwork().sendTcpData((byte) Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b);
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b);
     }
 
     /**
@@ -27,6 +27,11 @@ public class ClientMessageSender {
     public void sendDequipItem(int equipslot) {
         byte[] b = new byte[4];
         Bits.putInt(b, 0, equipslot);
-        Client.getNetwork().sendTcpData((byte) Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, b);
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, b);
     }
+
+    public void sendDisconnect() {
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
+    }
+
 }

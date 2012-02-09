@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.EntityMap;
+import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
@@ -17,7 +19,7 @@ public final class Server {
     /**
      * Globale Referenz auf den MessageInterpreter
      */
-    public static ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
+    public static final ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
     /**
      * Das laufende Spiel
      */
@@ -29,11 +31,11 @@ public final class Server {
     /**
      * Das Netzwerkmodul des Servers
      */
-    public static ServerNetwork serverNetwork = new ServerNetwork();
+    public static final ServerNetwork serverNetwork = new ServerNetwork();
     /**
      * Die Sendekomponente des Netzwerkmoduls
      */
-    public static ServerMessageSender msgSender = new ServerMessageSender();
+    public static final ServerMessageSender msgSender = new ServerMessageSender();
 
     /**
      * Einstiegspunkt
@@ -51,5 +53,17 @@ public final class Server {
 
         // GO! GO! GO!
         mainLoop.startGameLogic();
+    }
+
+    /**
+     * Entfernt einen Client aus dem Spiel.
+     * Der Client erhält darüber keinerlei Benachrichtigung.
+     * @param client der zu entfernende Client.
+     */
+    public static void disconnectClient(Client client) {
+        Player pl = client.getPlayer();
+        game.netIDMap.remove(pl.netID);
+        game.clients.remove(client.clientID);
+        serverNetwork.udp.removeClient((byte) client.clientID);
     }
 }

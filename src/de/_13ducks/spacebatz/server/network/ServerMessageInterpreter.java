@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -48,11 +48,6 @@ public class ServerMessageInterpreter {
      * @param message die Nachricht als byte-array
      */
     public void interpretTCPMessage(byte cmdID, byte message[], Client sender) {
-//        System.out.print("TCP received: " + cmdID + " , ");
-//        for (int i = 0; i < message.length; i++) {
-//            System.out.print((int) message[i]);
-//        }
-//        System.out.print("\n");
 
         switch (cmdID) {
             case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
@@ -85,8 +80,12 @@ public class ServerMessageInterpreter {
                     sender.getPlayer().calcEquipStats();
                     Server.msgSender.sendItemDequip(slot2, sender.clientID);
                 }
-
                 break;
+            case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
+                Server.disconnectClient(sender);
+                break;
+            default:
+                System.out.println("WARNING: Received CTS-TCP with unknown cmdid! (was " + cmdID + ")");
         }
     }
 }

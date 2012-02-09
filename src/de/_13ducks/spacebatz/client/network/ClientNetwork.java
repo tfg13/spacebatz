@@ -133,6 +133,7 @@ public class ClientNetwork {
             }
         });
         receiveDataThread.setName("ReceiveDataThread");
+        receiveDataThread.setDaemon(true);
         receiveDataThread.start();
 
         Thread udpQueuer = new Thread(new Runnable() {
@@ -179,7 +180,11 @@ public class ClientNetwork {
                 break;
             case Settings.NET_UDP_CMD_ADD_CHAR:
                 // Sofort bestätigen
-                ackChar(Bits.getInt(data, 33));
+                ackNewChar(Bits.getInt(data, 33));
+                break;
+            case Settings.NET_UDP_CMD_DEL_CHAR:
+                // Sofort bestätigen
+                ackDelChar(Bits.getInt(data, 1));
                 break;
             default:
             // Do nothing, per default werden Pakete nicht preExecuted
@@ -295,6 +300,12 @@ public class ClientNetwork {
                     }
                 }
                 break;
+            case Settings.NET_UDP_CMD_DEL_CHAR:
+                if (Client.netIDMap.containsKey(Bits.getInt(pack, 1))) {
+                    // Löschen
+                    Client.netIDMap.remove(Bits.getInt(pack, 1));
+                }
+                break;
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");
         }
@@ -319,11 +330,25 @@ public class ClientNetwork {
      *
      * @param netID
      */
-    private void ackChar(int netID) {
+    private void ackNewChar(int netID) {
         byte[] b = new byte[10];
         b[0] = Client.getClientID();
         Bits.putInt(b, 1, Client.frozenGametick);
-        b[5] = Settings.NET_UDP_CMD_ACK_CHAR;
+        b[5] = Settings.NET_UDP_CMD_ACK_ADD_CHAR;
+        Bits.putInt(b, 6, netID);
+        udpSend(b);
+    }
+    
+    /**
+     * Bestätigt dem Server den erhalt des Löschens dieses Chars
+     *
+     * @param netID
+     */
+    private void ackDelChar(int netID) {
+        byte[] b = new byte[10];
+        b[0] = Client.getClientID();
+        Bits.putInt(b, 1, Client.frozenGametick);
+        b[5] = Settings.NET_UDP_CMD_ACK_DEL_CHAR;
         Bits.putInt(b, 6, netID);
         udpSend(b);
     }

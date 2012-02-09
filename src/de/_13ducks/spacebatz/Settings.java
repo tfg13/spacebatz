@@ -78,13 +78,21 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_ADD_CHAR = 12;
     /**
+     * Char löschen.
+     */
+    public static final byte NET_UDP_CMD_DEL_CHAR = 13;
+    /**
      * Bestätigung, dass eine Bewegung vom Server beim Client angekommen ist.
      */
     public static final byte NET_UDP_CMD_ACK_MOVE = -12;
     /**
      * Bestätigung, dass das Erstellen einer Einheit beim Client angekommen ist.
      */
-    public static final byte NET_UDP_CMD_ACK_CHAR = -13;
+    public static final byte NET_UDP_CMD_ACK_ADD_CHAR = -13;
+    /**
+     * Bestätigung, dass das Löschen einer Einheit beim Client angekommen ist.
+     */
+    public static final byte NET_UDP_CMD_ACK_DEL_CHAR = -14;
     /**
      * Normales Input-an-Server-Schicken.
      */
@@ -137,6 +145,10 @@ public final class Settings {
      * Server sagt, dass Client Item auszieht
      */
     public static final byte NET_TCP_CMD_DEQUIP_ITEM = 39;
+    /**
+     * Client geht offline und meldet sich ab.
+     */
+    public static final byte NET_TCP_CMD_CLIENT_DISCONNECT = 40;
     /**
      * Normales Input-an-Server-Schicken.
      */

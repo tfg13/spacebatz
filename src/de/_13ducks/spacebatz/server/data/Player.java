@@ -4,7 +4,6 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
-
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
@@ -27,7 +26,6 @@ public class Player extends Char {
     public Player(double x, double y, int id, Client client) {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
-        client.getContext().makeCharKnown(getNetID());
         this.client = client;
     }
 
@@ -97,7 +95,7 @@ public class Player extends Char {
             Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
             Bits.putFloat(bytearray, 13, (float) Math.atan2(bullet.getDirectionY(), bullet.getDirectionX()));
             Bits.putInt(bytearray, 17, bullet.getTypeID());
-            Bits.putInt(bytearray, 21, bullet.getNetID());
+            Bits.putInt(bytearray, 21, bullet.netID);
 
             for (int i = 0; i < Server.game.clients.size(); i++) {
                 Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));

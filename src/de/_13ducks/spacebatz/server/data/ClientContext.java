@@ -1,8 +1,9 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Repräsentiert den Wissensstand eines Clients
@@ -13,12 +14,12 @@ public class ClientContext {
 
     private HashMap<Char, Movement> receivedMap;
     private HashMap<Movement, Char> sentMap;
-    private HashSet<Integer> charMap;
+    private HashMap<Integer, Char> charMap;
 
     public ClientContext() {
         sentMap = new HashMap<>();
         receivedMap = new HashMap<>();
-        charMap = new HashSet<>();
+        charMap = new HashMap<>();
     }
 
     /**
@@ -70,7 +71,7 @@ public class ClientContext {
      * @return true, wenn bekannt, sonst false.
      */
     public boolean knowsChar(Char c) {
-        return charMap.contains(c.getNetID());
+        return charMap.containsKey(c.netID);
     }
 
     /**
@@ -79,8 +80,26 @@ public class ClientContext {
      * @param c der ab sofort bekannte Char.
      */
     public void makeCharKnown(int netID) {
-        if (!charMap.contains(netID)) {
-            charMap.add(netID);
+        if (!charMap.containsKey(netID)) {
+            Char c = Server.game.netIDMap.get(netID);
+            charMap.put(netID, Server.game.netIDMap.get(netID));
         }
+    }
+
+    /**
+     * Liefert einen Iterator über alle dem Client bekannten Chars.
+     * @return einen Iterator über alle dem Client bekannten Chars.
+     */
+    public Iterator<Char> knownCharsIterator() {
+        return charMap.values().iterator();
+    }
+
+    /**
+     * Löscht einen Char aus dem Kontext des Chars.
+     * Dieser Client kennt den Char zukünftig nicht mehr.
+     * @param netID Die netID des zu löschenden Chars.
+     */
+    public void removeChar(int netID) {
+        charMap.remove(netID);
     }
 }

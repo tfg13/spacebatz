@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.Settings;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.shared.Item;
@@ -112,7 +111,7 @@ public class Engine {
         } catch (IOException ex) {
             ex.printStackTrace();
             Display.destroy();
-            System.exit(1);
+            return;
         }
 
         lastFPS = getTime();
@@ -135,6 +134,8 @@ public class Engine {
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
+        // Netzwerk abmelden:
+        Client.getMsgSender().sendDisconnect();
 
         // Ende der Mainloop.
         Display.destroy();
