@@ -1,8 +1,9 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Repräsentiert den Wissensstand eines Clients
@@ -13,12 +14,12 @@ public class ClientContext {
 
     private HashMap<Char, Movement> receivedMap;
     private HashMap<Movement, Char> sentMap;
-    private HashSet<Integer> charMap;
+    private HashMap<Integer, Char> charMap;
 
     public ClientContext() {
         sentMap = new HashMap<>();
         receivedMap = new HashMap<>();
-        charMap = new HashSet<>();
+        charMap = new HashMap<>();
     }
 
     /**
@@ -70,7 +71,7 @@ public class ClientContext {
      * @return true, wenn bekannt, sonst false.
      */
     public boolean knowsChar(Char c) {
-        return charMap.contains(c.netID);
+        return charMap.containsKey(c.netID);
     }
 
     /**
@@ -79,8 +80,12 @@ public class ClientContext {
      * @param c der ab sofort bekannte Char.
      */
     public void makeCharKnown(int netID) {
-        if (!charMap.contains(netID)) {
-            charMap.add(netID);
+        if (!charMap.containsKey(netID)) {
+            charMap.put(netID, Server.game.netIDMap.get(netID));
         }
+    }
+
+    public Iterator<Char> knownCharsIterator() {
+        return charMap.values().iterator();
     }
 }
