@@ -259,7 +259,6 @@ public class Client {
 
     public static void addMoney(int amount) {
         money += amount;
-        System.out.println("money: " + money);
     }
 
     /**

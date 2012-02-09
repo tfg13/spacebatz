@@ -1,17 +1,19 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.util.Bits;
 
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Player extends Char {
-    /*
+    /**
      * Der, Client, dem der Player gehört
      */
-
     private Client client;
+
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -76,5 +78,29 @@ public class Player extends Char {
      */
     public Client getClient() {
         return client;
+    }
+
+    public void playerShoot(float angle) {
+        int thistick = Server.game.getTick();
+        if (thistick > attackcooldowntick + attackcooldown) {
+            attackcooldowntick = thistick;
+
+
+            Bullet bullet = new Bullet(thistick, getX(), getY(), angle, 0, Server.game.newNetID(), this);
+            Server.game.bullets.add(bullet);
+            byte[] bytearray = new byte[25];
+
+            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
+            Bits.putInt(bytearray, 1, bullet.getSpawntick());
+            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
+            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
+            Bits.putFloat(bytearray, 13, (float) Math.atan2(bullet.getDirectionY(), bullet.getDirectionX()));
+            Bits.putInt(bytearray, 17, bullet.getTypeID());
+            Bits.putInt(bytearray, 21, bullet.getNetID());
+
+            for (int i = 0; i < Server.game.clients.size(); i++) {
+                Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
+            }
+        }
     }
 }

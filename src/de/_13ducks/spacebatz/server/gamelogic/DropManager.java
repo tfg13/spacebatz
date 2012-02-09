@@ -45,7 +45,6 @@ public class DropManager {
             }
         }
         ItemTypeStats stats = dropableitems.get(random.nextInt(dropableitems.size()));
-        System.out.println("item: " + stats.itemStats.get("name"));
         Item item = new Item(x, y, stats, Server.game.newNetID());
 
         if ((int) stats.itemStats.get("itemclass") != 0) {
@@ -119,7 +118,6 @@ public class DropManager {
             ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
             if (!addattributes.contains(randomatt)) {
                 addattributes.add(randomatt);
-                System.out.println("- " + randomatt.getName());
             }
         }
 
