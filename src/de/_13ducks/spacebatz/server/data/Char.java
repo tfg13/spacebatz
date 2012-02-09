@@ -136,4 +136,11 @@ public abstract class Char extends Entity {
     public double getSize() {
         return size;
     }
+
+    /**
+     * @return the range
+     */
+    public double getRange() {
+        return range;
+    }
 }
