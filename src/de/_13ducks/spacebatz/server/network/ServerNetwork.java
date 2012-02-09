@@ -161,7 +161,6 @@ public class ServerNetwork {
                     for (int c = 0; c < connections.size(); c++) {
                         connections.get(c).receiveData();
                     }
-                    System.out.println("BLA");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
