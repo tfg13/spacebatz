@@ -161,11 +161,14 @@ public class UDPConnection {
             case Settings.NET_UDP_CMD_ACK_MOVE:
                 client.getContext().makeMovementKnown(Bits.getInt(data, 6));
                 break;
-            case Settings.NET_UDP_CMD_ACK_CHAR:
+            case Settings.NET_UDP_CMD_ACK_ADD_CHAR:
                 client.getContext().makeCharKnown(Bits.getInt(data, 6));
                 break;
+            case Settings.NET_UDP_CMD_ACK_DEL_CHAR:
+                client.getContext().removeChar(Bits.getInt(data, 6));
+                break;
             default:
-                System.out.println("WARNING: Received Packet with unknown cmd-id! (was " + cmd + ")");
+                System.out.println("WARNING: Received UDP-CTS Packet with unknown cmd-id! (was " + cmd + ")");
         }
     }
 
@@ -198,6 +201,15 @@ public class UDPConnection {
                 sendPack(packet, client);
                 leftToSend -= 15;
             }
+            // Dem Client bekannte, aber nichtmehr vorhandene Einheiten löschen
+            Iterator<Char> clientCharIter = client.getContext().knownCharsIterator();
+            while (clientCharIter.hasNext()) {
+                Char c = clientCharIter.next();
+                if (!Server.game.netIDMap.containsKey(c.netID)) {
+                    // Gibts nicht mehr, löschen
+                    sendCharDeleted(client, c);
+                }
+            }
         }
     }
 
@@ -211,6 +223,18 @@ public class UDPConnection {
         b[0] = Settings.NET_UDP_CMD_ADD_CHAR;
         Bits.putInt(b, 1, Server.game.getTick());
         c.netPack(b, 32);
+        sendPack(b, client);
+    }
+    
+    /**
+     * Senden dem Client eine Nachricht, die ihn über das Ableben eines Chars informiert.
+     * @param client der Client
+     * @param c der Char
+     */
+    private void sendCharDeleted(Client client, Char c) {
+        byte[] b = new byte[5];
+        b[0] = Settings.NET_UDP_CMD_DEL_CHAR;
+        Bits.putInt(b, 1, c.netID);
         sendPack(b, client);
     }
 

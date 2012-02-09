@@ -139,16 +139,7 @@ public class ClientMessageInterpreter {
                 break;
             case 28:
                 // Bullet trifft Char
-                int netIDChar = Bits.getInt(message, 0); // netID des getroffenen Chars
                 int netIDBullet = Bits.getInt(message, 4); // netID von Bullet
-                boolean killed = false; // ob char stirbt
-                if (message[8] == 1) {
-                    killed = true;
-                }
-
-                if (killed) {
-                    Client.netIDMap.remove(netIDChar);
-                }
 
                 for (int i = 0; i < Client.getBulletList().size(); i++) {
                     if (Client.getBulletList().get(i).getNetID() == netIDBullet) {

@@ -192,6 +192,7 @@ public class Game {
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
+            client.getContext().makeCharKnown(player.netID);
             // Dem Client die Tickrate schicken:
             Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);

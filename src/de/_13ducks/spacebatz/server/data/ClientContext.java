@@ -81,11 +81,25 @@ public class ClientContext {
      */
     public void makeCharKnown(int netID) {
         if (!charMap.containsKey(netID)) {
+            Char c = Server.game.netIDMap.get(netID);
             charMap.put(netID, Server.game.netIDMap.get(netID));
         }
     }
 
+    /**
+     * Liefert einen Iterator über alle dem Client bekannten Chars.
+     * @return einen Iterator über alle dem Client bekannten Chars.
+     */
     public Iterator<Char> knownCharsIterator() {
         return charMap.values().iterator();
+    }
+
+    /**
+     * Löscht einen Char aus dem Kontext des Chars.
+     * Dieser Client kennt den Char zukünftig nicht mehr.
+     * @param netID Die netID des zu löschenden Chars.
+     */
+    public void removeChar(int netID) {
+        charMap.remove(netID);
     }
 }

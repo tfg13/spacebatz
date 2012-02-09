@@ -24,7 +24,6 @@ public class Player extends Char {
     public Player(double x, double y, int id, Client client) {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
-        client.getContext().makeCharKnown(netID);
         this.client = client;
     }
 
