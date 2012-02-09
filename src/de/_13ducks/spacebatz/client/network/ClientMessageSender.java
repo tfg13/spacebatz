@@ -4,7 +4,6 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
-import de._13ducks.spacebatz.client.Client;
 
 /**
  * Die Sendekpomponente des Netzwerkmoduls
@@ -19,7 +18,7 @@ public class ClientMessageSender {
         byte[] b = new byte[8];
         Bits.putInt(b, 0, item.getNetID());
         Bits.putInt(b, 4, equipslot);
-        Client.getNetwork().sendTcpData((byte) Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b);
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b);
     }
 
     /**
@@ -28,11 +27,11 @@ public class ClientMessageSender {
     public void sendDequipItem(int equipslot) {
         byte[] b = new byte[4];
         Bits.putInt(b, 0, equipslot);
-        Client.getNetwork().sendTcpData((byte) Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, b);
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, b);
     }
 
     public void sendDisconnect() {
-        Client.getNetwork().sendData((byte) 55, new byte[0]);
+        Client.getNetwork().sendTcpData((byte) 55, new byte[0]);
     }
 
 }

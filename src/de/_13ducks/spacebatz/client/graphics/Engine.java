@@ -1,9 +1,7 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.Settings;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
-import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -137,7 +135,7 @@ public class Engine {
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
         // Netzwerk abmelden:
-        ClientMessageSender.sendDisconnect();
+        Client.getMsgSender().sendDisconnect();
 
         // Ende der Mainloop.
         Display.destroy();
