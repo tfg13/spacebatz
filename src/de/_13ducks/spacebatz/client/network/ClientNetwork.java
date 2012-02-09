@@ -184,7 +184,7 @@ public class ClientNetwork {
                 break;
             case Settings.NET_UDP_CMD_DEL_CHAR:
                 // Sofort bestätigen
-                ackDelChar(Bits.getInt(data, 1));
+                ackDelChar(Bits.getInt(data, 5));
                 break;
             default:
             // Do nothing, per default werden Pakete nicht preExecuted
@@ -301,9 +301,9 @@ public class ClientNetwork {
                 }
                 break;
             case Settings.NET_UDP_CMD_DEL_CHAR:
-                if (Client.netIDMap.containsKey(Bits.getInt(pack, 1))) {
+                if (Client.netIDMap.containsKey(Bits.getInt(pack, 5))) {
                     // Löschen
-                    Client.netIDMap.remove(Bits.getInt(pack, 1));
+                    Client.netIDMap.remove(Bits.getInt(pack, 5));
                 }
                 break;
             default:

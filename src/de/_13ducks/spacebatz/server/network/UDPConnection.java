@@ -232,9 +232,10 @@ public class UDPConnection {
      * @param c der Char
      */
     private void sendCharDeleted(Client client, Char c) {
-        byte[] b = new byte[5];
+        byte[] b = new byte[9];
         b[0] = Settings.NET_UDP_CMD_DEL_CHAR;
-        Bits.putInt(b, 1, c.netID);
+        Bits.putInt(b, 1, Server.game.getTick());
+        Bits.putInt(b, 5, c.netID);
         sendPack(b, client);
     }
 
