@@ -45,7 +45,7 @@ public class Bullet extends Entity {
         this.owner = owner;
 
         this.deletetick = spawntick + stats.getLifetime();
-        this.damage = stats.getDamage();
+        this.damage = owner.getDamage();
         
     }
 

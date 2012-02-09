@@ -162,4 +162,8 @@ public final class Settings {
      * Die Größe der Chars für Kollision
      */
     public static final double CHARSIZE = 0.8;
+    /**
+     * Die Geschwindigkeit der Chars
+     */
+    public static final double CHARSPEED = 0.16;
 }

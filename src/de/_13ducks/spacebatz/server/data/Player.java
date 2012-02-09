@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -9,11 +10,11 @@ import de._13ducks.spacebatz.util.Bits;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Player extends Char {
+
     /**
      * Der, Client, dem der Player gehört
      */
     private Client client;
-
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -102,5 +103,58 @@ public class Player extends Char {
                 Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
             }
         }
+    }
+
+    /**
+     * Berechnet Playerwerte (Schaden, ...) für die angelegten Items
+     */
+    public void calcEquipStats() {
+        int newdamage = 0;
+        double newdamagemulti = 1.0;
+        double newattackcooldown = 10;
+        double newattackspeedmulti = 1.0;
+        double newrange = 1;
+        int newarmor = 0;
+        double newmovespeedmulti = Settings.CHARSPEED;
+
+        for (int i = 1; i < this.getClient().getEquippedItems().length; i++) {
+            Item item = this.getClient().getEquippedItems()[i];
+            if (item != null) {
+                newdamage += (int) item.getStats().itemStats.get("damage");
+                if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
+                    newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
+                }
+                newrange += (double) item.getStats().itemStats.get("range");
+                newarmor += (int) item.getStats().itemStats.get("armor");
+                for (int j = 0; j < item.getItemattributes().size(); j++) {
+                    for (String astatname : item.getItemattributes().get(j).getStats().keySet()) {
+                        double astatval = item.getItemattributes().get(j).getStats().get(astatname);
+                        switch (astatname) {
+                            case "damage":
+                                newdamagemulti += astatval;
+                                break;
+                            case "attackspeed":
+                                newattackspeedmulti += astatval;
+                                break;
+                            case "range":
+                                newrange += astatval;
+                                break;
+                            case "armor":
+                                newarmor += astatval;
+                                break;
+                            case "movespeed":
+                                newmovespeedmulti *= (1 + astatval);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        newdamage *= newdamagemulti;
+        damage = Math.max(newdamage, 2);
+        speed = newmovespeedmulti;
+        attackcooldown = (int) (newattackcooldown / newattackspeedmulti);
+        System.out.println("damage: " + damage + " mspeed: " + speed + " acooldown: " + attackcooldown);
+
     }
 }

@@ -72,6 +72,7 @@ public class ServerMessageInterpreter {
                     // Jetzt neues Item anlegen
                     sender.getEquippedItems()[slot] = item;
                     sender.getInventory().getItems().remove(item.getNetID());
+                    sender.getPlayer().calcEquipStats();
                     // Item-Anleg-Befehl zum Client senden
                     Server.msgSender.sendItemEquip(item.getNetID(), sender.clientID);
                 }
@@ -81,6 +82,7 @@ public class ServerMessageInterpreter {
                 if (sender.getEquippedItems()[slot2] != null) {
                     sender.getInventory().getItems().put(sender.getEquippedItems()[slot2].getNetID(), sender.getEquippedItems()[slot2]);
                     sender.getEquippedItems()[slot2] = null;
+                    sender.getPlayer().calcEquipStats();
                     Server.msgSender.sendItemDequip(slot2, sender.clientID);
                 }
 

@@ -19,6 +19,10 @@ public abstract class Char extends Entity {
      */
     protected int healthpoints;
     /**
+     * Rüstung, verringert Schaden
+     */
+    protected int armor;
+    /**
      * Der Schaden des Chars
      */
     protected int damage;
@@ -39,6 +43,10 @@ public abstract class Char extends Entity {
      */
     protected int attackcooldowntick;
     /**
+     * Reichweite für Angriffe
+     */
+    protected double range;
+    /**
      * Die Größe des Chars (für Kollision)
      */
     private double size;
@@ -55,9 +63,10 @@ public abstract class Char extends Entity {
         this.charTypeID = charTypeID;
         size = Settings.CHARSIZE;
         this.healthpoints = 10;
-        this.damage = 1;
-        this.sightrange = 1;
-        this.attackcooldown = 5;
+        this.damage = 2;
+        this.range = 1.0;
+        this.sightrange = 10;
+        this.attackcooldown = 10;
     }
 
     /**

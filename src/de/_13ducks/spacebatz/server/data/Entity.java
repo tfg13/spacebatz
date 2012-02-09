@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
 
@@ -25,7 +26,7 @@ public class Entity {
     /**
      * Die Geschwindigkeit der Bewegung
      */
-    protected double speed = .17;
+    protected double speed = Settings.CHARSPEED;
     /**
      * Der Gametick in dem die Bewegung gestartet wurde
      */

@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class ItemTypeStats implements java.io.Serializable{
     public HashMap<String, Serializable> itemStats;
     
-    public ItemTypeStats(String name, int pic, int itemclass, int quality, int amount, int damage, float attackspeed, float range, int armor, int itemtypeID) {
+    public ItemTypeStats(String name, int pic, int itemclass, int quality, int amount, int damage, double attackcooldown, double range, int armor) {
         itemStats = new HashMap<>();
         itemStats.put("name", name);
         itemStats.put("pic", pic);
@@ -18,10 +18,9 @@ public class ItemTypeStats implements java.io.Serializable{
         itemStats.put("quality", quality); // 0 - wird nicht zufällig gedroppt, sonst: kann gedroppt werden wenn quality <= gegnerlevel
         itemStats.put("amount", amount);
         itemStats.put("damage", damage);
-        itemStats.put("attackspeed", attackspeed);
+        itemStats.put("attackcooldown", attackcooldown);
         itemStats.put("range", range);
         itemStats.put("armor", armor);
-        itemStats.put("itemtypeID", itemtypeID); // wird evtl nicht mehr benutzt, da Items serialisiert werden
     }
     
     
