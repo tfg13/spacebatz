@@ -62,6 +62,7 @@ public class UDPConnection {
                     }
                 }
             });
+            inputQueuer.setDaemon(true);
         } catch (SocketException ex) {
             ex.printStackTrace();
         }

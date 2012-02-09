@@ -48,11 +48,6 @@ public class ServerMessageInterpreter {
      * @param message die Nachricht als byte-array
      */
     public void interpretTCPMessage(byte cmdID, byte message[], Client sender) {
-//        System.out.print("TCP received: " + cmdID + " , ");
-//        for (int i = 0; i < message.length; i++) {
-//            System.out.print((int) message[i]);
-//        }
-//        System.out.print("\n");
 
         switch (cmdID) {
             case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
