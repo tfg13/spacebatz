@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -32,7 +32,7 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
-
+        
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         this.healthpoints = estats.getHealthpoints();
@@ -77,23 +77,24 @@ public class Enemy extends Char {
     @Override
     public boolean decreaseHealthpoints(Bullet b) {
         healthpoints -= b.getDamage();
-
+        
         if (healthpoints <= 0) {
-            Server.msgSender.sendHitChar(netID, b.netID, true);
-            Server.game.netIDMap.remove(netID);
+            Server.msgSender.sendHitChar(getNetID(), b.getNetID(), true);
+            Server.game.netIDMap.remove(getNetID());
+            Server.entityMap.removeEntity(this);
             DropManager.dropItem(getX(), getY(), enemylevel);
             return true;
         } else {
-            Server.msgSender.sendHitChar(netID, b.netID, false);
+            Server.msgSender.sendHitChar(getNetID(), b.getNetID(), false);
             return false;
         }
     }
-
+    
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 4;
     }
-
+    
     @Override
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
