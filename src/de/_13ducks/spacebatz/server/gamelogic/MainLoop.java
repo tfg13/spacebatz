@@ -58,9 +58,14 @@ public class MainLoop {
             public void run() {
                 runStart = System.nanoTime();
                 while (true) {
+
                     if (checkClientsLeft()) {
                         break;
                     }
+
+                    // Debug-Kommandos ausführen:
+                    Server.debugConsole.executeCommands();
+
                     // Input vom Client holen:
                     Server.serverNetwork.udp.receive();
                     Server.msgInterpreter.interpretAllTcpMessages();

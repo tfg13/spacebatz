@@ -34,6 +34,10 @@ public final class Server {
      * Die Sendekomponente des Netzwerkmoduls
      */
     public static ServerMessageSender msgSender = new ServerMessageSender();
+    /**
+     * Die Debug-Konsole
+     */
+    public static DebugConsole debugConsole = new DebugConsole();
 
     /**
      * Einstiegspunkt
