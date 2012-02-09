@@ -57,7 +57,6 @@ public class EntityMap {
                     for (int innerY = y - 1; innerY <= y + 1; innerY++) {
                         if (0 <= innerX && innerX < xSectors && 0 <= innerY && innerY < ySectors) {
                             sector.addNeighborSector(sectors[innerX][innerY]);
-                            System.out.println("Sektor " + x + "/" + y + " kriegt nachbar: " + innerX + "/" + innerY);
                         }
                     }
                 }
