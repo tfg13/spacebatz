@@ -46,6 +46,10 @@ public class Entity {
      * Ob das aktuelle Movement stimmt.
      */
     private boolean movementDirty = true;
+    /**
+     * Der Sektor der EntityMap, in dem die Entity gerade registriert ist.
+     */
+    private EntityMapSector mySector;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -229,5 +233,23 @@ public class Entity {
      */
     public int getMoveStartTick() {
         return moveStartTick;
+    }
+
+    /**
+     * Gibt den Sektor, in dem die Entity gerade registriert ist, zurück.
+     *
+     * @return der Sektor der Entity
+     */
+    public EntityMapSector getSector() {
+        return mySector;
+    }
+
+    /**
+     * Setzt den Sektor, in dem die Entity gerade registriert ist.
+     *
+     * @param mySector der neue Sektor der Entity
+     */
+    public void setSector(EntityMapSector mySector) {
+        this.mySector = mySector;
     }
 }

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Logger;
 
 /**
  * Die Empfangskomponente des Netzwerkmoduls
@@ -181,7 +180,7 @@ public class ClientMessageInterpreter {
                 try {
                     ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
                     Item item = (Item) is.readObject();
-                    Client.getItemMap().put(item.netID, item);
+                    Client.getItemMap().put(item.getNetID(), item);
 
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
@@ -196,7 +195,7 @@ public class ClientMessageInterpreter {
                 if (clientID == Client.getClientID()) {
                     Item item = Client.getItemMap().get(netIDItem2);
                     // Geld oder normales Item?
-                    if (item.stats.itemStats.get("name").equals("Money")) {
+                    if (item.getStats().itemStats.get("name").equals("Money")) {
                         Client.addMoney(item.getAmount());
                     } else {
                         Client.addToInventory(item);
@@ -214,7 +213,31 @@ public class ClientMessageInterpreter {
                     ex.printStackTrace();
                 }
                 break;
-
+            case Settings.NET_TCP_CMD_EQUIP_ITEM:
+                // Ein Client will ein bestimmtes Item anlegen
+                int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
+                int clientID3 = Bits.getInt(message, 4); // clientID des Spielers
+                if (clientID3 == Client.getClientID()) {
+                    Item item = Client.getInventoryItems().get(netIDItem3);
+                    Client.getEquippedItems()[(int) item.getStats().itemStats.get("itemclass")] = item;
+                    for (int i = 0; i < Client.getInventorySlots().length; i++) {
+                        if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
+                            Client.getInventorySlots()[i] = null;
+                        }
+                    }
+                    Client.getInventoryItems().values().remove(item);
+                }
+                break;
+            case Settings.NET_TCP_CMD_DEQUIP_ITEM:
+                // Ein Client will ein bestimmtes Item ablegen
+                int slot = Bits.getInt(message, 0); // netID des  Items
+                int clientID2 = Bits.getInt(message, 4); // clientID des Spielers
+                if (clientID2 == Client.getClientID()) {
+                    Item item = Client.getEquippedItems()[slot];
+                    Client.getEquippedItems()[slot] = null;
+                    Client.addToInventory(item);
+                }
+                break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:
                 // Geänderten Boden übernehmen:
                 int x = Bits.getInt(message, 0);
@@ -225,8 +248,7 @@ public class ClientMessageInterpreter {
 
 
             default:
-                System.out.println(
-                        "WARNING: Client received unknown TCP-Command");
+                System.out.println("WARNING: Client received unknown TCP-Command " + cmdId);
         }
 
     }

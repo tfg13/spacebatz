@@ -122,6 +122,22 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_CHANGE_GROUND = 35;
     /**
+     * Client will was anziehen, muss dafür aber erst Server fragen
+     */
+    public static final byte NET_TCP_CMD_REQUEST_ITEM_EQUIP = 36;
+    /**
+     * Client will Item ablegen, muss dafür aber erst Server fragen
+     */
+    public static final byte NET_TCP_CMD_REQUEST_ITEM_DEQUIP = 37;
+    /**
+     * Server sagt, dass Client Item anzieht
+     */
+    public static final byte NET_TCP_CMD_EQUIP_ITEM = 38;
+    /**
+     * Server sagt, dass Client Item auszieht
+     */
+    public static final byte NET_TCP_CMD_DEQUIP_ITEM = 39;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

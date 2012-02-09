@@ -16,7 +16,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.Texture;
@@ -191,44 +190,26 @@ public class Engine {
                             // Hut-Slot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                if ((int) selecteditem.stats.itemStats.get("itemclass") == 2) {
-                                    if (Client.getEquippedItems()[2] == null) {
-                                        // Slot war vorher nicht belegt -> verschieben
-                                        Client.getEquippedItems()[2] = selecteditem;
-                                        Client.getInventoryItems().values().remove(selecteditem);
-                                        Client.getInventorySlots()[selecteditemslot] = null;
-                                        selecteditemslot = -1;
-                                    } else {
-                                        // Slot war belegt -> tauschen
-                                        Item swapItem = Client.getEquippedItems()[2];
-                                        Client.getEquippedItems()[2] = selecteditem;
-                                        Client.getInventoryItems().values().remove(selecteditem);
-                                        Client.getInventoryItems().put(swapItem.netID, swapItem);
-                                        Client.getInventorySlots()[selecteditemslot] = new InventorySlot(swapItem);
-                                        selecteditemslot = -1;
-                                    }
+                                if ((int) selecteditem.getStats().itemStats.get("itemclass") == 2) {
+                                    Client.getMsgSender().sendEquipItem(selecteditem, 2); // 2 = Hut-Slot
+                                    selecteditemslot = -1;
+                                }
+                            } else {
+                                if (Client.getEquippedItems()[2] != null) {
+                                    Client.getMsgSender().sendDequipItem(2); // 2 = Hut-Slot
                                 }
                             }
                         } else if (y > 0.61 && y < 0.74) {
                             // Waffenslot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                if ((int) selecteditem.stats.itemStats.get("itemclass") == 1) {
-                                    if (Client.getEquippedItems()[1] == null) {
-                                        // Slot war vorher nicht belegt -> verschieben
-                                        Client.getEquippedItems()[1] = selecteditem;
-                                        Client.getInventoryItems().values().remove(selecteditem);
-                                        Client.getInventorySlots()[selecteditemslot] = null;
-                                        selecteditemslot = -1;
-                                    } else {
-                                        // Slot war belegt -> tauschen
-                                        Item swapItem = Client.getEquippedItems()[1];
-                                        Client.getEquippedItems()[1] = selecteditem;
-                                        Client.getInventoryItems().values().remove(selecteditem);
-                                        Client.getInventoryItems().put(swapItem.netID, swapItem);
-                                        Client.getInventorySlots()[selecteditemslot] = new InventorySlot(swapItem);
-                                        selecteditemslot = -1;
-                                    }
+                                if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
+                                    Client.getMsgSender().sendEquipItem(selecteditem, 1); // 1 = Waffen-Slot
+                                    selecteditemslot = -1;
+                                }
+                            } else {
+                                if (Client.getEquippedItems()[1] != null) {
+                                    Client.getMsgSender().sendDequipItem(1); // 1 = Waffen-Slot
                                 }
                             }
                         }
@@ -390,7 +371,7 @@ public class Engine {
             float v;
             float w = 0.0f;
 
-            v = 0.25f * (int) item.stats.itemStats.get("pic");
+            v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -503,8 +484,8 @@ public class Engine {
             renderText(String.valueOf(Client.getMoney()), 0.12f * tilesX, 0.44f * tilesY);
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
-                // Slot leer oder gerade ausgewählt
                 if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {
+                    // Slot leer oder gerade selected -> nicht zeichnen
                     continue;
                 }
                 itemTiles.bind();
@@ -524,7 +505,7 @@ public class Engine {
                 float height = 0.11f * tilesY;
                 float v;
                 float w = 0.0f;
-                v = 0.25f * (int) item.stats.itemStats.get("pic");
+                v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
@@ -553,7 +534,7 @@ public class Engine {
                     float height = 0.11f * tilesY;
                     float v;
                     float w = 0.0f;
-                    v = 0.25f * (int) item.stats.itemStats.get("pic");
+                    v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
                     glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                     glTexCoord2f(v, w + 0.25f);
@@ -579,7 +560,7 @@ public class Engine {
             float size = 0.08f;
             float v;
             float w = 0.0f;
-            v = 0.25f * (int) item.stats.itemStats.get("pic");
+            v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -598,6 +579,7 @@ public class Engine {
             float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
 
+            // Maus über Item im Inventar?
             int slothovered = -1;
             if (y > 0.1812 && y <= 0.3156) {
                 for (int i = 0; i < 6; i++) {
@@ -614,21 +596,32 @@ public class Engine {
                     }
                 }
             }
+            Item item = null;
             if (slothovered != -1 && slothovered != selecteditemslot) {
                 if (Client.getInventorySlots()[slothovered] != null) {
-                    Item item = Client.getInventorySlots()[slothovered].getItem();
-
-                    glDisable(GL_TEXTURE_2D);
-                    glColor3f(0.9f, 0.9f, 0.9f);
-                    glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (0.7f + item.getItemattributes().size())) * tilesY);
-                    glEnable(GL_TEXTURE_2D);
-
-                    for (int i = 0; i < item.getItemattributes().size(); i++) {
-                        renderText(String.valueOf(item.getItemattributes().get(i).getName()), x * tilesX, y * tilesY);
-                        y += 0.05f;
-                    }
-                    renderText((String) Client.getInventorySlots()[slothovered].getItem().stats.itemStats.get("name"), x * tilesX, y * tilesY);
+                    item = Client.getInventorySlots()[slothovered].getItem();
                 }
+            // Einer der Ausrüstungsslots?
+            } else if (x > 0.4 && x < 0.54) {
+                if (y > 0.8 && y < 0.92) {
+                    item = Client.getEquippedItems()[2];
+                } else if (y > 0.61 && y < 0.74) {
+                    item = Client.getEquippedItems()[1];
+                }
+            }
+            if (item != null) {
+                // Mousehovern rendern, zuerst Rechteck
+                glDisable(GL_TEXTURE_2D);
+                glColor3f(0.9f, 0.9f, 0.9f);
+                glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (0.7f + item.getItemattributes().size())) * tilesY);
+                glEnable(GL_TEXTURE_2D);
+                // Namen der Itemattribute
+                for (int i = 0; i < item.getItemattributes().size(); i++) {
+                    renderText(String.valueOf(item.getItemattributes().get(i).getName()), x * tilesX, y * tilesY);
+                    y += 0.05f;
+                }
+                // Itemname
+                renderText((String) item.getStats().itemStats.get("name"), x * tilesX, y * tilesY);
             }
         }
     }
@@ -675,6 +668,7 @@ public class Engine {
 
     /**
      * Läd alle benötigten Texturen.
+     *
      * @throws IOException Wenn was schief geht
      */
     private void loadTex() throws IOException {
@@ -691,6 +685,7 @@ public class Engine {
 
     /**
      * Läd alle benötigten Binärdateien, die keine Bilder sind.
+     *
      * @throws IOException Wenn was schief geht
      */
     private void loadBin() throws IOException {

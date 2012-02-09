@@ -1,22 +1,20 @@
 package de._13ducks.spacebatz.shared;
 
+import de._13ducks.spacebatz.client.InventorySlot;
 import java.util.ArrayList;
 
 /**
  * Ein Item, dass auf der Map oder in einem Inventar liegt
+ *
  * @author Jojo
  */
 public class Item implements java.io.Serializable {
 
-    public ItemTypeStats stats;
+    private ItemTypeStats stats;
     /**
-     * Typ des Items.
+     * Die netID des Items.
      */
-    public byte itemTypeID;
-    /**
-     * Die ID des Items.
-     */
-    public int netID;
+    private int netID;
     /**
      * Menge des Items, wichtig bei stackbaren Materialien / Geld
      */
@@ -30,6 +28,10 @@ public class Item implements java.io.Serializable {
      * Attribute des Items
      */
     private ArrayList<ItemAttribute> itemattributes;
+    /**
+     * Inventarplatz des Items, nur für Client wichtig
+     */
+    private InventorySlot inventoryslot;
 
     public Item(double posX, double posY, ItemTypeStats stats, int netID) {
         this.posX = posX;
@@ -52,6 +54,20 @@ public class Item implements java.io.Serializable {
      */
     public double getPosY() {
         return posY;
+    }
+
+    /**
+     * @param posX the posX to set
+     */
+    public void setPosX(double posX) {
+        this.posX = posX;
+    }
+
+    /**
+     * @param posY the posY to set
+     */
+    public void setPosY(double posY) {
+        this.posY = posY;
     }
 
     /**
@@ -80,5 +96,33 @@ public class Item implements java.io.Serializable {
      */
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    /**
+     * @return the inventoryslot
+     */
+    public InventorySlot getInventoryslot() {
+        return inventoryslot;
+    }
+
+    /**
+     * @param inventoryslot the inventoryslot to set
+     */
+    public void setInventoryslot(InventorySlot inventoryslot) {
+        this.inventoryslot = inventoryslot;
+    }
+
+    /**
+     * @return the netID
+     */
+    public int getNetID() {
+        return netID;
+    }
+
+    /**
+     * @return the stats
+     */
+    public ItemTypeStats getStats() {
+        return stats;
     }
 }

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
+import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.HashMap;
@@ -94,12 +95,17 @@ public class Client {
      * Der Thread, der die Ticks hochzählt.
      */
     private static Timer tickTimer;
+    /**
+     * TCP-Sender zum Server
+     */
+    private static ClientMessageSender msgSender;
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
     public static void startClient(String ip) {
+        msgSender =  new ClientMessageSender();
         msgInterpreter = new ClientMessageInterpreter();
         netIDMap = new HashMap<>();
         network = new ClientNetwork();
@@ -208,6 +214,7 @@ public class Client {
         while (iterator.hasNext()) {
             Item item = (Item) iterator.next();
             inventorySlots[i] = new InventorySlot(item);
+            item.setInventoryslot(inventorySlots[i]);
             i++;
         }
     }
@@ -234,14 +241,15 @@ public class Client {
         for (int i = 0; i < inventorySlots.length; i++) {
             if (inventorySlots[i] == null) {
                 inventorySlots[i] = new InventorySlot(item);
-                inventoryItems.put(item.netID, item);
+                inventoryItems.put(item.getNetID(), item);
+                item.setInventoryslot(inventorySlots[i]);
                 break;
             }
         }
     }
 
     public static void removeFromInventory(int slot) {
-        inventoryItems.remove(inventorySlots[slot].getItem().netID);
+        inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
         inventorySlots[slot] = null;
     }
 
@@ -266,5 +274,12 @@ public class Client {
      */
     public static void setEquippedItems(Item[] aEquippedSlots) {
         equippedItems = aEquippedSlots;
+    }
+
+    /**
+     * @return the msgSender
+     */
+    public static ClientMessageSender getMsgSender() {
+        return msgSender;
     }
 }
