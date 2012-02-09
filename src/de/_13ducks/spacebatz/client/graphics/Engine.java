@@ -111,7 +111,7 @@ public class Engine {
         } catch (IOException ex) {
             ex.printStackTrace();
             Display.destroy();
-            System.exit(1);
+            return;
         }
 
         lastFPS = getTime();

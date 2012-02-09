@@ -121,6 +121,7 @@ public class ClientMessageInterpreter {
                     }
                 });
                 t.setName("CLIENT_ENGINE");
+                t.setDaemon(false);
                 t.start();
                 Client.startTickCounting(Bits.getInt(message, 0));
                 initTcpReceiverThreadRun = false;
