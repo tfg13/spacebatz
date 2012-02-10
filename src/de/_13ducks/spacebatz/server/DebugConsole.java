@@ -52,20 +52,26 @@ public class DebugConsole {
     public void executeCommands() {
         while (!commands.isEmpty()) {
             String[] words = commands.poll();
-
-            // Befehle:           
-            if (words[0].equals("serverstats")) {
-                System.out.println("Entities in netIDMap: " + Server.game.netIDMap.size());
-            } else if (words[0].equals("entities-at")) {
-                double x = Double.valueOf(words[1]);
-                double y = Double.valueOf(words[2]);
-                LinkedList<Entity> e = Server.entityMap.getEntitiesAroundPoint(x, y);
-                System.out.println("There are " + e.size() + " Entities around point " + x + "/" + y);
-                for (Entity entity : e) {
-                    System.out.println("Entity " + entity.netID);
-                }
-            } else {
-                System.out.println("Command not recognized.");
+            // Befehle:
+            switch (words[0]) {
+                case "serverstats":
+                    System.out.println("Entities in netIDMap: " + Server.game.netIDMap.size());
+                    break;
+                case "entities-at":
+                    double x = Double.valueOf(words[1]);
+                    double y = Double.valueOf(words[2]);
+                    LinkedList<Entity> e = Server.entityMap.getEntitiesAroundPoint(x, y);
+                    System.out.println("There are " + e.size() + " Entities around point " + x + "/" + y);
+                    for (Entity entity : e) {
+                        System.out.println("Entity " + entity.netID);
+                    }
+                    break;
+                case "help":
+                    System.out.println("Available commands: serverstats, entities-at X Y");
+                    break;
+                default:
+                    System.out.println("Command not recognized.");
+                    break;
             }
         }
     }
