@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -81,6 +81,7 @@ public class Enemy extends Char {
         if (healthpoints <= 0) {
             Server.msgSender.sendHitChar(netID, b.netID, true);
             Server.game.netIDMap.remove(netID);
+            Server.entityMap.removeEntity(this);
             DropManager.dropItem(getX(), getY(), enemylevel);
             return true;
         } else {

@@ -19,7 +19,7 @@ public final class Server {
     /**
      * Globale Referenz auf den MessageInterpreter
      */
-    public static final ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
+    public static ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
     /**
      * Das laufende Spiel
      */
@@ -31,11 +31,15 @@ public final class Server {
     /**
      * Das Netzwerkmodul des Servers
      */
-    public static final ServerNetwork serverNetwork = new ServerNetwork();
+    public static ServerNetwork serverNetwork = new ServerNetwork();
     /**
      * Die Sendekomponente des Netzwerkmoduls
      */
-    public static final ServerMessageSender msgSender = new ServerMessageSender();
+    public static ServerMessageSender msgSender = new ServerMessageSender();
+    /**
+     * Die Debug-Konsole
+     */
+    public static DebugConsole debugConsole = new DebugConsole();
 
     /**
      * Einstiegspunkt
@@ -44,7 +48,7 @@ public final class Server {
      */
     public static void startServer() {
         game = new Game();
-        entityMap = new EntityMap();
+        entityMap = new EntityMap(game.getLevel().getSizeX(), game.getLevel().getSizeY());
         game.addEnemies();
         game.addPlants();
         serverNetwork.startServer();
@@ -56,8 +60,8 @@ public final class Server {
     }
 
     /**
-     * Entfernt einen Client aus dem Spiel.
-     * Der Client erhält darüber keinerlei Benachrichtigung.
+     * Entfernt einen Client aus dem Spiel. Der Client erhält darüber keinerlei Benachrichtigung.
+     *
      * @param client der zu entfernende Client.
      */
     public static void disconnectClient(Client client) {
