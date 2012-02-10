@@ -27,6 +27,7 @@ public class Player extends Char {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
+        calcEquipStats();
     }
 
     /**
@@ -111,7 +112,7 @@ public class Player extends Char {
         double newdamagemulti = 1.0;
         double newattackcooldown = 10;
         double newattackspeedmulti = 1.0;
-        double newrange = 1;
+        double newrange = 10.0;
         int newarmor = 0;
         double newmovespeedmulti = Settings.CHARSPEED;
 
@@ -122,7 +123,9 @@ public class Player extends Char {
                 if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
                     newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
                 }
-                newrange += (double) item.getStats().itemStats.get("range");
+                if ((double) item.getStats().itemStats.get("range") != 0) {
+                    newrange = (double) item.getStats().itemStats.get("range");
+                }
                 newarmor += (int) item.getStats().itemStats.get("armor");
                 for (int j = 0; j < item.getItemattributes().size(); j++) {
                     for (String astatname : item.getItemattributes().get(j).getStats().keySet()) {
@@ -135,7 +138,7 @@ public class Player extends Char {
                                 newattackspeedmulti += astatval;
                                 break;
                             case "range":
-                                newrange += astatval;
+                                newrange *= (1 + astatval);
                                 break;
                             case "armor":
                                 newarmor += astatval;
@@ -152,7 +155,8 @@ public class Player extends Char {
         damage = Math.max(newdamage, 2);
         speed = newmovespeedmulti;
         attackcooldown = (int) (newattackcooldown / newattackspeedmulti);
-        System.out.println("damage: " + damage + " mspeed: " + speed + " acooldown: " + attackcooldown);
+        range = newrange;
+        System.out.println("damage: " + damage + " acooldown: " + attackcooldown + " mspeed: " + speed + " range: " + getRange());
 
     }
 }
