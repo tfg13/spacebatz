@@ -8,7 +8,11 @@ import de._13ducks.spacebatz.shared.BulletTypes;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Die Hauptklasse des Clients
@@ -90,7 +94,7 @@ public class Client {
     /**
      * Der Thread, der die Ticks hochzählt.
      */
-    private static Timer tickTimer;
+    private static ScheduledThreadPoolExecutor tickTimer;
     /**
      * TCP-Sender zum Server
      */
@@ -185,14 +189,14 @@ public class Client {
 
     public static void startTickCounting(int serverStartTick) {
         gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / (1000 / tickrate));
-        tickTimer = new Timer(true);
-        tickTimer.scheduleAtFixedRate(new TimerTask() {
+        tickTimer = new ScheduledThreadPoolExecutor(1);
+        tickTimer.scheduleAtFixedRate(new Runnable() {
 
             @Override
             public void run() {
                 gametick++;
             }
-        }, 0, 1000 / tickrate);
+        }, 0, 1000000000l / 60l, TimeUnit.NANOSECONDS);
     }
 
     public static HashMap<Integer, Item> getItemMap() {
@@ -205,10 +209,10 @@ public class Client {
 
     public static void setInventory(HashMap<Integer, Item> aInventory) {
         inventoryItems = aInventory;
-        Iterator iterator = inventoryItems.values().iterator();
+        Iterator<Item> iterator = inventoryItems.values().iterator();
         int i = 0;
         while (iterator.hasNext()) {
-            Item item = (Item) iterator.next();
+            Item item = iterator.next();
             inventorySlots[i] = new InventorySlot(item);
             item.setInventoryslot(inventorySlots[i]);
             i++;

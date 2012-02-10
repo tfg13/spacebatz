@@ -2,6 +2,8 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Der MainLoop des Servers
@@ -23,6 +25,11 @@ public class MainLoop {
      */
     private long timeDeficit;
     /**
+     * Wieviel die geplante Laufzeit von der richtigen (ohne Runden) abweicht.
+     * Hier werden die Rundungsfehler aufsummiert
+     */
+    private long roundDelta = 0;
+    /**
      * Ob schonmal Clients connected waren. Wenn ja, und alle Clients gehen offline, dann Server beenden.
      */
     private boolean hadClients = false;
@@ -31,6 +38,20 @@ public class MainLoop {
      * Konstruktor, initialisiert den Thread
      */
     public MainLoop() {
+        Timer obs = new Timer(true);
+        obs.scheduleAtFixedRate(new TimerTask() {
+
+            int lastSeen = Server.game.getTick();
+            int deltacounter;
+            @Override
+            public void run() {
+                int delta = Server.game.getTick() - lastSeen;
+                lastSeen = Server.game.getTick();
+                delta -= Settings.SERVER_TICKRATE;
+                deltacounter += delta;
+                System.out.println("Server Tick Surveillance: " + deltacounter);
+            }
+        }, 0, 1000);
         mainLoopThread = new Thread(new Runnable() {
 
             @Override
@@ -84,7 +105,8 @@ public class MainLoop {
         long sleepStart = System.nanoTime();
         // Damit rechnen, dass der nächste Durchlauf auch so lange braucht.
         // Wie lange darf ein Durchlauf maximal gehen:
-        long expected = 1000 / Settings.SERVER_TICKRATE;
+        long expected = (1000 + roundDelta) / Settings.SERVER_TICKRATE;
+        roundDelta = (1000 + roundDelta) % Settings.SERVER_TICKRATE;
         if ((delta / 1000000) < expected) {
             // Es ging kürzer, das ist der (gute!) Normalfall, also ein bisschen Schlafen:
             delta = expected * 1000000 - delta;
