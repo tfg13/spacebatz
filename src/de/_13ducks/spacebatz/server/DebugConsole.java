@@ -61,7 +61,7 @@ public class DebugConsole {
                 LinkedList<Entity> e = Server.entityMap.getEntitiesAroundPoint(x, y);
                 System.out.println("There are " + e.size() + " Entities around point " + x + "/" + y);
                 for (Entity entity : e) {
-                    System.out.println("Entity " + entity.getNetID());
+                    System.out.println("Entity " + entity.netID);
                 }
             } else {
                 System.out.println("Command not recognized.");

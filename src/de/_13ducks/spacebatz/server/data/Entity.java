@@ -13,7 +13,7 @@ public class Entity {
     /**
      * Die netID der Entity.
      */
-    private int netID;
+    public final int netID;
     /**
      * Die Bewegungsgeschwindigkeit eine Entity. Einheit: Felder/Tick
      */
@@ -220,14 +220,7 @@ public class Entity {
         return getY() + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
     }
 
-    /**
-     * Gibt die netID der Entity zurück.
-     *
-     * @return die netID der Entity
-     */
-    public int getNetID() {
-        return netID;
-    }
+   
 
     /**
      * Gibt den Gametick in dem die Bewegung gestartet wurde zurück

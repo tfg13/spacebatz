@@ -32,7 +32,7 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
-        
+
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         this.healthpoints = estats.getHealthpoints();
@@ -77,24 +77,24 @@ public class Enemy extends Char {
     @Override
     public boolean decreaseHealthpoints(Bullet b) {
         healthpoints -= b.getDamage();
-        
+
         if (healthpoints <= 0) {
-            Server.msgSender.sendHitChar(getNetID(), b.getNetID(), true);
-            Server.game.netIDMap.remove(getNetID());
+            Server.msgSender.sendHitChar(netID, b.netID, true);
+            Server.game.netIDMap.remove(netID);
             Server.entityMap.removeEntity(this);
             DropManager.dropItem(getX(), getY(), enemylevel);
             return true;
         } else {
-            Server.msgSender.sendHitChar(getNetID(), b.getNetID(), false);
+            Server.msgSender.sendHitChar(netID, b.netID, false);
             return false;
         }
     }
-    
+
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 4;
     }
-    
+
     @Override
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
