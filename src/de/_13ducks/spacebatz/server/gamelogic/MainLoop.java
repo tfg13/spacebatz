@@ -38,20 +38,6 @@ public class MainLoop {
      * Konstruktor, initialisiert den Thread
      */
     public MainLoop() {
-        Timer obs = new Timer(true);
-        obs.scheduleAtFixedRate(new TimerTask() {
-
-            int lastSeen = Server.game.getTick();
-            int deltacounter;
-            @Override
-            public void run() {
-                int delta = Server.game.getTick() - lastSeen;
-                lastSeen = Server.game.getTick();
-                delta -= Settings.SERVER_TICKRATE;
-                deltacounter += delta;
-                System.out.println("Server Tick Surveillance: " + deltacounter);
-            }
-        }, 0, 1000);
         mainLoopThread = new Thread(new Runnable() {
 
             @Override
