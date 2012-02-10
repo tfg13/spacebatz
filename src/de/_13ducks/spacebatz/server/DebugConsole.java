@@ -6,7 +6,8 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Eine Simple Konsole zum Debuggen
+ * Eine Konsole zum Debuggen.
+ * Wird beim Serverstart normalerweise mitgestartet.
  *
  * @author michael
  */
@@ -28,6 +29,9 @@ public class DebugConsole {
      * Loglevel, printet gar nichts aus.
      */
     private static final int LOGLEVEL_NONE = 3;
+    /**
+     * Liest von System.in ein.
+     */
     private java.io.BufferedReader reader;
     /**
      * Queue, die die Eingaben zwischenspeichert
@@ -37,7 +41,15 @@ public class DebugConsole {
      * Das voreingestellte Loglevel
      */
     private int loglevel = LOGLEVEL_ALL;
+    /**
+     * Der Original-System.out -Stream.
+     * Hiermit werden die gefilterten "normalen" Ausgaben dann wirklich ausgegeben.
+     */
     private PrintStream outStream;
+    /**
+     * Ein Reader für System.out.
+     * System.out wird bei der Initialisierung im Konstruktor auf diesen Reader umgebogen.
+     */
     private BufferedReader outReader;
 
     /**
