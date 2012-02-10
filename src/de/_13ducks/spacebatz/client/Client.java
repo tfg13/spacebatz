@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -189,7 +190,17 @@ public class Client {
 
     public static void startTickCounting(int serverStartTick) {
         gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / (1000 / tickrate));
-        tickTimer = new ScheduledThreadPoolExecutor(1);
+        ThreadFactory daemonThreadFactory = new ThreadFactory() {
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setName("CLIENT_TICKCOUNTER");
+                t.setDaemon(true);
+                return t;
+            }
+        };
+        tickTimer = new ScheduledThreadPoolExecutor(1, daemonThreadFactory);
         tickTimer.scheduleAtFixedRate(new Runnable() {
 
             @Override

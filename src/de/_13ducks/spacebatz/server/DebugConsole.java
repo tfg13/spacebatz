@@ -42,6 +42,7 @@ public class DebugConsole {
             }
         });
         DebugConsoleThread.setName("DebugConsoleThread");
+        DebugConsoleThread.setDaemon(true);
         DebugConsoleThread.start();
     }
 
