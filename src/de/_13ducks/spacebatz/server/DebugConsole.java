@@ -129,8 +129,16 @@ public class DebugConsole {
                             }
                         }
                         break;
+                    case "su":
+                        loglevel = LOGLEVEL_NONE;
+                        break;
                     case "help":
-                        outStream.println("Available commands: serverstats, entities-at X Y, loglevel N");
+                        outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
+                        outStream.println("serverstats      - Prints some information about the entitiymap");
+                        outStream.println("entities-at X Y  - Prints entities around Point X Y");
+                        outStream.println("loglevel (N)     - Prints and allows to set the loglevel");
+                        outStream.println("su               - Shut Up! short for \"loglevel 3\"");
+                        outStream.println("help             - prints this help");
                         break;
                     default:
                         outStream.println("Command not recognized. Try help");
