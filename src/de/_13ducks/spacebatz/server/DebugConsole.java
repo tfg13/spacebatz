@@ -106,7 +106,7 @@ public class DebugConsole {
             try {
                 // Befehle:
                 switch (words[0]) {
-                    case "serverstats":
+                    case "entitystats":
                         outStream.println("Entities in netIDMap: " + Server.game.netIDMap.size());
                         break;
                     case "entities-at":
@@ -134,7 +134,7 @@ public class DebugConsole {
                         break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
-                        outStream.println("serverstats      - Prints some information about the entitiymap");
+                        outStream.println("entitystats      - Prints some information about the entitiymap");
                         outStream.println("entities-at X Y  - Prints entities around Point X Y");
                         outStream.println("loglevel (N)     - Prints and allows to set the loglevel");
                         outStream.println("su               - Shut Up! short for \"loglevel 3\"");
