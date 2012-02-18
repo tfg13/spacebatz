@@ -16,9 +16,31 @@ import org.lwjgl.openal.AL10;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.openal.OggData;
 import org.newdawn.slick.openal.WaveData;
+import java.lang.reflect.Field;
 
 public class SoundEngine {
 
+    static {
+        // Hack, um nachträglich java.library.path zu setzen.
+        try {
+            System.setProperty("java.library.path", "native/");
+            Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+            fieldSysPath.setAccessible(true);
+            fieldSysPath.set(null, null);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            System.out.println("[ERROR]: Failed to set library lookup path! Details:");
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 
+     * @param args 
+     */
+    public static void main(String[] args) {
+        new SoundEngine().execute();
+
+    }
     /**
      * Buffers hold sound data.
      */
@@ -51,7 +73,8 @@ public class SoundEngine {
     /**
      * boolean LoadALData()
      *
-     * This function will load our sample data from the disk using the Alut utility and send the data into OpenAL as a buffer. A source is then also created to play that buffer.
+     * This function will load our sample data from the disk using the Alut utility and send the data into OpenAL as a buffer. A source is then also
+     * created to play that buffer.
      */
     int loadALData() {
         // Load wav data into a buffer.
@@ -63,8 +86,9 @@ public class SoundEngine {
 
         //Loads the wave file from your file system
     /*
-         * java.io.FileInputStream fin = null; try { fin = new java.io.FileInputStream("FancyPants.wav"); } catch (java.io.FileNotFoundException ex) { ex.printStackTrace(); return AL10.AL_FALSE; }
-         * WaveData waveFile = WaveData.create(fin); try { fin.close(); } catch (java.io.IOException ex) { }
+         * java.io.FileInputStream fin = null; try { fin = new java.io.FileInputStream("FancyPants.wav"); } catch (java.io.FileNotFoundException ex) {
+         * ex.printStackTrace(); return AL10.AL_FALSE; } WaveData waveFile = WaveData.create(fin); try { fin.close(); } catch (java.io.IOException ex)
+         * { }
          */
 
         //Loads the wave file from this class's package in your classpath
@@ -153,40 +177,13 @@ public class SoundEngine {
 
         setListenerValues();
 
-        // Loop.
-        System.out.println("OpenAL Tutorial 1 - Single Static Source");
-        System.out.println("[Menu]");
-        System.out.println("p - Play the sample.");
-        System.out.println("s - Stop the sample.");
-        System.out.println("h - Pause the sample.");
-        System.out.println("q - Quit the program.");
-        char c = ' ';
-        Scanner stdin = new Scanner(System.in);
-        while (c != 'q') {
-            try {
-                System.out.print("Input: ");
-                c = (char) stdin.nextLine().charAt(0);
-            } catch (Exception ex) {
-                c = 'q';
-            }
-
-            switch (c) {
-                // Pressing 'p' will begin playing the sample.
-                case 'p':
-                    AL10.alSourcePlay(source.get(0));
-                    break;
-
-                // Pressing 's' will stop the sample from playing.
-                case 's':
-                    AL10.alSourceStop(source.get(0));
-                    break;
-
-                // Pressing 'h' will pause the sample.
-                case 'h':
-                    AL10.alSourcePause(source.get(0));
-                    break;
-            };
+        AL10.alSourcePlay(source.get(0));
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SoundEngine.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         killALData();
         AL.destroy();
     }
