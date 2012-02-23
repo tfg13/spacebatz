@@ -14,10 +14,10 @@ public class ClientMessageSender {
     /**
      * Client will was anziehen, muss dafür aber erst Server fragen
      */
-    public void sendEquipItem(Item item, int equipslot) {
-        byte[] b = new byte[8];
+    public void sendEquipItem(Item item, byte selectedslot) {
+        byte[] b = new byte[9];
         Bits.putInt(b, 0, item.getNetID());
-        Bits.putInt(b, 4, equipslot);
+        b[4] = selectedslot;
         Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b);
     }
 

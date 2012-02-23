@@ -192,13 +192,14 @@ public class Engine {
                     //System.out.println("x " + x + ",y " + y);
 
                     // Equipslot angeklickt?
-                    if (x > 0.4 && x < 0.54) {
-                        if (y > 0.8 && y < 0.92) {
+
+                    if (y > 0.8 && y < 0.92) {
+                        if (x > 0.4 && x < 0.54) {
                             // Hut-Slot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.getStats().itemStats.get("itemclass") == 2) {
-                                    Client.getMsgSender().sendEquipItem(selecteditem, 2); // 2 = Hut-Slot
+                                    Client.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                     selecteditemslot = -1;
                                 }
                             } else {
@@ -206,20 +207,30 @@ public class Engine {
                                     Client.getMsgSender().sendDequipItem(2); // 2 = Hut-Slot
                                 }
                             }
-                        } else if (y > 0.61 && y < 0.74) {
-                            // Waffenslot
-                            if (selecteditemslot != -1) {
-                                Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
-                                    Client.getMsgSender().sendEquipItem(selecteditem, 1); // 1 = Waffen-Slot
-                                    selecteditemslot = -1;
-                                }
-                            } else {
-                                if (Client.getEquippedItems()[1] != null) {
-                                    Client.getMsgSender().sendDequipItem(1); // 1 = Waffen-Slot
-                                }
+                        }
+                    }
+                    if (y > 0.61 && y < 0.74) {
+                        int weaponslot = -1;
+                        if (x > 0.22 && x < 0.36) {
+                            weaponslot = 0;
+                        } else if (x > 0.4 && x < 0.54) {
+                            weaponslot = 1;
+                        } else if (x > 0.58 && x < 0.72) {
+                            weaponslot = 2;
+                        }
+                        // Waffenslot
+                        if (selecteditemslot != -1) {
+                            Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
+                            if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
+                                Client.getMsgSender().sendEquipItem(selecteditem, (byte) weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                                selecteditemslot = -1;
+                            }
+                        } else {
+                            if (Client.getEquippedItems()[1] != null) {
+                                Client.getMsgSender().sendDequipItem(1); // 1 = Waffen-Slot
                             }
                         }
+
                     }
 
                     // Inventarslot angeklickt?
@@ -608,7 +619,7 @@ public class Engine {
                 if (Client.getInventorySlots()[slothovered] != null) {
                     item = Client.getInventorySlots()[slothovered].getItem();
                 }
-            // Einer der Ausrüstungsslots?
+                // Einer der Ausrüstungsslots?
             } else if (x > 0.4 && x < 0.54) {
                 if (y > 0.8 && y < 0.92) {
                     item = Client.getEquippedItems()[2];

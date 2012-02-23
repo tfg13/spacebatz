@@ -125,36 +125,38 @@ public class Player extends Char {
         int newarmor = 0;
         double newmovespeedmulti = Settings.CHARSPEED;
 
-        for (int i = 1; i < this.getClient().getEquippedItems().length; i++) {
-            Item item = this.getClient().getEquippedItems()[i];
-            if (item != null) {
-                newdamage += (int) item.getStats().itemStats.get("damage");
-                if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
-                    newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
-                }
-                if ((double) item.getStats().itemStats.get("range") != 0) {
-                    newrange = (double) item.getStats().itemStats.get("range");
-                }
-                newarmor += (int) item.getStats().itemStats.get("armor");
-                for (int j = 0; j < item.getItemattributes().size(); j++) {
-                    for (String astatname : item.getItemattributes().get(j).getStats().keySet()) {
-                        double astatval = item.getItemattributes().get(j).getStats().get(astatname);
-                        switch (astatname) {
-                            case "damage":
-                                newdamagemulti += astatval;
-                                break;
-                            case "attackspeed":
-                                newattackspeedmulti += astatval;
-                                break;
-                            case "range":
-                                newrange *= (1 + astatval);
-                                break;
-                            case "armor":
-                                newarmor += astatval;
-                                break;
-                            case "movespeed":
-                                newmovespeedmulti *= (1 + astatval);
-                                break;
+        for (int i = 1; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
+            for (int j = 0; j < this.getClient().getEquippedItems().getEquipslots()[i].length; j++) {
+                Item item = this.getClient().getEquippedItems().getEquipslots()[i][j];
+                if (item != null) {
+                    newdamage += (int) item.getStats().itemStats.get("damage");
+                    if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
+                        newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
+                    }
+                    if ((double) item.getStats().itemStats.get("range") != 0) {
+                        newrange = (double) item.getStats().itemStats.get("range");
+                    }
+                    newarmor += (int) item.getStats().itemStats.get("armor");
+                    for (int k = 0; k < item.getItemattributes().size(); k++) {
+                        for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
+                            double astatval = item.getItemattributes().get(k).getStats().get(astatname);
+                            switch (astatname) {
+                                case "damage":
+                                    newdamagemulti += astatval;
+                                    break;
+                                case "attackspeed":
+                                    newattackspeedmulti += astatval;
+                                    break;
+                                case "range":
+                                    newrange *= (1 + astatval);
+                                    break;
+                                case "armor":
+                                    newarmor += astatval;
+                                    break;
+                                case "movespeed":
+                                    newmovespeedmulti *= (1 + astatval);
+                                    break;
+                            }
                         }
                     }
                 }

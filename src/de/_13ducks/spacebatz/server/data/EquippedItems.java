@@ -1,20 +1,26 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.shared.Item;
+
 /**
  * Verwaltet Slots für die Items, die der Client gerade angelegt hat
  * @author Jojo
  */
 public class EquippedItems {
-
-    EquippedItemSlot[] eqslot = new EquippedItemSlot[4];
+    /**
+     * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
+     */
+    private Item[][] equipslots = new Item[3][];
     
     public EquippedItems() {
-        for (int i = 0; i < 3; i++) {
-            EquippedItemSlot weaponslot = new EquippedItemSlot(0);
-            eqslot[i] = weaponslot;
-        }
+        Item[] wslot = new Item[3];
+        Item[] aslot = new Item[1];
         
-        EquippedItemSlot armorslot = new EquippedItemSlot(1);
-        eqslot[3] = armorslot;
+        equipslots[1] = wslot;
+        equipslots[2] = aslot;
+    }
+
+    public Item[][] getEquipslots() {
+        return equipslots;
     }
 }
