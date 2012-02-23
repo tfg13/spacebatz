@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.shared.Item;
 
 /**
  * Jedes Item im Spielerinventar kriegt so eins zur Verwaltung
- * Achtung: leere Slots im Inventar kriegen dieses Objekt (zur Zeit) nicht.
+ * Achtung: leere Slots im Inventar kriegen dieses Objekt nicht.
  * @author Jojo
  */
 public class InventorySlot {

@@ -143,4 +143,11 @@ public abstract class Char extends Entity {
     public double getRange() {
         return range;
     }
+
+    /**
+     * @return the armor
+     */
+    public int getArmor() {
+        return armor;
+    }
 }

@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
+
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
@@ -14,6 +15,14 @@ public class Player extends Char {
      * Der, Client, dem der Player gehört
      */
     private Client client;
+    /*
+     * Die möglichen Angriffe des Spielers (werden durch Waffen bestimmt)
+     */
+    private PlayerAttack[] attack = new PlayerAttack[3]; // # Waffenslots
+    /*
+     * Nummer des Angriffs, der zurzeit ausgewählt ist
+     */
+    private int selectedattack = 0;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -82,7 +91,7 @@ public class Player extends Char {
 
     public void playerShoot(float angle) {
         int thistick = Server.game.getTick();
-        if (thistick > attackcooldowntick + attackcooldown) {
+        if (thistick > attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
             attackcooldowntick = thistick;
 
 
@@ -151,12 +160,21 @@ public class Player extends Char {
                 }
             }
         }
-        newdamage *= newdamagemulti;
-        damage = Math.max(newdamage, 2);
         speed = newmovespeedmulti;
-        attackcooldown = (int) (newattackcooldown / newattackspeedmulti);
-        range = newrange;
-        System.out.println("damage: " + damage + " acooldown: " + attackcooldown + " mspeed: " + speed + " range: " + getRange());
+        armor = newarmor;
 
+        newdamage *= newdamagemulti;
+        newdamage = Math.max(newdamage, 2);
+        newattackcooldown /= newattackspeedmulti;
+
+        PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
+        attack[0] = playerattack;
+    }
+
+    /**
+     * @return den gerade ausgewählten Angriff
+     */
+    public PlayerAttack getSelectedAttack() {
+        return attack[selectedattack];
     }
 }

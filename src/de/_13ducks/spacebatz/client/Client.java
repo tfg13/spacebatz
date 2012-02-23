@@ -83,7 +83,7 @@ public class Client {
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
-    private static Item[] equippedItems = new Item[3];
+    private static Item[] equippedItems = new Item[4];
     /**
      * Wieviel Geld der Spieler gerade besitzt
      */

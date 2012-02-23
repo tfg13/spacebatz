@@ -41,13 +41,21 @@ public class Bullet extends Entity {
         setVector(Math.cos(angle), Math.sin(angle));
         setSpeed(stats.getSpeed());
 
-
-        this.owner = owner;
-
-        int lifetime = (int) (owner.getRange() / stats.getSpeed());
-        this.deletetick = spawntick + lifetime;
-        this.damage = owner.getDamage();
+        int lifetime;
         
+        this.owner = owner;
+        if (owner instanceof Player) {
+            Player player = (Player) owner;
+            this.damage = player.getSelectedAttack().getDamage();
+            lifetime = (int) (player.getSelectedAttack().getRange() / stats.getSpeed());
+        } else {
+            this.damage = owner.getDamage();
+            lifetime = (int) (owner.getRange() / stats.getSpeed());
+        }
+        
+        this.deletetick = spawntick + lifetime;
+
+
     }
 
     /**

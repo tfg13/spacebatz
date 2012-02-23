@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Enthält eine Liste mit Werten der verschiedenen Bulletsorten
+ * Wird evtl gelöscht, Bulletstats kommen zur Waffe
  * @author bla
  */
 public class BulletTypes implements java.io.Serializable{
