@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
+
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
@@ -14,6 +15,14 @@ public class Player extends Char {
      * Der, Client, dem der Player gehört
      */
     private Client client;
+    /*
+     * Die möglichen Angriffe des Spielers (werden durch Waffen bestimmt)
+     */
+    private PlayerAttack[] attack = new PlayerAttack[3]; // # Waffenslots
+    /*
+     * Nummer des Angriffs, der zurzeit ausgewählt ist
+     */
+    private int selectedattack = 0;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -82,7 +91,7 @@ public class Player extends Char {
 
     public void playerShoot(float angle) {
         int thistick = Server.game.getTick();
-        if (thistick > attackcooldowntick + attackcooldown) {
+        if (thistick > attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
             attackcooldowntick = thistick;
 
 
@@ -116,47 +125,58 @@ public class Player extends Char {
         int newarmor = 0;
         double newmovespeedmulti = Settings.CHARSPEED;
 
-        for (int i = 1; i < this.getClient().getEquippedItems().length; i++) {
-            Item item = this.getClient().getEquippedItems()[i];
-            if (item != null) {
-                newdamage += (int) item.getStats().itemStats.get("damage");
-                if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
-                    newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
-                }
-                if ((double) item.getStats().itemStats.get("range") != 0) {
-                    newrange = (double) item.getStats().itemStats.get("range");
-                }
-                newarmor += (int) item.getStats().itemStats.get("armor");
-                for (int j = 0; j < item.getItemattributes().size(); j++) {
-                    for (String astatname : item.getItemattributes().get(j).getStats().keySet()) {
-                        double astatval = item.getItemattributes().get(j).getStats().get(astatname);
-                        switch (astatname) {
-                            case "damage":
-                                newdamagemulti += astatval;
-                                break;
-                            case "attackspeed":
-                                newattackspeedmulti += astatval;
-                                break;
-                            case "range":
-                                newrange *= (1 + astatval);
-                                break;
-                            case "armor":
-                                newarmor += astatval;
-                                break;
-                            case "movespeed":
-                                newmovespeedmulti *= (1 + astatval);
-                                break;
+        for (int i = 1; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
+            for (int j = 0; j < this.getClient().getEquippedItems().getEquipslots()[i].length; j++) {
+                Item item = this.getClient().getEquippedItems().getEquipslots()[i][j];
+                if (item != null) {
+                    newdamage += (int) item.getStats().itemStats.get("damage");
+                    if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
+                        newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
+                    }
+                    if ((double) item.getStats().itemStats.get("range") != 0) {
+                        newrange = (double) item.getStats().itemStats.get("range");
+                    }
+                    newarmor += (int) item.getStats().itemStats.get("armor");
+                    for (int k = 0; k < item.getItemattributes().size(); k++) {
+                        for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
+                            double astatval = item.getItemattributes().get(k).getStats().get(astatname);
+                            switch (astatname) {
+                                case "damage":
+                                    newdamagemulti += astatval;
+                                    break;
+                                case "attackspeed":
+                                    newattackspeedmulti += astatval;
+                                    break;
+                                case "range":
+                                    newrange *= (1 + astatval);
+                                    break;
+                                case "armor":
+                                    newarmor += astatval;
+                                    break;
+                                case "movespeed":
+                                    newmovespeedmulti *= (1 + astatval);
+                                    break;
+                            }
                         }
                     }
                 }
             }
         }
-        newdamage *= newdamagemulti;
-        damage = Math.max(newdamage, 2);
         speed = newmovespeedmulti;
-        attackcooldown = (int) (newattackcooldown / newattackspeedmulti);
-        range = newrange;
-        System.out.println("damage: " + damage + " acooldown: " + attackcooldown + " mspeed: " + speed + " range: " + getRange());
+        armor = newarmor;
 
+        newdamage *= newdamagemulti;
+        newdamage = Math.max(newdamage, 2);
+        newattackcooldown /= newattackspeedmulti;
+
+        PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
+        attack[0] = playerattack;
+    }
+
+    /**
+     * @return den gerade ausgewählten Angriff
+     */
+    public PlayerAttack getSelectedAttack() {
+        return attack[selectedattack];
     }
 }

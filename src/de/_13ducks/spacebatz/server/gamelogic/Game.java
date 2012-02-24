@@ -150,7 +150,7 @@ public class Game {
 
             if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
                 int enemytype = r.nextInt(30);
-                if (enemytype > 1) {
+                if (enemytype > 2) {
                     enemytype = 1;
                 }
                 Enemy e = new Enemy(posX, posY, newNetID(), enemytype);

@@ -187,31 +187,43 @@ public class Engine {
                     //System.out.println("x " + x + ",y " + y);
 
                     // Equipslot angeklickt?
-                    if (x > 0.4 && x < 0.54) {
-                        if (y > 0.8 && y < 0.92) {
+
+                    if (y > 0.8 && y < 0.92) {
+                        if (x > 0.4 && x < 0.54) {
                             // Hut-Slot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.getStats().itemStats.get("itemclass") == 2) {
-                                    Client.getMsgSender().sendEquipItem(selecteditem, 2); // 2 = Hut-Slot
+                                    Client.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                     selecteditemslot = -1;
                                 }
                             } else {
-                                if (Client.getEquippedItems()[2] != null) {
-                                    Client.getMsgSender().sendDequipItem(2); // 2 = Hut-Slot
+                                if (Client.getEquippedItems().getEquipslots()[2][0] != null) {
+                                    Client.getMsgSender().sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
                                 }
                             }
-                        } else if (y > 0.61 && y < 0.74) {
+                        }
+                    }
+                    if (y > 0.61 && y < 0.74) {
+                        byte weaponslot = -1;
+                        if (x > 0.22 && x < 0.36) {
+                            weaponslot = 0;
+                        } else if (x > 0.4 && x < 0.54) {
+                            weaponslot = 1;
+                        } else if (x > 0.58 && x < 0.72) {
+                            weaponslot = 2;
+                        }
+                        if (weaponslot != -1) {
                             // Waffenslot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                                 if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
-                                    Client.getMsgSender().sendEquipItem(selecteditem, 1); // 1 = Waffen-Slot
+                                    Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                     selecteditemslot = -1;
                                 }
                             } else {
-                                if (Client.getEquippedItems()[1] != null) {
-                                    Client.getMsgSender().sendDequipItem(1); // 1 = Waffen-Slot
+                                if (Client.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
+                                    Client.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
                                 }
                             }
                         }
@@ -395,21 +407,23 @@ public class Engine {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
                 int dir = c.getDir();
-                int tilex;
+                int tilex = dir;
+                int tiley = 0;
                 // Bei Gegnertyp 0 andere Tiles benutzen
                 if (enemy.getEnemytypeid() == 0) {
                     tilex = dir + 8;
-                } else {
-                    tilex = dir;
+                }
+                if (enemy.getEnemytypeid() == 2) {
+                    tiley = 2;
                 }
                 glBegin(GL_QUADS);
-                glTexCoord2f(0.0625f * tilex, 0);
+                glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + tilex), 0);
+                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * 2);
+                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * (tiley + 2));
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-                glTexCoord2f(0.0625f * tilex, 0.0625f * 2);
+                glTexCoord2f(0.0625f * tilex, 0.0625f * (tiley + 2));
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
             }
@@ -526,28 +540,35 @@ public class Engine {
         if (showinventory) {
             itemTiles.bind();
             for (int i = 1; i <= 2; i++) {
-                Item item = Client.getEquippedItems()[i];
-                if (item != null) {
-                    // Item zeichnen;
-                    float x = 0.41f * tilesX;
-                    float y = (0.61f + 0.2f * (i - 1)) * tilesY;
+                for (int j = 0; j < Client.getEquippedItems().getEquipslots()[i].length; j++) {
+                    Item item = Client.getEquippedItems().getEquipslots()[i][j];
+                    if (item != null) {
+                        // Item zeichnen;
+                        float x = 0.0f;
+                        if (i == 1) {
+                            x = (0.24f + 0.17f * j) * tilesX;
+                        } else {
+                            x = 0.41f * tilesX;
+                        }
+                        float y = (0.61f + 0.2f * (i - 1)) * tilesY;
 
-                    float width = 0.11f * tilesX;
-                    float height = 0.11f * tilesY;
-                    float v;
-                    float w = 0.0f;
-                    v = 0.25f * (int) item.getStats().itemStats.get("pic");
+                        float width = 0.11f * tilesX;
+                        float height = 0.11f * tilesY;
+                        float v;
+                        float w = 0.0f;
+                        v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
-                    glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                    glTexCoord2f(v, w + 0.25f);
-                    glVertex3f(x, y, 0.0f);
-                    glTexCoord2f(v + 0.25f, w + 0.25f);
-                    glVertex3f(x + width, y, 0.0f);
-                    glTexCoord2f(v + 0.25f, w);
-                    glVertex3f(x + width, y + height, 0.0f);
-                    glTexCoord2f(v, w);
-                    glVertex3f(x, y + height, 0.0f);
-                    glEnd(); // Zeichnen des QUADs fertig } }
+                        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                        glTexCoord2f(v, w + 0.25f);
+                        glVertex3f(x, y, 0.0f);
+                        glTexCoord2f(v + 0.25f, w + 0.25f);
+                        glVertex3f(x + width, y, 0.0f);
+                        glTexCoord2f(v + 0.25f, w);
+                        glVertex3f(x + width, y + height, 0.0f);
+                        glTexCoord2f(v, w);
+                        glVertex3f(x, y + height, 0.0f);
+                        glEnd(); // Zeichnen des QUADs fertig } }
+                    }
                 }
             }
         }
@@ -603,14 +624,29 @@ public class Engine {
                 if (Client.getInventorySlots()[slothovered] != null) {
                     item = Client.getInventorySlots()[slothovered].getItem();
                 }
-            // Einer der Ausrüstungsslots?
+                // Einer der Ausrüstungsslots?
             } else if (x > 0.4 && x < 0.54) {
                 if (y > 0.8 && y < 0.92) {
-                    item = Client.getEquippedItems()[2];
+                    item = Client.getEquippedItems().getEquipslots()[2][0];
                 } else if (y > 0.61 && y < 0.74) {
-                    item = Client.getEquippedItems()[1];
+                    item = Client.getEquippedItems().getEquipslots()[1][1];
+                }
+            } else if (y > 0.8 && y < 0.92) {
+                if (x > 0.4 && x < 0.54) {
+                    // Hutslot
+                    item = Client.getEquippedItems().getEquipslots()[2][0];
+                }
+            } else if (y > 0.61 && y < 0.74) {
+                // ein Waffenslot?
+                if (x > 0.22 && x < 0.36) {
+                    item = Client.getEquippedItems().getEquipslots()[1][0];
+                } else if (x > 0.4 && x < 0.54) {
+                    item = Client.getEquippedItems().getEquipslots()[1][1];
+                } else if (x > 0.58 && x < 0.72) {
+                    item = Client.getEquippedItems().getEquipslots()[1][2];
                 }
             }
+
             if (item != null) {
                 // Mousehovern rendern, zuerst Rechteck
                 glDisable(GL_TEXTURE_2D);
@@ -678,7 +714,7 @@ public class Engine {
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
-        enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
+        enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/enemy.png"), GL_NEAREST);
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);

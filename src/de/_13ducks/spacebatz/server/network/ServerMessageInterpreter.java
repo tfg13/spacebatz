@@ -52,34 +52,43 @@ public class ServerMessageInterpreter {
         switch (cmdID) {
             case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
                 int netID = Bits.getInt(message, 0);
-                int slot = Bits.getInt(message, 4);
+                byte selectedslot = message[4];
                 Item item = sender.getInventory().getItems().get(netID);
 
                 // richtiger Itemtyp für diesen Slot?
-                if (item.getStats().itemStats.get("itemclass") == slot) {
-                    if (sender.getEquippedItems()[slot] != null) {
+                int slottype = (int) item.getStats().itemStats.get("itemclass");
+
+                if (sender.getEquippedItems().getEquipslots()[slottype] != null) {
+                    if (item != null) {
+                        if (sender.getEquippedItems().getEquipslots()[slottype][selectedslot] != null) {
                         // da ist schon ein Item -> ins Inventar
-                        Item moveitem = sender.getEquippedItems()[slot];
+                        Item moveitem = sender.getEquippedItems().getEquipslots()[slottype][selectedslot];
                         sender.getInventory().getItems().put(moveitem.getNetID(), moveitem);
-                        Server.msgSender.sendItemDequip(slot, sender.clientID);
+                        Server.msgSender.sendItemDequip(slottype, selectedslot, sender.clientID);
+                        }
+                        // Jetzt neues Item anlegen
+                        sender.getEquippedItems().getEquipslots()[slottype][selectedslot] = item;
+                        sender.getInventory().getItems().remove(item.getNetID());
+                        sender.getPlayer().calcEquipStats();
+                        // Item-Anleg-Befehl zum Client senden
+                        Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, sender.clientID);
+
                     }
-                    sender.getEquippedItems()[slot] = item;
-                    // Jetzt neues Item anlegen
-                    sender.getEquippedItems()[slot] = item;
-                    sender.getInventory().getItems().remove(item.getNetID());
-                    sender.getPlayer().calcEquipStats();
-                    // Item-Anleg-Befehl zum Client senden
-                    Server.msgSender.sendItemEquip(item.getNetID(), sender.clientID);
                 }
                 break;
             case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
-                int slot2 = Bits.getInt(message, 0);
-                if (sender.getEquippedItems()[slot2] != null) {
-                    sender.getInventory().getItems().put(sender.getEquippedItems()[slot2].getNetID(), sender.getEquippedItems()[slot2]);
-                    sender.getEquippedItems()[slot2] = null;
-                    sender.getPlayer().calcEquipStats();
-                    Server.msgSender.sendItemDequip(slot2, sender.clientID);
+                int slottype2 = Bits.getInt(message, 0);
+                byte selslot = message[4];
+                if (sender.getEquippedItems().getEquipslots()[slottype2] != null) {
+                    if (sender.getEquippedItems().getEquipslots()[slottype2][selslot] != null) {
+                        Item itemx = sender.getEquippedItems().getEquipslots()[slottype2][selslot];
+                        sender.getInventory().getItems().put(itemx.getNetID(), itemx);
+                        sender.getEquippedItems().getEquipslots()[slottype2][selslot] = null;
+                        sender.getPlayer().calcEquipStats();
+                        Server.msgSender.sendItemDequip(slottype2, selslot, sender.clientID);
+                    }
                 }
+
                 break;
             case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
                 Server.disconnectClient(sender);

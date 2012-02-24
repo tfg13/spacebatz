@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
 import de._13ducks.spacebatz.shared.Item;
 
@@ -29,7 +30,7 @@ public class Client {
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
-    private Item[] equippedItems;
+    private EquippedItems equippedItems;
     /**
      * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
      * verarbeitet wurde.
@@ -50,7 +51,7 @@ public class Client {
         this.clientID = clientID;
         context = new ClientContext();
         inventory = new Inventory();
-        equippedItems = new Item[3];
+        equippedItems = new EquippedItems();
     }
 
     /**
@@ -92,7 +93,7 @@ public class Client {
     /**
      * @return the equippedItems
      */
-    public Item[] getEquippedItems() {
+    public EquippedItems getEquippedItems() {
         return equippedItems;
     }
 }

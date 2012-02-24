@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class Inventory {
 
     /**
-     * Hashmap, weist netID Item zu
+     * Items im Inventar
      */
     private HashMap<Integer, Item> items;
     /**

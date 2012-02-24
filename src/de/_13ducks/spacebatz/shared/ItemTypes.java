@@ -15,7 +15,7 @@ public class ItemTypes {
         itemtypelist.add(new ItemTypeStats("Money" ,0 ,0 ,1 , 1, 0, 0, 0, 0));
         itemtypelist.add(new ItemTypeStats("Hat", 1, 2, 1, 0, 0, 0, 0, 23));
         itemtypelist.add(new ItemTypeStats("Better Hat", 1, 2, 4, 0, 0, 0, 0, 42));
-        itemtypelist.add(new ItemTypeStats("Laser", 2, 1, 1, 0, 3, 5.0, 9.0, 0));
+        itemtypelist.add(new ItemTypeStats("Laser", 2, 1, 1, 0, 4, 6.0, 9.0, 0));
         itemtypelist.add(new ItemTypeStats("Super Laser", 3, 1, 2, 0, 25, 20.0, 15.0, 0));
     }
 
