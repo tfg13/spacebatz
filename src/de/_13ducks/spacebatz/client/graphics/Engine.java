@@ -412,21 +412,23 @@ public class Engine {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
                 int dir = c.getDir();
-                int tilex;
+                int tilex = dir;
+                int tiley = 0;
                 // Bei Gegnertyp 0 andere Tiles benutzen
                 if (enemy.getEnemytypeid() == 0) {
                     tilex = dir + 8;
-                } else {
-                    tilex = dir;
+                }
+                if (enemy.getEnemytypeid() == 2) {
+                    tiley = 2;
                 }
                 glBegin(GL_QUADS);
-                glTexCoord2f(0.0625f * tilex, 0);
+                glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + tilex), 0);
+                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * 2);
+                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * (tiley + 2));
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-                glTexCoord2f(0.0625f * tilex, 0.0625f * 2);
+                glTexCoord2f(0.0625f * tilex, 0.0625f * (tiley + 2));
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
             }
@@ -640,7 +642,7 @@ public class Engine {
                     item = Client.getEquippedItems().getEquipslots()[2][0];
                 }
             } else if (y > 0.61 && y < 0.74) {
-                // ein Waffenslot
+                // ein Waffenslot?
                 if (x > 0.22 && x < 0.36) {
                     item = Client.getEquippedItems().getEquipslots()[1][0];
                 } else if (x > 0.4 && x < 0.54) {
@@ -717,7 +719,7 @@ public class Engine {
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
-        enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ringbot.png"), GL_NEAREST);
+        enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/enemy.png"), GL_NEAREST);
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
