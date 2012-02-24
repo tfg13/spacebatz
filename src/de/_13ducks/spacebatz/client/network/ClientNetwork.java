@@ -1,7 +1,10 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.*;
+import de._13ducks.spacebatz.client.Char;
+import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Enemy;
+import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -169,7 +172,7 @@ public class ClientNetwork {
         byte[] data = pack.getData();
         byte cmd = data[0];
         switch (cmd) {
-            case Settings.NET_UDP_CMD_NORMAL_CHAR_UPDATE:
+            case Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE:
                 // Dem Server sofort bestätigen
                 byte numberOfCharUpdates = data[5];
                 for (int i = 0; i < numberOfCharUpdates; i++) {
@@ -180,11 +183,11 @@ public class ClientNetwork {
                     }
                 }
                 break;
-            case Settings.NET_UDP_CMD_ADD_CHAR:
+            case Settings.NET_UDP_CMD_ADD_ENTITY:
                 // Sofort bestätigen
                 ackNewChar(Bits.getInt(data, 33));
                 break;
-            case Settings.NET_UDP_CMD_DEL_CHAR:
+            case Settings.NET_UDP_CMD_DEL_ENTITY:
                 // Sofort bestätigen
                 ackDelChar(Bits.getInt(data, 5));
                 break;
@@ -259,7 +262,7 @@ public class ClientNetwork {
     private void computeApprovedPacket(byte[] pack) {
         byte cmd = pack[0];
         switch (cmd) {
-            case Settings.NET_UDP_CMD_NORMAL_CHAR_UPDATE:
+            case Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE:
                 // Einheitenbewegungen updaten.
                 // Anzahl enthaltener Einheiten holen:
                 byte numberOfCharUpdates = pack[5];
@@ -274,18 +277,7 @@ public class ClientNetwork {
                     }
                 }
                 break;
-            case Settings.NET_UDP_CMD_SPAWN_BULLET:
-                // Bullet erzeugen
-                int spawntick = Bits.getInt(pack, 1);
-                float posx = Bits.getFloat(pack, 5);
-                float posy = Bits.getFloat(pack, 9);
-                float direction = Bits.getFloat(pack, 13);
-                int bullettypeID = Bits.getInt(pack, 17);
-                int netID = Bits.getInt(pack, 21);
-                Bullet bullet = new Bullet(spawntick, new Position(posx, posy), direction, bullettypeID, netID);
-                Client.getBulletList().add(bullet);
-                break;
-            case Settings.NET_UDP_CMD_ADD_CHAR:
+            case Settings.NET_UDP_CMD_ADD_ENTITY:
                 if (!Client.netIDMap.containsKey(Bits.getInt(pack, 33))) {
                     byte type = pack[32];
                     switch (type) {
@@ -302,7 +294,7 @@ public class ClientNetwork {
                     }
                 }
                 break;
-            case Settings.NET_UDP_CMD_DEL_CHAR:
+            case Settings.NET_UDP_CMD_DEL_ENTITY:
                 if (Client.netIDMap.containsKey(Bits.getInt(pack, 5))) {
                     // Löschen
                     Client.netIDMap.remove(Bits.getInt(pack, 5));
@@ -336,7 +328,7 @@ public class ClientNetwork {
         byte[] b = new byte[10];
         b[0] = Client.getClientID();
         Bits.putInt(b, 1, Client.frozenGametick);
-        b[5] = Settings.NET_UDP_CMD_ACK_ADD_CHAR;
+        b[5] = Settings.NET_UDP_CMD_ACK_ADD_ENTITY;
         Bits.putInt(b, 6, netID);
         udpSend(b);
     }
@@ -350,7 +342,7 @@ public class ClientNetwork {
         byte[] b = new byte[10];
         b[0] = Client.getClientID();
         Bits.putInt(b, 1, Client.frozenGametick);
-        b[5] = Settings.NET_UDP_CMD_ACK_DEL_CHAR;
+        b[5] = Settings.NET_UDP_CMD_ACK_DEL_ENTITY;
         Bits.putInt(b, 6, netID);
         udpSend(b);
     }

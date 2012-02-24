@@ -2,10 +2,7 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.Bullet;
-import de._13ducks.spacebatz.server.data.Char;
-import de._13ducks.spacebatz.server.data.Enemy;
-import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class CollisionManager {
         computeWallCollision();
         computeMobCollission();
         computeItemCollission();
-        
+
     }
 
     /**
@@ -46,33 +43,35 @@ public class CollisionManager {
                 i--;
                 continue;
             }
-            
-            
+
+
             double x = bullet.getX();
             double y = bullet.getY();
-            
-            Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+
+            Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
             while (iter.hasNext()) {
-                Char c = iter.next();
-                if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
-                    if (!c.equals(bullet.getOwner())) {
-                        if (c instanceof Enemy) {
-                            Enemy e = (Enemy) c;
-                            // Schaden von HP abziehen
-                            if (e.decreaseHealthpoints(bullets.get(i))) {
-                            } else {
-                                if (e.getMyTarget() == null) {
-                                    e.setMyTarget(bullet.getOwner());
+                Entity e = iter.next();
+                if (e instanceof Char) {
+                    Char c = (Char) e;
+                    if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
+                        if (!c.equals(bullet.getOwner())) {
+                            if (c instanceof Enemy) {
+                                Enemy en = (Enemy) c;
+                                // Schaden von HP abziehen
+                                if (en.decreaseHealthpoints(bullets.get(i))) {
+                                } else {
+                                    if (en.getMyTarget() == null) {
+                                        en.setMyTarget(bullet.getOwner());
+                                    }
                                 }
                             }
+                            // Testcode: Bullet kann nur einen Gegner treffen
+                            bullets.remove(i);
+                            Server.entityMap.removeEntity(bullet);
+                            i--;
+                            break;
                         }
-                        // Testcode: Bullet kann nur einen Gegner treffen
-                        bullets.remove(i);
-                        Server.entityMap.removeEntity(bullet);
-                        i--;
-                        break;
                     }
-                    
                 }
             }
         }
@@ -83,40 +82,42 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
-            Char mover = iter.next();
-            if (mover.isMoving()) {
-                double futureX = mover.extrapolateX(1);
-                double futureY = mover.extrapolateY(1);
-                
-                int leftX = (int) (futureX - mover.getSize());
-                int leftY = (int) (futureY);
-                
-                int topX = (int) (futureX);
-                int topY = (int) (futureY + mover.getSize());
-                
-                int rightX = (int) (futureX + mover.getSize());
-                int rightY = (int) (futureY);
-                
-                int botX = (int) (futureX);
-                int botY = (int) (futureY - mover.getSize());
-                
-                
-                
-                if (Server.game.getLevel().getCollisionMap()[leftX][leftY] == true) {
-                    mover.stopMovement();
+            Entity e = iter.next();
+            if (e instanceof Char) {
+                Char mover = (Char) e;
+                if (mover.isMoving()) {
+                    double futureX = mover.extrapolateX(1);
+                    double futureY = mover.extrapolateY(1);
+
+                    int leftX = (int) (futureX - mover.getSize());
+                    int leftY = (int) (futureY);
+
+                    int topX = (int) (futureX);
+                    int topY = (int) (futureY + mover.getSize());
+
+                    int rightX = (int) (futureX + mover.getSize());
+                    int rightY = (int) (futureY);
+
+                    int botX = (int) (futureX);
+                    int botY = (int) (futureY - mover.getSize());
+
+
+
+                    if (Server.game.getLevel().getCollisionMap()[leftX][leftY] == true) {
+                        mover.stopMovement();
+                    }
+                    if (Server.game.getLevel().getCollisionMap()[topX][topY] == true) {
+                        mover.stopMovement();
+                    }
+                    if (Server.game.getLevel().getCollisionMap()[rightX][rightY] == true) {
+                        mover.stopMovement();
+                    }
+                    if (Server.game.getLevel().getCollisionMap()[botX][botY] == true) {
+                        mover.stopMovement();
+                    }
                 }
-                if (Server.game.getLevel().getCollisionMap()[topX][topY] == true) {
-                    mover.stopMovement();
-                }
-                if (Server.game.getLevel().getCollisionMap()[rightX][rightY] == true) {
-                    mover.stopMovement();
-                }
-                if (Server.game.getLevel().getCollisionMap()[botX][botY] == true) {
-                    mover.stopMovement();
-                }
-                
             }
         }
     }
@@ -126,23 +127,26 @@ public class CollisionManager {
      */
     private static void computeMobCollission() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
-            Char mover = iter.next();
-            if (mover instanceof Player) {
-                Iterator<Char> iter2 = Server.game.netIDMap.values().iterator();
-                while (iter2.hasNext()) {
-                    Char mob = iter2.next();
-                    if (mob instanceof Enemy) {
-                        double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
-                        if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                            mover.setStillX(Server.game.getLevel().respawnX);
-                            mover.setStillY(Server.game.getLevel().respawnY);
+            Entity e = iter.next();
+            if (e instanceof Char) {
+                Char mover = (Char) e;
+                if (mover instanceof Player) {
+                    Iterator<Entity> iter2 = Server.game.netIDMap.values().iterator();
+                    while (iter2.hasNext()) {
+                        Entity e2 = iter.next();
+                        if (e2 instanceof Enemy) {
+                            Enemy mob = (Enemy) e2;
+                            double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
+                            if (distance < Settings.SERVER_COLLISION_DISTANCE) {
+                                mover.setStillX(Server.game.getLevel().respawnX);
+                                mover.setStillY(Server.game.getLevel().respawnY);
+                            }
                         }
                     }
                 }
             }
-            
         }
     }
 
@@ -150,30 +154,26 @@ public class CollisionManager {
      * Berechnet Kollision mit Items
      */
     private static void computeItemCollission() {
-        Iterator<Char> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
-            Char mover = iter.next();
-            if (mover instanceof Player) {
-                
+            Entity e = iter.next();
+            if (e instanceof Player) {
+                Player mover = (Player) e;
                 Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
-                
                 while (iterator.hasNext()) {
                     Item item = iterator.next();
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                        Player player = (Player) mover;
                         if (item.getStats().itemStats.get("name").equals("Money")) {
-                            player.getClient().getInventory().setMoney(player.getClient().getInventory().getMoney() + item.getAmount());
+                            mover.getClient().getInventory().setMoney(mover.getClient().getInventory().getMoney() + item.getAmount());
                             iterator.remove();
-                            Server.msgSender.sendItemGrab(item.getNetID(), player.getClient().clientID);
-                        } else if (player.getClient().getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
-                            player.getClient().getInventory().putItem(item.getNetID(), item);
+                            Server.msgSender.sendItemGrab(item.getNetID(), mover.getClient().clientID);
+                        } else if (mover.getClient().getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
+                            mover.getClient().getInventory().putItem(item.getNetID(), item);
                             iterator.remove();
-                            Server.msgSender.sendItemGrab(item.getNetID(), player.getClient().clientID);
+                            Server.msgSender.sendItemGrab(item.getNetID(), mover.getClient().clientID);
                         }
                     }
-                    
-                    
                 }
             }
         }

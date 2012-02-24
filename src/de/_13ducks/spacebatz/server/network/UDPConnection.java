@@ -2,8 +2,8 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.Char;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -161,11 +161,11 @@ public class UDPConnection {
             case Settings.NET_UDP_CMD_ACK_MOVE:
                 client.getContext().makeMovementKnown(Bits.getInt(data, 6));
                 break;
-            case Settings.NET_UDP_CMD_ACK_ADD_CHAR:
-                client.getContext().makeCharKnown(Bits.getInt(data, 6));
+            case Settings.NET_UDP_CMD_ACK_ADD_ENTITY:
+                client.getContext().makeEntityKnown(Bits.getInt(data, 6));
                 break;
-            case Settings.NET_UDP_CMD_ACK_DEL_CHAR:
-                client.getContext().removeChar(Bits.getInt(data, 6));
+            case Settings.NET_UDP_CMD_ACK_DEL_ENTITY:
+                client.getContext().removeEntity(Bits.getInt(data, 6));
                 break;
             default:
                 System.out.println("WARNING: Received UDP-CTS Packet with unknown cmd-id! (was " + cmd + ")");
@@ -176,38 +176,39 @@ public class UDPConnection {
         Iterator<Client> iter = clientMap.values().iterator();
         while (iter.hasNext()) {
             Client client = iter.next();
-            //TODO: Berechnen, welche chars dieser client wirklich sieht:
-            ArrayList<Char> update = new ArrayList<>();
-            Iterator<Char> iterC = Server.game.netIDMap.values().iterator();
-            while (iterC.hasNext()) {
-                Char c = iterC.next();
+            //TODO: Berechnen, welche entitys dieser client wirklich sieht:
+            ArrayList<Entity> update = new ArrayList<>();
+            Iterator<Entity> iterE = Server.game.netIDMap.values().iterator();
+            while (iterE.hasNext()) {
+                Entity e = iterE.next();
                 // Kennt der Client diese Einheit?
-                if (!client.getContext().knowsChar(c)) {
+                if (!client.getContext().knowsEntity(e)) {
                     // Senden
-                    sendNewChar(client, c);
+                    sendNewEntity(client, e);
                 }
                 // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
-                if (!client.getContext().knowsMovement(c, c.getMovement())) {
+                if (!client.getContext().knowsMovement(e, e.getMovement())) {
                     // Nein, also senden
-                    update.add(c);
-                    client.getContext().sentMovement(c, c.getMovement());
+                    System.out.println("Sending: " + client + " " + e);
+                    update.add(e);
+                    client.getContext().sentMovement(e, e.getMovement());
                 }
             }
             // Alle berechneten senden:
             int leftToSend = update.size();
             while (leftToSend > 0) {
                 byte[] packet = new byte[32 + (32 * (leftToSend > 15 ? 15 : leftToSend))];
-                packChar(packet, update, (byte) (leftToSend > 15 ? 15 : leftToSend), leftToSend > 15 ? leftToSend - 15 : 0);
+                packEntity(packet, update, (byte) (leftToSend > 15 ? 15 : leftToSend), leftToSend > 15 ? leftToSend - 15 : 0);
                 sendPack(packet, client);
                 leftToSend -= 15;
             }
             // Dem Client bekannte, aber nichtmehr vorhandene Einheiten löschen
-            Iterator<Char> clientCharIter = client.getContext().knownCharsIterator();
+            Iterator<Entity> clientCharIter = client.getContext().knownEntiysIterator();
             while (clientCharIter.hasNext()) {
-                Char c = clientCharIter.next();
-                if (!Server.game.netIDMap.containsKey(c.netID)) {
+                Entity e = clientCharIter.next();
+                if (!Server.game.netIDMap.containsKey(e.netID)) {
                     // Gibts nicht mehr, löschen
-                    sendCharDeleted(client, c);
+                    sendCharEntity(client, e);
                 }
             }
         }
@@ -216,48 +217,48 @@ public class UDPConnection {
     /**
      * Senden dem Client eine Nachricht, die ihn über die Existenz eines neuen Chars informiert.
      * @param client der Client
-     * @param c der Char
+     * @param e der Char
      */
-    private void sendNewChar(Client client, Char c) {
-        byte[] b = new byte[c.byteArraySize() + 32];
-        b[0] = Settings.NET_UDP_CMD_ADD_CHAR;
+    private void sendNewEntity(Client client, Entity e) {
+        byte[] b = new byte[e.byteArraySize() + 32];
+        b[0] = Settings.NET_UDP_CMD_ADD_ENTITY;
         Bits.putInt(b, 1, Server.game.getTick());
-        c.netPack(b, 32);
+        e.netPack(b, 32);
         sendPack(b, client);
     }
     
     /**
      * Senden dem Client eine Nachricht, die ihn über das Ableben eines Chars informiert.
      * @param client der Client
-     * @param c der Char
+     * @param e der Char
      */
-    private void sendCharDeleted(Client client, Char c) {
+    private void sendCharEntity(Client client, Entity e) {
         byte[] b = new byte[9];
-        b[0] = Settings.NET_UDP_CMD_DEL_CHAR;
+        b[0] = Settings.NET_UDP_CMD_DEL_ENTITY;
         Bits.putInt(b, 1, Server.game.getTick());
-        Bits.putInt(b, 5, c.netID);
+        Bits.putInt(b, 5, e.netID);
         sendPack(b, client);
     }
 
     /**
-     * Baut und füllt ein byte[]-Packet mit bis zu 15 Chars.
+     * Baut und füllt ein byte[]-Packet mit bis zu 15 Entitys.
      *
      * @param packet Das byte array, das befüllt wird.
-     * @param chars Die Liste mit Chars
-     * @param number Die Anzahl von Chars, die eingefüllt werden
+     * @param entitys Die Liste mit Entitys
+     * @param number Die Anzahl von Entitys, die eingefüllt werden
      * @param offset Der Index-Offset für die chars-Liste
      */
-    private void packChar(byte[] packet, List<Char> chars, byte number, int offset) {
+    private void packEntity(byte[] packet, List<Entity> entitys, byte number, int offset) {
         // Cmd setzen
-        packet[0] = Settings.NET_UDP_CMD_NORMAL_CHAR_UPDATE;
+        packet[0] = Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE;
         // Tick setzen
         Bits.putInt(packet, 1, Server.game.getTick());
         // Anzahl setzen
         packet[5] = number;
         for (int i = 0; i < number; i++) {
-            Movement m = chars.get(offset + i).getMovement();
+            Movement m = entitys.get(offset + i).getMovement();
             // NETID
-            Bits.putInt(packet, 32 + (i * 32), chars.get(offset + i).netID);
+            Bits.putInt(packet, 32 + (i * 32), entitys.get(offset + i).netID);
             // X
             Bits.putFloat(packet, 36 + (i * 32), m.startX);
             // Y

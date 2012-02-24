@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Ein bewegliches Objekt. (z.B. ein Spieler, Mob etc)
@@ -10,10 +9,6 @@ import de._13ducks.spacebatz.util.Bits;
  */
 public abstract class Char extends Entity {
 
-    /**
-     * Tpy des Chars. Fürs Netzwerksystem. 1 - Char (reserviert, eigentlich ein ungültiger Wert!) 2 - Player 3 - Enemy
-     */
-    public final byte charTypeID;
     /**
      * Die Lebenspunkte des Chars
      */
@@ -58,9 +53,8 @@ public abstract class Char extends Entity {
      * @param y
      * @param name
      */
-    public Char(double x, double y, int netID, byte charTypeID) {
-        super(x, y, netID);
-        this.charTypeID = charTypeID;
+    public Char(double x, double y, int netID, byte entityTypeID) {
+        super(x, y, netID, entityTypeID);
         size = Settings.CHARSIZE;
         this.healthpoints = 10;
         this.damage = 2;
@@ -105,27 +99,6 @@ public abstract class Char extends Entity {
      */
     public int getSightrange() {
         return sightrange;
-    }
-
-    /**
-     * Wie groß die Byte-Representation dieses Chars ist. Die Größe darf 512 - 32 auf keinen Fall überschreiten!
-     *
-     * @return die größe des byte[]'s, das netPack() braucht.
-     */
-    public int byteArraySize() {
-        return 5;
-    }
-
-    /**
-     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese
-     * Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann
-     * selber den Puffer ab super.byteArraySize() -1 + offset befüllen.
-     *
-     * @param b der Puffer, in den geschrieben ist.
-     */
-    public void netPack(byte[] b, int offset) {
-        b[offset] = charTypeID;
-        Bits.putInt(b, offset + 1, netID);
     }
 
     /**

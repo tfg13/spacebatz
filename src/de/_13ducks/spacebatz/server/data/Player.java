@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.util.Bits;
 
 /**
  *
@@ -97,19 +96,7 @@ public class Player extends Char {
 
             Bullet bullet = new Bullet(thistick, getX(), getY(), angle, 0, Server.game.newNetID(), this);
             Server.game.bullets.add(bullet);
-            byte[] bytearray = new byte[25];
-
-            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
-            Bits.putInt(bytearray, 1, bullet.getSpawntick());
-            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
-            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-            Bits.putFloat(bytearray, 13, (float) Math.atan2(bullet.getDirectionY(), bullet.getDirectionX()));
-            Bits.putInt(bytearray, 17, bullet.getTypeID());
-            Bits.putInt(bytearray, 21, bullet.netID);
-
-            for (int i = 0; i < Server.game.clients.size(); i++) {
-                Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
-            }
+            Server.game.netIDMap.put(bullet.netID, bullet);
         }
     }
 

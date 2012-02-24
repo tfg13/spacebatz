@@ -68,19 +68,15 @@ public final class Settings {
     /**
      * Normales Einheitenupdate, das Regelmäßig verschickt wird.
      */
-    public static final byte NET_UDP_CMD_NORMAL_CHAR_UPDATE = 10;
-    /**
-     * Bullet erzeugen.
-     */
-    public static final byte NET_UDP_CMD_SPAWN_BULLET = 11;
+    public static final byte NET_UDP_CMD_NORMAL_ENTITY_UPDATE = 10;
     /**
      * Char einfügen.
      */
-    public static final byte NET_UDP_CMD_ADD_CHAR = 12;
+    public static final byte NET_UDP_CMD_ADD_ENTITY = 12;
     /**
      * Char löschen.
      */
-    public static final byte NET_UDP_CMD_DEL_CHAR = 13;
+    public static final byte NET_UDP_CMD_DEL_ENTITY = 13;
     /**
      * Bestätigung, dass eine Bewegung vom Server beim Client angekommen ist.
      */
@@ -88,11 +84,11 @@ public final class Settings {
     /**
      * Bestätigung, dass das Erstellen einer Einheit beim Client angekommen ist.
      */
-    public static final byte NET_UDP_CMD_ACK_ADD_CHAR = -13;
+    public static final byte NET_UDP_CMD_ACK_ADD_ENTITY = -13;
     /**
      * Bestätigung, dass das Löschen einer Einheit beim Client angekommen ist.
      */
-    public static final byte NET_UDP_CMD_ACK_DEL_CHAR = -14;
+    public static final byte NET_UDP_CMD_ACK_DEL_ENTITY = -14;
     /**
      * Normales Input-an-Server-Schicken.
      */

@@ -30,7 +30,7 @@ public class Bullet extends Entity {
     private int deletetick;
 
     public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, int typeID, int netID, Char owner) {
-        super(spawnposx, spawnposy, netID);
+        super(spawnposx, spawnposy, netID, (byte) 4);
         moveStartTick = spawntick;
 
         Random random = new Random();
@@ -42,7 +42,7 @@ public class Bullet extends Entity {
         setSpeed(stats.getSpeed());
 
         int lifetime;
-        
+
         this.owner = owner;
         if (owner instanceof Player) {
             Player player = (Player) owner;
@@ -52,10 +52,8 @@ public class Bullet extends Entity {
             this.damage = owner.getDamage();
             lifetime = (int) (owner.getRange() / stats.getSpeed());
         }
-        
+
         this.deletetick = spawntick + lifetime;
-
-
     }
 
     /**
