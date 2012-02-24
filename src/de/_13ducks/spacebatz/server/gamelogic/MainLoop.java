@@ -34,7 +34,7 @@ public class MainLoop {
             @Override
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r, "Server_Looptimer");
-                t.setDaemon(true);
+                t.setDaemon(false);
                 return t;
             }
         });
