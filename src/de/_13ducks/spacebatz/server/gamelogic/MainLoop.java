@@ -2,8 +2,6 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -26,26 +24,11 @@ public class MainLoop {
      * Ob schonmal Clients connected waren. Wenn ja, und alle Clients gehen offline, dann Server beenden.
      */
     private boolean hadClients = false;
-    public static int tickcount;
 
     /**
      * Konstruktor, initialisiert den Thread
      */
     public MainLoop() {
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-
-            int lasttick = Server.game.getTick();
-
-            @Override
-            public void run() {
-                int tick = Server.game.getTick();
-                tickcount += (tick - lasttick - Settings.SERVER_TICKRATE);
-                System.out.println("STS: " + tickcount + " testtime " + System.currentTimeMillis());
-                lasttick = tick;
-            }
-        }, 0, 1000);
-
         mainLoopTimer = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
 
             @Override

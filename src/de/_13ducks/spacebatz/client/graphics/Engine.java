@@ -134,11 +134,6 @@ public class Engine {
             directInput();
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
-            // Debug:
-            if (counter++ > 60) {
-                counter = 0;
-                System.out.println("ETD: " + Client.getNetwork().etd);
-            }
         }
         // Netzwerk abmelden:
         Client.getMsgSender().sendDisconnect();
