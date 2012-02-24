@@ -9,6 +9,14 @@ import de._13ducks.spacebatz.shared.Movement;
 public class Char {
 
     /**
+     * Die Lebenspunkte des Chars
+     */
+    private int healthpoints;
+    /**
+     * Die maximalen Lebenspunkte des Chars
+     */
+    private int healthpointsmax;
+    /**
      * Die netID.
      */
     public final int netID;
@@ -97,5 +105,26 @@ public class Char {
         int hash = 7;
         hash = 43 * hash + this.netID;
         return hash;
+    }
+
+    /**
+     * @return the healthpoints
+     */
+    public int getHealthpoints() {
+        return healthpoints;
+    }
+
+    /**
+     * @param healthpoints the healthpoints to set
+     */
+    public void setHealthpoints(int healthpoints) {
+        this.healthpoints = healthpoints;
+    }
+
+    /**
+     * @return the healthpointsmax
+     */
+    public int getHealthpointsmax() {
+        return healthpointsmax;
     }
 }

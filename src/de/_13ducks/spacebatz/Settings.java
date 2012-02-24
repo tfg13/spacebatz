@@ -102,6 +102,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_TRANSFER_LEVEL = 20;
     /**
+     * Die cmdID für Char mit Angriff / Bullet treffen
+     */
+    public static final byte NET_TCP_CMD_CHAR_HIT = 28;
+    /**
      * Die cmdID für EnemyTypes-senden
      */
     public static final byte NET_TCP_CMD_TRANSFER_ENEMYTYPES = 29;

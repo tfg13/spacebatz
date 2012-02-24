@@ -478,6 +478,18 @@ public class Engine {
             }
         }
 
+        // Lebensenergie-Balken
+        int maxhp = Math.max(1, Client.getPlayer().getHealthpointsmax());
+        int hp = Math.min(Client.getPlayer().getHealthpoints(), maxhp);
+        glDisable(GL_TEXTURE_2D);
+        // schwarzer Hintergrund
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glRectf(0.02f * tilesX, 0.02f * tilesY, 0.3f * tilesX, 0.06f * tilesY);
+        // roter HP-Balken
+        glColor3f(0.7f, 0.0f, 0.0f);
+        glRectf(0.03f * tilesX, 0.03f * tilesY, (0.03f + 0.26f * ((float) hp / maxhp)) * tilesX, 0.05f * tilesY);
+        glEnable(GL_TEXTURE_2D);
+
         // Inventory-Hintergrund
         inventoryPic.bind();
         if (showinventory) {

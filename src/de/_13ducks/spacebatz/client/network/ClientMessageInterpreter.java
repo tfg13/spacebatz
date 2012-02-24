@@ -137,7 +137,7 @@ public class ClientMessageInterpreter {
                     Client.tickrate = rate;
                 }
                 break;
-            case 28:
+            case Settings.NET_TCP_CMD_CHAR_HIT:
                 // Bullet trifft Char
                 int netIDBullet = Bits.getInt(message, 4); // netID von Bullet
 

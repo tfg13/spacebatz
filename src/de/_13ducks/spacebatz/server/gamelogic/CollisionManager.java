@@ -29,7 +29,7 @@ public class CollisionManager {
         computeWallCollision();
         computeMobCollission();
         computeItemCollission();
-        
+
     }
 
     /**
@@ -46,11 +46,11 @@ public class CollisionManager {
                 i--;
                 continue;
             }
-            
-            
+
+
             double x = bullet.getX();
             double y = bullet.getY();
-            
+
             Iterator<Char> iter = Server.game.netIDMap.values().iterator();
             while (iter.hasNext()) {
                 Char c = iter.next();
@@ -72,7 +72,7 @@ public class CollisionManager {
                         i--;
                         break;
                     }
-                    
+
                 }
             }
         }
@@ -89,21 +89,21 @@ public class CollisionManager {
             if (mover.isMoving()) {
                 double futureX = mover.extrapolateX(1);
                 double futureY = mover.extrapolateY(1);
-                
+
                 int leftX = (int) (futureX - mover.getSize());
                 int leftY = (int) (futureY);
-                
+
                 int topX = (int) (futureX);
                 int topY = (int) (futureY + mover.getSize());
-                
+
                 int rightX = (int) (futureX + mover.getSize());
                 int rightY = (int) (futureY);
-                
+
                 int botX = (int) (futureX);
                 int botY = (int) (futureY - mover.getSize());
-                
-                
-                
+
+
+
                 if (Server.game.getLevel().getCollisionMap()[leftX][leftY] == true) {
                     mover.stopMovement();
                 }
@@ -116,7 +116,7 @@ public class CollisionManager {
                 if (Server.game.getLevel().getCollisionMap()[botX][botY] == true) {
                     mover.stopMovement();
                 }
-                
+
             }
         }
     }
@@ -132,17 +132,17 @@ public class CollisionManager {
             if (mover instanceof Player) {
                 Iterator<Char> iter2 = Server.game.netIDMap.values().iterator();
                 while (iter2.hasNext()) {
-                    Char mob = iter2.next();
-                    if (mob instanceof Enemy) {
-                        double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
+                    Char charr = iter2.next();
+                    if (charr instanceof Enemy) {
+                        double distance = Distance.getDistance(mover.getX(), mover.getY(), charr.getX(), charr.getY());
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                            mover.setStillX(Server.game.getLevel().respawnX);
-                            mover.setStillY(Server.game.getLevel().respawnY);
+                            Enemy mob = (Enemy) charr;
+                            mob.attack(mover);
                         }
                     }
                 }
             }
-            
+
         }
     }
 
@@ -154,9 +154,9 @@ public class CollisionManager {
         while (iter.hasNext()) {
             Char mover = iter.next();
             if (mover instanceof Player) {
-                
+
                 Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
-                
+
                 while (iterator.hasNext()) {
                     Item item = iterator.next();
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
@@ -172,8 +172,8 @@ public class CollisionManager {
                             Server.msgSender.sendItemGrab(item.getNetID(), player.getClient().clientID);
                         }
                     }
-                    
-                    
+
+
                 }
             }
         }

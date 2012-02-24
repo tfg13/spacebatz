@@ -179,4 +179,31 @@ public class Player extends Char {
     public PlayerAttack getSelectedAttack() {
         return attack[selectedattack];
     }
+
+    /**
+     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
+     *
+     * @param Entity, das den Schaden anrichtet
+     * @return true, wenn Enemy stirbt, sonst false
+     */
+    @Override
+    public boolean decreaseHealthpoints(Entity e) {
+        if (e instanceof Enemy) {
+            Enemy enemy = (Enemy) e;
+            healthpoints -= enemy.getDamage();
+
+            if (healthpoints <= 0) {
+                Server.msgSender.sendCharHit(netID, e.netID, true);
+                setStillX(Server.game.getLevel().respawnX);
+                setStillY(Server.game.getLevel().respawnY);
+                healthpoints = healthpointsmax;
+                return true;
+            } else {
+                Server.msgSender.sendCharHit(netID, e.netID, false);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

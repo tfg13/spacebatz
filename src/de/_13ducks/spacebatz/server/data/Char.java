@@ -11,7 +11,7 @@ import de._13ducks.spacebatz.util.Bits;
 public abstract class Char extends Entity {
 
     /**
-     * Tpy des Chars. Fürs Netzwerksystem. 1 - Char (reserviert, eigentlich ein ungültiger Wert!) 2 - Player 3 - Enemy
+     * Tpy des Chars. FÃ¼rs Netzwerksystem. 1 - Char (reserviert, eigentlich ein ungÃ¼ltiger Wert!) 2 - Player 3 - Enemy
      */
     public final byte charTypeID;
     /**
@@ -19,7 +19,11 @@ public abstract class Char extends Entity {
      */
     protected int healthpoints;
     /**
-     * Rüstung, verringert Schaden
+     * Die maximalen Lebenspunkte des Chars
+     */
+    protected int healthpointsmax;
+    /**
+     * RÃ¼stung, verringert Schaden
      */
     protected int armor;
     /**
@@ -31,11 +35,11 @@ public abstract class Char extends Entity {
      */
     protected int sightrange;
     /**
-     * Die ID des Bildes für den Char
+     * Die ID des Bildes fÃ¼r den Char
      */
     protected int pictureID = 0;
     /**
-     * Wie lange nach Angriff gewartet werden muss, bis 
+     * Wie lange nach Angriff gewartet werden muss, bis wieder angegriffen werden darf
      */
     protected int attackcooldown = 5;
     /**
@@ -43,11 +47,11 @@ public abstract class Char extends Entity {
      */
     protected int attackcooldowntick;
     /**
-     * Reichweite für Angriffe
+     * Reichweite fÃ¼r Angriffe
      */
     protected double range;
     /**
-     * Die Größe des Chars (für Kollision)
+     * Die GrÃ¶ÃŸe des Chars (fÃ¼r Kollision)
      */
     private double size;
 
@@ -63,6 +67,7 @@ public abstract class Char extends Entity {
         this.charTypeID = charTypeID;
         size = Settings.CHARSIZE;
         this.healthpoints = 10;
+        this.healthpointsmax = 10;
         this.damage = 2;
         this.range = 1.0;
         this.sightrange = 10;
@@ -79,10 +84,10 @@ public abstract class Char extends Entity {
     /**
      * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
      *
-     * @param b, Bullet das Schaden zufügt
+     * @param e, Entity das Schaden zufÃ¼gt
      * @return true, wenn Enemy stirbt, sonst false
      */
-    public boolean decreaseHealthpoints(Bullet b) {
+    public boolean decreaseHealthpoints(Entity e) {
         return false;
     }
 
@@ -108,18 +113,18 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Wie groß die Byte-Representation dieses Chars ist. Die Größe darf 512 - 32 auf keinen Fall überschreiten!
+     * Wie groÃŸ die Byte-Representation dieses Chars ist. Die GrÃ¶ÃŸe darf 512 - 32 auf keinen Fall Ã¼berschreiten!
      *
-     * @return die größe des byte[]'s, das netPack() braucht.
+     * @return die grÃ¶ÃŸe des byte[]'s, das netPack() braucht.
      */
     public int byteArraySize() {
         return 5;
     }
 
     /**
-     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese
-     * Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann
-     * selber den Puffer ab super.byteArraySize() -1 + offset befüllen.
+     * Schreibt die fÃ¼r eine NetzwerkÃ¼bertragung unbedingt nÃ¶tigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groÃŸ sein. Unterklassen mÃ¼ssen diese
+     * Methode Ã¼berschreiben, falls sie irgendwelche zusÃ¤tzlichen Daten haben, die nicht in den Enemytypes oder Ã¤hnlich stehen. Ãœberschriebene Methoden mÃ¼ssen erst super.netPack() aufrufen, und dann
+     * selber den Puffer ab super.byteArraySize() -1 + offset befÃ¼llen.
      *
      * @param b der Puffer, in den geschrieben ist.
      */
@@ -129,9 +134,9 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Gibt die Kollisionsgröße dieses Chars zurück
+     * Gibt die KollisionsgrÃ¶ÃŸe dieses Chars zurÃ¼ck
      *
-     * @return die Kollisionsgröße
+     * @return die KollisionsgrÃ¶ÃŸe
      */
     public double getSize() {
         return size;
