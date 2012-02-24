@@ -224,11 +224,12 @@ public class ClientMessageInterpreter {
                 break;
             case Settings.NET_TCP_CMD_DEQUIP_ITEM:
                 // Ein Client will ein bestimmtes Item ablegen
-                int slot = Bits.getInt(message, 0); // netID des  Items
-                int clientID2 = Bits.getInt(message, 4); // clientID des Spielers
+                int slottype = Bits.getInt(message, 0); // netID des  Items
+                byte selslot = message[4];
+                int clientID2 = Bits.getInt(message, 5); // clientID des Spielers
                 if (clientID2 == Client.getClientID()) {
-                    Item item = Client.getEquippedItems()[slot];
-                    Client.getEquippedItems()[slot] = null;
+                    Item item = Client.getEquippedItems()[slottype];
+                    Client.getEquippedItems()[slottype] = null;
                     Client.addToInventory(item);
                 }
                 break;

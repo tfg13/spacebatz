@@ -24,9 +24,10 @@ public class ClientMessageSender {
     /**
      * Client will Item ablegen, muss dafür aber erst Server fragen
      */
-    public void sendDequipItem(int equipslot) {
+    public void sendDequipItem(int slottype, byte selslot) {
         byte[] b = new byte[4];
-        Bits.putInt(b, 0, equipslot);
+        Bits.putInt(b, 0, slottype);
+        b[4] = selslot;
         Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, b);
     }
 

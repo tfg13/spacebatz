@@ -204,13 +204,13 @@ public class Engine {
                                 }
                             } else {
                                 if (Client.getEquippedItems()[2] != null) {
-                                    Client.getMsgSender().sendDequipItem(2); // 2 = Hut-Slot
+                                    Client.getMsgSender().sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
                                 }
                             }
                         }
                     }
                     if (y > 0.61 && y < 0.74) {
-                        int weaponslot = -1;
+                        byte weaponslot = -1;
                         if (x > 0.22 && x < 0.36) {
                             weaponslot = 0;
                         } else if (x > 0.4 && x < 0.54) {
@@ -222,15 +222,14 @@ public class Engine {
                         if (selecteditemslot != -1) {
                             Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
                             if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
-                                Client.getMsgSender().sendEquipItem(selecteditem, (byte) weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                                Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                 selecteditemslot = -1;
                             }
                         } else {
                             if (Client.getEquippedItems()[1] != null) {
-                                Client.getMsgSender().sendDequipItem(1); // 1 = Waffen-Slot
+                                Client.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
                             }
                         }
-
                     }
 
                     // Inventarslot angeklickt?

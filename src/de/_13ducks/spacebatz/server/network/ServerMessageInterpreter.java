@@ -73,13 +73,18 @@ public class ServerMessageInterpreter {
                 }
                 break;
             case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
-                int slot2 = Bits.getInt(message, 0);
-//                if (sender.getEquippedItems()[slot2] != null) {
-//                    sender.getInventory().getItems().put(sender.getEquippedItems()[slot2].getNetID(), sender.getEquippedItems()[slot2]);
-//                    sender.getEquippedItems()[slot2] = null;
-//                    sender.getPlayer().calcEquipStats();
-//                    Server.msgSender.sendItemDequip(slot2, sender.clientID);
-//                }
+                int slottype2 = Bits.getInt(message, 0);
+                byte selslot = message[4];
+                if (sender.getEquippedItems().getEquipslots()[slottype2] != null) {
+                    if (sender.getEquippedItems().getEquipslots()[slottype2][selslot] != null) {
+                        Item itemx = sender.getEquippedItems().getEquipslots()[slottype2][selslot];
+                        sender.getInventory().getItems().put(itemx.getNetID(), itemx);
+                        sender.getEquippedItems().getEquipslots()[slottype2][selslot] = null;
+                        sender.getPlayer().calcEquipStats();
+                        Server.msgSender.sendItemDequip(slottype2, selslot, sender.clientID);
+                    }
+                }
+
                 break;
             case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
                 Server.disconnectClient(sender);
