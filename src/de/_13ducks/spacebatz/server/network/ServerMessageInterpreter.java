@@ -59,17 +59,21 @@ public class ServerMessageInterpreter {
                 int slottype = (int) item.getStats().itemStats.get("itemclass");
 
                 if (sender.getEquippedItems().getEquipslots()[slottype] != null) {
-//                        // da ist schon ein Item -> ins Inventar
-//                        Item moveitem = sender.getEquippedItems()[slot];
-//                        sender.getInventory().getItems().put(moveitem.getNetID(), moveitem);
-//                        Server.msgSender.sendItemDequip(slot, sender.clientID);
-                    // Jetzt neues Item anlegen
-                    sender.getEquippedItems().getEquipslots()[slottype][selectedslot] = item;
-                    sender.getInventory().getItems().remove(item.getNetID());
-                    sender.getPlayer().calcEquipStats();
-                    // Item-Anleg-Befehl zum Client senden
-                    Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, sender.clientID);
+                    if (item != null) {
+                        if (sender.getEquippedItems().getEquipslots()[slottype][selectedslot] != null) {
+                        // da ist schon ein Item -> ins Inventar
+                        Item moveitem = sender.getEquippedItems().getEquipslots()[slottype][selectedslot];
+                        sender.getInventory().getItems().put(moveitem.getNetID(), moveitem);
+                        Server.msgSender.sendItemDequip(slottype, selectedslot, sender.clientID);
+                        }
+                        // Jetzt neues Item anlegen
+                        sender.getEquippedItems().getEquipslots()[slottype][selectedslot] = item;
+                        sender.getInventory().getItems().remove(item.getNetID());
+                        sender.getPlayer().calcEquipStats();
+                        // Item-Anleg-Befehl zum Client senden
+                        Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, sender.clientID);
 
+                    }
                 }
                 break;
             case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
