@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
 import de._13ducks.spacebatz.shared.BulletTypes;
 import de._13ducks.spacebatz.shared.EnemyTypes;
+import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public class Client {
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
-    private static Item[] equippedItems = new Item[4];
+    private static EquippedItems equippedItems;
     /**
      * Wieviel Geld der Spieler gerade besitzt
      */
@@ -110,6 +111,7 @@ public class Client {
         msgInterpreter = new ClientMessageInterpreter();
         netIDMap = new HashMap<>();
         network = new ClientNetwork();
+        equippedItems = new EquippedItems();
         if (getNetwork().tryConnect(ip)) {
             // StartRequest per TCP an Server schicken
             //player = new Player(30, 30);
@@ -275,15 +277,15 @@ public class Client {
     /**
      * @return the equippedSlots
      */
-    public static Item[] getEquippedItems() {
+    public static EquippedItems getEquippedItems() {
         return equippedItems;
     }
 
     /**
      * @param aEquippedSlots the equippedSlots to set
      */
-    public static void setEquippedItems(Item[] aEquippedSlots) {
-        equippedItems = aEquippedSlots;
+    public static void setEquippedItems(EquippedItems aEquippedItems) {
+        equippedItems = aEquippedItems;
     }
 
     /**

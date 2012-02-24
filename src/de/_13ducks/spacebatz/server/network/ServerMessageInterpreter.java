@@ -68,7 +68,7 @@ public class ServerMessageInterpreter {
                     sender.getInventory().getItems().remove(item.getNetID());
                     sender.getPlayer().calcEquipStats();
                     // Item-Anleg-Befehl zum Client senden
-                    Server.msgSender.sendItemEquip(item.getNetID(), sender.clientID);
+                    Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, sender.clientID);
 
                 }
                 break;

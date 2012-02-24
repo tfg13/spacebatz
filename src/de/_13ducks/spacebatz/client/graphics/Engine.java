@@ -203,7 +203,7 @@ public class Engine {
                                     selecteditemslot = -1;
                                 }
                             } else {
-                                if (Client.getEquippedItems()[2] != null) {
+                                if (Client.getEquippedItems().getEquipslots()[2][0] != null) {
                                     Client.getMsgSender().sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
                                 }
                             }
@@ -226,7 +226,7 @@ public class Engine {
                                 selecteditemslot = -1;
                             }
                         } else {
-                            if (Client.getEquippedItems()[1] != null) {
+                            if (Client.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
                                 Client.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
                             }
                         }
@@ -541,28 +541,35 @@ public class Engine {
         if (showinventory) {
             itemTiles.bind();
             for (int i = 1; i <= 2; i++) {
-                Item item = Client.getEquippedItems()[i];
-                if (item != null) {
-                    // Item zeichnen;
-                    float x = 0.41f * tilesX;
-                    float y = (0.61f + 0.2f * (i - 1)) * tilesY;
+                for (int j = 0; j < Client.getEquippedItems().getEquipslots()[i].length; j++) {
+                    Item item = Client.getEquippedItems().getEquipslots()[i][j];
+                    if (item != null) {
+                        // Item zeichnen;
+                        float x = 0.0f;
+                        if (i == 1) {
+                            x = (0.21f + 0.2f * j) * tilesX;
+                        } else {
+                            x = 0.41f * tilesX;
+                        }
+                        float y = (0.61f + 0.2f * (i - 1)) * tilesY;
 
-                    float width = 0.11f * tilesX;
-                    float height = 0.11f * tilesY;
-                    float v;
-                    float w = 0.0f;
-                    v = 0.25f * (int) item.getStats().itemStats.get("pic");
+                        float width = 0.11f * tilesX;
+                        float height = 0.11f * tilesY;
+                        float v;
+                        float w = 0.0f;
+                        v = 0.25f * (int) item.getStats().itemStats.get("pic");
 
-                    glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                    glTexCoord2f(v, w + 0.25f);
-                    glVertex3f(x, y, 0.0f);
-                    glTexCoord2f(v + 0.25f, w + 0.25f);
-                    glVertex3f(x + width, y, 0.0f);
-                    glTexCoord2f(v + 0.25f, w);
-                    glVertex3f(x + width, y + height, 0.0f);
-                    glTexCoord2f(v, w);
-                    glVertex3f(x, y + height, 0.0f);
-                    glEnd(); // Zeichnen des QUADs fertig } }
+                        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                        glTexCoord2f(v, w + 0.25f);
+                        glVertex3f(x, y, 0.0f);
+                        glTexCoord2f(v + 0.25f, w + 0.25f);
+                        glVertex3f(x + width, y, 0.0f);
+                        glTexCoord2f(v + 0.25f, w);
+                        glVertex3f(x + width, y + height, 0.0f);
+                        glTexCoord2f(v, w);
+                        glVertex3f(x, y + height, 0.0f);
+                        glEnd(); // Zeichnen des QUADs fertig } }
+                    }
                 }
             }
         }
@@ -621,9 +628,9 @@ public class Engine {
                 // Einer der Ausrüstungsslots?
             } else if (x > 0.4 && x < 0.54) {
                 if (y > 0.8 && y < 0.92) {
-                    item = Client.getEquippedItems()[2];
+                    item = Client.getEquippedItems().getEquipslots()[2][0];
                 } else if (y > 0.61 && y < 0.74) {
-                    item = Client.getEquippedItems()[1];
+                    item = Client.getEquippedItems().getEquipslots()[1][0];
                 }
             }
             if (item != null) {

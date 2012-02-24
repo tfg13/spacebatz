@@ -1,9 +1,7 @@
-package de._13ducks.spacebatz.server.data;
-
-import de._13ducks.spacebatz.shared.Item;
+package de._13ducks.spacebatz.shared;
 
 /**
- * Verwaltet Slots für die Items, die der Client gerade angelegt hat
+ * Verwaltet Slots für die Items, die der Client (Client- und Serverseite) gerade angelegt hat
  * @author Jojo
  */
 public class EquippedItems {

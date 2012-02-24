@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
 import de._13ducks.spacebatz.shared.Item;
 
