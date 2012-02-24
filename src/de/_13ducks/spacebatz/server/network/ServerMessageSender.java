@@ -129,12 +129,13 @@ public class ServerMessageSender {
     /**
      * Item wird von Client abgelegt (zurück ins Inventar)
      */
-    public void sendItemDequip(int slottype, byte selslot, int clientID) {
+    public void sendItemDequip(int slottype, byte selslot, byte droptoground, int clientID) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[9];
+            byte[] b = new byte[10];
             Bits.putInt(b, 0, slottype);
             b[4] = selslot;
-            Bits.putInt(b, 5, clientID);
+            b[5] = droptoground;
+            Bits.putInt(b, 6, clientID);
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
         }
     }
