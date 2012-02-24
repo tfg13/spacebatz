@@ -218,16 +218,18 @@ public class Engine {
                         } else if (x > 0.58 && x < 0.72) {
                             weaponslot = 2;
                         }
-                        // Waffenslot
-                        if (selecteditemslot != -1) {
-                            Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                            if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
-                                Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
-                                selecteditemslot = -1;
-                            }
-                        } else {
-                            if (Client.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
-                                Client.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
+                        if (weaponslot != -1) {
+                            // Waffenslot
+                            if (selecteditemslot != -1) {
+                                Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
+                                if ((int) selecteditem.getStats().itemStats.get("itemclass") == 1) {
+                                    Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                                    selecteditemslot = -1;
+                                }
+                            } else {
+                                if (Client.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
+                                    Client.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
+                                }
                             }
                         }
                     }
@@ -547,7 +549,7 @@ public class Engine {
                         // Item zeichnen;
                         float x = 0.0f;
                         if (i == 1) {
-                            x = (0.21f + 0.2f * j) * tilesX;
+                            x = (0.24f + 0.17f * j) * tilesX;
                         } else {
                             x = 0.41f * tilesX;
                         }
@@ -630,9 +632,24 @@ public class Engine {
                 if (y > 0.8 && y < 0.92) {
                     item = Client.getEquippedItems().getEquipslots()[2][0];
                 } else if (y > 0.61 && y < 0.74) {
+                    item = Client.getEquippedItems().getEquipslots()[1][1];
+                }
+            } else if (y > 0.8 && y < 0.92) {
+                if (x > 0.4 && x < 0.54) {
+                    // Hutslot
+                    item = Client.getEquippedItems().getEquipslots()[2][0];
+                }
+            } else if (y > 0.61 && y < 0.74) {
+                // ein Waffenslot
+                if (x > 0.22 && x < 0.36) {
                     item = Client.getEquippedItems().getEquipslots()[1][0];
+                } else if (x > 0.4 && x < 0.54) {
+                    item = Client.getEquippedItems().getEquipslots()[1][1];
+                } else if (x > 0.58 && x < 0.72) {
+                    item = Client.getEquippedItems().getEquipslots()[1][2];
                 }
             }
+
             if (item != null) {
                 // Mousehovern rendern, zuerst Rechteck
                 glDisable(GL_TEXTURE_2D);
