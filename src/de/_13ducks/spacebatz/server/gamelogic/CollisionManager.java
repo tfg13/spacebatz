@@ -140,7 +140,6 @@ public class CollisionManager {
                             Enemy mob = (Enemy) e2;
                             double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
                             if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                                Enemy mob = (Enemy) charr;
                             	mob.attack(mover);
                             }
                         }
