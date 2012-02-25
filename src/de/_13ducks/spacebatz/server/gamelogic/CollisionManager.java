@@ -135,7 +135,7 @@ public class CollisionManager {
                 if (mover instanceof Player) {
                     Iterator<Entity> iter2 = Server.game.netIDMap.values().iterator();
                     while (iter2.hasNext()) {
-                        Entity e2 = iter.next();
+                        Entity e2 = iter2.next();
                         if (e2 instanceof Enemy) {
                             Enemy mob = (Enemy) e2;
                             double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
