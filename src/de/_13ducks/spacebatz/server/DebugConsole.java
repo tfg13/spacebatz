@@ -6,8 +6,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Eine Konsole zum Debuggen.
- * Wird beim Serverstart normalerweise mitgestartet.
+ * Eine Konsole zum Debuggen. Wird beim Serverstart normalerweise mitgestartet.
  *
  * @author michael
  */
@@ -42,13 +41,11 @@ public class DebugConsole {
      */
     private int loglevel = LOGLEVEL_ALL;
     /**
-     * Der Original-System.out -Stream.
-     * Hiermit werden die gefilterten "normalen" Ausgaben dann wirklich ausgegeben.
+     * Der Original-System.out -Stream. Hiermit werden die gefilterten "normalen" Ausgaben dann wirklich ausgegeben.
      */
     private PrintStream outStream;
     /**
-     * Ein Reader für System.out.
-     * System.out wird bei der Initialisierung im Konstruktor auf diesen Reader umgebogen.
+     * Ein Reader für System.out. System.out wird bei der Initialisierung im Konstruktor auf diesen Reader umgebogen.
      */
     private BufferedReader outReader;
 
@@ -101,12 +98,14 @@ public class DebugConsole {
             PipedOutputStream pipeout = new PipedOutputStream();
             PipedInputStream pipein = new PipedInputStream();
             pipeout.connect(pipein);
-            System.setOut(new PrintStream(pipeout));
+            //System.setOut(new PrintStream(pipeout));
             outReader = new BufferedReader(new InputStreamReader(pipein));
         } catch (Exception ex) {
         }
         debugConsoleThread.start();
-        outputFilterer.start();
+        //outputFilterer.start();
+        System.out.println("Welcome to ServerDebugConsole!");
+        System.out.println("Please note: Due to bugs output-filtering is disabled.");
     }
 
     /**
