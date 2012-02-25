@@ -552,6 +552,16 @@ public class Engine {
             }
         }
 
+        // ausgewählten Waffenslot markieren:
+        if (showinventory) {
+            glDisable(GL_TEXTURE_2D);
+            float wx = 0.227f + 0.172f * Client.getPlayer().getSelectedattack();
+
+            glColor3f(0.7f, 0.0f, 0.0f);
+            glRectf(wx * tilesX, 0.59f * tilesY, (wx + 0.14f) * tilesX, 0.6f * tilesY);
+            glEnable(GL_TEXTURE_2D);
+        }
+
         // angelegte Items in ihre Slots im Inventar zeichnen
         if (showinventory) {
             itemTiles.bind();
