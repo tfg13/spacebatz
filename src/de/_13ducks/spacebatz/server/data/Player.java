@@ -225,13 +225,13 @@ public class Player extends Char {
             healthpoints -= enemy.getDamage();
 
             if (healthpoints <= 0) {
-                Server.msgSender.sendCharHit(netID, e.netID, true);
+                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);
                 setStillX(Server.game.getLevel().respawnX);
                 setStillY(Server.game.getLevel().respawnY);
                 healthpoints = healthpointsmax;
                 return true;
             } else {
-                Server.msgSender.sendCharHit(netID, e.netID, false);
+                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), false);
                 return false;
             }
         } else {

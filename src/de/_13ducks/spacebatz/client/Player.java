@@ -19,6 +19,8 @@ public class Player extends Char {
     public Player(int netID) {
         super(netID);
         selectedattack = 0;
+        healthpoints = 10;
+        healthpointsmax = 10;
     }
 
     /**
