@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.client.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.BulletTypes;
