@@ -1,7 +1,9 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.BulletTypes;
@@ -138,16 +140,24 @@ public class ClientMessageInterpreter {
                 }
                 break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
-                // Bullet trifft Char
-                int netIDBullet = Bits.getInt(message, 4); // netID von Bullet
+                // Char wird von Bullet / angriff getroffen
+                int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
+                int netIDAttacker = Bits.getInt(message, 4); // netID vom Angreifer / Bullet
+                int damage = Bits.getInt(message, 8);
 
-                for (int i = 0; i < Client.getBulletList().size(); i++) {
-                    if (Client.getBulletList().get(i).netID == netIDBullet) {
-                        Client.getBulletList().remove(i);
-                        break;
+                // Bullet verschwinden lassen
+                if (Client.netIDMap.get(netIDAttacker) instanceof Bullet) {
+                    Client.netIDMap.remove(netIDAttacker);
+                }
+                // 
+                if (Client.netIDMap.get(netIDVictim) instanceof Player) {
+                    Player p = Client.getPlayer();
+                    p.setHealthpoints(p.getHealthpoints() - damage);
+                    if (p.getHealthpoints() < 0) {
+                        // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
+                        p.setHealthpoints(p.getHealthpointsmax());
                     }
                 }
-
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:
                 // EnemyTypes empfangen (nur einmal)       
