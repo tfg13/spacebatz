@@ -142,7 +142,7 @@ public class ClientMessageInterpreter {
                 int netIDBullet = Bits.getInt(message, 4); // netID von Bullet
 
                 for (int i = 0; i < Client.getBulletList().size(); i++) {
-                    if (Client.getBulletList().get(i).getNetID() == netIDBullet) {
+                    if (Client.getBulletList().get(i).netID == netIDBullet) {
                         Client.getBulletList().remove(i);
                         break;
                     }

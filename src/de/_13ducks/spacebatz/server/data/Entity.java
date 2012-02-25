@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
+import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und Bewegungsinformationen
@@ -14,6 +15,10 @@ public class Entity {
      * Die netID der Entity.
      */
     public final int netID;
+    /**
+     * Tpy des Entity. Fürs Netzwerksystem
+     */
+    public final byte entityTypeID;
     /**
      * Die Bewegungsgeschwindigkeit eine Entity. Einheit: Felder/Tick
      */
@@ -58,8 +63,8 @@ public class Entity {
      * @param y die Y-Koordinate der Entity
      * @param netID die netId der Entity
      */
-    public Entity(double x, double y, int netID) {
-
+    public Entity(double x, double y, int netID, byte entityTypeID) {
+        this.entityTypeID = entityTypeID;
         this.posX = x;
         this.posY = y;
         Server.entityMap.addEntity(this);
@@ -247,5 +252,27 @@ public class Entity {
      */
     public void setSector(EntityMapSector mySector) {
         this.mySector = mySector;
+    }
+    
+    /**
+     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten!
+     * Implementierungen von Entity müssen diese Methode überschreiben und super.byteArraySize() + Eigenbedarf zurückgeben!
+     *
+     * @return die größe des byte[]'s, das netPack() braucht.
+     */
+    public int byteArraySize() {
+        return 5;
+    }
+    
+    /**
+     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese
+     * Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann
+     * selber den Puffer ab super.byteArraySize() + offset befüllen.
+     *
+     * @param b der Puffer, in den geschrieben ist.
+     */
+    public void netPack(byte[] b, int offset) {
+        b[offset] = entityTypeID;
+        Bits.putInt(b, offset + 1, netID);
     }
 }

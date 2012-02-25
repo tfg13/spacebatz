@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,7 +49,7 @@ public class Player extends Char {
      */
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         double x = 0, y = 0;
-        
+
         if (w) {
             y += 1;
         }
@@ -89,28 +88,16 @@ public class Player extends Char {
     public Client getClient() {
         return client;
     }
-    
+
     public void playerShoot(float angle) {
         int thistick = Server.game.getTick();
         if (thistick > attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
             attackcooldowntick = thistick;
-            
-            
+
             Bullet bullet = new Bullet(thistick, getX(), getY(), angle, 0, Server.game.newNetID(), this);
             Server.game.bullets.add(bullet);
-            byte[] bytearray = new byte[25];
-            
-            bytearray[0] = Settings.NET_UDP_CMD_SPAWN_BULLET;
-            Bits.putInt(bytearray, 1, bullet.getSpawntick());
-            Bits.putFloat(bytearray, 5, (float) bullet.getSpawnposX());
-            Bits.putFloat(bytearray, 9, (float) bullet.getSpawnposY());
-            Bits.putFloat(bytearray, 13, (float) Math.atan2(bullet.getDirectionY(), bullet.getDirectionX()));
-            Bits.putInt(bytearray, 17, bullet.getTypeID());
-            Bits.putInt(bytearray, 21, bullet.netID);
-            
-            for (int i = 0; i < Server.game.clients.size(); i++) {
-                Server.serverNetwork.udp.sendPack(bytearray, Server.game.clients.get(i));
-            }
+
+            Server.game.netIDMap.put(bullet.netID, bullet);
         }
     }
 
@@ -125,9 +112,9 @@ public class Player extends Char {
         double newrange = 10.0;
         int newarmor = 0;
         double newmovespeed = Settings.CHARSPEED;
-        
+
         for (int w = 0; w <= 2; w++) {
-            
+
             ArrayList<Item> checkitems = new ArrayList<>();
 
             // Eine der Waffen hinzufügen
@@ -137,7 +124,7 @@ public class Player extends Char {
             for (int i = 2; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
                 checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
             }
-            
+
             for (int i = 0; i < checkitems.size(); i++) {
                 Item item = checkitems.get(i);
                 if (item == null) {
@@ -174,14 +161,14 @@ public class Player extends Char {
                     }
                 }
             }
-            
+
             speed = newmovespeed;
             armor = newarmor;
-            
+
             newdamage *= newdamagemulti;
             newdamage = Math.max(newdamage, 2);
             newattackcooldown /= newattackspeedmulti;
-            
+
             PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
             attack[w] = playerattack;
         }
@@ -193,7 +180,7 @@ public class Player extends Char {
     public PlayerAttack getSelectedAttack() {
         return attack[selectedattack];
     }
-    
+
     public void selectAttack(byte select) {
         this.selectedattack = select;
     }
@@ -209,7 +196,7 @@ public class Player extends Char {
         if (e instanceof Enemy) {
             Enemy enemy = (Enemy) e;
             healthpoints -= enemy.getDamage();
-            
+
             if (healthpoints <= 0) {
                 Server.msgSender.sendCharHit(netID, e.netID, true);
                 setStillX(Server.game.getLevel().respawnX);

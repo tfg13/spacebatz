@@ -6,6 +6,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.BulletTypeStats;
+import de._13ducks.spacebatz.util.Bits;
 import java.util.Random;
 
 /**
@@ -23,14 +24,14 @@ public class Bullet extends Entity {
     /*
      * ID des BulletTypes
      */
-    private int typeID;
+    public final int typeID;
     /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
 
     public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, int typeID, int netID, Char owner) {
-        super(spawnposx, spawnposy, netID);
+        super(spawnposx, spawnposy, netID, (byte) 4);
         moveStartTick = spawntick;
 
         Random random = new Random();
@@ -42,7 +43,7 @@ public class Bullet extends Entity {
         setSpeed(stats.getSpeed());
 
         int lifetime;
-        
+
         this.owner = owner;
         if (owner instanceof Player) {
             Player player = (Player) owner;
@@ -52,10 +53,8 @@ public class Bullet extends Entity {
             this.damage = owner.getDamage();
             lifetime = (int) (owner.getRange() / stats.getSpeed());
         }
-        
+
         this.deletetick = spawntick + lifetime;
-
-
     }
 
     /**
@@ -114,10 +113,14 @@ public class Bullet extends Entity {
         return owner;
     }
 
-    /**
-     * @return the typeID
-     */
-    public int getTypeID() {
-        return typeID;
+    @Override
+    public int byteArraySize() {
+        return super.byteArraySize() + 4;
+    }
+
+    @Override
+    public void netPack(byte[] pack, int offset) {
+        super.netPack(pack, offset);
+        Bits.putInt(pack, super.byteArraySize() + offset, typeID);
     }
 }

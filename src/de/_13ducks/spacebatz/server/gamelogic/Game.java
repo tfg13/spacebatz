@@ -29,7 +29,7 @@ public class Game {
     /**
      * Alle dynamischen Objekte
      */
-    public HashMap<Integer, Char> netIDMap;
+    public HashMap<Integer, Entity> netIDMap;
     /**
      * Liste aller Geschosse
      */
@@ -193,7 +193,7 @@ public class Game {
             player.calcEquipStats();
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
-            client.getContext().makeCharKnown(player.netID);
+            client.getContext().makeEntityKnown(player.netID);
             // Dem Client die Tickrate schicken:
             Server.msgSender.sendTickrate(client);
             Server.msgSender.sendStartGame(client);
@@ -254,7 +254,7 @@ public class Game {
      */
     public void gameTick() {
         // KI berechnen:
-        AIManager.computeMobBehavior(new ArrayList<>(netIDMap.values()));
+        AIManager.computeMobBehavior(netIDMap.values());
         // Kollision berechnen:
         CollisionManager.computeCollision();
         // Pflanzen berechnen:

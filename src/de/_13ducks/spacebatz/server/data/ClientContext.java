@@ -12,42 +12,42 @@ import java.util.Iterator;
  */
 public class ClientContext {
 
-    private HashMap<Char, Movement> receivedMap;
-    private HashMap<Movement, Char> sentMap;
-    private HashMap<Integer, Char> charMap;
+    private HashMap<Entity, Movement> receivedMap;
+    private HashMap<Movement, Entity> sentMap;
+    private HashMap<Integer, Entity> entityMap;
 
     public ClientContext() {
         sentMap = new HashMap<>();
         receivedMap = new HashMap<>();
-        charMap = new HashMap<>();
+        entityMap = new HashMap<>();
     }
 
     /**
      * Aufrufen, wenn ein Bewegungszustand zum Client geschickt wurde. Speichert diese Bewegung als versendet, überschreibt die möglicherweise zuletzt
      * gesendete.
      *
-     * @param c der Char
+     * @param e das Entity
      * @param m die Bewegung
      */
-    public void sentMovement(Char c, Movement m) {
-        if (c == null || m == null) {
-            throw new IllegalArgumentException(c + " " + m);
+    public void sentMovement(Entity e, Movement m) {
+        if (e == null || m == null) {
+            throw new IllegalArgumentException(e + " " + m);
         }
-        sentMap.put(m, c);
+        sentMap.put(m, e);
     }
 
     /**
      * Testet, ob der Client von der gegebenen Bewegung der gegebenen Einheit schon weiß.
      *
-     * @param c die Betroffene Einheit.
+     * @param e die Betroffene Einheit.
      * @param m die Bewegung, um die es geht.
      * @return true, wenn bekannt
      */
-    public boolean knowsMovement(Char c, Movement m) {
-        if (c == null || m == null) {
-            throw new IllegalArgumentException(c + " " + m);
+    public boolean knowsMovement(Entity e, Movement m) {
+        if (e == null || m == null) {
+            throw new IllegalArgumentException(e + " " + m);
         }
-        return m.equals(receivedMap.get(c));
+        return m.equals(receivedMap.get(e));
     }
 
     /**
@@ -65,41 +65,41 @@ public class ClientContext {
     }
 
     /**
-     * Prüft, ob dieser Client von der Existenz dieses Chars weiß.
+     * Prüft, ob dieser Client von der Existenz dieses Entitys weiß.
      *
-     * @param c der Char, der getestet wird.
+     * @param e das Entity, das getestet wird.
      * @return true, wenn bekannt, sonst false.
      */
-    public boolean knowsChar(Char c) {
-        return charMap.containsKey(c.netID);
+    public boolean knowsEntity(Entity e) {
+        return entityMap.containsKey(e.netID);
     }
 
     /**
-     * Setzt einen Char als bekannt.
+     * Setzt ein Entity als bekannt.
      * In Zukunft wird knowsChar also true liefern.
      * @param c der ab sofort bekannte Char.
      */
-    public void makeCharKnown(int netID) {
-        if (!charMap.containsKey(netID)) {
-            Char c = Server.game.netIDMap.get(netID);
-            charMap.put(netID, Server.game.netIDMap.get(netID));
+    public void makeEntityKnown(int netID) {
+        if (!entityMap.containsKey(netID)) {
+            Entity e = Server.game.netIDMap.get(netID);
+            entityMap.put(netID, Server.game.netIDMap.get(netID));
         }
     }
 
     /**
-     * Liefert einen Iterator über alle dem Client bekannten Chars.
-     * @return einen Iterator über alle dem Client bekannten Chars.
+     * Liefert einen Iterator über alle dem Client bekannten Entitys.
+     * @return einen Iterator über alle dem Client bekannten Entitys.
      */
-    public Iterator<Char> knownCharsIterator() {
-        return charMap.values().iterator();
+    public Iterator<Entity> knownEntiysIterator() {
+        return entityMap.values().iterator();
     }
 
     /**
-     * Löscht einen Char aus dem Kontext des Chars.
-     * Dieser Client kennt den Char zukünftig nicht mehr.
-     * @param netID Die netID des zu löschenden Chars.
+     * Löscht ein Entity aus dem Kontext des Clients.
+     * Dieser Client kennt das Entity zukünftig nicht mehr.
+     * @param netID Die netID des zu löschenden Entitys.
      */
-    public void removeChar(int netID) {
-        charMap.remove(netID);
+    public void removeEntity(int netID) {
+        entityMap.remove(netID);
     }
 }

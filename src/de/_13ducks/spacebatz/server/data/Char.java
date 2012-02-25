@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Ein bewegliches Objekt. (z.B. ein Spieler, Mob etc)
@@ -11,10 +10,6 @@ import de._13ducks.spacebatz.util.Bits;
 public abstract class Char extends Entity {
 
     /**
-     * Tpy des Chars. FÃ¼rs Netzwerksystem. 1 - Char (reserviert, eigentlich ein ungÃ¼ltiger Wert!) 2 - Player 3 - Enemy
-     */
-    public final byte charTypeID;
-    /**
      * Die Lebenspunkte des Chars
      */
     protected int healthpoints;
@@ -23,7 +18,7 @@ public abstract class Char extends Entity {
      */
     protected int healthpointsmax;
     /**
-     * RÃ¼stung, verringert Schaden
+     * Rüstung, verringert Schaden
      */
     protected int armor;
     /**
@@ -35,7 +30,7 @@ public abstract class Char extends Entity {
      */
     protected int sightrange;
     /**
-     * Die ID des Bildes fÃ¼r den Char
+     * Die ID des Bildes für den Char
      */
     protected int pictureID = 0;
     /**
@@ -47,11 +42,11 @@ public abstract class Char extends Entity {
      */
     protected int attackcooldowntick;
     /**
-     * Reichweite fÃ¼r Angriffe
+     * Reichweite für Angriffe
      */
     protected double range;
     /**
-     * Die GrÃ¶ÃŸe des Chars (fÃ¼r Kollision)
+     * Die Größe des Chars (für Kollision)
      */
     private double size;
 
@@ -62,9 +57,8 @@ public abstract class Char extends Entity {
      * @param y
      * @param name
      */
-    public Char(double x, double y, int netID, byte charTypeID) {
-        super(x, y, netID);
-        this.charTypeID = charTypeID;
+    public Char(double x, double y, int netID, byte entityTypeID) {
+        super(x, y, netID, entityTypeID);
         size = Settings.CHARSIZE;
         this.healthpoints = 10;
         this.healthpointsmax = 10;
@@ -84,7 +78,7 @@ public abstract class Char extends Entity {
     /**
      * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
      *
-     * @param e, Entity das Schaden zufÃ¼gt
+     * @param e, Entity das Schaden zufügt
      * @return true, wenn Enemy stirbt, sonst false
      */
     public boolean decreaseHealthpoints(Entity e) {
@@ -113,30 +107,9 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Wie groÃŸ die Byte-Representation dieses Chars ist. Die GrÃ¶ÃŸe darf 512 - 32 auf keinen Fall Ã¼berschreiten!
+     * Gibt die Kollisionsgröße dieses Chars zurück
      *
-     * @return die grÃ¶ÃŸe des byte[]'s, das netPack() braucht.
-     */
-    public int byteArraySize() {
-        return 5;
-    }
-
-    /**
-     * Schreibt die fÃ¼r eine NetzwerkÃ¼bertragung unbedingt nÃ¶tigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groÃŸ sein. Unterklassen mÃ¼ssen diese
-     * Methode Ã¼berschreiben, falls sie irgendwelche zusÃ¤tzlichen Daten haben, die nicht in den Enemytypes oder Ã¤hnlich stehen. Ãœberschriebene Methoden mÃ¼ssen erst super.netPack() aufrufen, und dann
-     * selber den Puffer ab super.byteArraySize() -1 + offset befÃ¼llen.
-     *
-     * @param b der Puffer, in den geschrieben ist.
-     */
-    public void netPack(byte[] b, int offset) {
-        b[offset] = charTypeID;
-        Bits.putInt(b, offset + 1, netID);
-    }
-
-    /**
-     * Gibt die KollisionsgrÃ¶ÃŸe dieses Chars zurÃ¼ck
-     *
-     * @return die KollisionsgrÃ¶ÃŸe
+     * @return die Kollisionsgröße
      */
     public double getSize() {
         return size;
