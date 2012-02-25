@@ -45,6 +45,7 @@ public class MainLoop {
                 try {
                     if (checkClientsLeft()) {
                         mainLoopTask.cancel(false);
+                        mainLoopTimer.shutdown();
                         return;
                     }
 
