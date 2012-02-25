@@ -164,24 +164,13 @@ public class Engine {
             udp[6] |= 0x10;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
-            udp2[0] = Client.getClientID();
-            Bits.putInt(udp2, 1, Client.frozenGametick);
-            udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
-            double dx = Mouse.getX() - Display.getWidth() / 2;
-            double dy = Mouse.getY() - Display.getHeight() / 2;
-            double dir = Math.atan2(dy, dx);
-            if (dir < 0) {
-                dir += 2 * Math.PI;
-            }
-            Bits.putFloat(udp2, 6, (float) (dir));
-            Client.udpOut(udp2);
+            sendShootRequest();
         }
         // Mausklick suchen
         if (Mouse.isButtonDown(0)) {
-            if (!lmbpressed) {
-                lmbpressed = true;
-                if (showinventory) {
+            if (showinventory) {
+                if (!lmbpressed) {
+                    lmbpressed = true;
                     float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
@@ -291,6 +280,8 @@ public class Engine {
                         }
                     }
                 }
+            } else {
+                sendShootRequest();
             }
         } else {
             lmbpressed = false;
@@ -746,5 +737,23 @@ public class Engine {
         while ((b = r.read()) != -1) {
             spaceing[i++] = (byte) b;
         }
+    }
+
+    /**
+     * Sagt dem Server, das geschossen werden soll
+     */
+    private void sendShootRequest() {
+        byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
+        udp2[0] = Client.getClientID();
+        Bits.putInt(udp2, 1, Client.frozenGametick);
+        udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
+        double dx = Mouse.getX() - Display.getWidth() / 2;
+        double dy = Mouse.getY() - Display.getHeight() / 2;
+        double dir = Math.atan2(dy, dx);
+        if (dir < 0) {
+            dir += 2 * Math.PI;
+        }
+        Bits.putFloat(udp2, 6, (float) (dir));
+        Client.udpOut(udp2);
     }
 }
