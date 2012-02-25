@@ -42,24 +42,28 @@ public class MainLoop {
 
             @Override
             public void run() {
-                if (checkClientsLeft()) {
-                    mainLoopTask.cancel(false);
-                    return;
+                try {
+                    if (checkClientsLeft()) {
+                        mainLoopTask.cancel(false);
+                        return;
+                    }
+
+                    // Debug-Kommandos ausführen:
+                    Server.debugConsole.executeCommands();
+
+                    // Input vom Client holen:
+                    Server.serverNetwork.udp.receive();
+                    Server.msgInterpreter.interpretAllTcpMessages();
+                    // Wartende Clients akzeptieren:
+                    Server.serverNetwork.acceptPendingClients();
+                    // Gamelogic berechnen:
+                    calculateGameTick();
+                    // Änderungen an den Server schicken.
+                    Server.serverNetwork.udp.send();
+                    Server.game.incrementTick();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-
-                // Debug-Kommandos ausführen:
-                Server.debugConsole.executeCommands();
-
-                // Input vom Client holen:
-                Server.serverNetwork.udp.receive();
-                Server.msgInterpreter.interpretAllTcpMessages();
-                // Wartende Clients akzeptieren:
-                Server.serverNetwork.acceptPendingClients();
-                // Gamelogic berechnen:
-                calculateGameTick();
-                // Änderungen an den Server schicken.
-                Server.serverNetwork.udp.send();
-                Server.game.incrementTick();
             }
         };
 
