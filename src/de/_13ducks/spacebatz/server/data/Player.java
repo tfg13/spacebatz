@@ -95,7 +95,6 @@ public class Player extends Char {
             attackcooldowntick = thistick;
 
             Bullet bullet = new Bullet(thistick, getX(), getY(), angle, 0, Server.game.newNetID(), this);
-            Server.game.bullets.add(bullet);
 
             Server.game.netIDMap.put(bullet.netID, bullet);
         }

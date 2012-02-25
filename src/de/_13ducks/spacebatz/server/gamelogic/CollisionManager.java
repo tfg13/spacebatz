@@ -33,17 +33,25 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Bullets und Cahrs
      */
     private static void computeBulletCollision() {
-        ArrayList<Bullet> bullets = Server.game.bullets;
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet bullet = bullets.get(i);
 
-            // Bullet muss nach bestimmter Zeit gelöscht werden
-            if (Server.game.getTick() > bullet.getDeletetick()) {
-                bullets.remove(i);
-                i--;
+        Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
+
+        while (listIterator.hasNext()) {
+            Bullet bullet = null;
+            Entity entity = listIterator.next();
+            if (entity instanceof Bullet) {
+                bullet = (Bullet) entity;
+            } else {
                 continue;
             }
 
+
+            // Bullet muss nach bestimmter Zeit gelöscht werden
+            if (Server.game.getTick() > bullet.getDeletetick()) {
+                listIterator.remove();
+
+                continue;
+            }
 
             double x = bullet.getX();
             double y = bullet.getY();
@@ -58,7 +66,7 @@ public class CollisionManager {
                             if (c instanceof Enemy) {
                                 Enemy en = (Enemy) c;
                                 // Schaden von HP abziehen
-                                if (en.decreaseHealthpoints(bullets.get(i))) {
+                                if (en.decreaseHealthpoints(bullet)) {
                                 } else {
                                     if (en.getMyTarget() == null) {
                                         en.setMyTarget(bullet.getOwner());
@@ -66,14 +74,16 @@ public class CollisionManager {
                                 }
                             }
                             // Testcode: Bullet kann nur einen Gegner treffen
-                            bullets.remove(i);
-                            Server.entityMap.removeEntity(bullet);
-                            i--;
+                            listIterator.remove();
+
+
                             break;
                         }
                     }
                 }
             }
+
+
         }
     }
 
@@ -140,7 +150,7 @@ public class CollisionManager {
                             Enemy mob = (Enemy) e2;
                             double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
                             if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                            	mob.attack(mover);
+                                mob.attack(mover);
                             }
                         }
                     }

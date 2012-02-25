@@ -16,19 +16,6 @@ public class EntityMapManager {
      * Berechnet provisorisch die Entitypositionen alle 20 frames neu
      */
     public void calculateEntityPositions() {
-        cooldown--;
-        if (cooldown < 0) {
-            cooldown = 20;
-            // Bullets:
-            for (Entity e : Server.game.bullets) {
-                Server.entityMap.entityMoved(e);
-            }
-            //Chars:
-            for (Entity e : Server.game.netIDMap.values()) {
-                Server.entityMap.entityMoved(e);
-            }
-        }
-
 
     }
 }
