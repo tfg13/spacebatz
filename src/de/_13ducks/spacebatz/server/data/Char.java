@@ -14,6 +14,10 @@ public abstract class Char extends Entity {
      */
     protected int healthpoints;
     /**
+     * Die maximalen Lebenspunkte des Chars
+     */
+    protected int healthpointsmax;
+    /**
      * Rüstung, verringert Schaden
      */
     protected int armor;
@@ -30,7 +34,7 @@ public abstract class Char extends Entity {
      */
     protected int pictureID = 0;
     /**
-     * Wie lange nach Angriff gewartet werden muss, bis 
+     * Wie lange nach Angriff gewartet werden muss, bis wieder angegriffen werden darf
      */
     protected int attackcooldown = 5;
     /**
@@ -57,6 +61,7 @@ public abstract class Char extends Entity {
         super(x, y, netID, entityTypeID);
         size = Settings.CHARSIZE;
         this.healthpoints = 10;
+        this.healthpointsmax = 10;
         this.damage = 2;
         this.range = 1.0;
         this.sightrange = 10;
@@ -73,10 +78,10 @@ public abstract class Char extends Entity {
     /**
      * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
      *
-     * @param b, Bullet das Schaden zufügt
+     * @param e, Entity das Schaden zufügt
      * @return true, wenn Enemy stirbt, sonst false
      */
-    public boolean decreaseHealthpoints(Bullet b) {
+    public boolean decreaseHealthpoints(Entity e) {
         return false;
     }
 

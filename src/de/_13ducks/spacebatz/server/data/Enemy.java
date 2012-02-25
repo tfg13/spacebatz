@@ -41,6 +41,7 @@ public class Enemy extends Char {
         this.sightrange = estats.getSightrange();
         this.pictureID = estats.getPicture();
         this.enemylevel = estats.getEnemylevel();
+        this.attackcooldown = 60;
     }
 
     /**
@@ -69,24 +70,41 @@ public class Enemy extends Char {
     }
 
     /**
-     * Zieht Schadenspunkte von HPab, returned true wenn Einheit stirbt
+     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
      *
-     * @param Schaden, der von Healthpoints abgezogen wird
+     * @param Entity, das den Schaden anrichtet
      * @return true, wenn Enemy stirbt, sonst false
      */
     @Override
-    public boolean decreaseHealthpoints(Bullet b) {
-        healthpoints -= b.getDamage();
+    public boolean decreaseHealthpoints(Entity e) {
+        if (e instanceof Bullet) {
+            Bullet b = (Bullet) e;
+            healthpoints -= b.getDamage();
 
-        if (healthpoints <= 0) {
-            Server.msgSender.sendHitChar(netID, b.netID, true);
-            Server.game.netIDMap.remove(netID);
-            Server.entityMap.removeEntity(this);
-            DropManager.dropItem(getX(), getY(), enemylevel);
-            return true;
+            if (healthpoints <= 0) {
+                Server.msgSender.sendCharHit(netID, e.netID, true);
+                Server.game.netIDMap.remove(netID);
+                Server.entityMap.removeEntity(this);
+                DropManager.dropItem(getX(), getY(), enemylevel);
+                return true;
+            } else {
+                Server.msgSender.sendCharHit(netID, e.netID, false);
+                return false;
+            }
         } else {
-            Server.msgSender.sendHitChar(netID, b.netID, false);
             return false;
+        }
+    }
+    
+    /**
+     * Der Enemy will jemanden angreifen
+     * @param e das was angegriffen wird
+     */
+    public void attack(Char c) {
+        int thistick = Server.game.getTick();
+        if (thistick > attackcooldowntick + attackcooldown) {
+            c.decreaseHealthpoints(this);
+            attackcooldowntick = thistick;
         }
     }
 

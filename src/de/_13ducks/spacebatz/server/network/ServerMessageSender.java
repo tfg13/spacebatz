@@ -72,23 +72,23 @@ public class ServerMessageSender {
     }
 
     /**
-     * Bullet trifft Char
+     * Bullet/Mob-Angriff trifft Char
      *
-     * @param netIDChar netID des getroffenen Char
-     * @param netIDBullet netID des Bullets
-     * @param killed Ob Bullet den Char tötet
+     * @param netIDVictim netID des getroffenen Char
+     * @param netIDAttacker netID des Bullets / Enemy
+     * @param killed Ob Char getötet wird
      */
-    public void sendHitChar(int netIDChar, int netIDBullet, boolean killed) {
+    public void sendCharHit(int netIDVictim, int netIDAttacker, boolean killed) {
         for (Client c : Server.game.clients.values()) {
             byte[] b = new byte[9];
-            Bits.putInt(b, 0, netIDChar);
-            Bits.putInt(b, 4, netIDBullet);
+            Bits.putInt(b, 0, netIDVictim);
+            Bits.putInt(b, 4, netIDAttacker);
             if (killed) {
                 b[8] = 1;
             } else {
                 b[8] = 0;
             }
-            Server.serverNetwork.sendTcpData((byte) 28, b, c);
+            Server.serverNetwork.sendTcpData((byte) Settings.NET_TCP_CMD_CHAR_HIT, b, c);
         }
     }
 
@@ -129,12 +129,13 @@ public class ServerMessageSender {
     /**
      * Item wird von Client abgelegt (zurück ins Inventar)
      */
-    public void sendItemDequip(int slottype, byte selslot, int clientID) {
+    public void sendItemDequip(int slottype, byte selslot, byte droptoground, int clientID) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[9];
+            byte[] b = new byte[10];
             Bits.putInt(b, 0, slottype);
             b[4] = selslot;
-            Bits.putInt(b, 5, clientID);
+            b[5] = droptoground;
+            Bits.putInt(b, 6, clientID);
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
         }
     }
