@@ -180,4 +180,16 @@ public class ServerMessageSender {
             broadcastGroundChange(p.getX(), p.getY(), p.getTex());
         }
     }
+
+    /**
+     * Client wählt andere Waffe aus
+     */
+    public void sendWeaponswitch(Client client, byte slot) {
+        byte[] b = new byte[5];
+        Bits.putInt(b, 0, client.clientID);
+        b[4] = slot;
+        for (Client c : Server.game.clients.values()) {
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SWITCH_WEAPON, b, c);
+        }
+    }
 }

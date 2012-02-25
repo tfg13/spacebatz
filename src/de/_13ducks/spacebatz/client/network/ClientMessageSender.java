@@ -30,6 +30,15 @@ public class ClientMessageSender {
         b[4] = selslot;
         Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, b);
     }
+    
+    /**
+     * Client will andere Waffe auswählen
+     */
+    public void sendSwitchWeapon(byte slot) {
+        byte[] b = new byte[1];
+        b[0] = slot;
+        Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, b);
+    }
 
     public void sendDisconnect() {
         Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);

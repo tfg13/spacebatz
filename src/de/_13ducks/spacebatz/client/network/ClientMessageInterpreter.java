@@ -244,7 +244,14 @@ public class ClientMessageInterpreter {
                 int newGround = Bits.getInt(message, 8);
                 Client.currentLevel.getGround()[x][y] = newGround;
                 break;
-
+            case Settings.NET_TCP_CMD_SWITCH_WEAPON:
+                // Ein Client will andere Waffe auswählen
+                int clientid = Bits.getInt(message, 0);
+                byte wslot = message[4];
+                if (clientid == Client.getClientID()) {
+                    Client.getPlayer().setSelectedattack(wslot);
+                }
+                break;
 
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command " + cmdId);

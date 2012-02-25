@@ -137,7 +137,7 @@ public class Player extends Char {
             for (int i = 2; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
                 checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
             }
-                        
+            
             for (int i = 0; i < checkitems.size(); i++) {
                 Item item = checkitems.get(i);
                 if (item == null) {
@@ -192,6 +192,10 @@ public class Player extends Char {
      */
     public PlayerAttack getSelectedAttack() {
         return attack[selectedattack];
+    }
+    
+    public void selectAttack(byte select) {
+        this.selectedattack = select;
     }
 
     /**

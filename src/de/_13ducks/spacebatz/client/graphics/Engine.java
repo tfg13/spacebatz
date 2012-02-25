@@ -166,6 +166,19 @@ public class Engine {
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             sendShootRequest();
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+            if (Client.getPlayer().getSelectedattack() != 0) {
+                Client.getMsgSender().sendSwitchWeapon((byte) 0);
+            }
+        } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+            if (Client.getPlayer().getSelectedattack() != 1) {
+                Client.getMsgSender().sendSwitchWeapon((byte) 1);
+            }
+        } else if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+            if (Client.getPlayer().getSelectedattack() != 2) {
+                Client.getMsgSender().sendSwitchWeapon((byte) 2);
+            }
+        }
         // Mausklick suchen
         if (Mouse.isButtonDown(0)) {
             if (showinventory) {
