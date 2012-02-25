@@ -105,22 +105,24 @@ public class Player extends Char {
      * Berechnet Playerwerte (Schaden, ...) für die angelegten Items
      */
     public void calcEquipStats() {
-        int newdamage = 0;
-        double newdamagemulti = 1.0;
-        double newattackcooldown = 10;
-        double newattackspeedmulti = 1.0;
-        double newrange = 10.0;
-        int newarmor = 0;
-        double newmovespeed = Settings.CHARSPEED;
+        calcAttackStats(); // Angriffe der Waffen berechnen
+        calcDefStats(); // sonstige Spielerwerte berechnen
+    }
 
+    public void calcAttackStats() {
         for (int w = 0; w <= 2; w++) {
+            int newdamage = 0;
+            double newdamagemulti = 1.0;
+            double newattackcooldown = 10;
+            double newattackspeedmulti = 1.0;
+            double newrange = 10.0;
 
             ArrayList<Item> checkitems = new ArrayList<>();
 
             // Eine der Waffen hinzufügen
             checkitems.add(this.getClient().getEquippedItems().getEquipslots()[1][w]);
 
-            // Alle Equip-Items hinzufügen
+            // Alle Equip-Items hinzufügen (außer Waffen)
             for (int i = 2; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
                 checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
             }
@@ -137,7 +139,6 @@ public class Player extends Char {
                 if ((double) item.getStats().itemStats.get("range") != 0) {
                     newrange = (double) item.getStats().itemStats.get("range");
                 }
-                newarmor += (int) item.getStats().itemStats.get("armor");
                 for (int k = 0; k < item.getItemattributes().size(); k++) {
                     for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
                         double astatval = item.getItemattributes().get(k).getStats().get(astatname);
@@ -151,20 +152,11 @@ public class Player extends Char {
                             case "range":
                                 newrange *= (1 + astatval);
                                 break;
-                            case "armor":
-                                newarmor += astatval;
-                                break;
-                            case "movespeed":
-                                newmovespeed *= (1 + astatval);
-                                break;
                         }
                     }
                 }
             }
-
-            speed = newmovespeed;
-            armor = newarmor;
-
+            
             newdamage *= newdamagemulti;
             newdamage = Math.max(newdamage, 2);
             newattackcooldown /= newattackspeedmulti;
@@ -172,6 +164,42 @@ public class Player extends Char {
             PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
             attack[w] = playerattack;
         }
+    }
+
+    public void calcDefStats() {
+        int newarmor = 0;
+        double newmovespeed = Settings.CHARSPEED;
+
+        ArrayList<Item> checkitems = new ArrayList<>();
+
+        // Alle Equip-Items hinzufügen (auch Waffen)
+        for (int i = 1; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
+            checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
+        }
+
+        for (int i = 0; i < checkitems.size(); i++) {
+            Item item = checkitems.get(i);
+            if (item == null) {
+                continue;
+            }
+            newarmor += (int) item.getStats().itemStats.get("armor");
+            for (int k = 0; k < item.getItemattributes().size(); k++) {
+                for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
+                    double astatval = item.getItemattributes().get(k).getStats().get(astatname);
+                    switch (astatname) {
+                        case "armor":
+                            newarmor += astatval;
+                            break;
+                        case "movespeed":
+                            newmovespeed *= (1 + astatval);
+                            break;
+                    }
+                }
+            }
+        }
+
+        speed = newmovespeed;
+        armor = newarmor;
     }
 
     /**
