@@ -386,10 +386,8 @@ public class Engine {
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
 
-            float v;
-            float w = 0.0f;
-
-            v = 0.25f * (int) item.getStats().itemStats.get("pic");
+            float v = 0.25f * (int) item.getStats().itemStats.get("pic");
+            float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -526,9 +524,9 @@ public class Engine {
 
                 float width = 0.11f * tilesX;
                 float height = 0.11f * tilesY;
-                float v;
-                float w = 0.0f;
-                v = 0.25f * (int) item.getStats().itemStats.get("pic");
+
+                float v = 0.25f * (int) item.getStats().itemStats.get("pic");
+                float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
@@ -571,9 +569,9 @@ public class Engine {
 
                         float width = 0.11f * tilesX;
                         float height = 0.11f * tilesY;
-                        float v;
-                        float w = 0.0f;
-                        v = 0.25f * (int) item.getStats().itemStats.get("pic");
+
+                        float v = 0.25f * (int) item.getStats().itemStats.get("pic");
+                        float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
 
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glTexCoord2f(v, w + 0.25f);
@@ -598,9 +596,9 @@ public class Engine {
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * tilesY;
 
             float size = 0.08f;
-            float v;
-            float w = 0.0f;
-            v = 0.25f * (int) item.getStats().itemStats.get("pic");
+
+            float v = 0.25f * (int) item.getStats().itemStats.get("pic");
+            float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
