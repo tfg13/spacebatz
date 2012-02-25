@@ -189,7 +189,7 @@ public class UDPConnection {
                 // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
                 if (!client.getContext().knowsMovement(e, e.getMovement())) {
                     // Nein, also senden
-                    System.out.println("Sending: " + client + " " + e);
+                    //System.out.println("Sending: " + client + " " + e);
                     update.add(e);
                     client.getContext().sentMovement(e, e.getMovement());
                 }
