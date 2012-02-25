@@ -449,32 +449,23 @@ public class Engine {
 
         // Bullets
         bulletTiles.bind();
-        for (int i = 0; i < Client.getBulletList().size(); i++) {
-            Bullet bullet = Client.getBulletList().get(i); // Zu alte Bullets löschen:
-            if (bullet.getDeletetick() < Client.frozenGametick) {
+        for (Char c : Client.netIDMap.values()) {
+            if (c instanceof Bullet) {
+                Bullet bullet = (Bullet) c;
 
-                Client.getBulletList().remove(i);
-                i--;
-            } else {
-
-                float radius = bullet.getSpeed() * (Client.frozenGametick - bullet.getSpawntick());
-                float x = (float) bullet.getSpawnposition().getX() + radius * (float) Math.cos(bullet.getDirection());
-                float y = (float) bullet.getSpawnposition().getY() + radius * (float) Math.sin(bullet.getDirection());
-
-                float v = Client.bullettypes.getBullettypelist().get(bullet.getBullettypeID()).getPicture() * 0.25f;
+                float v = Client.bullettypes.getBullettypelist().get(bullet.bullettypeID).getPicture() * 0.25f;
                 float w = 0.0f;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
-                glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
+                glVertex3f((float) c.getX() + panX - 0.75f, (float) c.getY() + panY - 0.75f, 0.0f);
                 glTexCoord2f(v + 0.25f, w + 0.25f);
-                glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
+                glVertex3f((float) c.getX() + panX + 0.75f, (float) c.getY() + panY - 0.75f, 0.0f);
                 glTexCoord2f(v + 0.25f, w);
-                glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
+                glVertex3f((float) c.getX() + panX + 0.75f, (float) c.getY() + panY + 0.75f, 0.0f);
                 glTexCoord2f(v, w);
-                glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
+                glVertex3f((float) c.getX() + panX - 0.75f, (float) c.getY() + panY + 0.75f, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
-
             }
         }
 
@@ -544,7 +535,7 @@ public class Engine {
                     Item item = Client.getEquippedItems().getEquipslots()[i][j];
                     if (item != null) {
                         // Item zeichnen;
-                        float x = 0.0f;
+                        float x;
                         if (i == 1) {
                             x = (0.24f + 0.17f * j) * tilesX;
                         } else {

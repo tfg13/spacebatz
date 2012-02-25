@@ -1,10 +1,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.Char;
-import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Enemy;
-import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -288,6 +285,10 @@ public class ClientNetwork {
                         case 3:
                             Enemy en = new Enemy(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
                             Client.netIDMap.put(en.netID, en);
+                            break;
+                        case 4:
+                            Bullet bu = new Bullet(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
+                            Client.netIDMap.put(bu.netID, bu);
                             break;
                         default:
                             System.out.println("WARN: Unknown charTypeID (was " + type + ")");
