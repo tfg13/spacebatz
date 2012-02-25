@@ -190,6 +190,7 @@ public class Game {
             Server.msgSender.sendEnemyTypes(client);
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
+            player.calcEquipStats();
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
             client.getContext().makeCharKnown(player.netID);
