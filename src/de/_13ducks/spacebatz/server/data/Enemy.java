@@ -82,13 +82,13 @@ public class Enemy extends Char {
             healthpoints -= b.getDamage();
 
             if (healthpoints <= 0) {
-                Server.msgSender.sendCharHit(netID, e.netID, true);
+                Server.msgSender.sendCharHit(netID, e.netID, b.getDamage(), true);
                 Server.game.netIDMap.remove(netID);
                 Server.entityMap.removeEntity(this);
                 DropManager.dropItem(getX(), getY(), enemylevel);
                 return true;
             } else {
-                Server.msgSender.sendCharHit(netID, e.netID, false);
+                Server.msgSender.sendCharHit(netID, e.netID, b.getDamage(), false);
                 return false;
             }
         } else {

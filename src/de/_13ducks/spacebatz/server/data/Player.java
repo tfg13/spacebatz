@@ -3,6 +3,8 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -35,7 +37,6 @@ public class Player extends Char {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
-        calcEquipStats();
     }
 
     /**
@@ -93,9 +94,8 @@ public class Player extends Char {
         if (thistick > attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
             attackcooldowntick = thistick;
 
-
             Bullet bullet = new Bullet(thistick, getX(), getY(), angle, 0, Server.game.newNetID(), this);
-            Server.game.bullets.add(bullet);
+
             Server.game.netIDMap.put(bullet.netID, bullet);
         }
     }
@@ -104,60 +104,101 @@ public class Player extends Char {
      * Berechnet Playerwerte (Schaden, ...) für die angelegten Items
      */
     public void calcEquipStats() {
-        int newdamage = 0;
-        double newdamagemulti = 1.0;
-        double newattackcooldown = 10;
-        double newattackspeedmulti = 1.0;
-        double newrange = 10.0;
-        int newarmor = 0;
-        double newmovespeedmulti = Settings.CHARSPEED;
+        calcAttackStats(); // Angriffe der Waffen berechnen
+        calcDefStats(); // sonstige Spielerwerte berechnen
+    }
 
-        for (int i = 1; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
-            for (int j = 0; j < this.getClient().getEquippedItems().getEquipslots()[i].length; j++) {
-                Item item = this.getClient().getEquippedItems().getEquipslots()[i][j];
-                if (item != null) {
-                    newdamage += (int) item.getStats().itemStats.get("damage");
-                    if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
-                        newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
-                    }
-                    if ((double) item.getStats().itemStats.get("range") != 0) {
-                        newrange = (double) item.getStats().itemStats.get("range");
-                    }
-                    newarmor += (int) item.getStats().itemStats.get("armor");
-                    for (int k = 0; k < item.getItemattributes().size(); k++) {
-                        for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
-                            double astatval = item.getItemattributes().get(k).getStats().get(astatname);
-                            switch (astatname) {
-                                case "damage":
-                                    newdamagemulti += astatval;
-                                    break;
-                                case "attackspeed":
-                                    newattackspeedmulti += astatval;
-                                    break;
-                                case "range":
-                                    newrange *= (1 + astatval);
-                                    break;
-                                case "armor":
-                                    newarmor += astatval;
-                                    break;
-                                case "movespeed":
-                                    newmovespeedmulti *= (1 + astatval);
-                                    break;
-                            }
+    public void calcAttackStats() {
+        for (int w = 0; w <= 2; w++) {
+            int newdamage = 0;
+            double newdamagemulti = 1.0;
+            double newattackcooldown = 10;
+            double newattackspeedmulti = 1.0;
+            double newrange = 10.0;
+
+            ArrayList<Item> checkitems = new ArrayList<>();
+
+            // Eine der Waffen hinzufügen
+            checkitems.add(this.getClient().getEquippedItems().getEquipslots()[1][w]);
+
+            // Alle Equip-Items hinzufügen (außer Waffen)
+            for (int i = 2; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
+                checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
+            }
+
+            for (int i = 0; i < checkitems.size(); i++) {
+                Item item = checkitems.get(i);
+                if (item == null) {
+                    continue;
+                }
+                newdamage += (int) item.getStats().itemStats.get("damage");
+                if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
+                    newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
+                }
+                if ((double) item.getStats().itemStats.get("range") != 0) {
+                    newrange = (double) item.getStats().itemStats.get("range");
+                }
+                for (int k = 0; k < item.getItemattributes().size(); k++) {
+                    for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
+                        double astatval = item.getItemattributes().get(k).getStats().get(astatname);
+                        switch (astatname) {
+                            case "damage":
+                                newdamagemulti += astatval;
+                                break;
+                            case "attackspeed":
+                                newattackspeedmulti += astatval;
+                                break;
+                            case "range":
+                                newrange *= (1 + astatval);
+                                break;
                         }
                     }
                 }
             }
+            
+            newdamage *= newdamagemulti;
+            newdamage = Math.max(newdamage, 2);
+            newattackcooldown /= newattackspeedmulti;
+
+            PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
+            attack[w] = playerattack;
         }
-        speed = newmovespeedmulti;
+    }
+
+    public void calcDefStats() {
+        int newarmor = 0;
+        double newmovespeed = Settings.CHARSPEED;
+
+        ArrayList<Item> checkitems = new ArrayList<>();
+
+        // Alle Equip-Items hinzufügen (auch Waffen)
+        for (int i = 1; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
+            checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
+        }
+
+        for (int i = 0; i < checkitems.size(); i++) {
+            Item item = checkitems.get(i);
+            if (item == null) {
+                continue;
+            }
+            newarmor += (int) item.getStats().itemStats.get("armor");
+            for (int k = 0; k < item.getItemattributes().size(); k++) {
+                for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
+                    double astatval = item.getItemattributes().get(k).getStats().get(astatname);
+                    switch (astatname) {
+                        case "armor":
+                            newarmor += astatval;
+                            break;
+                        case "movespeed":
+                            newmovespeed *= (1 + astatval);
+                            break;
+                    }
+                }
+            }
+        }
+
+        speed = newmovespeed;
         armor = newarmor;
-
-        newdamage *= newdamagemulti;
-        newdamage = Math.max(newdamage, 2);
-        newattackcooldown /= newattackspeedmulti;
-
-        PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
-        attack[0] = playerattack;
     }
 
     /**
@@ -165,6 +206,10 @@ public class Player extends Char {
      */
     public PlayerAttack getSelectedAttack() {
         return attack[selectedattack];
+    }
+
+    public void selectAttack(byte select) {
+        this.selectedattack = select;
     }
 
     /**
@@ -180,13 +225,13 @@ public class Player extends Char {
             healthpoints -= enemy.getDamage();
 
             if (healthpoints <= 0) {
-                Server.msgSender.sendCharHit(netID, e.netID, true);
+                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);
                 setStillX(Server.game.getLevel().respawnX);
                 setStillY(Server.game.getLevel().respawnY);
                 healthpoints = healthpointsmax;
                 return true;
             } else {
-                Server.msgSender.sendCharHit(netID, e.netID, false);
+                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), false);
                 return false;
             }
         } else {

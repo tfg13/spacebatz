@@ -150,6 +150,14 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_CLIENT_DISCONNECT = 40;
     /**
+     * Client will andere Waffe auswählen
+     */
+    public static final byte NET_TCP_CMD_REQUEST_WEAPONSWITCH = 41;
+    /**
+     * Server ändert für einen Client die gerade ausgewählte Waffe
+     */
+    public static final byte NET_TCP_CMD_SWITCH_WEAPON = 42;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

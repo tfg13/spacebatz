@@ -11,11 +11,11 @@ public class Char {
     /**
      * Die Lebenspunkte des Chars
      */
-    private int healthpoints;
+    protected int healthpoints;
     /**
      * Die maximalen Lebenspunkte des Chars
      */
-    private int healthpointsmax;
+    protected int healthpointsmax;
     /**
      * Die netID.
      */

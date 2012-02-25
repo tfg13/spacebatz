@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.Server;
 
 /**
  * Ein bewegliches Objekt. (z.B. ein Spieler, Mob etc)
@@ -82,7 +83,22 @@ public abstract class Char extends Entity {
      * @return true, wenn Enemy stirbt, sonst false
      */
     public boolean decreaseHealthpoints(Entity e) {
-        return false;
+        if (e instanceof Enemy) {
+            Enemy enemy = (Enemy) e;
+            healthpoints -= enemy.getDamage();
+
+            if (healthpoints <= 0) {
+                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);
+                Server.game.netIDMap.remove(netID);
+                Server.entityMap.removeEntity(this);
+                return true;
+            } else {
+                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), false);
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**

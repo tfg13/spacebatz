@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Enthält alle Daten eines Laufenden Spiels
@@ -29,11 +30,8 @@ public class Game {
     /**
      * Alle dynamischen Objekte
      */
-    public HashMap<Integer, Entity> netIDMap;
-    /**
-     * Liste aller Geschosse
-     */
-    public ArrayList<Bullet> bullets;
+    public ConcurrentHashMap<Integer, Entity> netIDMap;
+    
     /**
      * HashMap ordnet netID Items zu
      */
@@ -80,9 +78,8 @@ public class Game {
      */
     public Game() {
         clients = new HashMap<>();
-        netIDMap = new HashMap<>();
+        netIDMap = new ConcurrentHashMap<>();
         level = new ServerLevel();
-        bullets = new ArrayList<>();
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
         bullettypes = new BulletTypes();
@@ -190,6 +187,7 @@ public class Game {
             Server.msgSender.sendEnemyTypes(client);
             Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
+            player.calcEquipStats();
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);

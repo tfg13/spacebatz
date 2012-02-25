@@ -166,6 +166,19 @@ public class Engine {
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             sendShootRequest();
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+            if (Client.getPlayer().getSelectedattack() != 0) {
+                Client.getMsgSender().sendSwitchWeapon((byte) 0);
+            }
+        } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+            if (Client.getPlayer().getSelectedattack() != 1) {
+                Client.getMsgSender().sendSwitchWeapon((byte) 1);
+            }
+        } else if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+            if (Client.getPlayer().getSelectedattack() != 2) {
+                Client.getMsgSender().sendSwitchWeapon((byte) 2);
+            }
+        }
         // Mausklick suchen
         if (Mouse.isButtonDown(0)) {
             if (showinventory) {
@@ -528,6 +541,16 @@ public class Engine {
                 glVertex3f(x, y + height, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
             }
+        }
+
+        // ausgewählten Waffenslot markieren:
+        if (showinventory) {
+            glDisable(GL_TEXTURE_2D);
+            float wx = 0.227f + 0.172f * Client.getPlayer().getSelectedattack();
+
+            glColor3f(0.7f, 0.0f, 0.0f);
+            glRectf(wx * tilesX, 0.59f * tilesY, (wx + 0.14f) * tilesX, 0.6f * tilesY);
+            glEnable(GL_TEXTURE_2D);
         }
 
         // angelegte Items in ihre Slots im Inventar zeichnen
