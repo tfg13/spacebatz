@@ -159,7 +159,10 @@ public class UDPConnection {
                 client.getPlayer().playerShoot(Bits.getFloat(data, 6));
                 break;
             case Settings.NET_UDP_CMD_ACK_MOVE:
-                client.getContext().makeMovementKnown(Bits.getInt(data, 6));
+                int ackNumber = (data.length - 6) / 4;
+                for (int i = 0; i < ackNumber; i++) {
+                    client.getContext().makeMovementKnown(Bits.getInt(data, 6 + (i * 4)));
+                }
                 break;
             case Settings.NET_UDP_CMD_ACK_ADD_ENTITY:
                 client.getContext().makeEntityKnown(Bits.getInt(data, 6));
@@ -189,7 +192,6 @@ public class UDPConnection {
                 // Schauen, ob dem Client der Zustand dieser Einheit bekannt ist:
                 if (!client.getContext().knowsMovement(e, e.getMovement())) {
                     // Nein, also senden
-                    System.out.println("Sending: " + client + " " + e);
                     update.add(e);
                     client.getContext().sentMovement(e, e.getMovement());
                 }

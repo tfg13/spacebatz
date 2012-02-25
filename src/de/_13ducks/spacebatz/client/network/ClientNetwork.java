@@ -172,13 +172,11 @@ public class ClientNetwork {
             case Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE:
                 // Dem Server sofort bestätigen
                 byte numberOfCharUpdates = data[5];
+                byte[] ackPack = new byte[4 * numberOfCharUpdates + 6];
                 for (int i = 0; i < numberOfCharUpdates; i++) {
-                    // Ist diese Einheit bekannt (kann ihre Position gesetzt werden?)
-                    if (Client.netIDMap.containsKey(Bits.getInt(data, 32 + (32 * i)))) {
-                        // Bestätigung verschicken.
-                        ackMove(new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))));
-                    }
+                    Bits.putInt(ackPack, 6 + (i * 4), new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))).hashCode());
                 }
+                ackMove(ackPack);
                 break;
             case Settings.NET_UDP_CMD_ADD_ENTITY:
                 // Sofort bestätigen
@@ -311,12 +309,10 @@ public class ClientNetwork {
      *
      * @param m das erhaltene Movement
      */
-    private void ackMove(Movement m) {
-        byte[] b = new byte[10];
+    private void ackMove(byte[] b) {
         b[0] = Client.getClientID();
         Bits.putInt(b, 1, Client.frozenGametick);
         b[5] = Settings.NET_UDP_CMD_ACK_MOVE;
-        Bits.putInt(b, 6, m.hashCode());
         udpSend(b);
     }
 
