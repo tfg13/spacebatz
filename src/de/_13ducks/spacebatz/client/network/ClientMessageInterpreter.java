@@ -149,13 +149,15 @@ public class ClientMessageInterpreter {
                 if (Client.netIDMap.get(netIDAttacker) instanceof Bullet) {
                     Client.netIDMap.remove(netIDAttacker);
                 }
-                // 
+                // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
-                    Player p = Client.getPlayer();
-                    p.setHealthpoints(p.getHealthpoints() - damage);
-                    if (p.getHealthpoints() < 0) {
-                        // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
-                        p.setHealthpoints(p.getHealthpointsmax());
+                    Player p = (Player) Client.netIDMap.get(netIDVictim);
+                    if (p == Client.getPlayer()) {
+                        p.setHealthpoints(p.getHealthpoints() - damage);
+                        if (p.getHealthpoints() < 0) {
+                            // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
+                            p.setHealthpoints(p.getHealthpointsmax());
+                        }
                     }
                 }
                 break;
