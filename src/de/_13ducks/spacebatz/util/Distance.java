@@ -5,10 +5,10 @@
 package de._13ducks.spacebatz.util;
 
 /**
- *
+ * Hilfsklasse zum berechnen des Abstandes zweier Punkte.
  * @author michael
  */
-public class Distance {
+public final class Distance {
 
     /**
      * Berechnet die Distanz zwischen zwei Punkten
