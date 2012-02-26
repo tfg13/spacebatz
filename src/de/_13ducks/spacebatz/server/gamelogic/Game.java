@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
-import de._13ducks.spacebatz.shared.BulletTypes;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
@@ -41,10 +40,6 @@ public class Game {
      */
     public EnemyTypes enemytypes;
     /**
-     * Liste aller Bullettypen
-     */
-    public BulletTypes bullettypes;
-    /**
      * Das Level
      */
     private ServerLevel level;
@@ -56,10 +51,6 @@ public class Game {
      * Die serialistierten enemytypes
      */
     private byte[] serializedEnemyTypes;
-    /**
-     * Die serialistierten bullettypes
-     */
-    private byte[] serializedBulletTypes;
     /**
      * Der Server-Gametick.
      */
@@ -82,7 +73,6 @@ public class Game {
         level = new ServerLevel();
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
-        bullettypes = new BulletTypes();
         LevelGenerator.generateLevel(level);
         plants = new ArrayList<>();
 
@@ -117,27 +107,9 @@ public class Game {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-        // Bullettypes serialisieren, damit es später schnell an Clients gesendet werden kann:
-        ByteArrayOutputStream bs3 = new ByteArrayOutputStream();
-        ObjectOutputStream os3;
-        try {
-            os3 = new ObjectOutputStream(bs3);
-            os3.writeObject(bullettypes);
-            os3.flush();
-            bs3.flush();
-            bs3.close();
-            os3.close();
-            serializedBulletTypes = bs3.toByteArray();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void addEnemies() {
-
-
         // Platziert Gegner
         Random r = new Random();
         for (int i = 0; i < 200; i++) {
@@ -185,7 +157,6 @@ public class Game {
             Server.msgSender.sendAllItems(client, getItemMap());
             Server.msgSender.sendAllPlants();
             Server.msgSender.sendEnemyTypes(client);
-            Server.msgSender.sendBulletTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             player.calcEquipStats();
             Server.msgSender.sendSetPlayer(client, player);
@@ -291,13 +262,6 @@ public class Game {
      */
     public ServerLevel getLevel() {
         return level;
-    }
-
-    /**
-     * @return the serializedBulletTypes
-     */
-    public byte[] getSerializedBulletTypes() {
-        return serializedBulletTypes;
     }
 
     /**

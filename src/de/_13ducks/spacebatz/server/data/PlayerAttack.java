@@ -6,6 +6,7 @@ package de._13ducks.spacebatz.server.data;
  * @author jk
  */
 public class PlayerAttack {
+
     /**
      * Schaden, den dieser Angriff macht
      */
@@ -19,6 +20,10 @@ public class PlayerAttack {
      */
     private double range;
     /**
+     * Bild-Nummer für Bullet
+     */
+    private int bulletpic;
+    /**
      * Geschwindigkeit der Bullets
      */
     private double bulletspeed;
@@ -30,14 +35,15 @@ public class PlayerAttack {
      * Explosionsradius des Bullets, meistens 0
      */
     private double explosionradius;
-    
+
     /**
      * Konstruktor
      */
-    public PlayerAttack(int damage, double attackcooldown, double range, double bulletspeed, double spread, double explosionradius) {
+    public PlayerAttack(int damage, double attackcooldown, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
         this.damage = damage;
         this.attackcooldown = attackcooldown;
         this.range = range;
+        this.bulletpic = bulletpic;
         this.bulletspeed = bulletspeed;
         this.spread = spread;
         this.explosionradius = explosionradius;
@@ -65,5 +71,9 @@ public class PlayerAttack {
 
     public double getExplosionradius() {
         return explosionradius;
+    }
+
+    public int getBulletpic() {
+        return bulletpic;
     }
 }

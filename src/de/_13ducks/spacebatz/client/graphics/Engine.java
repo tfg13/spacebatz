@@ -460,8 +460,8 @@ public class Engine {
             if (c instanceof Bullet) {
                 Bullet bullet = (Bullet) c;
 
-                float v = Client.bullettypes.getBullettypelist().get(bullet.bullettypeID).getPicture() * 0.25f;
-                float w = 0.0f;
+                float v = bullet.bulletpic * 0.25f;
+                float w = ((int) (bullet.bulletpic / 4)) * 0.25f;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);

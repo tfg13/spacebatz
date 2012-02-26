@@ -97,6 +97,33 @@ public class Enemy extends Char {
     }
     
     /**
+     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
+     *
+     * @param Entity, das den Schaden anrichtet
+     * @return true, wenn Enemy stirbt, sonst false
+     */
+    @Override
+    public boolean decreaseHealthpoints(Entity e, double damagemodifier) {
+        if (e instanceof Bullet) {
+            Bullet b = (Bullet) e;
+            healthpoints -= Math.ceil(b.getDamage() * damagemodifier);
+
+            if (healthpoints <= 0) {
+                Server.msgSender.sendCharHit(netID, e.netID, b.getDamage(), true);
+                Server.game.netIDMap.remove(netID);
+                Server.entityMap.removeEntity(this);
+                DropManager.dropItem(getX(), getY(), enemylevel);
+                return true;
+            } else {
+                Server.msgSender.sendCharHit(netID, e.netID, b.getDamage(), false);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    /**
      * Der Enemy will jemanden angreifen
      * @param e das was angegriffen wird
      */

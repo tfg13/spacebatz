@@ -96,7 +96,7 @@ public class Player extends Char {
             attackcooldowntick = thistick;
 
             Random random = new Random();
-            Bullet bullet = new Bullet(thistick, getX(), getY(), angle + random.nextGaussian() * attack[selectedattack].getSpread(), 0, Server.game.newNetID(), this);
+            Bullet bullet = new Bullet(thistick, getX(), getY(), angle + random.nextGaussian() * attack[selectedattack].getSpread(), attack[selectedattack].getBulletspeed(), attack[selectedattack].getBulletpic(), Server.game.newNetID(), this);
 
             Server.game.netIDMap.put(bullet.netID, bullet);
         }
@@ -117,6 +117,7 @@ public class Player extends Char {
             double newattackcooldown = 10;
             double newattackspeedmulti = 1.0;
             double newrange = 10.0;
+            int newbulletpic = 0;
             double newbulletspeed = 0.3;
             double newspread = 0.0;
             double newexplosionradius = 0.0;
@@ -142,6 +143,7 @@ public class Player extends Char {
                     newdamage = (int) item.getStats().itemStats.get("damage");
                     newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
                     newrange = (double) item.getStats().itemStats.get("range");
+                    newbulletpic = (int) item.getStats().itemStats.get("bulletpic");
                     newbulletspeed = (double) item.getStats().itemStats.get("bulletspeed");
                     newspread = (double) item.getStats().itemStats.get("spread");
                     newexplosionradius = (double) item.getStats().itemStats.get("explosionradius");
@@ -169,7 +171,7 @@ public class Player extends Char {
             newdamage *= newdamagemulti;
             newattackcooldown /= newattackspeedmulti;
 
-            PlayerAttack playerattack = new PlayerAttack(newdamage, newattackcooldown, newrange, newbulletspeed, newspread, newexplosionradius);
+            PlayerAttack playerattack = new PlayerAttack(newdamage, newattackcooldown, newrange, newbulletpic, newbulletspeed, newspread, newexplosionradius);
             attack[w] = playerattack;
         }
     }

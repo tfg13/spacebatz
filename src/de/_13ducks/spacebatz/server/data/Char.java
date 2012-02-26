@@ -83,22 +83,17 @@ public abstract class Char extends Entity {
      * @return true, wenn Enemy stirbt, sonst false
      */
     public boolean decreaseHealthpoints(Entity e) {
-        if (e instanceof Enemy) {
-            Enemy enemy = (Enemy) e;
-            healthpoints -= enemy.getDamage();
+        return false;
+    }
 
-            if (healthpoints <= 0) {
-                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);
-                Server.game.netIDMap.remove(netID);
-                Server.entityMap.removeEntity(this);
-                return true;
-            } else {
-                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), false);
-                return false;
-            }
-        } else {
-            return false;
-        }
+    /**
+     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
+     *
+     * @param e, Entity das Schaden zufügt
+     * @return true, wenn Enemy stirbt, sonst false
+     */
+    public boolean decreaseHealthpoints(Entity e, double damagemodifier) {
+        return false;
     }
 
     /**

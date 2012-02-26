@@ -31,13 +31,6 @@ public class ServerMessageSender {
     }
 
     /**
-     * Sendet bullettypes an einen Client
-     */
-    public void sendBulletTypes(Client client) {
-        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_BULLETTYPES, Server.game.getSerializedBulletTypes(), client);
-    }
-
-    /**
      * Schickt dem Client einen neuen Player.
      *
      * @param client der Ziel-Client

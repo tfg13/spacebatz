@@ -5,7 +5,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -30,7 +29,7 @@ public class CollisionManager {
     }
 
     /**
-     * Berechnet Kollisionen zwischen Bullets und Cahrs
+     * Berechnet Kollisionen zwischen Bullets und Chars
      */
     private static void computeBulletCollision() {
 
@@ -72,8 +71,11 @@ public class CollisionManager {
                                         en.setMyTarget(bullet.getOwner());
                                     }
                                 }
+                                // Flächenschaden
+                                if (bullet.getExplosionradius() > 0) {
+                                    computeBulletExplosionCollision(bullet, c);
+                                }
                             }
-                            // Testcode: Bullet kann nur einen Gegner treffen
                             listIterator.remove();
 
 
@@ -82,8 +84,41 @@ public class CollisionManager {
                     }
                 }
             }
+        }
+    }
 
+    /**
+     * Berechnet Flächenschaden von Bullet-Explosionen
+     * Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden kriegt
+     */
+    private static void computeBulletExplosionCollision(Bullet bullet, Char charhit) {
+        double x = bullet.getX();
+        double y = bullet.getY();
 
+        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        while (iter.hasNext()) {
+            Entity e = iter.next();
+            if (e instanceof Char) {
+                Char c = (Char) e;
+                if (c == charhit) {
+                    continue;
+                }
+                double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
+                if (distance < bullet.getExplosionradius()) {
+                    if (!c.equals(bullet.getOwner())) {
+                        if (c instanceof Enemy) {
+                            Enemy en = (Enemy) c;
+                            // Schaden von HP abziehen, wird von Distanz verringert
+                            if (en.decreaseHealthpoints(bullet, 1.0 - distance / bullet.getExplosionradius() * 2 / 3)) {
+                            } else {
+                                if (en.getMyTarget() == null) {
+                                    en.setMyTarget(bullet.getOwner());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
