@@ -19,9 +19,13 @@ public class Bullet extends Entity {
      */
     private int damage;
     /*
+     * Explosionsradius;
+     */
+    private double explosionradius;
+    /*
      * ID des BulletTypes
      */
-    public final int bulletpic;
+    private final int bulletpic;
     /*
      * Tick, zu dem die Bullet gelöscht wird
      */
@@ -42,6 +46,7 @@ public class Bullet extends Entity {
         if (owner instanceof Player) {
             Player player = (Player) owner;
             this.damage = player.getSelectedAttack().getDamage();
+            this.explosionradius = player.getSelectedAttack().getExplosionradius();
             lifetime = (int) (player.getSelectedAttack().getRange() / speed);
         } else {
             this.damage = owner.getDamage();
@@ -98,6 +103,13 @@ public class Bullet extends Entity {
      */
     public int getDamage() {
         return damage;
+    }
+
+    /**
+     * @return the explosionradius
+     */
+    public double getExplosionradius() {
+        return explosionradius;
     }
 
     /**
