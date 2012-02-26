@@ -115,6 +115,9 @@ public class DebugConsole {
     public void executeCommands() {
         while (!commands.isEmpty()) {
             String[] words = commands.poll();
+            if (words.length == 1 && "".equals(words[0])) {
+                continue;
+            }
             try {
                 // Befehle:
                 switch (words[0]) {
