@@ -4,8 +4,6 @@
  */
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.shared.BulletTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -23,21 +21,20 @@ public class Bullet extends Entity {
     /*
      * ID des BulletTypes
      */
-    public final int typeID;
+    public final int bulletpic;
     /*
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
 
-    public Bullet(int spawntick, double spawnposx, double spawnposy, double angle, int typeID, int netID, Char owner) {
+    public Bullet(int spawntick, double spawnposx, double spawnposy, double angle, double speed, int typeID, int netID, Char owner) {
         super(spawnposx, spawnposy, netID, (byte) 4);
         moveStartTick = spawntick;
 
-        BulletTypeStats stats = Server.game.bullettypes.getBullettypelist().get(typeID);
-        this.typeID = typeID;
+        this.bulletpic = typeID;
 
         setVector(Math.cos(angle), Math.sin(angle));
-        setSpeed(stats.getSpeed());
+        setSpeed(speed);
 
         int lifetime;
 
@@ -45,10 +42,10 @@ public class Bullet extends Entity {
         if (owner instanceof Player) {
             Player player = (Player) owner;
             this.damage = player.getSelectedAttack().getDamage();
-            lifetime = (int) (player.getSelectedAttack().getRange() / stats.getSpeed());
+            lifetime = (int) (player.getSelectedAttack().getRange() / speed);
         } else {
             this.damage = owner.getDamage();
-            lifetime = (int) (owner.getRange() / stats.getSpeed());
+            lifetime = (int) (owner.getRange() / speed);
         }
 
         this.deletetick = spawntick + lifetime;
@@ -118,6 +115,6 @@ public class Bullet extends Entity {
     @Override
     public void netPack(byte[] pack, int offset) {
         super.netPack(pack, offset);
-        Bits.putInt(pack, super.byteArraySize() + offset, typeID);
+        Bits.putInt(pack, super.byteArraySize() + offset, bulletpic);
     }
 }

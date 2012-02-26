@@ -4,7 +4,6 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
-import de._13ducks.spacebatz.shared.BulletTypes;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
@@ -57,10 +56,6 @@ public class Client {
      * Liste aller Gegnertypen
      */
     public static EnemyTypes enemytypes;
-    /**
-     * Liste aller Bullettypen
-     */
-    public static BulletTypes bullettypes;
     /**
      * Die Zuordnung von netID zu Char.
      */

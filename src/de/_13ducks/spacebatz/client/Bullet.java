@@ -7,12 +7,12 @@ package de._13ducks.spacebatz.client;
  */
 public class Bullet extends Char {
     /*
-     * ID vom Bullettyp.
+     * Bild
      */
-    public final int bullettypeID;
+    public final int bulletpic;
 
     public Bullet(int netID, int bullettypeID) {
         super(netID);
-        this.bullettypeID = bullettypeID;
+        this.bulletpic = bullettypeID;
     }
 }
