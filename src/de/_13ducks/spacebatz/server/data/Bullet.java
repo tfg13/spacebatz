@@ -7,7 +7,6 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.BulletTypeStats;
 import de._13ducks.spacebatz.util.Bits;
-import java.util.Random;
 
 /**
  * Ein Geschoss
@@ -30,15 +29,13 @@ public class Bullet extends Entity {
      */
     private int deletetick;
 
-    public Bullet(int spawntick, double spawnposx, double spawnposy, double direction, int typeID, int netID, Char owner) {
+    public Bullet(int spawntick, double spawnposx, double spawnposy, double angle, int typeID, int netID, Char owner) {
         super(spawnposx, spawnposy, netID, (byte) 4);
         moveStartTick = spawntick;
 
-        Random random = new Random();
         BulletTypeStats stats = Server.game.bullettypes.getBullettypelist().get(typeID);
         this.typeID = typeID;
 
-        double angle = direction + random.nextGaussian() * stats.getSpread();
         setVector(Math.cos(angle), Math.sin(angle));
         setSpeed(stats.getSpeed());
 

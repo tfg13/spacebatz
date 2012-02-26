@@ -13,30 +13,57 @@ public class PlayerAttack {
     /**
      * Cooldown-Zeit des Angriffs (in Ticks)
      */
-    private int attackcooldown;
+    private double attackcooldown;
     /**
      * Reichweite des Angriffs (in Feldern)
      */
     private double range;
+    /**
+     * Geschwindigkeit der Bullets
+     */
+    private double bulletspeed;
+    /**
+     * Streuung beim Schiessen
+     */
+    private double spread;
+    /**
+     * Explosionsradius des Bullets, meistens 0
+     */
+    private double explosionradius;
     
     /**
      * Konstruktor
      */
-    public PlayerAttack(int damage, int attackcooldown, double range) {
+    public PlayerAttack(int damage, double attackcooldown, double range, double bulletspeed, double spread, double explosionradius) {
         this.damage = damage;
         this.attackcooldown = attackcooldown;
         this.range = range;
+        this.bulletspeed = bulletspeed;
+        this.spread = spread;
+        this.explosionradius = explosionradius;
     }
 
     public int getDamage() {
         return damage;
     }
 
-    public int getAttackcooldown() {
+    public double getAttackcooldown() {
         return attackcooldown;
     }
 
     public double getRange() {
         return range;
+    }
+
+    public double getBulletspeed() {
+        return bulletspeed;
+    }
+
+    public double getSpread() {
+        return spread;
+    }
+
+    public double getExplosionradius() {
+        return explosionradius;
     }
 }

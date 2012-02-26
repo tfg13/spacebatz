@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Die Itemwerte, die ein bestimmtes Attribut ändert
+ * Die zufälligen Attribute, die Items bekommen können
  * @author Jojo
  */
 public class ItemAttributeTypes {
@@ -14,7 +14,7 @@ public class ItemAttributeTypes {
     public ItemAttributeTypes() {
         attributelist = new ArrayList<>();
         // name, quality, damage, attackspeed, range, armor, movespeed
-        
+
 
         HashMap<String, Double> moreDamage = new HashMap<>();
         moreDamage.put("quality", 1.0);
@@ -52,17 +52,22 @@ public class ItemAttributeTypes {
         moreArmor.put("quality", 1.0);
         moreArmor.put("armor", 0.1);
         attributelist.add(new ItemAttribute("More Armor", moreArmor));
-        
+
         HashMap<String, Double> evenMoreArmor = new HashMap<>();
         evenMoreArmor.put("quality", 2.0);
         evenMoreArmor.put("armor", 0.3);
         attributelist.add(new ItemAttribute("Even More Armor", evenMoreArmor));
 
+        HashMap<String, Double> moreHP = new HashMap<>();
+        moreHP.put("quality", 1.0);
+        moreHP.put("healthpoints", 5.0);
+        attributelist.add(new ItemAttribute("More Healthpoints", moreHP));
+
         HashMap<String, Double> moreMovespeed = new HashMap<>();
         moreMovespeed.put("quality", 2.0);
         moreMovespeed.put("movespeed", 0.2);
         attributelist.add(new ItemAttribute("More Movespeed", moreMovespeed));
-        
+
         HashMap<String, Double> unusual = new HashMap<>();
         unusual.put("quality", 2.0);
         attributelist.add(new ItemAttribute("Unusual", unusual));

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  *
@@ -91,10 +92,11 @@ public class Player extends Char {
 
     public void playerShoot(float angle) {
         int thistick = Server.game.getTick();
-        if (thistick > attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
+        if (thistick >= attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
             attackcooldowntick = thistick;
 
-            Bullet bullet = new Bullet(thistick, getX(), getY(), angle, 0, Server.game.newNetID(), this);
+            Random random = new Random();
+            Bullet bullet = new Bullet(thistick, getX(), getY(), angle + random.nextGaussian() * attack[selectedattack].getSpread(), 0, Server.game.newNetID(), this);
 
             Server.game.netIDMap.put(bullet.netID, bullet);
         }
@@ -110,11 +112,14 @@ public class Player extends Char {
 
     public void calcAttackStats() {
         for (int w = 0; w <= 2; w++) {
-            int newdamage = 0;
+            int newdamage = 2;
             double newdamagemulti = 1.0;
             double newattackcooldown = 10;
             double newattackspeedmulti = 1.0;
             double newrange = 10.0;
+            double newbulletspeed = 0.3;
+            double newspread = 0.0;
+            double newexplosionradius = 0.0;
 
             ArrayList<Item> checkitems = new ArrayList<>();
 
@@ -131,13 +136,18 @@ public class Player extends Char {
                 if (item == null) {
                     continue;
                 }
-                newdamage += (int) item.getStats().itemStats.get("damage");
-                if ((double) item.getStats().itemStats.get("attackcooldown") != 0) {
+                
+                // Waffenstats:
+                if ((int) item.getStats().itemStats.get("itemclass") == 1) {
+                    newdamage = (int) item.getStats().itemStats.get("damage");
                     newattackcooldown = (double) item.getStats().itemStats.get("attackcooldown");
-                }
-                if ((double) item.getStats().itemStats.get("range") != 0) {
                     newrange = (double) item.getStats().itemStats.get("range");
+                    newbulletspeed = (double) item.getStats().itemStats.get("bulletspeed");
+                    newspread = (double) item.getStats().itemStats.get("spread");
+                    newexplosionradius = (double) item.getStats().itemStats.get("explosionradius");
                 }
+                
+                // Attribute von allen Waffen
                 for (int k = 0; k < item.getItemattributes().size(); k++) {
                     for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
                         double astatval = item.getItemattributes().get(k).getStats().get(astatname);
@@ -157,10 +167,9 @@ public class Player extends Char {
             }
             
             newdamage *= newdamagemulti;
-            newdamage = Math.max(newdamage, 2);
             newattackcooldown /= newattackspeedmulti;
 
-            PlayerAttack playerattack = new PlayerAttack(newdamage, (int) newattackcooldown, newrange);
+            PlayerAttack playerattack = new PlayerAttack(newdamage, newattackcooldown, newrange, newbulletspeed, newspread, newexplosionradius);
             attack[w] = playerattack;
         }
     }

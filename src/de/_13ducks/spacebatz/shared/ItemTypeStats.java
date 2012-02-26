@@ -9,7 +9,6 @@ import java.util.HashMap;
  */
 public class ItemTypeStats implements java.io.Serializable{
     public HashMap<String, Serializable> itemStats;
-    public ItemTypeWeaponStats weaponstats;
     
     public ItemTypeStats(String name, int pic, int itemclass, int quality, int amount, int armor, ItemTypeWeaponStats weaponstats) {
         itemStats = new HashMap<>();
