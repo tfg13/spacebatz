@@ -270,7 +270,7 @@ public class ClientNetwork {
                         Movement m = new Movement(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
                         c.applyMove(m);
                     } else {
-                        System.out.println("WARNING: Ignoring propably ACK'ed moveupdate!");
+                        System.out.println(System.nanoTime() + "WARNING: Ignoring propably ACK'ed moveupdate! (Char was: " + netID + ")");
                     }
                 }
                 break;

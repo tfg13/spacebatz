@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Engine;
@@ -26,7 +25,8 @@ public class ClientMessageInterpreter {
      */
     private ConcurrentLinkedQueue<ClientTcpMessage> messages;
     /**
-     * Dieser Thread empfängt Tcp-Paketee, solange die Engine noch niht geladen ist wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser Thrad wird deaktiviert
+     * Dieser Thread empfängt Tcp-Pakete, solange die Engine noch niht geladen ist wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser
+     * Thrad wird deaktiviert
      */
     private Thread initTcpReceiverThread;
     /**
@@ -140,13 +140,8 @@ public class ClientMessageInterpreter {
             case Settings.NET_TCP_CMD_CHAR_HIT:
                 // Char wird von Bullet / angriff getroffen
                 int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
-                int netIDAttacker = Bits.getInt(message, 4); // netID vom Angreifer / Bullet
                 int damage = Bits.getInt(message, 8);
 
-                // Bullet verschwinden lassen
-                if (Client.netIDMap.get(netIDAttacker) instanceof Bullet) {
-                    Client.netIDMap.remove(netIDAttacker);
-                }
                 // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
                     Player p = (Player) Client.netIDMap.get(netIDVictim);
