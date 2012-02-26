@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
+import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -62,6 +63,10 @@ public class Engine {
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
     private int tilesX, tilesY;
+    /**
+     * Der fps-Counter.
+     */
+    private int fpsCount;
     /**
      * Die aktuelle FPS-Zahl.
      */
@@ -329,11 +334,11 @@ public class Engine {
      */
     private void updateFPS() {
         if (getTime() - lastFPS > 1000) {
-            Display.setTitle("FPS: " + fps);
-            fps = 0;
+            fps = fpsCount;
+            fpsCount = 0;
             lastFPS += 1000;
         }
-        fps++;
+        fpsCount++;
     }
 
     /**
@@ -387,7 +392,7 @@ public class Engine {
             float y = (float) item.getPosY();
 
             float v = 0.25f * (int) item.getStats().itemStats.get("pic");
-            float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
+            float w = 0.25f * ((int) item.getStats().itemStats.get("pic") / 4);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -526,7 +531,7 @@ public class Engine {
                 float height = 0.11f * tilesY;
 
                 float v = 0.25f * (int) item.getStats().itemStats.get("pic");
-                float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
+                float w = 0.25f * ((int) item.getStats().itemStats.get("pic") / 4);
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
@@ -571,7 +576,7 @@ public class Engine {
                         float height = 0.11f * tilesY;
 
                         float v = 0.25f * (int) item.getStats().itemStats.get("pic");
-                        float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
+                        float w = 0.25f * ((int) item.getStats().itemStats.get("pic") / 4);
 
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glTexCoord2f(v, w + 0.25f);
@@ -598,7 +603,7 @@ public class Engine {
             float size = 0.08f;
 
             float v = 0.25f * (int) item.getStats().itemStats.get("pic");
-            float w = 0.25f * (int) ((int) item.getStats().itemStats.get("pic") / 4);
+            float w = 0.25f * ((int) item.getStats().itemStats.get("pic") / 4);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.25f);
@@ -676,6 +681,17 @@ public class Engine {
                 // Itemname
                 renderText((String) item.getStats().itemStats.get("name"), x * tilesX, y * tilesY);
             }
+        }
+
+        // Net-Graph?
+        if (NetStats.netGraph) {
+            glDisable(GL_TEXTURE_2D);
+            glColor4f(.9f, .9f, .9f, .7f);
+            glRectf(0, tilesY, 10, tilesY - 1.5f);
+            glEnable(GL_TEXTURE_2D);
+            renderText("delay: spec " + (NET_TICKSYNC_MAXPING / (1000 / Client.tickrate)) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
+            renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
+            renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
         }
     }
 

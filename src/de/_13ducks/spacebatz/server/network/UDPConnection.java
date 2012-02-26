@@ -56,7 +56,13 @@ public class UDPConnection {
                         while (true) {
                             DatagramPacket p = new DatagramPacket(new byte[Settings.NET_UDP_CTS_SIZE], Settings.NET_UDP_CTS_SIZE);
                             socket.receive(p);
-                            queue.add(p);
+                            // Pre-Execute?
+                            if (p.getData()[5] == Settings.NET_UDP_CMD_PING) {
+                                // Sofort mit PONG antworten:
+                                sendPong(clientMap.get(p.getData()[0]));
+                            } else {
+                                queue.add(p);
+                            }
                         }
                     } catch (IOException ex) {
                     }
@@ -170,9 +176,24 @@ public class UDPConnection {
             case Settings.NET_UDP_CMD_ACK_DEL_ENTITY:
                 client.getContext().removeEntity(Bits.getInt(data, 6));
                 break;
+            case Settings.NET_UDP_CMD_PING:
+                // Nichts tun, war schon preexecuted.
+                break;
             default:
                 System.out.println("WARNING: Received UDP-CTS Packet with unknown cmd-id! (was " + cmd + ")");
         }
+    }
+
+    /**
+     * Antwortet mit einem Pong.
+     *
+     * @param client der Ziel-Client
+     */
+    private void sendPong(Client client) {
+        byte[] b = new byte[5];
+        b[0] = Settings.NET_UDP_CMD_PONG;
+        Bits.putInt(b, 1, Server.game.getTick());
+        sendPack(b, client);
     }
 
     private void sendData() {
@@ -218,6 +239,7 @@ public class UDPConnection {
 
     /**
      * Senden dem Client eine Nachricht, die ihn über die Existenz eines neuen Chars informiert.
+     *
      * @param client der Client
      * @param e der Char
      */
@@ -228,9 +250,10 @@ public class UDPConnection {
         e.netPack(b, 32);
         sendPack(b, client);
     }
-    
+
     /**
      * Senden dem Client eine Nachricht, die ihn über das Ableben eines Chars informiert.
+     *
      * @param client der Client
      * @param e der Char
      */

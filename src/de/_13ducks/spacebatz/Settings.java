@@ -29,12 +29,14 @@ public final class Settings {
      */
     public static final int CLIENT_GFX_TILEZOOM = 2;
     /**
-     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
+     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit,
+     * vsync)
      */
     public static final int CLIENT_GFX_FRAMELIMIT = 60;
     /**
-     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen wird die Framerate durch diese Option 60. Hinweis:
-     * Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
+     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen wird die
+     * Framerate durch diese Option 60. Hinweis: Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer min(framelimit,
+     * vsync)
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
     /**
@@ -93,6 +95,14 @@ public final class Settings {
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_INPUT = -10;
+    /**
+     * Ping-Request an den Server.
+     */
+    public static final byte NET_UDP_CMD_PING = -5;
+    /**
+     * Ping-Antwort vom Server.
+     */
+    public static final byte NET_UDP_CMD_PONG = 5;
     /**
      * Die cmdID für Level-senden
      */
@@ -162,8 +172,8 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
     /**
-     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene Spielfigur sich auch bei den anderen
-     * verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
+     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene
+     * Spielfigur sich auch bei den anderen verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
      */
     public static final int NET_TICKSYNC_MAXPING = 100;
     /**
@@ -186,4 +196,8 @@ public final class Settings {
      * Die Geschwindigkeit der Chars
      */
     public static final double CHARSPEED = 0.16;
+    /**
+     * Client-NetGraph per default an?
+     */
+    public static final boolean CLIENT_NETGRAPH_ON = true;
 }

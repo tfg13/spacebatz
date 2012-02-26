@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.server.data.Entity;
 import java.io.*;
 import java.util.LinkedList;
@@ -143,12 +144,23 @@ public class DebugConsole {
                     case "su":
                         loglevel = LOGLEVEL_NONE;
                         break;
+                    case "net_graph":
+                        if (words.length == 1) {
+                            outStream.println("Usage: \"net_graph N\", available modes: Off(0), On(1)");
+                        } else if (words.length == 2) {
+                            int mode = Integer.parseInt(words[1]);
+                            if (mode == 0 || mode == 1) {
+                                NetStats.netGraph = (mode == 1);
+                            }
+                        }
+                        break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entitystats      - Prints some information about the entitiymap");
                         outStream.println("entities-at X Y  - Prints entities around Point X Y");
                         outStream.println("loglevel (N)     - Prints and allows to set the loglevel");
                         outStream.println("su               - Shut Up! short for \"loglevel 3\"");
+                        outStream.println("net_graph N      - Enables or disables client_netgraphs. (Local only!)");
                         outStream.println("help             - prints this help");
                         break;
                     default:

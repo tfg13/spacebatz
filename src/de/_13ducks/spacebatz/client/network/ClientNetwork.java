@@ -38,7 +38,10 @@ public class ClientNetwork {
      * Die Adresse des Servers.
      */
     private InetAddress serverAdr;
-    public int etd;
+    /**
+     * Zeitpunkt, zu dem der letzte Ping-Request verschickt wurde.
+     */
+    private long lastPingTime;
 
     /**
      * Konstruktor
@@ -165,7 +168,7 @@ public class ClientNetwork {
      * @param pack das Datenpaket
      */
     private synchronized void preExecutePacket(DatagramPacket pack) {
-        etd = Client.frozenGametick - Bits.getInt(pack.getData(), 1);
+        NetStats.pushTickDelay(Bits.getInt(pack.getData(), 1) - Client.frozenGametick);
         byte[] data = pack.getData();
         byte cmd = data[0];
         switch (cmd) {
@@ -185,6 +188,10 @@ public class ClientNetwork {
             case Settings.NET_UDP_CMD_DEL_ENTITY:
                 // Sofort bestätigen
                 ackDelChar(Bits.getInt(data, 5));
+                break;
+            case Settings.NET_UDP_CMD_PONG:
+                // Zeitmessung abgeschlossen
+                NetStats.ping = (int) (System.currentTimeMillis() - lastPingTime);
                 break;
             default:
             // Do nothing, per default werden Pakete nicht preExecuted
@@ -235,6 +242,16 @@ public class ClientNetwork {
         while ((p = getNextComputeable()) != null) {
             computePacket(p);
         }
+        // Einmal pro Sekunde:
+        if (Client.frozenGametick % Client.tickrate == 0) {
+            lastPingTime = System.currentTimeMillis();
+            // UDP-Pingpaket schicken
+            byte[] udp = new byte[6];
+            udp[0] = Client.getClientID();
+            Bits.putInt(udp, 1, Client.frozenGametick);
+            udp[5] = Settings.NET_UDP_CMD_PING;
+            udpSend(udp);
+        }
     }
 
     /**
@@ -255,6 +272,7 @@ public class ClientNetwork {
      * @param pack ein verifiziertes UDP-Paket
      */
     private void computeApprovedPacket(byte[] pack) {
+        NetStats.inPack(pack.length);
         byte cmd = pack[0];
         switch (cmd) {
             case Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE:
@@ -301,6 +319,9 @@ public class ClientNetwork {
                     Client.netIDMap.remove(Bits.getInt(pack, 5));
                 }
                 break;
+            case Settings.NET_UDP_CMD_PONG:
+                // Nichts tun.
+                break;
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");
         }
@@ -331,7 +352,7 @@ public class ClientNetwork {
         Bits.putInt(b, 6, netID);
         udpSend(b);
     }
-    
+
     /**
      * Bestätigt dem Server den erhalt des Löschens dieses Chars
      *
