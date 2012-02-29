@@ -178,6 +178,7 @@ public class Player extends Char {
 
     public void calcDefStats() {
         int newarmor = 0;
+        int newhealth = Settings.CHARHEALTH;
         double newmovespeed = Settings.CHARSPEED;
 
         ArrayList<Item> checkitems = new ArrayList<>();
@@ -197,6 +198,9 @@ public class Player extends Char {
                 for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
                     double astatval = item.getItemattributes().get(k).getStats().get(astatname);
                     switch (astatname) {
+                        case "healthpoints":
+                            newhealth += astatval;
+                            break;       
                         case "armor":
                             newarmor += astatval;
                             break;
@@ -210,6 +214,8 @@ public class Player extends Char {
 
         speed = newmovespeed;
         armor = newarmor;
+        healthpoints = Math.max((int) ((((double) healthpoints) / healthpointsmax) * newhealth) , 1);
+        healthpointsmax = newhealth;
     }
 
     /**
@@ -234,6 +240,7 @@ public class Player extends Char {
         if (e instanceof Enemy) {
             Enemy enemy = (Enemy) e;
             healthpoints -= enemy.getDamage();
+            System.out.println("HP: " + healthpoints + " / " + healthpointsmax);
 
             if (healthpoints <= 0) {
                 Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);

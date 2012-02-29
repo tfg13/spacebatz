@@ -197,6 +197,10 @@ public final class Settings {
      */
     public static final double CHARSPEED = 0.16;
     /**
+     * Die HP der Chars
+     */
+    public static final int CHARHEALTH = 10;
+    /**
      * Client-NetGraph per default an?
      */
     public static final boolean CLIENT_NETGRAPH_ON = true;
