@@ -4,6 +4,8 @@
  */
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.Settings;
+
 /**
  * Der eigene Spieler
  * 
@@ -19,8 +21,8 @@ public class Player extends Char {
     public Player(int netID) {
         super(netID);
         selectedattack = 0;
-        healthpoints = 10;
-        healthpointsmax = 10;
+        healthpoints = Settings.CHARHEALTH;
+        healthpointsmax = Settings.CHARHEALTH;
     }
 
     /**

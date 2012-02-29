@@ -240,7 +240,6 @@ public class Player extends Char {
         if (e instanceof Enemy) {
             Enemy enemy = (Enemy) e;
             healthpoints -= enemy.getDamage();
-            System.out.println("HP: " + healthpoints + " / " + healthpointsmax);
 
             if (healthpoints <= 0) {
                 Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);

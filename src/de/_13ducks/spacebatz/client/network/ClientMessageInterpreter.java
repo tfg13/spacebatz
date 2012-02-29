@@ -141,13 +141,14 @@ public class ClientMessageInterpreter {
                 // Char wird von Bullet / angriff getroffen
                 int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
                 int damage = Bits.getInt(message, 8);
+                byte killed = message[12];
 
                 // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
                     Player p = (Player) Client.netIDMap.get(netIDVictim);
                     if (p == Client.getPlayer()) {
                         p.setHealthpoints(p.getHealthpoints() - damage);
-                        if (p.getHealthpoints() < 0) {
+                        if (killed == 1) {
                             // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
                             p.setHealthpoints(p.getHealthpointsmax());
                         }
