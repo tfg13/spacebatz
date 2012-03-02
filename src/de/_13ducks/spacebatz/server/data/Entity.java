@@ -51,10 +51,6 @@ public class Entity {
      * Ob das aktuelle Movement stimmt.
      */
     private boolean movementDirty = true;
-    /**
-     * Der Sektor der EntityMap, in dem die Entity gerade registriert ist.
-     */
-    private EntityMapSector mySector;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -67,7 +63,7 @@ public class Entity {
         this.entityTypeID = entityTypeID;
         this.posX = x;
         this.posY = y;
-        Server.entityMap.addEntity(this);
+        Server.entityMap.insertEntity(this);
         this.netID = netID;
     }
 
@@ -225,8 +221,6 @@ public class Entity {
         return getY() + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
     }
 
-   
-
     /**
      * Gibt den Gametick in dem die Bewegung gestartet wurde zurück
      *
@@ -237,37 +231,20 @@ public class Entity {
     }
 
     /**
-     * Gibt den Sektor, in dem die Entity gerade registriert ist, zurück.
-     *
-     * @return der Sektor der Entity
-     */
-    public EntityMapSector getSector() {
-        return mySector;
-    }
-
-    /**
-     * Setzt den Sektor, in dem die Entity gerade registriert ist.
-     *
-     * @param mySector der neue Sektor der Entity
-     */
-    public void setSector(EntityMapSector mySector) {
-        this.mySector = mySector;
-    }
-    
-    /**
-     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten!
-     * Implementierungen von Entity müssen diese Methode überschreiben und super.byteArraySize() + Eigenbedarf zurückgeben!
+     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten! Implementierungen von Entity müssen diese
+     * Methode überschreiben und super.byteArraySize() + Eigenbedarf zurückgeben!
      *
      * @return die größe des byte[]'s, das netPack() braucht.
      */
     public int byteArraySize() {
         return 5;
     }
-    
+
     /**
-     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese
-     * Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann
-     * selber den Puffer ab super.byteArraySize() + offset befüllen.
+     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize()
+     * + offset groß sein. Unterklassen müssen diese Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den
+     * Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann selber den Puffer ab
+     * super.byteArraySize() + offset befüllen.
      *
      * @param b der Puffer, in den geschrieben ist.
      */

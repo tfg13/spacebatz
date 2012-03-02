@@ -2,8 +2,6 @@ package de._13ducks.spacebatz.main;
 
 import de._13ducks.spacebatz.client.Client;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Starten, um zu sich zu einem laufenden Server woanderst zu verbinden.

@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.shared.*;
 import de._13ducks.spacebatz.server.data.Client;
 
 /**

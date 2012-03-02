@@ -58,7 +58,7 @@ public class MainLoop {
                     // Wartende Clients akzeptieren:
                     Server.serverNetwork.acceptPendingClients();
                     // Gamelogic berechnen:
-                    calculateGameTick();
+                    Server.game.gameTick();
                     // Änderungen an den Server schicken.
                     Server.serverNetwork.udp.send();
                     Server.game.incrementTick();
@@ -93,12 +93,5 @@ public class MainLoop {
      */
     public void startGameLogic() {
         mainLoopTask = mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, 1000000000 / Settings.SERVER_TICKRATE, TimeUnit.NANOSECONDS);
-    }
-
-    /**
-     * Berechnet die Spielphysik für einen GameTick
-     */
-    private void calculateGameTick() {
-        Server.game.gameTick();
     }
 }
