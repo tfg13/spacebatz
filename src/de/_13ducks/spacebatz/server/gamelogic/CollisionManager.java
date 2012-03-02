@@ -21,9 +21,6 @@ public class CollisionManager {
 
     /**
      * Berechnet Kollision für Bullets
-     *
-     * @param chars die Liste der Chars, für die Kollision berechnet werden soll
-     * @param bullets die Liste der Bullets, deren Kollisionen berechnet werden sollen
      */
     public static void computeCollision() {
         computeBulletCollision();

@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.Server;
 
 /**
  * Ein bewegliches Objekt. (z.B. ein Spieler, Mob etc)
@@ -54,9 +53,9 @@ public abstract class Char extends Entity {
     /**
      * Konstruktor, erstellt einen neuen Char
      *
-     * @param x
-     * @param y
-     * @param name
+     * @param x X-Koordinatedes Chars
+     * @param y Y-Koordinatedes Chars
+     *
      */
     public Char(double x, double y, int netID, byte entityTypeID) {
         super(x, y, netID, entityTypeID);

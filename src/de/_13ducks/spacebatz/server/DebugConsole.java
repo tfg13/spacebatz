@@ -4,7 +4,6 @@ import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.server.data.Entity;
 import java.io.*;
 import java.util.LinkedList;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
