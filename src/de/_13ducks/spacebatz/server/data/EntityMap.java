@@ -1,7 +1,10 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.util.Distance;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 /**
  * Die EntityMap bietet performante Zugriffe auf Entities abhängig von ihrer Position.
@@ -11,142 +14,166 @@ import java.util.LinkedList;
 public class EntityMap {
 
     /**
-     * Die Größe der Sektoren, in die die Map eingeteilt wird.
+     * Die Größe eines Sektors der EntityMap
      */
-    private final static double ENTITYMAP_SECTORSIZE = 10.0;
+    private final static double SECTORSIZE = 1.0;
     /**
-     * Die Karte der Sektoren, die das Level bilden
+     * Die Listen mit den Einheiten im jeweiligen Sektor
      */
-    private EntityMapSector[][] sectors;
+    private LinkedList<Entity>[][] sectors;
     /**
-     * Die Breite des Levels
+     * Die Breite der EntityMap
      */
-    private double width;
+    private int entityMapWidth;
     /**
-     * die Höhe des Levels
+     * Die Höhe der EntityMap
      */
-    private double height;
+    private int entityMapHeight;
 
     /**
-     * Konstruktor, initialisiert die EntityMap
+     * Konstruktor, initialisiert die Sektoren
      *
-     * @param width die Breite des Levels
-     * @param height die Höhe des Levels
+     * @param levelWidth die Breite des Levels
+     * @param levelHeight die Höhe des Levels
      */
-    public EntityMap(double width, double height) {
-        this.height = height;
-        this.width = width;
-        // Die Größe des Levels durch die Sektorgröße, durch den Int-Cast abgerundet und mit +1 am Ende zum ausgleichen
-        int xSectors = (int) (width / ENTITYMAP_SECTORSIZE) + 1;
-        int ySectors = (int) (height / ENTITYMAP_SECTORSIZE) + 1;
-
-        // Sektoren initialisieren:
-        sectors = new EntityMapSector[xSectors][ySectors];
-        for (int x = 0; x < xSectors; x++) {
-            for (int y = 0; y < xSectors; y++) {
-                sectors[x][y] = new EntityMapSector();
+    public EntityMap(int levelWidth, int levelHeight) {
+        entityMapWidth = (int) (levelWidth / SECTORSIZE) + 1;
+        entityMapHeight = (int) (levelHeight / SECTORSIZE) + 1;
+        
+        sectors = new LinkedList[entityMapWidth][entityMapHeight];
+        
+        for (int x = 0; x < entityMapWidth; x++) {
+            for (int y = 0; y < entityMapHeight; y++) {
+                sectors[x][y] = new LinkedList<>();
             }
         }
+    }
 
-        // Nachbarsektoren registrieren:
-        // Diese Schleife geht nur die Elemente
-        for (int x = 0; x < xSectors; x++) {
-            for (int y = 0; y < xSectors; y++) {
-                EntityMapSector sector = sectors[x][y];
-                for (int innerX = x - 1; innerX <= x + 1; innerX++) {
-                    for (int innerY = y - 1; innerY <= y + 1; innerY++) {
-                        if (0 <= innerX && innerX < xSectors && 0 <= innerY && innerY < ySectors) {
-                            sector.addNeighborSector(sectors[innerX][innerY]);
-                        }
-                    }
+    /**
+     * Aktualisiert die Positionen der Entitys
+     */
+    public void calculateEntityPositions() {
+        Iterator<Entity> iterator = Server.game.netIDMap.values().iterator();
+        
+        while (iterator.hasNext()) {
+            Entity e = iterator.next();
+            if (e.isMoving()) {
+                if (!getSector(e.getX(), e.getY()).contains(e)) {
+                    removeEntity(e);
+                    insertEntity(e);
                 }
             }
+            
         }
     }
 
     /**
-     * Registriert eine neue Entity
+     * Gibt eine Liste mit allen Einheiten im Angegebenen Gebiet zurück.
      *
-     * @param e die neue Entity
+     * @param x1 X-Koordinate der linken oberen Ecke des Gebiets
+     * @param y1 Y-Koordinate der linken oberen Ecke des Gebiets
+     * @param x2 X-Koordinate der rechten unteren Ecke des Gebiets
+     * @param y2 Y-Koordinate der rechten unteren Ecke des Gebiets
+     * @return eine Liste mit allen registrierten Entities in dem Gebiet
      */
-    public void addEntity(Entity e) {
-        if (e == null) {
-            throw new IllegalArgumentException("Kann NULL nicht registrieren!");
-        } else if (e.getSector() != null) {
-            throw new IllegalArgumentException("Diese Entity ist bereits in der EntityMap registriert!");
-        }
-        EntityMapSector sector = getSector(e.getX(), e.getY());
-        sector.addEntity(e);
-        e.setSector(sector);
-    }
-
-    /**
-     * Entfernt eine Entity aus der EntityMap
-     *
-     * @param e die Entity die entfernt werden soll
-     */
-    public void removeEntity(Entity e) {
-        if (e == null) {
-            throw new IllegalArgumentException("Kann NULL nicht entfernen!");
-        } else if (e.getSector() == null) {
-            throw new IllegalArgumentException("Diese Entity ist gar nicht in der EntityMap registriert!");
-        }
-        
-        e.getSector().removeEntity(e);
-        e.setSector(null);
-    }
-
-    /**
-     * MUSS aufgerufen werden, wenn sich eine Entity bewegt. Prüft, ob die Eintity ihren Sektor verlassen hat, und aktualisiert den Sektor falls ja.
-     *
-     * @param e die Entity die überprüft werden soll
-     */
-    public void entityMoved(Entity e) {
-        if (e == null) {
-            throw new IllegalArgumentException("Kann NULL nicht neu berechnen!");
-        } else if (e.getSector() == null) {
-            throw new IllegalArgumentException("Diese Entity hat keinen Sektor! Sie muss zuerst mit EntityMap.addEntity() registriert werden!");
-        }
-        EntityMapSector newSector = getSector(e.getX(), e.getY());
-        if (e.getSector().equals(newSector)) {
-            e.getSector().removeEntity(e);
-            newSector.addEntity(e);
-            e.setSector(newSector);
-        }
-    }
-
-    /**
-     * Gibt eine Liste mit midestens allen Entities im Abstand von ENTITYMAP_SECTORSIZE vom angegebenen Punkt zurück.
-     *
-     * @param x die X-Koordinate der Position
-     * @param y die Y-Koordinate der Position
-     * @return eine Liste mit allen Entities nahe dem Punkt
-     */
-    public LinkedList<Entity> getEntitiesAroundPoint(double x, double y) {
+    public LinkedList<Entity> getEntitiesInArea(int x1, int y1, int x2, int y2) {
         LinkedList<Entity> entities = new LinkedList<>();
-        EntityMapSector thisSector = getSector(x, y);
         
-        for (EntityMapSector s : thisSector.getMeAndMyNeighborSectors()) {
-            entities.addAll(s.getEntities());
+        for (int x = x1; x < x2; x++) {
+            for (int y = y1; y < y2; y++) {
+                if (0 < x && x < entityMapWidth && 0 < y && y < entityMapHeight) {
+                    for (Entity e : sectors[x][y]) {
+                        entities.add(e);
+                    }
+                }
+                
+            }
         }
         return entities;
     }
 
     /**
-     * Gibt den Sektor, der die angegebene Position enthält, zurück
+     * Registriert eine Entity in der EntityMap ein
      *
-     * @param x die X-Koordinate der Position
-     * @param y die X-Koordinate der Position
+     * @param entity die Entity die eingefügt wird
+     */
+    public void insertEntity(Entity entity) {
+        getSector(entity.getX(), entity.getY()).add(entity);
+    }
+
+    /**
+     * Entfernt eine Entity aus der EntityMap.
+     *
+     * @param entity die Entity die entfernt werden soll
+     */
+    public void removeEntity(Entity entity) {
+        int x1 = (int) (entity.getX() / SECTORSIZE) - 1;
+        int y1 = (int) (entity.getX() / SECTORSIZE) - 1;
+
+        // Entity in den Nachbarsektoren ihres letzten bekannten Sektors suchen und löschen:
+        boolean foundAndRemoved = false;
+        for (int x = x1; x < x1 + 2; x++) {
+            
+            for (int y = y1; y < y1 + 2; y++) {
+                if (x > 0 && x < entityMapWidth && y > 0 && y < entityMapHeight) {
+                    if (sectors[x][y].contains(entity)) {
+                        sectors[x][y].remove(entity);
+                        foundAndRemoved = true;
+                    }
+                }
+                
+            }
+        }
+        // Wenn sie da nicht gefunden wurde die ganze EntityMap durchsuchen:
+        if (!foundAndRemoved) {
+            for (int x = 0; x < entityMapWidth; x++) {
+                for (int y = 0; y < entityMapHeight; y++) {
+                    if (sectors[x][y].contains(entity)) {
+                        sectors[x][y].remove(entity);
+                        foundAndRemoved = true;
+                    }
+                }
+            }
+        }
+        // Wenn sie nicht in der EntityMap registriert ist werfen wir eine Exception:
+        if (!foundAndRemoved) {
+            throw new RuntimeException("Cannot remove Entity " + entity.netID + " from the EntityMap, it is not registered!");
+        }
+        
+    }
+
+    /**
+     * Gibt den Sektor, in dem eine Position liegt, zurück
+     *
+     * @param x X-Koordinate der Position
+     * @param y Y-Koordinate der Position
      * @return der Sektor, der die Position enthält
      */
-    private EntityMapSector getSector(double x, double y) {
-        if (x < 0 || width < x || y < 0 || height < y) {
-            throw new IllegalArgumentException("Point " + x + "/" + y + " Is outside the Level!");
+    private LinkedList<Entity> getSector(double x, double y) {
+        return sectors[(int) (x / SECTORSIZE)][(int) (y / SECTORSIZE)];
+    }
+
+    /**
+     * Gibt alle Entities in einem bestimmten Abstand um einen Punkt zurück.
+     *
+     * @param x X-Koordinate des Mittelpunktes
+     * @param y Y-Koordinate des Mittelpunktes
+     * @param radius der Radius, in dem gesucht wird
+     * @return eine Liste mit Entities im angegebenen Radius um den Punkt
+     */
+    public LinkedList<Entity> getEntitiesAroundPoint(double x, double y, double radius) {
+        LinkedList<Entity> entities = getEntitiesInArea((int) (x - radius), (int) (y - radius), (int) (x + radius) + 1, (int) (y + radius) + 1);
+        
+        Iterator<Entity> iter = entities.iterator();
+        
+        while (iter.hasNext()) {
+            Entity e = iter.next();
+            if (Distance.getDistance(e.getX(), e.getY(), x, y) > radius) {
+                iter.remove();
+            }
         }
-        double doubleX = (x / ENTITYMAP_SECTORSIZE);
-        double doubleY = (y / ENTITYMAP_SECTORSIZE);
-        int sectorX = (int) doubleX;
-        int sectorY = (int) doubleY;
-        return sectors[sectorX][sectorY];
+        
+        
+        return entities;
     }
 }

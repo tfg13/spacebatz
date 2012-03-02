@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.server.data.Entity;
 import java.io.*;
 import java.util.LinkedList;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -127,7 +128,8 @@ public class DebugConsole {
                     case "entities-at":
                         double x = Double.valueOf(words[1]);
                         double y = Double.valueOf(words[2]);
-                        LinkedList<Entity> e = Server.entityMap.getEntitiesAroundPoint(x, y);
+                        double radius = Double.valueOf(words[3]);
+                        LinkedList<Entity> e = Server.entityMap.getEntitiesAroundPoint(x, y, radius);
                         outStream.println("There are " + e.size() + " Entities around point " + x + "/" + y);
                         for (Entity entity : e) {
                             outStream.println("Entity " + entity.netID);
@@ -159,18 +161,19 @@ public class DebugConsole {
                         break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
-                        outStream.println("entitystats      - Prints some information about the entitiymap");
-                        outStream.println("entities-at X Y  - Prints entities around Point X Y");
-                        outStream.println("loglevel (N)     - Prints and allows to set the loglevel");
-                        outStream.println("su               - Shut Up! short for \"loglevel 3\"");
-                        outStream.println("net_graph N      - Enables or disables client_netgraphs. (Local only!)");
-                        outStream.println("help             - prints this help");
+                        outStream.println("entitystats          - Prints some information about the netIdMap");
+                        outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
+                        outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
+                        outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
+                        outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
+                        outStream.println("help                 - prints this help");
                         break;
                     default:
                         outStream.println("Command not recognized. Try help");
                         break;
                 }
             } catch (Exception ex) {
+                ex.printStackTrace();
                 outStream.println("Error computing input. Syntax? (use help)");
             }
         }

@@ -30,7 +30,6 @@ public class Game {
      * Alle dynamischen Objekte
      */
     public ConcurrentHashMap<Integer, Entity> netIDMap;
-    
     /**
      * HashMap ordnet netID Items zu
      */
@@ -227,6 +226,8 @@ public class Game {
         CollisionManager.computeCollision();
         // Pflanzen berechnen:
         VegetationManager.calculateVegetationGrowth();
+        // EinheitenPositionen neue berechnen:
+        Server.entityMap.calculateEntityPositions();
     }
 
     /**
