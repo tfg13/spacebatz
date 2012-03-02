@@ -15,6 +15,11 @@ import java.util.Iterator;
 public class CollisionManager {
 
     /**
+     * Der Radius, in dem Entitys für Kolliisonsberechnung gesucht werden @TODO: gescheiten Namen finden
+     */
+    private static double HARDCODEDCOLLISIONAROUNDMERADIUS = 2.0;
+
+    /**
      * Berechnet Kollision für Bullets
      *
      * @param chars die Liste der Chars, für die Kollision berechnet werden soll
@@ -25,7 +30,6 @@ public class CollisionManager {
         computeWallCollision();
         computeMobCollission();
         computeItemCollission();
-
     }
 
     /**
@@ -55,7 +59,7 @@ public class CollisionManager {
             double x = bullet.getX();
             double y = bullet.getY();
 
-            Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+            Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
                 if (e instanceof Char) {
@@ -88,14 +92,14 @@ public class CollisionManager {
     }
 
     /**
-     * Berechnet Flächenschaden von Bullet-Explosionen
-     * Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden kriegt
+     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden
+     * kriegt
      */
     private static void computeBulletExplosionCollision(Bullet bullet, Char charhit) {
         double x = bullet.getX();
         double y = bullet.getY();
 
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, bullet.getExplosionradius()).iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
@@ -104,20 +108,20 @@ public class CollisionManager {
                     continue;
                 }
                 double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
-                if (distance < bullet.getExplosionradius()) {
-                    if (!c.equals(bullet.getOwner())) {
-                        if (c instanceof Enemy) {
-                            Enemy en = (Enemy) c;
-                            // Schaden von HP abziehen, wird von Distanz verringert
-                            if (en.decreaseHealthpoints(bullet, 1.0 - distance / bullet.getExplosionradius() * 2 / 3)) {
-                            } else {
-                                if (en.getMyTarget() == null) {
-                                    en.setMyTarget(bullet.getOwner());
-                                }
+
+                if (!c.equals(bullet.getOwner())) {
+                    if (c instanceof Enemy) {
+                        Enemy en = (Enemy) c;
+                        // Schaden von HP abziehen, wird von Distanz verringert
+                        if (en.decreaseHealthpoints(bullet, 1.0 - distance / bullet.getExplosionradius() * 2 / 3)) {
+                        } else {
+                            if (en.getMyTarget() == null) {
+                                en.setMyTarget(bullet.getOwner());
                             }
                         }
                     }
                 }
+
             }
         }
     }
@@ -178,7 +182,7 @@ public class CollisionManager {
             if (e instanceof Char) {
                 Char mover = (Char) e;
                 if (mover instanceof Player) {
-                    Iterator<Entity> iter2 = Server.game.netIDMap.values().iterator();
+                    Iterator<Entity> iter2 = Server.entityMap.getEntitiesAroundPoint(e.getX(), e.getY(), HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
                     while (iter2.hasNext()) {
                         Entity e2 = iter2.next();
                         if (e2 instanceof Enemy) {
