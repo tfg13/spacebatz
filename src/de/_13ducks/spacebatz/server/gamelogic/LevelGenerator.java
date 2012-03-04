@@ -186,4 +186,156 @@ public class LevelGenerator {
 
         }
     }
+
+    /**
+     * Erstellt ein Space-Level
+     *
+     * @param level
+     * @return
+     */
+    public static Level generateSpaceLevel(ServerLevel level) {
+
+        Random random = new Random(System.nanoTime());
+
+        int width = level.getSizeX();
+        int height = level.getSizeY();
+
+        // Respawn-Koordinaten setzen:
+        level.respawnX = 3;
+        level.respawnY = 3;
+
+
+        int[][] tex = new int[width][height];
+
+        // unsere eigenen konstanten für hintergrundtexturen:
+        int SPACE = 100;
+        int METEROID = 101;
+
+
+        // Weltraum-Hintergrund:
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                tex[x][y] = SPACE;
+                level.getCollisionMap()[x][y] = true;
+            }
+        }
+
+        // Meteroid erzeugen:
+        for (int i = 0; i < 50; i++) {
+            int px = random.nextInt((int) (width * 0.7));
+            int py = random.nextInt((int) (height * 0.7));
+            int size = random.nextInt(8);
+            for (int x = px - size; x < px + size; x++) {
+                for (int y = py - size; y < py + size; y++) {
+                    if (0 < x && x < width && 0 < y && y < height) {
+                        tex[x][y] = METEROID;
+                        level.getCollisionMap()[x][y] = false;
+                    }
+
+                }
+            }
+        }
+
+
+
+        // Weltraum-Hintergrund Textur:
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (tex[x][y] == SPACE) {
+                    level.setSingleTile(x, y, 1 + random.nextInt(6));
+                }
+            }
+        }
+
+        // Meteroid Textur:
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (tex[x][y] == METEROID) {
+                    // env enthält die 9 felder um xy, wobei xy das zentrale feld ist
+
+                    int upperLeft = tex[x - 1][y + 1];
+                    int upper = tex[x][y + 1];
+                    int upperRight = tex[x + 1][y + 1];
+                    int left = tex[x - 1][y];
+
+                    int right = tex[x + 1][y];
+                    int bottomLeft = tex[x - 1][y - 1];
+                    int bottom = tex[x][y - 1];
+                    int bottomRight = tex[x + 1][y - 1];
+
+                    /**
+                     * Ecken
+                     */
+                    // linke obere ecke
+                    if (upper == SPACE && left == SPACE && right == METEROID && bottom == METEROID) {
+                        level.setSingleTile(x, y, 8);
+                    }
+                    // rechte obere ecke
+                    if (upper == SPACE && left == METEROID && right == SPACE && bottom == METEROID) {
+                        level.setSingleTile(x, y, 9);
+                    }
+                    // linke untere ecke
+                    if (upper == METEROID && left == SPACE && right == METEROID && bottom == SPACE) {
+                        level.setSingleTile(x, y, 18);
+                    }
+                    // rechte untere ecke
+                    if (upper == METEROID && left == METEROID && right == SPACE && bottom == SPACE) {
+                        level.setSingleTile(x, y, 19);
+                    }
+
+                    /**
+                     * Kanten
+                     */
+                    // linke kante
+                    if (upper == METEROID && left == SPACE && right == METEROID && bottom == METEROID) {
+                        level.setSingleTile(x, y, 10);
+                    }
+                    // rechte kante
+                    if (upper == METEROID && left == METEROID && right == SPACE && bottom == METEROID) {
+                        level.setSingleTile(x, y, 11);
+                    }
+                    // obere kante
+                    if (upper == SPACE && left == METEROID && right == METEROID && bottom == METEROID) {
+                        level.setSingleTile(x, y, 12);
+                    }
+                    // untere kante
+                    if (upper == METEROID && left == METEROID && right == METEROID && bottom == SPACE) {
+                        level.setSingleTile(x, y, 13);
+                    }
+
+                    /**
+                     * Innere Ecken
+                     */
+                    // rechte untere innere ecke
+                    if (upper == METEROID && left == METEROID && right == METEROID && bottom == METEROID && upperLeft == SPACE) {
+                        level.setSingleTile(x, y, 14);
+                    }
+                    // linke untere innere ecke
+                    if (upper == METEROID && left == METEROID && right == METEROID && bottom == METEROID && upperRight == SPACE) {
+                        level.setSingleTile(x, y, 15);
+                    }
+                    // rechte obere innere ecke
+                    if (upper == METEROID && left == METEROID && right == METEROID && bottom == METEROID && bottomRight == SPACE) {
+                        level.setSingleTile(x, y, 17);
+                    }
+                    // untere kante
+                    if (upper == METEROID && left == METEROID && right == METEROID && bottom == METEROID && bottomLeft == SPACE) {
+                        level.setSingleTile(x, y, 16);
+                    }
+
+                    if (upper == METEROID && left == METEROID && right == METEROID && bottom == METEROID) {
+                        level.setSingleTile(x, y, 20);
+                    }
+
+
+                }
+            }
+        }
+
+
+
+
+
+        return level;
+    }
 }
