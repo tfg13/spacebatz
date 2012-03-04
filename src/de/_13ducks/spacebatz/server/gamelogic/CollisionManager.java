@@ -152,16 +152,16 @@ public class CollisionManager {
 
 
                     if (Server.game.getLevel().getCollisionMap()[leftX][leftY] == true) {
-                        mover.stopMovement();
+                        mover.stopMovementX();
                     }
                     if (Server.game.getLevel().getCollisionMap()[topX][topY] == true) {
-                        mover.stopMovement();
+                        mover.stopMovementY();
                     }
                     if (Server.game.getLevel().getCollisionMap()[rightX][rightY] == true) {
-                        mover.stopMovement();
+                        mover.stopMovementX();
                     }
                     if (Server.game.getLevel().getCollisionMap()[botX][botY] == true) {
-                        mover.stopMovement();
+                        mover.stopMovementY();
                     }
                 }
             }
