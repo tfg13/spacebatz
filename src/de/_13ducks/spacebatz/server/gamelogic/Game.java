@@ -1,16 +1,15 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
+import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
@@ -59,10 +58,6 @@ public class Game {
      * Die nächste netID.
      */
     private int nextNetID = 1;
-    /**
-     * Liste der Pflanzen
-     */
-    private ArrayList<Plant> plants;
 
     /**
      * Konstruktor
@@ -74,7 +69,6 @@ public class Game {
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
         LevelGenerator.generateLevel(level);
-        plants = new ArrayList<>();
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -130,20 +124,6 @@ public class Game {
     }
 
     /**
-     * Erstellt Pflanzen an zufälligen Stellen
-     */
-    public void addPlants() {
-        // Platziert Pflanzern
-        Random r = new Random();
-        for (int i = 0; i < 90; i++) {
-            int posX = 5 + (int) (r.nextDouble() * (level.getGround().length - 10));
-            int posY = 5 + (int) (r.nextDouble() * (level.getGround().length - 10));
-
-            getPlants().add(new Plant(posX, posY));
-        }
-    }
-
-    /**
      * Wird gerufen, wenn ein neuer Client verbunden wurde
      *
      * @param client der neue Client
@@ -155,7 +135,6 @@ public class Game {
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
             Server.msgSender.sendAllItems(client, getItemMap());
-            Server.msgSender.sendAllPlants();
             Server.msgSender.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             player.calcEquipStats();
@@ -225,9 +204,7 @@ public class Game {
         AIManager.computeMobBehavior(netIDMap.values());
         // Kollision berechnen:
         CollisionManager.computeCollision();
-        // Pflanzen berechnen:
-        VegetationManager.calculateVegetationGrowth();
-        // EinheitenPositionen neue berechnen:
+       // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
     }
 
@@ -271,14 +248,5 @@ public class Game {
      */
     public HashMap<Integer, Item> getItemMap() {
         return itemMap;
-    }
-
-    /**
-     * Gibt die PflanzenListe zurück
-     *
-     * @return die Liste aller Pflanzen
-     */
-    public ArrayList<Plant> getPlants() {
-        return plants;
     }
 }

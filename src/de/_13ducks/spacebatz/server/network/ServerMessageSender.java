@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.Plant;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
@@ -82,7 +81,7 @@ public class ServerMessageSender {
             } else {
                 b[12] = 0;
             }
-            Server.serverNetwork.sendTcpData((byte) Settings.NET_TCP_CMD_CHAR_HIT, b, c);
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHAR_HIT, b, c);
         }
     }
 
@@ -163,15 +162,6 @@ public class ServerMessageSender {
         Bits.putInt(b, 8, newGround);
         for (Client c : Server.game.clients.values()) {
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_GROUND, b, c);
-        }
-    }
-
-    /**
-     * Sendet Alle Pflanzen an den Client
-     */
-    public void sendAllPlants() {
-        for (Plant p : Server.game.getPlants()) {
-            broadcastGroundChange(p.getX(), p.getY(), p.getTex());
         }
     }
 
