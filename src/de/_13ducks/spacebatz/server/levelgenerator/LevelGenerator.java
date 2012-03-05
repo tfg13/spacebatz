@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.gamelogic;
+package de._13ducks.spacebatz.server.levelgenerator;
 
 import de._13ducks.spacebatz.client.Position;
 import de._13ducks.spacebatz.server.data.ServerLevel;

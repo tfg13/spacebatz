@@ -63,7 +63,9 @@ public class EntityMap {
                         insertEntity(e);
                     }
                 } else {
-                    throw new RuntimeException("Cannot update Position of Entity " + e.netID + " because it has left the map (Position: " + e.getX() + "/" + e.getY() + "!");
+					// Entity ganz aus dem Spiel löschen, wenn aus der Map raus.
+					removeEntity(e);
+					Server.game.netIDMap.remove(e.netID);
                 }
             }
         }
