@@ -34,11 +34,11 @@ public class CollisionManager {
      */
     private static void computeBulletCollision() {
 
-        Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
+        Iterator<Sync> listIterator = Server.game.netIDMap.values().iterator();
 
         while (listIterator.hasNext()) {
-            Bullet bullet = null;
-            Entity entity = listIterator.next();
+            Bullet bullet;
+            Sync entity = listIterator.next();
             if (entity instanceof Bullet) {
                 bullet = (Bullet) entity;
             } else {
@@ -128,9 +128,9 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Sync> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
-            Entity e = iter.next();
+            Sync e = iter.next();
             if (e instanceof Char) {
                 Char mover = (Char) e;
                 if (mover.isMoving()) {
@@ -173,13 +173,13 @@ public class CollisionManager {
      */
     private static void computeMobCollission() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Sync> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
-            Entity e = iter.next();
+            Sync e = iter.next();
             if (e instanceof Char) {
                 Char mover = (Char) e;
                 if (mover instanceof Player) {
-                    Iterator<Entity> iter2 = Server.entityMap.getEntitiesAroundPoint(e.getX(), e.getY(), HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
+                    Iterator<Entity> iter2 = Server.entityMap.getEntitiesAroundPoint(mover.getX(), mover.getY(), HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
                     while (iter2.hasNext()) {
                         Entity e2 = iter2.next();
                         if (e2 instanceof Enemy) {
@@ -199,9 +199,9 @@ public class CollisionManager {
      * Berechnet Kollision mit Items
      */
     private static void computeItemCollission() {
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Sync> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
-            Entity e = iter.next();
+            Sync e = iter.next();
             if (e instanceof Player) {
                 Player mover = (Player) e;
                 Iterator<Item> iterator = Server.game.getItemMap().values().iterator();

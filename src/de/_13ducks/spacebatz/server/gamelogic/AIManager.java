@@ -7,8 +7,8 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Enemy;
-import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.Sync;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.Collection;
 
@@ -24,8 +24,8 @@ public class AIManager {
      *
      * @param allList die Liste aller mobs deren Verhalten berechnet werden soll
      */
-    public static void computeMobBehavior(Collection<Entity> allList) {
-        for (Entity e : allList) {
+    public static void computeMobBehavior(Collection<Sync> allList) {
+        for (Sync e : allList) {
             if (e instanceof Enemy) {
                 Enemy mob = (Enemy) e;
                 // Hat der Mob ein Ziel?

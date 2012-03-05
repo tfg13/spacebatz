@@ -81,8 +81,12 @@ public class ClientContext {
      */
     public void makeEntityKnown(int netID) {
         if (!entityMap.containsKey(netID)) {
-            Entity e = Server.game.netIDMap.get(netID);
-            entityMap.put(netID, Server.game.netIDMap.get(netID));
+            Sync e = Server.game.netIDMap.get(netID);
+	    if (e instanceof Entity) {
+		entityMap.put(netID, (Entity) e);
+	    } else {
+		System.out.println("ERROR: Client-Context kann derzeit nur Entitys verwalten!");
+	    }
         }
     }
 

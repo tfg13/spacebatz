@@ -29,7 +29,7 @@ public class Game {
     /**
      * Alle dynamischen Objekte
      */
-    public ConcurrentHashMap<Integer, Entity> netIDMap;
+    public ConcurrentHashMap<Integer, Sync> netIDMap;
     /**
      * HashMap ordnet netID Items zu
      */
