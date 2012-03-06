@@ -21,7 +21,8 @@ public class LevelGenerator {
      */
     private static int[][] ground;
 
-    public static Level generateLevel(ServerLevel level) {
+    public static ServerLevel generateLevel() {
+        ServerLevel  level = new ServerLevel(60, 60);
 
         Random random = new Random(System.nanoTime());
 

@@ -65,10 +65,9 @@ public class Game {
     public Game() {
         clients = new HashMap<>();
         netIDMap = new ConcurrentHashMap<>();
-        level = new ServerLevel();
+        level = LevelGenerator.generateLevel();
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
-        LevelGenerator.generateLevel(level);
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
