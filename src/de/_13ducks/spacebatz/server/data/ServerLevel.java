@@ -12,7 +12,7 @@ public class ServerLevel extends Level  {
     /**
      * Konstruktor
      */
-    public ServerLevel() {
-        super(60,60);
+    public ServerLevel(int xSize, int ySize) {
+        super(xSize, ySize);
     }
 }
