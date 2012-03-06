@@ -140,16 +140,19 @@ public class ClientMessageInterpreter {
             case Settings.NET_TCP_CMD_CHAR_HIT:
                 // Char wird von Bullet / angriff getroffen
                 int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
+                int netIDAttacker = Bits.getInt(message, 4);
                 int damage = Bits.getInt(message, 8);
+                byte victimdies = message[12];
 
                 // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
                     Player p = (Player) Client.netIDMap.get(netIDVictim);
                     if (p == Client.getPlayer()) {
-                        p.setHealthpoints(p.getHealthpoints() - damage);
-                        if (p.getHealthpoints() < 0) {
+                        if (victimdies == 1) {
                             // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
                             p.setHealthpoints(p.getHealthpointsmax());
+                        } else {
+                            p.setHealthpoints(p.getHealthpoints() - damage);
                         }
                     }
                 }
