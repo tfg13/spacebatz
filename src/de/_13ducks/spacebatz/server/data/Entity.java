@@ -9,8 +9,12 @@ import de._13ducks.spacebatz.util.Bits;
  *
  * @author michael
  */
-public class Entity extends Sync {
+public class Entity {
 
+    /**
+     * Die netID der Entity.
+     */
+    public final int netID;
     /**
      * Tpy des Entity. Fürs Netzwerksystem
      */
@@ -56,11 +60,11 @@ public class Entity extends Sync {
      * @param netID die netId der Entity
      */
     public Entity(double x, double y, int netID, byte entityTypeID) {
-	super(netID);
 	this.entityTypeID = entityTypeID;
 	this.posX = x;
 	this.posY = y;
 	Server.entityMap.insertEntity(this);
+	this.netID = netID;
     }
 
     public boolean isMoving() {
