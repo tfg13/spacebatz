@@ -14,7 +14,7 @@ public class ServerLevel extends Level {
     /**
      * Die Liste mit Gebieten, in denen Gegner gespawnt werden
      */
-    private ArrayList<EnemySpawnArea> enemySpawnAreas;
+    transient private ArrayList<EnemySpawnArea> enemySpawnAreas;
 
     /**
      * Konstruktor
