@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.levelgenerator;
 
+import de._13ducks.spacebatz.shared.Position;
 import de._13ducks.spacebatz.server.data.EnemySpawnArea;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
@@ -61,7 +62,7 @@ public class LevelGenerator {
         level.respawnX = center.getX();
         level.respawnY = center.getY();
 
-        // WÃ¤nde am Levelrand
+        // Wände am Levelrand
         createWall(0, 0, 1, ySize - 1, level);
         createWall(0, ySize - 1, xSize - 1, ySize - 2, level);
         createWall(xSize - 1, ySize - 1, xSize - 2, 0, level);
