@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.levelgenerator;
 
+import de._13ducks.spacebatz.server.data.EnemySpawnArea;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.ArrayList;
@@ -33,8 +34,13 @@ public class LevelGenerator {
 
         random = new Random(System.nanoTime());
 
-        xSize = ground.length;
-        ySize = ground[0].length;
+        xSize = level.getSizeX();
+        ySize = level.getSizeY();
+
+        // Gegner-Spawn-Gebiet setzen:
+        EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
+        dangerZone.setMaxSpawns(100);
+        level.addEnemySpawnArea(dangerZone);
 
         findShape();
         ArrayList<Position> innerFields = findInnerFields();
@@ -132,7 +138,7 @@ public class LevelGenerator {
 
         // jede Zeile durchgehen
         for (int y = ymin; y <= ymax; y++) {
-            
+
             // Schnittpunkt der Geraden ab, bc und ca mit aktueller Zeile (y)
             double abintersect = (double) ((y - a.getY())) * ab + a.getX();
             double bcintersect = (double) ((y - b.getY())) * bc + b.getX();
@@ -154,13 +160,13 @@ public class LevelGenerator {
                 startx = Math.min((int) caintersect, startx);
                 endx = Math.max((int) Math.ceil(caintersect), endx);
             }
-            
+
             // alle gefundenen inneren Punkte in Liste tun
             for (int x = startx; x < endx; x++) {
                 triangle.add(new Position(x, y));
             }
         }
-        
+
         return triangle;
     }
 

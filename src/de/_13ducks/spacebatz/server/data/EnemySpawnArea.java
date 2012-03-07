@@ -10,7 +10,7 @@ import java.util.Random;
  *
  * @author michael
  */
-public class EnemySpawnArea implements Serializable{
+public class EnemySpawnArea implements Serializable {
 
     /*
      * Gibt an wieviele Gegner maximal erzeugt werden
@@ -31,9 +31,14 @@ public class EnemySpawnArea implements Serializable{
 
     /**
      * Konstrukto, initialisiert einen neuen Spawner
+     *
+     * @param x1 X-Koordinate der linken oberen Ecke des Gebiets
+     * @param y1 Y-Koordinate der linken oberen Ecke des Gebiets
+     * @param x2 X-Koordinate der rechten unteren Ecke des Gebiets
+     * @param y2 Y-Koordinate der rechten unteren Ecke des Gebiets
      */
     public EnemySpawnArea(double x1, double y1, double x2, double y2) {
-        maxSpawns = 20;
+        maxSpawns = 10;
         minSpawnDistance = 20;
         maxSpawnDistance = 40;
         this.x1 = x1;
@@ -46,39 +51,44 @@ public class EnemySpawnArea implements Serializable{
      * Erzeugt bei Bedarf Gegner
      */
     public void tick() {
-        int enemys = 0;
-        for (Entity e : Server.entityMap.getEntitiesInArea(0, 0, Server.game.getLevel().getSizeX(), Server.game.getLevel().getSizeY())) {
-            if (e instanceof Enemy) {
-                enemys++;
-            }
-        }
-        if (maxSpawns > enemys && !Server.game.clients.isEmpty()) {
-            Random r = new Random(System.currentTimeMillis());
-            double x = 0, y = 0;
-            boolean positionOk = false;
 
-            double sizeX = x2 - x1;
-            double sizeY = y2 - y1;
-            // Position berechnen:
-            while (!positionOk) {
-                x = 1 + (r.nextDouble() * (sizeX - 2));
-                y = 1 + (r.nextDouble() * (sizeY - 2));
 
-                // liegt die Position zwischen MINDISTANE und MAXDISTANCE?
-                for (Client client : Server.game.clients.values()) {
-                    double distance = Distance.getDistance(x, y, client.getPlayer().getX(), client.getPlayer().getY());
-                    if (distance > minSpawnDistance && distance < maxSpawnDistance) {
-                        positionOk = true;
+        for (Client client : Server.game.clients.values()) {
+            double playerX = client.getPlayer().getX();
+            double playerY = client.getPlayer().getY();
+
+            // Wenn der Spieler in der Zone ist:
+            if (x1 < playerX && playerX < x2 && y1 < playerY && playerY < y2) {
+                int enemys = 0;
+                for (Entity e : Server.entityMap.getEntitiesInArea((int) x1, (int) y1, (int) x2, (int) y2)) {
+                    if (e instanceof Enemy) {
+                        enemys++;
                     }
                 }
+                if (maxSpawns > enemys) {
+                    Random r = new Random(System.currentTimeMillis());
+                    double x = 0, y = 0;
+                    boolean positionOk = false;
+
+                    // Position berechnen:
+                    while (!positionOk) {
+                        x = (playerX - maxSpawnDistance) + (r.nextDouble() * 2 * maxSpawnDistance);
+                        y = (playerY - maxSpawnDistance) + (r.nextDouble() * 2 * maxSpawnDistance);
+                        double distance = Distance.getDistance(x, y, playerX, playerY);
+                        if (distance > minSpawnDistance && distance < maxSpawnDistance) {
+                            positionOk = true;
+                        }
+                    }
+                    // zufälligen Gegner erzeugen:
+                    int enemytype = r.nextInt(30);
+                    if (enemytype > 2) {
+                        enemytype = 1;
+                    }
+                    Enemy e = new Enemy(x, y, Server.game.newNetID(), enemytype);
+                    Server.game.netIDMap.put(e.netID, e);
+                }
+
             }
-            // zufälligen Gegner erzeugen:
-            int enemytype = r.nextInt(30);
-            if (enemytype > 2) {
-                enemytype = 1;
-            }
-            Enemy e = new Enemy(x, y, Server.game.newNetID(), enemytype);
-            Server.game.netIDMap.put(e.netID, e);
         }
     }
 
