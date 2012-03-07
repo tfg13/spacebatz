@@ -75,7 +75,8 @@ public class EnemySpawnArea implements Serializable {
                         x = (playerX - maxSpawnDistance) + (r.nextDouble() * 2 * maxSpawnDistance);
                         y = (playerY - maxSpawnDistance) + (r.nextDouble() * 2 * maxSpawnDistance);
                         double distance = Distance.getDistance(x, y, playerX, playerY);
-                        if (distance > minSpawnDistance && distance < maxSpawnDistance && x1 < x && x < x2 && y1 < y && y < y2) {
+                        boolean collision = Server.game.getLevel().getCollisionMap()[(int) x][(int) y];
+                        if (distance > minSpawnDistance && distance < maxSpawnDistance && x1 < x && x < x2 && y1 < y && y < y2 && collision == false) {
                             positionOk = true;
                         }
                     }
