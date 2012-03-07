@@ -731,7 +731,7 @@ public class Engine {
     }
 
     private int texAt(int[][] layer, int x, int y) {
-        if (x < 0 || y < 0 || x >= layer.length || y >= layer.length) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
             return 0;
         } else {
             return layer[x][y];
