@@ -201,12 +201,4 @@ public final class Settings {
      * Client-NetGraph per default an?
      */
     public static final boolean CLIENT_NETGRAPH_ON = true;
-    /**
-     * Die maximale Distanz in der noch Gegner gespawnt werden
-     */
-    public static final double SERVER_ENEMYSPAWNMAXDISTANCE = 40.0;
-    /**
-     * Die maximale Gegnerdichte, wenn mehr Gegner in einem GEbiet sind werde nkeine mehr gespawnmt
-     */
-    public static final int SERVER_ENEMYSPAWNDENSITY = 10;
 }
