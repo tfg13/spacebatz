@@ -120,7 +120,6 @@ public class Engine {
         }
 
         lastFPS = getTime();
-        int counter = 0;
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
             // Gametick updaten:
