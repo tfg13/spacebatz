@@ -107,7 +107,7 @@ public class Game {
         Random r = new Random();
         for (int i = 0; i < 200; i++) {
             double posX = 5 + (r.nextDouble() * (level.getGround().length - 10));
-            double posY = 5 + (r.nextDouble() * (level.getGround().length - 10));
+            double posY = 5 + (r.nextDouble() * (level.getGround()[0].length - 10));
 
 
             if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
