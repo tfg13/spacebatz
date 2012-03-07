@@ -63,9 +63,9 @@ public class EntityMap {
                         insertEntity(e);
                     }
                 } else {
-					// Entity ganz aus dem Spiel löschen, wenn aus der Map raus.
-					removeEntity(e);
-					Server.game.netIDMap.remove(e.netID);
+                    // Entity ganz aus dem Spiel löschen, wenn aus der Map raus.
+                    removeEntity(e);
+                    Server.game.netIDMap.remove(e.netID);
                 }
             }
         }
@@ -167,7 +167,7 @@ public class EntityMap {
      * @param y2 Y-Koordinate der rechten unteren Ecke des Gebiets
      * @return eine Liste mit allen registrierten Entities in dem Gebiet
      */
-    private LinkedList<Entity> getEntitiesInArea(int x1, int y1, int x2, int y2) {
+    public LinkedList<Entity> getEntitiesInArea(int x1, int y1, int x2, int y2) {
         LinkedList<Entity> entities = new LinkedList<>();
 
         for (int x = x1; x < x2; x++) {
