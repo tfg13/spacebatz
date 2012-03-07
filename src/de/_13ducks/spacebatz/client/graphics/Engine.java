@@ -347,7 +347,7 @@ public class Engine {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf ÃƒÆ’Ã…â€œberschreiben stellen
+        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
         glEnable(GL_BLEND); // Transparenz in Texturen erlauben
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
@@ -460,7 +460,7 @@ public class Engine {
                 Bullet bullet = (Bullet) c;
 
                 float v = bullet.bulletpic * 0.25f;
-                float w = ((int) (bullet.bulletpic / 4)) * 0.25f;
+                float w = bullet.bulletpic / 4 * 0.25f;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
@@ -486,6 +486,7 @@ public class Engine {
         glColor3f(0.7f, 0.0f, 0.0f);
         glRectf(0.03f * tilesX, 0.03f * tilesY, (0.03f + 0.26f * ((float) hp / maxhp)) * tilesX, 0.05f * tilesY);
         glEnable(GL_TEXTURE_2D);
+	glColor3f(1f, 1f, 1f);
 
         // Inventory-Hintergrund
         inventoryPic.bind();
@@ -552,6 +553,7 @@ public class Engine {
 
             glColor3f(0.7f, 0.0f, 0.0f);
             glRectf(wx * tilesX, 0.59f * tilesY, (wx + 0.14f) * tilesX, 0.6f * tilesY);
+	    glColor3f(1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
         }
 
@@ -671,6 +673,7 @@ public class Engine {
                 glDisable(GL_TEXTURE_2D);
                 glColor3f(0.9f, 0.9f, 0.9f);
                 glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (0.7f + item.getItemattributes().size())) * tilesY);
+		glColor3f(1f, 1f, 1f);
                 glEnable(GL_TEXTURE_2D);
                 // Namen der Itemattribute
                 for (int i = 0; i < item.getItemattributes().size(); i++) {
@@ -687,6 +690,7 @@ public class Engine {
             glDisable(GL_TEXTURE_2D);
             glColor4f(.9f, .9f, .9f, .7f);
             glRectf(0, tilesY, 10, tilesY - 1.5f);
+	    glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             renderText("delay: spec " + (NET_TICKSYNC_MAXPING / (1000 / Client.tickrate)) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
             renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
