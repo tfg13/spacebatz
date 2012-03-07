@@ -39,8 +39,8 @@ public class EnemySpawnArea implements Serializable {
      */
     public EnemySpawnArea(double x1, double y1, double x2, double y2) {
         maxSpawns = 10;
-        minSpawnDistance = 15;
-        maxSpawnDistance = 15;
+        minSpawnDistance = 20;
+        maxSpawnDistance = 40;
         this.x1 = x1;
         this.x2 = x2;
         this.y1 = y1;
@@ -76,6 +76,7 @@ public class EnemySpawnArea implements Serializable {
                         tries++;
                         // Abbrechen wenn wir schon 200 Versuche haben:
                         if (tries > 200) {
+                            tries = 200;
                             return;
                         }
                         x = (playerX - maxSpawnDistance) + (r.nextDouble() * 2 * maxSpawnDistance);
