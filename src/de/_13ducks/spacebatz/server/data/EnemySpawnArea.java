@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Distance;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
@@ -9,12 +10,8 @@ import java.util.Random;
  *
  * @author michael
  */
-public class EnemySpawner {
+public class EnemySpawnArea implements Serializable{
 
-    /**
-     * Der Name des Spawners
-     */
-    private String name;
     /*
      * Gibt an wieviele Gegner maximal erzeugt werden
      */
@@ -22,18 +19,27 @@ public class EnemySpawner {
     /**
      * Der mindestAbstand zu Spielern
      */
-    private static final double MINSPAWNDISTANCE = 20.0;
+    private double minSpawnDistance;
     /**
      * Der mindestAbstand zu Spielern
      */
-    private static final double MAXSPAWNDISTANCE = 40.0;
+    private double maxSpawnDistance;
+    /**
+     * Die Koordinaten der linken Oberen und der rechten unteren Ecke des Gebiets
+     */
+    double x1, x2, y1, y2;
 
     /**
      * Konstrukto, initialisiert einen neuen Spawner
      */
-    public EnemySpawner(String name) {
-        this.name = name;
+    public EnemySpawnArea(double x1, double y1, double x2, double y2) {
         maxSpawns = 20;
+        minSpawnDistance = 20;
+        maxSpawnDistance = 40;
+        this.x1 = x1;
+        this.x2 = x2;
+        this.y1 = y1;
+        this.y2 = y2;
     }
 
     /**
@@ -51,14 +57,17 @@ public class EnemySpawner {
             double x = 0, y = 0;
             boolean positionOk = false;
 
+            double sizeX = x2 - x1;
+            double sizeY = y2 - y1;
             // Position berechnen:
             while (!positionOk) {
-                x = 1+ (r.nextDouble() * (Server.game.getLevel().getSizeX() - 2));
-                y = 1+ (r.nextDouble() * (Server.game.getLevel().getSizeY() - 2));
+                x = 1 + (r.nextDouble() * (sizeX - 2));
+                y = 1 + (r.nextDouble() * (sizeY - 2));
 
                 // liegt die Position zwischen MINDISTANE und MAXDISTANCE?
                 for (Client client : Server.game.clients.values()) {
-                    if (Distance.getDistance(x, y, client.getPlayer().getX(), client.getPlayer().getY()) > MINSPAWNDISTANCE && Distance.getDistance(x, y, client.getPlayer().getX(), client.getPlayer().getY()) < MAXSPAWNDISTANCE) {
+                    double distance = Distance.getDistance(x, y, client.getPlayer().getX(), client.getPlayer().getY());
+                    if (distance > minSpawnDistance && distance < maxSpawnDistance) {
                         positionOk = true;
                     }
                 }
@@ -70,10 +79,15 @@ public class EnemySpawner {
             }
             Enemy e = new Enemy(x, y, Server.game.newNetID(), enemytype);
             Server.game.netIDMap.put(e.netID, e);
-
-
-
-
         }
+    }
+
+    /**
+     * Setzt die maximale Gegnerzahl, die in diesem Gebiet gespawnt werden soll
+     *
+     * @param maxSpawns die maximale Gegnerzahl
+     */
+    public void setMaxSpawns(int maxSpawns) {
+        this.maxSpawns = maxSpawns;
     }
 }

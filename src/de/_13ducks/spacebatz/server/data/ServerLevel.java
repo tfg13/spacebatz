@@ -12,16 +12,16 @@ import java.util.ArrayList;
 public class ServerLevel extends Level {
 
     /**
-     * Die Liste mit Spawnern
+     * Die Liste mit Gebieten, in denen Gegner gespawnt werden
      */
-    private ArrayList<EnemySpawner> enemySpawners;
+    private ArrayList<EnemySpawnArea> enemySpawnAreas;
 
     /**
      * Konstruktor
      */
     public ServerLevel(int xSize, int ySize) {
         super(xSize, ySize);
-        enemySpawners = new ArrayList<>();
+        enemySpawnAreas = new ArrayList<>();
     }
 
     /**
@@ -29,7 +29,14 @@ public class ServerLevel extends Level {
      *
      * @return die Liste der Spawner
      */
-    public ArrayList<EnemySpawner> getEnemySpawners() {
-        return enemySpawners;
+    public ArrayList<EnemySpawnArea> getEnemySpawners() {
+        return enemySpawnAreas;
+    }
+
+    /**
+     * Fügt der Liste ein neues Spawngebiet hinzu
+     */
+    public void addEnemySpawnArea(EnemySpawnArea spawnArea) {
+        enemySpawnAreas.add(spawnArea);
     }
 }

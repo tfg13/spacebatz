@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.levelgenerator;
 
 import de._13ducks.spacebatz.client.Position;
+import de._13ducks.spacebatz.server.data.EnemySpawnArea;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class LevelGenerator {
     private static int[][] ground;
 
     public static ServerLevel generateLevel() {
-        ServerLevel  level = new ServerLevel(60, 60);
+        ServerLevel level = new ServerLevel(60, 60);
 
         Random random = new Random(System.nanoTime());
 
@@ -34,6 +35,9 @@ public class LevelGenerator {
         // Respawn-Koordinaten setzen:
         level.respawnX = 3;
         level.respawnY = 3;
+
+        // GegnerSpawnGebiet setzen:
+        level.addEnemySpawnArea(new EnemySpawnArea(1, 1, xSize - 2, ySize - 2));
 
         // Default-Bodentextur:
         for (int x = 0; x < xSize; x++) {

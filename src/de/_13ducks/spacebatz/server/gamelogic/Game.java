@@ -102,10 +102,6 @@ public class Game {
         }
     }
 
-    public void addEnemies() {
-        getLevel().getEnemySpawners().add(new EnemySpawner("Hi"));
-    }
-
     /**
      * Wird gerufen, wenn ein neuer Client verbunden wurde
      *
@@ -190,7 +186,7 @@ public class Game {
         // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
         // Gegner Spawnen:
-        for (EnemySpawner spawner : getLevel().getEnemySpawners()) {
+        for (EnemySpawnArea spawner : getLevel().getEnemySpawners()) {
             spawner.tick();
         }
     }
