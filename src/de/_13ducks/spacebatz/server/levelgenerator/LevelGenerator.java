@@ -27,9 +27,11 @@ public class LevelGenerator {
     private static int xSize;
     private static int ySize;
     private static Position center;
+    private static final int texrock = 1;
+    private static final int texground = 4;
 
     public static ServerLevel generateLevel() {
-        level = new ServerLevel(100, 100);
+        level = new ServerLevel(300, 300);
         ground = level.getGround();
         shape = new ArrayList();
 
@@ -49,12 +51,12 @@ public class LevelGenerator {
         // Default-Bodentextur:
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
-                ground[x][y] = 3;
+                ground[x][y] = texrock;
                 level.getCollisionMap()[x][y] = true;
             }
         }
         for (int i = 0; i < innerFields.size(); i++) {
-            ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = 1;
+            ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = texground;
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
 
@@ -245,7 +247,7 @@ public class LevelGenerator {
      */
     private static void createWall(int x1, int y1, int x2, int y2, Level level) {
 
-        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), 3);
+        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), texrock);
         setCollision(findLine(new Position(x1, y1), new Position(x2, y2)), true, level);
     }
 
