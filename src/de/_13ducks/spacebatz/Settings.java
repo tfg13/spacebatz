@@ -188,7 +188,7 @@ public final class Settings {
     /**
      * Die Reichweite für Kollisionen
      */
-    public static double SERVER_COLLISION_DISTANCE = 1.5;
+    public static final double SERVER_COLLISION_DISTANCE = 1.5;
     /**
      * Die Größe der Chars für Kollision
      */
