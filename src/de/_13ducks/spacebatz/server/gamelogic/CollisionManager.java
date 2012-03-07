@@ -33,9 +33,9 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Bullets und Chars
      */
     private static void computeBulletCollision() {
-
+        
         Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
-
+        
         while (listIterator.hasNext()) {
             Bullet bullet = null;
             Entity entity = listIterator.next();
@@ -49,13 +49,14 @@ public class CollisionManager {
             // Bullet muss nach bestimmter Zeit gelöscht werden
             if (Server.game.getTick() > bullet.getDeletetick()) {
                 listIterator.remove();
-
+                Server.entityMap.removeEntity(bullet);
+                
                 continue;
             }
-
+            
             double x = bullet.getX();
             double y = bullet.getY();
-
+            
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
@@ -78,8 +79,8 @@ public class CollisionManager {
                                 }
                             }
                             listIterator.remove();
-
-
+                            
+                            
                             break;
                         }
                     }
@@ -95,7 +96,7 @@ public class CollisionManager {
     private static void computeBulletExplosionCollision(Bullet bullet, Char charhit) {
         double x = bullet.getX();
         double y = bullet.getY();
-
+        
         Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, bullet.getExplosionradius()).iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
@@ -105,7 +106,7 @@ public class CollisionManager {
                     continue;
                 }
                 double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
-
+                
                 if (!c.equals(bullet.getOwner())) {
                     if (c instanceof Enemy) {
                         Enemy en = (Enemy) c;
@@ -118,7 +119,7 @@ public class CollisionManager {
                         }
                     }
                 }
-
+                
             }
         }
     }
@@ -136,21 +137,21 @@ public class CollisionManager {
                 if (mover.isMoving()) {
                     double futureX = mover.extrapolateX(1);
                     double futureY = mover.extrapolateY(1);
-
+                    
                     int leftX = (int) (futureX - mover.getSize());
                     int leftY = (int) (futureY);
-
+                    
                     int topX = (int) (futureX);
                     int topY = (int) (futureY + mover.getSize());
-
+                    
                     int rightX = (int) (futureX + mover.getSize());
                     int rightY = (int) (futureY);
-
+                    
                     int botX = (int) (futureX);
                     int botY = (int) (futureY - mover.getSize());
-
-
-
+                    
+                    
+                    
                     if (Server.game.getLevel().getCollisionMap()[leftX][leftY] == true) {
                         mover.stopMovementX();
                     }
