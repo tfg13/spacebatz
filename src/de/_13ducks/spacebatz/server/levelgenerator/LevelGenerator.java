@@ -22,7 +22,6 @@ public class LevelGenerator {
      */
     private static ServerLevel level;
     private static int[][] ground;
-    private static ArrayList<Position> shape;
     private static Random random;
     private static int xSize;
     private static int ySize;
@@ -31,9 +30,10 @@ public class LevelGenerator {
     private static final int texground = 4;
 
     public static ServerLevel generateLevel() {
+        ArrayList<Circle> circleList = new ArrayList<>();
+
         level = new ServerLevel(300, 300);
         ground = level.getGround();
-        shape = new ArrayList();
 
         random = new Random(System.nanoTime());
 
@@ -45,8 +45,9 @@ public class LevelGenerator {
         dangerZone.setMaxSpawns(100);
         level.addEnemySpawnArea(dangerZone);
 
-        findShape();
-        ArrayList<Position> innerFields = findInnerFields();
+        Circle circle = findCircle();
+        circleList.add(circle);
+        ArrayList<Position> innerFields = findInnerFields(circleList);
 
         // Default-Bodentextur:
         for (int x = 0; x < xSize; x++) {
@@ -64,7 +65,7 @@ public class LevelGenerator {
         level.respawnX = center.getX();
         level.respawnY = center.getY();
 
-        // Wände am Levelrand
+        // WÃ¤nde am Levelrand
         createWall(0, 0, 1, ySize - 1, level);
         createWall(0, ySize - 1, xSize - 1, ySize - 2, level);
         createWall(xSize - 1, ySize - 1, xSize - 2, 0, level);
@@ -73,7 +74,9 @@ public class LevelGenerator {
         return level;
     }
 
-    public static void findShape() {
+    public static Circle findCircle() {
+        ArrayList<Position> shape = new ArrayList<>();
+
         int shapepoints = random.nextInt(11) + 10;
         int maxradius = Math.min(xSize, ySize) / 2;
         center = new Position(xSize / 2, ySize / 2);
@@ -104,20 +107,29 @@ public class LevelGenerator {
             int y = (int) (radius[i] * Math.sin(angle)) + center.getY();
             shape.add(new Position(x, y));
         }
+
+        Circle circle = new Circle(center, shape);
+        return circle;
     }
 
-    public static ArrayList<Position> findInnerFields() {
+    public static ArrayList<Position> findInnerFields(ArrayList<Circle> circleList) {
         ArrayList<Position> innerFields = new ArrayList<>();
 
-        for (int a = 0; a < shape.size(); a++) {
-            int z = a + 1;
-            if (z >= shape.size()) {
-                z = 0;
-            }
+        // Für jeden Circle:
+        for (int i = 0; i < circleList.size(); i++) {
+            // Für jeden Randpunkt:
+            for (int a = 0; a < circleList.get(i).getShape().size(); a++) {
+                int z = a + 1;
+                if (z >= circleList.get(i).getShape().size()) {
+                    z = 0;
+                }
 
-            ArrayList<Position> trianglepos = findTriangle(shape.get(a), shape.get(z), center);
-            innerFields.addAll(trianglepos);
+                ArrayList<Position> trianglepos = findTriangle(circleList.get(i).getShape().get(a), circleList.get(i).getShape().get(z), center);
+                innerFields.addAll(trianglepos);
+            }
         }
+
+
 
         return innerFields;
     }
@@ -128,7 +140,7 @@ public class LevelGenerator {
     public static ArrayList<Position> findTriangle(Position a, Position b, Position c) {
         ArrayList<Position> triangle = new ArrayList<>();
 
-        // äußere Grenzen
+        // Ã¤uÃŸere Grenzen
         int ymin = Math.min(a.getY(), Math.min(b.getY(), c.getY()));
         int ymax = Math.max(a.getY(), Math.max(b.getY(), c.getY()));
         int xmin = Math.min(a.getX(), Math.min(b.getX(), c.getX()));
@@ -150,7 +162,7 @@ public class LevelGenerator {
             int startx = xmin; // x-Wert, ab dem die Felder im Dreieck sind
             int endx = xmax; // x-Wert, bis zu dem die Felder im Dreieck sind
 
-            // größter und kleinster x-Wert von ab, bc und ca finden, der innerhalb von xmin und xmax ist
+            // grÃ¶ÃŸter und kleinster x-Wert von ab, bc und ca finden, der innerhalb von xmin und xmax ist
             if (abintersect >= xmin && abintersect <= xmax) {
                 startx = (int) abintersect;
                 endx = (int) Math.ceil(abintersect);
@@ -180,7 +192,7 @@ public class LevelGenerator {
     }
 
     /*
-     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurÃ¼ck (als ArrayList<Position>).
+     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurÃƒÂ¼ck (als ArrayList<Position>).
      */
     public static ArrayList<Position> findLine(Position alpha, Position beta) {
         ArrayList<Position> Returnthis = new ArrayList<>();
@@ -243,7 +255,7 @@ public class LevelGenerator {
      * @param y1 Y-Koordinate des Startpunktes der Wand
      * @param x2 X-Koordinate des Endpunktes der Wand
      * @param y2 Y-Koordinate des Endpunktes der Wand
-     * @param level das Level, dem die Wand hinzugefÃƒÂ¼gt wird
+     * @param level das Level, dem die Wand hinzugefÃƒÆ’Ã‚Â¼gt wird
      */
     private static void createWall(int x1, int y1, int x2, int y2, Level level) {
 
