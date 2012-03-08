@@ -33,7 +33,7 @@ public class MainLoop {
             public void run() {
                 try {
                     if (checkClientsLeft()) {
-                        mainLoop.cancel();
+			mainLoopTimer.cancel();
                         return;
                     }
 
