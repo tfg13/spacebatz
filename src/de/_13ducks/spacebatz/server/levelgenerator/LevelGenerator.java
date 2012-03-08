@@ -25,7 +25,6 @@ public class LevelGenerator {
     private static Random random;
     private static int xSize;
     private static int ySize;
-    private static Position center;
     private static final int texrock = 1;
     private static final int texground = 4;
 
@@ -39,13 +38,15 @@ public class LevelGenerator {
 
         xSize = level.getSizeX();
         ySize = level.getSizeY();
+        Position center = new Position(xSize / 2, ySize / 2);
 
         // Gegner-Spawn-Gebiet setzen:
         EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
         dangerZone.setMaxSpawns(100);
         level.addEnemySpawnArea(dangerZone);
 
-        Circle circle = findCircle();
+        int maxradius = Math.min(xSize, ySize) / 2;
+        Circle circle = createCircle(center, maxradius); 
         circleList.add(circle);
         ArrayList<Position> innerFields = findInnerFields(circleList);
 
@@ -74,12 +75,10 @@ public class LevelGenerator {
         return level;
     }
 
-    public static Circle findCircle() {
+    public static Circle createCircle(Position center, int maxradius) {
         ArrayList<Position> shape = new ArrayList<>();
 
         int shapepoints = random.nextInt(11) + 10;
-        int maxradius = Math.min(xSize, ySize) / 2;
-        center = new Position(xSize / 2, ySize / 2);
 
         int[] radius = new int[shapepoints];
 
@@ -124,7 +123,7 @@ public class LevelGenerator {
                     z = 0;
                 }
 
-                ArrayList<Position> trianglepos = findTriangle(circleList.get(i).getShape().get(a), circleList.get(i).getShape().get(z), center);
+                ArrayList<Position> trianglepos = findTriangle(circleList.get(i).getShape().get(a), circleList.get(i).getShape().get(z), circleList.get(i).getCenter());
                 innerFields.addAll(trianglepos);
             }
         }
