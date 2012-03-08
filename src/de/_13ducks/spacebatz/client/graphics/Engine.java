@@ -412,13 +412,9 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                int dir = c.getDir();
+                int dir = c.getDir() * 2;
                 int tilex = dir;
                 int tiley = 0;
-                // Bei Gegnertyp 0 andere Tiles benutzen
-                if (enemy.getEnemytypeid() == 0) {
-                    tilex = dir + 8;
-                }
                 if (enemy.getEnemytypeid() == 2) {
                     tiley = 2;
                 }
@@ -439,7 +435,7 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-                int dir = c.getDir();
+                int dir = c.getDir() * 2;
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * dir, 0);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);

@@ -89,6 +89,14 @@ public class Char {
         this.vY = m.vecY;
         this.startTick = m.startTick;
         this.speed = m.speed;
+	// Nicht drehen beim Stehenbleiben
+	if (startTick != -1) {
+	    double dir = Math.atan2(vY, vX);
+	    if (dir < 0) {
+		dir += 2 * Math.PI;
+	    }
+	    this.dir = (int) ((dir / (2 * Math.PI) * 8));
+	}
     }
 
     @Override
