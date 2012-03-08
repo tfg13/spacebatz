@@ -102,26 +102,6 @@ public class Game {
         }
     }
 
-    public void addEnemies() {
-        // Platziert Gegner
-        Random r = new Random();
-        for (int i = 0; i < 200; i++) {
-            double posX = 5 + (r.nextDouble() * (level.getGround().length - 10));
-            double posY = 5 + (r.nextDouble() * (level.getGround().length - 10));
-
-
-            if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
-                int enemytype = r.nextInt(30);
-                if (enemytype > 2) {
-                    enemytype = 1;
-                }
-                Enemy e = new Enemy(posX, posY, newNetID(), enemytype);
-                netIDMap.put(e.netID, e);
-            }
-
-        }
-    }
-
     /**
      * Wird gerufen, wenn ein neuer Client verbunden wurde
      *
@@ -200,8 +180,12 @@ public class Game {
         AIManager.computeMobBehavior(netIDMap.values());
         // Kollision berechnen:
         CollisionManager.computeCollision();
-       // EinheitenPositionen neue berechnen:
+        // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
+        // Gegner Spawnen:
+        for (EnemySpawnArea spawner : getLevel().getEnemySpawners()) {
+            spawner.tick();
+        }
     }
 
     /**
