@@ -418,6 +418,9 @@ public class Engine {
                 if (enemy.getEnemytypeid() == 2) {
                     tiley = 2;
                 }
+		if (enemy.getEnemytypeid() == 0) {
+		    glColor3f(1f, .5f, .5f);
+		}
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
@@ -428,6 +431,7 @@ public class Engine {
                 glTexCoord2f(0.0625f * tilex, 0.0625f * (tiley + 2));
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
+		glColor3f(1f, 1f, 1f);
             }
         }
 
