@@ -129,8 +129,6 @@ public class Game {
      */
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
-            clients.put(client.clientID, client);
-            Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
             Server.msgSender.sendAllItems(client, getItemMap());
@@ -140,9 +138,8 @@ public class Game {
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
-            // Dem Client die Tickrate schicken:
-            Server.msgSender.sendTickrate(client);
-            Server.msgSender.sendStartGame(client);
+	    // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
+	    Server.serverNetwork.udp.addClient(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }

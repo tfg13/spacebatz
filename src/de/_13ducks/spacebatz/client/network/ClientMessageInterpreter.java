@@ -123,19 +123,11 @@ public class ClientMessageInterpreter {
                 t.setName("CLIENT_ENGINE");
                 t.setDaemon(false);
                 t.start();
-                Client.startTickCounting(Bits.getInt(message, 0));
                 initTcpReceiverThreadRun = false;
                 break;
             case 23:
                 // ClientID setzen
                 Client.setClientID(message[0]);
-                break;
-            case 27:
-                // Tickrate
-                int rate = Bits.getInt(message, 0);
-                if (rate > 0) {
-                    Client.tickrate = rate;
-                }
                 break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
                 // Char wird von Bullet / angriff getroffen

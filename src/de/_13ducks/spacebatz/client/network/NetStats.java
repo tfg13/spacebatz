@@ -12,7 +12,7 @@ public final class NetStats {
     /**
      * Die berechneten Tickdelays für die letzte Sekunde. Ein Ringbuffer.
      */
-    private static int[] tickDelay = new int[Settings.SERVER_TICKRATE];
+    private static int[] tickDelay = new int[1000 / Settings.SERVER_TICKRATE];
     /**
      * Summe aller Delays aus dem Tickdelay-Ringbuffer. Zum schnellen Berechnen des Durchschnitts.
      */
@@ -28,7 +28,7 @@ public final class NetStats {
      * @return den letzten gemessenen Tickdelay
      */
     public static int getLastTickDelay() {
-        return tickDelay[tickDelayClock != 0 ? tickDelayClock - 1 : Settings.SERVER_TICKRATE - 1];
+        return tickDelay[tickDelayClock != 0 ? tickDelayClock - 1 : (1000 / Settings.SERVER_TICKRATE) - 1];
     }
 
     /**
@@ -37,7 +37,7 @@ public final class NetStats {
      * @return den durchschnittlichen Tickdelay der letzten Sekunde
      */
     public static int getAvgTickDelay() {
-        return sumTickDelay / Settings.SERVER_TICKRATE;
+        return sumTickDelay / (1000 / Settings.SERVER_TICKRATE);
     }
 
     /**
@@ -50,7 +50,7 @@ public final class NetStats {
         tickDelay[tickDelayClock] = delay;
         sumTickDelay -= old;
         sumTickDelay += delay;
-        if (++tickDelayClock == Settings.SERVER_TICKRATE) {
+        if (++tickDelayClock == (1000 / Settings.SERVER_TICKRATE)) {
             tickDelayClock = 0;
         }
     }

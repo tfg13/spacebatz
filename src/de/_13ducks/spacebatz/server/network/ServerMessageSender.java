@@ -49,9 +49,7 @@ public class ServerMessageSender {
      * @param client der Ziel-Client
      */
     public void sendStartGame(Client client) {
-        byte[] b = new byte[4];
-        Bits.putInt(b, 0, Server.game.getTick());
-        Server.serverNetwork.sendTcpData((byte) 22, b, client);
+        Server.serverNetwork.sendTcpData((byte) 22, new byte[1], client);
     }
 
     /**

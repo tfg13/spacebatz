@@ -8,8 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Die Netzwerkkomponente des Servers
@@ -102,7 +100,7 @@ public class ServerNetwork {
             public void run() {
                 while (true) {
                     try {
-                        sendTcpBuffer();
+			sendTcpBuffer();
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();

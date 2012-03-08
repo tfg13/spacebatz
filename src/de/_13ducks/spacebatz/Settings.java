@@ -52,9 +52,10 @@ public final class Settings {
      */
     public static final int CLIENT_UDPPORT = 13948;
     /**
-     * Die Server-Tickrate. Guter Wert muss empirisch ermittelt werden.
+     * Die Server-Tickrate in default-Delay zwischen Ticks.
+     * 15 entspricht also einer Tickrate von 66,66666666...
      */
-    public static final int SERVER_TICKRATE = 60;
+    public static final int SERVER_TICKRATE = 15;
     /**
      * Wieviel der Server maximal hinter seiner Target-Tickrate sein darf, bevor eine Warnung ausgespuckt wird.
      */
@@ -103,6 +104,14 @@ public final class Settings {
      * Ping-Antwort vom Server.
      */
     public static final byte NET_UDP_CMD_PONG = 5;
+    /**
+     * Server schickt Infos über Tickdelay.
+     */
+    public static final byte NET_UDP_CMD_TICK_SYNC_PING = 1;
+    /**
+     * Antwort an Server, dass Tickdelay-Paket erhalten wurde.
+     */
+    public static final byte NET_UDP_CMD_TICK_SYNC_PONG = -1;
     /**
      * Die cmdID für Level-senden
      */

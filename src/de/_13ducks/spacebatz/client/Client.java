@@ -8,12 +8,7 @@ import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 /**
  * Die Hauptklasse des Clients
@@ -85,13 +80,13 @@ public class Client {
      */
     private static int money;
     /**
-     * Die Logik-Tickrate.
+     * Die Logik-Tickrate in ms Abstand zwischen den Ticks.
      */
     public static int tickrate;
     /**
-     * Der Thread, der die Ticks hochzählt.
+     * Der Timer, der die Ticks hochzählt.
      */
-    private static ScheduledThreadPoolExecutor tickTimer;
+    private static Timer tickTimer;
     /**
      * TCP-Sender zum Server
      */
@@ -99,194 +94,195 @@ public class Client {
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
+     *
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
     public static void startClient(String ip) {
-        msgSender =  new ClientMessageSender();
-        msgInterpreter = new ClientMessageInterpreter();
-        netIDMap = new HashMap<>();
-        network = new ClientNetwork();
-        equippedItems = new EquippedItems();
-        if (getNetwork().tryConnect(ip)) {
-            // StartRequest per TCP an Server schicken
-            //player = new Player(30, 30);
-        } else {
-            System.out.println("ERROR: Can't connect!");
-        }
+	msgSender = new ClientMessageSender();
+	msgInterpreter = new ClientMessageInterpreter();
+	netIDMap = new HashMap<>();
+	network = new ClientNetwork();
+	equippedItems = new EquippedItems();
+	if (getNetwork().tryConnect(ip)) {
+	    // StartRequest per TCP an Server schicken
+	    //player = new Player(30, 30);
+	} else {
+	    System.out.println("ERROR: Can't connect!");
+	}
     }
 
     /**
      * Gibt die Liste mit Bullets zurück
+     *
      * @return die Liste der Bullets
      */
     public static LinkedList<Bullet> getBulletList() {
-        return bulletList;
+	return bulletList;
     }
 
     /**
      * Gibt den eigenen Spieler zurück
+     *
      * @return der eigene Spieler
      */
     public static Player getPlayer() {
-        return player;
+	return player;
     }
 
     /**
      * Gibt den MessageInterpreter zurück
+     *
      * @return der MessageInterpreter
      */
     public static ClientMessageInterpreter getMsgInterpreter() {
-        return msgInterpreter;
+	return msgInterpreter;
     }
 
     /**
      * Gibt die ClientID, die der Server uns zugewiesen hat, zurück
+     *
      * @return unsere ClientID
      */
     public static byte getClientID() {
-        return clientID;
+	return clientID;
     }
 
     /**
      * Setzt die ClientID
+     *
      * @param clientID die ClientID, die der Client verwenden soll
      */
     public static void setClientID(byte clientID) {
-        Client.clientID = clientID;
+	Client.clientID = clientID;
     }
 
     /**
      * Schickt ein vollständiges, gültiges UDP-Paket an den Server.
+     *
      * @param packet udp-Paket
      */
     public static void udpOut(byte[] packet) {
-        if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
-            throw new IllegalArgumentException("Illegal packet!");
-        }
-        getNetwork().udpSend(packet);
+	if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
+	    throw new IllegalArgumentException("Illegal packet!");
+	}
+	getNetwork().udpSend(packet);
     }
 
     /**
      * Leitet UDP-Ticks ans Netzwerksystem weiter.
      */
     public static void udpTick() {
-        getNetwork().udpTick();
+	getNetwork().udpTick();
     }
 
     /**
      * Gibt das Netzwerkmodul zurück
+     *
      * @return das Netzwerkmodul des Clients
      */
     public static ClientNetwork getNetwork() {
-        return network;
+	return network;
     }
 
     public static void updateGametick() {
-        frozenGametick = gametick;
+	frozenGametick = gametick;
     }
 
     public static void startTickCounting(int serverStartTick) {
-        gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / (1000 / tickrate));
-        ThreadFactory daemonThreadFactory = new ThreadFactory() {
+	gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / tickrate);
+	if (tickTimer == null) {
+	    tickTimer = new Timer("Client_tickcounter", true);
+	    tickTimer.scheduleAtFixedRate(new TimerTask() {
 
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setName("CLIENT_TICKCOUNTER");
-                t.setDaemon(true);
-                return t;
-            }
-        };
-        tickTimer = new ScheduledThreadPoolExecutor(1, daemonThreadFactory);
-        tickTimer.scheduleAtFixedRate(new Runnable() {
-
-            @Override
-            public void run() {
-                gametick++;
-            }
-        }, 0, 1000000000l / 60l, TimeUnit.NANOSECONDS);
+		@Override
+		public void run() {
+		    gametick++;
+		}
+	    }, 0, tickrate);
+	}
     }
 
     public static HashMap<Integer, Item> getItemMap() {
-        return itemMap;
+	return itemMap;
     }
 
     public static void setItemMap(HashMap<Integer, Item> aItemMap) {
-        itemMap = aItemMap;
+	itemMap = aItemMap;
     }
 
     public static void setInventory(HashMap<Integer, Item> aInventory) {
-        inventoryItems = aInventory;
-        Iterator<Item> iterator = inventoryItems.values().iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-            inventorySlots[i] = new InventorySlot(item);
-            item.setInventoryslot(inventorySlots[i]);
-            i++;
-        }
+	inventoryItems = aInventory;
+	Iterator<Item> iterator = inventoryItems.values().iterator();
+	int i = 0;
+	while (iterator.hasNext()) {
+	    Item item = iterator.next();
+	    inventorySlots[i] = new InventorySlot(item);
+	    item.setInventoryslot(inventorySlots[i]);
+	    i++;
+	}
     }
 
     /**
      * @return the inventory
      */
     public static HashMap<Integer, Item> getInventoryItems() {
-        return inventoryItems;
+	return inventoryItems;
     }
 
     /**
      * @return the inventorySlots
      */
     public static InventorySlot[] getInventorySlots() {
-        return inventorySlots;
+	return inventorySlots;
     }
 
     /**
      * Item in das Spielerinventar aufnehmen
+     *
      * @param item Item das geaddet werden soll
      */
     public static void addToInventory(Item item) {
-        for (int i = 0; i < inventorySlots.length; i++) {
-            if (inventorySlots[i] == null) {
-                inventorySlots[i] = new InventorySlot(item);
-                inventoryItems.put(item.getNetID(), item);
-                item.setInventoryslot(inventorySlots[i]);
-                break;
-            }
-        }
+	for (int i = 0; i < inventorySlots.length; i++) {
+	    if (inventorySlots[i] == null) {
+		inventorySlots[i] = new InventorySlot(item);
+		inventoryItems.put(item.getNetID(), item);
+		item.setInventoryslot(inventorySlots[i]);
+		break;
+	    }
+	}
     }
 
     public static void removeFromInventory(int slot) {
-        inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
-        inventorySlots[slot] = null;
+	inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
+	inventorySlots[slot] = null;
     }
 
     public static int getMoney() {
-        return money;
+	return money;
     }
 
     public static void addMoney(int amount) {
-        money += amount;
+	money += amount;
     }
 
     /**
      * @return the equippedSlots
      */
     public static EquippedItems getEquippedItems() {
-        return equippedItems;
+	return equippedItems;
     }
 
     /**
      * @param aEquippedSlots the equippedSlots to set
      */
     public static void setEquippedItems(EquippedItems aEquippedItems) {
-        equippedItems = aEquippedItems;
+	equippedItems = aEquippedItems;
     }
 
     /**
      * @return the msgSender
      */
     public static ClientMessageSender getMsgSender() {
-        return msgSender;
+	return msgSender;
     }
 }
