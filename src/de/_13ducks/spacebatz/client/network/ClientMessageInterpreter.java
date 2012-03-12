@@ -123,34 +123,32 @@ public class ClientMessageInterpreter {
                 t.setName("CLIENT_ENGINE");
                 t.setDaemon(false);
                 t.start();
-                Client.startTickCounting(Bits.getInt(message, 0));
                 initTcpReceiverThreadRun = false;
                 break;
             case 23:
                 // ClientID setzen
                 Client.setClientID(message[0]);
                 break;
-            case 27:
-                // Tickrate
-                int rate = Bits.getInt(message, 0);
-                if (rate > 0) {
-                    Client.tickrate = rate;
-                }
-                break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
                 // Char wird von Bullet / angriff getroffen
                 int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
+                int netIDAttacker = Bits.getInt(message, 4);
                 int damage = Bits.getInt(message, 8);
-                byte killed = message[12];
+
+                byte victimdies = message[12];
+
 
                 // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
                     Player p = (Player) Client.netIDMap.get(netIDVictim);
                     if (p == Client.getPlayer()) {
-                        p.setHealthpoints(p.getHealthpoints() - damage);
-                        if (killed == 1) {
+
+                        if (victimdies == 1) {
+
                             // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
                             p.setHealthpoints(p.getHealthpointsmax());
+                        } else {
+                            p.setHealthpoints(p.getHealthpoints() - damage);
                         }
                     }
                 }

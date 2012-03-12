@@ -3,13 +3,13 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
+import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
@@ -58,10 +58,6 @@ public class Game {
      * Die nächste netID.
      */
     private int nextNetID = 1;
-    /**
-     * Liste der Pflanzen
-     */
-    private ArrayList<Plant> plants;
 
     /**
      * Konstruktor
@@ -69,11 +65,9 @@ public class Game {
     public Game() {
         clients = new HashMap<>();
         netIDMap = new ConcurrentHashMap<>();
-        level = new ServerLevel();
+        level = LevelGenerator.generateLevel();
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
-        LevelGenerator.generateLevel(level);
-        plants = new ArrayList<>();
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -108,40 +102,6 @@ public class Game {
         }
     }
 
-    public void addEnemies() {
-        // Platziert Gegner
-        Random r = new Random();
-        for (int i = 0; i < 200; i++) {
-            double posX = 5 + (r.nextDouble() * (level.getGround().length - 10));
-            double posY = 5 + (r.nextDouble() * (level.getGround().length - 10));
-
-
-            if (10.0 < Distance.getDistance(posX, posY, 3, 3)) {
-                int enemytype = r.nextInt(30);
-                if (enemytype > 2) {
-                    enemytype = 1;
-                }
-                Enemy e = new Enemy(posX, posY, newNetID(), enemytype);
-                netIDMap.put(e.netID, e);
-            }
-
-        }
-    }
-
-    /**
-     * Erstellt Pflanzen an zufälligen Stellen
-     */
-    public void addPlants() {
-        // Platziert Pflanzern
-        Random r = new Random();
-        for (int i = 0; i < 90; i++) {
-            int posX = 5 + (int) (r.nextDouble() * (level.getGround().length - 10));
-            int posY = 5 + (int) (r.nextDouble() * (level.getGround().length - 10));
-
-            getPlants().add(new Plant(posX, posY));
-        }
-    }
-
     /**
      * Wird gerufen, wenn ein neuer Client verbunden wurde
      *
@@ -149,21 +109,17 @@ public class Game {
      */
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
-            clients.put(client.clientID, client);
-            Server.serverNetwork.udp.addClient(client, (byte) client.clientID);
             Server.msgSender.sendSetClientID(client);
             Server.msgSender.sendLevel(client);
             Server.msgSender.sendAllItems(client, getItemMap());
-            Server.msgSender.sendAllPlants();
             Server.msgSender.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             player.calcEquipStats();
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
-            // Dem Client die Tickrate schicken:
-            Server.msgSender.sendTickrate(client);
-            Server.msgSender.sendStartGame(client);
+	    // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
+	    Server.serverNetwork.udp.addClient(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
@@ -224,10 +180,12 @@ public class Game {
         AIManager.computeMobBehavior(netIDMap.values());
         // Kollision berechnen:
         CollisionManager.computeCollision();
-        // Pflanzen berechnen:
-        VegetationManager.calculateVegetationGrowth();
         // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
+        // Gegner Spawnen:
+        for (EnemySpawnArea spawner : getLevel().getEnemySpawners()) {
+            spawner.tick();
+        }
     }
 
     /**
@@ -270,14 +228,5 @@ public class Game {
      */
     public HashMap<Integer, Item> getItemMap() {
         return itemMap;
-    }
-
-    /**
-     * Gibt die PflanzenListe zurück
-     *
-     * @return die Liste aller Pflanzen
-     */
-    public ArrayList<Plant> getPlants() {
-        return plants;
     }
 }

@@ -49,8 +49,6 @@ public final class Server {
     public static void startServer() {
         game = new Game();
         entityMap = new EntityMap(game.getLevel().getSizeX(), game.getLevel().getSizeY());
-        game.addEnemies();
-        game.addPlants();
         serverNetwork.startServer();
 
         MainLoop mainLoop = new MainLoop();

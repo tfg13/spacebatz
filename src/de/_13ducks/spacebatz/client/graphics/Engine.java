@@ -120,7 +120,6 @@ public class Engine {
         }
 
         lastFPS = getTime();
-        int counter = 0;
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
             // Gametick updaten:
@@ -348,7 +347,7 @@ public class Engine {
         // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
         GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf ÃƒÆ’Ã…â€œberschreiben stellen
+        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
         glEnable(GL_BLEND); // Transparenz in Texturen erlauben
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
     }
@@ -413,16 +412,15 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                int dir = c.getDir();
+                int dir = c.getDir() * 2;
                 int tilex = dir;
                 int tiley = 0;
-                // Bei Gegnertyp 0 andere Tiles benutzen
-                if (enemy.getEnemytypeid() == 0) {
-                    tilex = dir + 8;
-                }
                 if (enemy.getEnemytypeid() == 2) {
                     tiley = 2;
                 }
+		if (enemy.getEnemytypeid() == 0) {
+		    glColor3f(1f, .5f, .5f);
+		}
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
@@ -433,6 +431,7 @@ public class Engine {
                 glTexCoord2f(0.0625f * tilex, 0.0625f * (tiley + 2));
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
+		glColor3f(1f, 1f, 1f);
             }
         }
 
@@ -440,7 +439,7 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-                int dir = c.getDir();
+                int dir = c.getDir() * 2;
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * dir, 0);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
@@ -461,7 +460,7 @@ public class Engine {
                 Bullet bullet = (Bullet) c;
 
                 float v = bullet.bulletpic * 0.25f;
-                float w = ((int) (bullet.bulletpic / 4)) * 0.25f;
+                float w = bullet.bulletpic / 4 * 0.25f;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.25f);
@@ -489,6 +488,7 @@ public class Engine {
         glColor3f(0.7f, 0.0f, 0.0f);
         glRectf(0.03f * tilesX, 0.03f * tilesY, (0.03f + 0.26f * ((float) hp / maxhp)) * tilesX, 0.05f * tilesY);
         glEnable(GL_TEXTURE_2D);
+	glColor3f(1f, 1f, 1f);
 
         // Inventory-Hintergrund zeichnen
         inventoryPic.bind();
@@ -553,6 +553,7 @@ public class Engine {
 
             glColor3f(0.7f, 0.0f, 0.0f);
             glRectf(wx * tilesX, 0.59f * tilesY, (wx + 0.14f) * tilesX, 0.6f * tilesY);
+	    glColor3f(1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
         }
 
@@ -672,6 +673,7 @@ public class Engine {
                 glDisable(GL_TEXTURE_2D);
                 glColor3f(0.9f, 0.9f, 0.9f);
                 glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (0.7f + item.getItemattributes().size())) * tilesY);
+		glColor3f(1f, 1f, 1f);
                 glEnable(GL_TEXTURE_2D);
                 // Namen der Itemattribute
                 for (int i = 0; i < item.getItemattributes().size(); i++) {
@@ -688,8 +690,9 @@ public class Engine {
             glDisable(GL_TEXTURE_2D);
             glColor4f(.9f, .9f, .9f, .7f);
             glRectf(0, tilesY, 10, tilesY - 1.5f);
+	    glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText("delay: spec " + (NET_TICKSYNC_MAXPING / (1000 / Client.tickrate)) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
+            renderText("delay: spec " + (NET_TICKSYNC_MAXPING / Client.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
             renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
             renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
         }
@@ -728,7 +731,7 @@ public class Engine {
     }
 
     private int texAt(int[][] layer, int x, int y) {
-        if (x < 0 || y < 0 || x >= layer.length || y >= layer.length) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
             return 0;
         } else {
             return layer[x][y];

@@ -2,10 +2,8 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Der MainLoop des Servers
@@ -17,9 +15,8 @@ public class MainLoop {
     /**
      * Der Thread der die Gamelogic ausführt.
      */
-    private ScheduledThreadPoolExecutor mainLoopTimer;
-    private Runnable mainLoop;
-    private ScheduledFuture<?> mainLoopTask;
+    private Timer mainLoopTimer;
+    private TimerTask mainLoop;
     /**
      * Ob schonmal Clients connected waren. Wenn ja, und alle Clients gehen offline, dann Server beenden.
      */
@@ -29,23 +26,14 @@ public class MainLoop {
      * Konstruktor, initialisiert den Thread
      */
     public MainLoop() {
-        mainLoopTimer = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "Server_Looptimer");
-                t.setDaemon(false);
-                return t;
-            }
-        });
-        mainLoop = new Runnable() {
+        mainLoopTimer = new Timer("Server_looptimer", false);
+        mainLoop = new TimerTask() {
 
             @Override
             public void run() {
                 try {
                     if (checkClientsLeft()) {
-                        mainLoopTask.cancel(false);
-                        mainLoopTimer.shutdown();
+			mainLoopTimer.cancel();
                         return;
                     }
 
@@ -92,6 +80,6 @@ public class MainLoop {
      * Startet die GameLogic
      */
     public void startGameLogic() {
-        mainLoopTask = mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, 1000000000 / Settings.SERVER_TICKRATE, TimeUnit.NANOSECONDS);
+	mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, Settings.SERVER_TICKRATE);
     }
 }

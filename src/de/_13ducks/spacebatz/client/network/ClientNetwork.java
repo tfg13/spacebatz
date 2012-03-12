@@ -193,6 +193,13 @@ public class ClientNetwork {
                 // Zeitmessung abgeschlossen
                 NetStats.ping = (int) (System.currentTimeMillis() - lastPingTime);
                 break;
+	    case Settings.NET_UDP_CMD_TICK_SYNC_PING:
+		// Tick syncen:
+		Client.tickrate = Bits.getInt(data, 5);
+		Client.startTickCounting(Bits.getInt(data, 1));
+		// Antworten:
+		ackTickSync();
+		break;
             default:
             // Do nothing, per default werden Pakete nicht preExecuted
         }
@@ -243,7 +250,7 @@ public class ClientNetwork {
             computePacket(p);
         }
         // Einmal pro Sekunde:
-        if (Client.frozenGametick % Client.tickrate == 0) {
+        if (Client.frozenGametick % (1000 / Client.tickrate) == 0) {
             lastPingTime = System.currentTimeMillis();
             // UDP-Pingpaket schicken
             byte[] udp = new byte[6];
@@ -320,11 +327,24 @@ public class ClientNetwork {
                 }
                 break;
             case Settings.NET_UDP_CMD_PONG:
+	    case Settings.NET_UDP_CMD_TICK_SYNC_PING:
                 // Nichts tun.
                 break;
             default:
                 System.out.println("WARNING: UDP with unknown cmd! (was " + cmd + ")");
         }
+    }
+    
+    /**
+     * Bestätigt dem Server den Erhalt des TickSync-Pakets.
+     */
+    private void ackTickSync() {
+	byte[] b = new byte[10];
+	b[0] = Client.getClientID();
+	// Tick 0 simulieren
+	Bits.putInt(b, 1, 0);
+	b[5] = Settings.NET_UDP_CMD_TICK_SYNC_PONG;
+	udpSend(b);
     }
 
     /**

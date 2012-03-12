@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.gamelogic.AIManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
@@ -21,6 +22,10 @@ public class Enemy extends Char {
      */
     private Char myTarget;
     private int enemylevel;
+    /**
+     * Der KI-Typ des Gegners gibt an wie sich der Gegener verhält
+     */
+    private int AiType;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -32,7 +37,7 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
-
+        AiType = AIManager.AITYPE_STANDARD; // Standard-KI
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         this.healthpoints = estats.getHealthpoints();
@@ -95,7 +100,7 @@ public class Enemy extends Char {
             return false;
         }
     }
-    
+
     /**
      * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
      *
@@ -122,9 +127,10 @@ public class Enemy extends Char {
             return false;
         }
     }
-    
+
     /**
      * Der Enemy will jemanden angreifen
+     *
      * @param e das was angegriffen wird
      */
     public void attack(Char c) {
@@ -144,5 +150,14 @@ public class Enemy extends Char {
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
         Bits.putInt(b, super.byteArraySize() + offset, enemytypeID);
+    }
+
+    /**
+     * Gibt den KI-Typ dieses Gegners zurück
+     *
+     * @return der KI-Typ des GEgners
+     */
+    public int getAiType() {
+        return AiType;
     }
 }

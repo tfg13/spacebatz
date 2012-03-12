@@ -34,7 +34,7 @@ public class ServerMessageInterpreter {
     public void interpretAllTcpMessages() {
         for (int i = 0; i < messages.size(); i++) {
             ServerTcpMessage m = messages.poll();
-            interpretTCPMessage(m.getCmdID(), m.getData(), m.getSender());
+            interpretTCPMessage(m.getCmdID(), m.getData(), m.getClient());
         }
     }
 

@@ -29,14 +29,14 @@ public final class Settings {
      */
     public static final int CLIENT_GFX_TILEZOOM = 2;
     /**
-     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit,
-     * vsync)
+     * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer
+     * min(framelimit, vsync)
      */
     public static final int CLIENT_GFX_FRAMELIMIT = 60;
     /**
-     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen wird die
-     * Framerate durch diese Option 60. Hinweis: Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer min(framelimit,
-     * vsync)
+     * VSync-Option. Empfohlen, macht Bildschirmausgabe viel flüssiger. Beeinflusst die Framerate direkt (double-buffering). Auf den meisten Systemen
+     * wird die Framerate durch diese Option 60. Hinweis: Die Framerate wird auch von FRAMELIMIT beeinfluss. Die tatsächliche max-Framerate ist immer
+     * min(framelimit, vsync)
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
     /**
@@ -52,9 +52,10 @@ public final class Settings {
      */
     public static final int CLIENT_UDPPORT = 13948;
     /**
-     * Die Server-Tickrate. Guter Wert muss empirisch ermittelt werden.
+     * Die Server-Tickrate in default-Delay zwischen Ticks.
+     * 15 entspricht also einer Tickrate von 66,66666666...
      */
-    public static final int SERVER_TICKRATE = 60;
+    public static final int SERVER_TICKRATE = 15;
     /**
      * Wieviel der Server maximal hinter seiner Target-Tickrate sein darf, bevor eine Warnung ausgespuckt wird.
      */
@@ -103,6 +104,14 @@ public final class Settings {
      * Ping-Antwort vom Server.
      */
     public static final byte NET_UDP_CMD_PONG = 5;
+    /**
+     * Server schickt Infos über Tickdelay.
+     */
+    public static final byte NET_UDP_CMD_TICK_SYNC_PING = 1;
+    /**
+     * Antwort an Server, dass Tickdelay-Paket erhalten wurde.
+     */
+    public static final byte NET_UDP_CMD_TICK_SYNC_PONG = -1;
     /**
      * Die cmdID für Level-senden
      */
@@ -172,8 +181,9 @@ public final class Settings {
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
     /**
-     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene
-     * Spielfigur sich auch bei den anderen verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
+     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die
+     * eigene Spielfigur sich auch bei den anderen verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen,
+     * kommt es zu lags.
      */
     public static final int NET_TICKSYNC_MAXPING = 100;
     /**
@@ -187,7 +197,7 @@ public final class Settings {
     /**
      * Die Reichweite für Kollisionen
      */
-    public static double SERVER_COLLISION_DISTANCE = 1.5;
+    public static final double SERVER_COLLISION_DISTANCE = 1.5;
     /**
      * Die Größe der Chars für Kollision
      */
