@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
+import de._13ducks.spacebatz.client.network.ClientTerminal;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
@@ -91,6 +92,10 @@ public class Client {
      * TCP-Sender zum Server
      */
     private static ClientMessageSender msgSender;
+    /**
+     * Das Client-Terminal.
+     */
+    public static ClientTerminal terminal = new ClientTerminal();
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
