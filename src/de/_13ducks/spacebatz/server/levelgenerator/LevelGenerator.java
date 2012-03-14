@@ -38,13 +38,13 @@ public class LevelGenerator {
 
         xSize = level.getSizeX();
         ySize = level.getSizeY();
-        Position center = new Position(xSize / 2, ySize / 2);
 
         // Gegner-Spawn-Gebiet setzen:
         EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
         dangerZone.setMaxSpawns(100);
         level.addEnemySpawnArea(dangerZone);
-
+        
+        Position center = new Position(xSize / 2, ySize / 2);
         int maxradius = Math.min(xSize, ySize) / 2;
         Circle circle = createCircle(center, maxradius); 
         circleList.add(circle);
