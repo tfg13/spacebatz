@@ -30,8 +30,9 @@ public class LevelGenerator {
 
     public static ServerLevel generateLevel() {
         ArrayList<Circle> circleList = new ArrayList<>();
+        ArrayList<Bridge> bridgeList = new ArrayList<>();
 
-        level = new ServerLevel(300, 300);
+        level = new ServerLevel(1000, 1000);
         ground = level.getGround();
 
         random = new Random(System.nanoTime());
@@ -43,11 +44,20 @@ public class LevelGenerator {
         EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
         dangerZone.setMaxSpawns(100);
         level.addEnemySpawnArea(dangerZone);
-        
-        Position center = new Position(xSize / 2, ySize / 2);
-        int maxradius = Math.min(xSize, ySize) / 2;
-        Circle circle = createCircle(center, maxradius); 
-        circleList.add(circle);
+
+        for (int i = 0; i < 4 + random.nextInt(4); i++) {
+            Position center = new Position((int) ((random.nextDouble() * 0.8 + 0.1) * xSize), (int) ((random.nextDouble() * 0.8 + 0.1) * ySize));
+            int disthori = Math.min(center.getX(), xSize - center.getX());
+            int distvert = Math.min(center.getY(), ySize - center.getY());
+            int maxradius = Math.min(disthori, distvert) - 1;
+            Circle circle = createCircle(center, maxradius);
+            circleList.add(circle);
+        }
+
+        // Cicles durch Bridges verbinden
+        ArrayList<Circle> circleList2 = (ArrayList<Circle>) circleList.clone();
+        bridgeList = createBridges(circleList2);
+
         ArrayList<Position> innerFields = findInnerFields(circleList);
 
         // Default-Bodentextur:
@@ -63,8 +73,8 @@ public class LevelGenerator {
         }
 
         // Respawn-Koordinaten setzen:
-        level.respawnX = center.getX();
-        level.respawnY = center.getY();
+        level.respawnX = circleList.get(0).getCenter().getX();
+        level.respawnY = circleList.get(0).getCenter().getY();
 
         // WÃ¤nde am Levelrand
         createWall(0, 0, 1, ySize - 1, level);
@@ -75,6 +85,9 @@ public class LevelGenerator {
         return level;
     }
 
+    /**
+     * Erstellt eine grob kreisförmige Fläche auf der Map, wird für freie Fläche benutzt
+     */
     public static Circle createCircle(Position center, int maxradius) {
         ArrayList<Position> shape = new ArrayList<>();
 
@@ -83,7 +96,7 @@ public class LevelGenerator {
         int[] radius = new int[shapepoints];
 
         for (int i = 0; i < shapepoints; i++) {
-            radius[i] = (int) (maxradius * (random.nextDouble() * 0.5 + 0.45));
+            radius[i] = (int) (maxradius * (random.nextDouble() * 0.6 + 0.35));
         }
 
         for (int v = 0; v < 1; v++) {
@@ -111,7 +124,58 @@ public class LevelGenerator {
         return circle;
     }
 
-    public static ArrayList<Position> findInnerFields(ArrayList<Circle> circleList) {
+    /**
+     * Gibt eine Liste mit Bridges zurück, die alle Cicles zusammenhängend machen
+     */
+    private static ArrayList<Bridge> createBridges(ArrayList<Circle> notConn) {
+        ArrayList<Bridge> bridges = new ArrayList<>();
+        ArrayList<Circle> Conn = new ArrayList<>(); //Die Cicles, die noch nicht verbunden sind
+
+        int firstnearestcir = findNearestCircle(notConn.get(0), notConn);
+        // Brücke bauen
+
+        Conn.add(notConn.get(firstnearestcir));
+        notConn.remove(firstnearestcir);
+        Conn.add(notConn.get(0));
+        notConn.remove(0);
+
+        while (notConn.size() > 0) {
+            // mit nächstem Circle verbinden
+            int nearestcir = findNearestCircle(notConn.get(0), Conn);
+
+            // Brücke bauen
+
+            Conn.add(notConn.get(0));
+            notConn.remove(0);
+        }
+
+        return bridges;
+    }
+
+    /**
+     * Gibt zu dem übergebenen circle den nächsten aus der circleList zurück
+     */
+    private static int findNearestCircle(Circle circle, ArrayList<Circle> circleList) {
+        int nearest = -1;
+        double mindistance = 3133337;
+
+        for (int i = 0; i < circleList.size(); i++) {
+            int cx = circle.getCenter().getX();
+            int cy = circle.getCenter().getY();
+            int x = circleList.get(i).getCenter().getX();
+            int y = circleList.get(i).getCenter().getY();
+
+            double distance = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+            if (distance < mindistance && distance > 0) {
+                mindistance = distance;
+                nearest = i;
+            }
+        }
+
+        return nearest;
+    }
+
+    private static ArrayList<Position> findInnerFields(ArrayList<Circle> circleList) {
         ArrayList<Position> innerFields = new ArrayList<>();
 
         // Für jeden Circle:
