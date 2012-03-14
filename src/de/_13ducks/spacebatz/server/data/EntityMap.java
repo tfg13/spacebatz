@@ -113,7 +113,7 @@ public class EntityMap {
      */
     public void removeEntity(Entity entity) {
         int x1 = (int) (entity.getX() / SECTORSIZE) - 1;
-        int y1 = (int) (entity.getX() / SECTORSIZE) - 1;
+        int y1 = (int) (entity.getY() / SECTORSIZE) - 1;
 
         // Entity in den Nachbarsektoren ihres letzten bekannten Sektors suchen und löschen:
         boolean foundAndRemoved = false;
