@@ -56,7 +56,7 @@ public class ServerNetwork {
 
         // neuer thread, der über TCP daten empfängt:
         receiveTcpDataThread = new Thread(new Runnable() {
-            
+
             @Override
             public void run() {
                 receiveTcpData();
@@ -68,13 +68,13 @@ public class ServerNetwork {
 
         // neuer thread, der clients akzeptiert:
         clientAcceptorThread = new Thread(new Runnable() {
-            
+
             @Override
             public void run() {
-                
+
                 try {
                     ServerSocket ss = new ServerSocket(Settings.SERVER_TCPPORT);
-                    
+
                     while (true) {
                         Socket clientSocket = ss.accept();
                         ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
@@ -83,24 +83,24 @@ public class ServerNetwork {
                         connections.add(client);
                         pendingClients.add(newClient);
                     }
-                    
-                    
+
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                
+
             }
         });
         clientAcceptorThread.setName("ClientAcceptorThread");
         clientAcceptorThread.setDaemon(true);
-        
+
         sendTcpDataThread = new Thread(new Runnable() {
-            
+
             @Override
             public void run() {
                 while (true) {
                     try {
-			sendTcpBuffer();
+                        sendTcpBuffer();
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
@@ -111,8 +111,8 @@ public class ServerNetwork {
         sendTcpDataThread.setName("SendTcpDataThread");
         sendTcpDataThread.setDaemon(true);
         sendTcpDataThread.start();
-        
-        
+
+
     }
 
     /**
@@ -152,7 +152,7 @@ public class ServerNetwork {
                 byte cmdId = theMessage.getCmdID();
                 byte[] message = theMessage.getData();
                 Client client = theMessage.getClient();
-                
+
                 int blocks = message.length / 100;
                 int rest = message.length % 100;
 
@@ -193,7 +193,7 @@ public class ServerNetwork {
     private void receiveTcpData() {
         while (true) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
