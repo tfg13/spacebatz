@@ -60,12 +60,12 @@ public abstract class Char extends Entity {
     public Char(double x, double y, int netID, byte entityTypeID) {
         super(x, y, netID, entityTypeID);
         size = Settings.CHARSIZE;
-        this.healthpoints = 10;
-        this.healthpointsmax = 10;
-        this.damage = 2;
-        this.range = 1.0;
+        this.healthpoints = Settings.CHARHEALTH;
+        this.healthpointsmax = Settings.CHARHEALTH;
+        this.damage = 1;
+        this.range = 10.0;
         this.sightrange = 10;
-        this.attackcooldown = 10;
+        this.attackcooldown = 60;
     }
 
     /**
