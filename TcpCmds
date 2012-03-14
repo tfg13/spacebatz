@@ -6,6 +6,6 @@ STC
 23 - Server setzt ClientID eines Clients Daten: byte clientID
 27 - Server setzt Logic-Tickrate Daten: int tickrate
 28 - Server entfernt Gegner Daten: int netID
-
+44 - Server ändert Kollision
 CTS
 55 - Client geht offline Daten: keine

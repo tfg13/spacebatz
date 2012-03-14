@@ -25,8 +25,8 @@ public class ClientMessageInterpreter {
      */
     private ConcurrentLinkedQueue<ClientTcpMessage> messages;
     /**
-     * Dieser Thread empfängt Tcp-Pakete, solange die Engine noch niht geladen ist wenn die Engine gestartet wird übernimmt sie die Tcp-Verarbeitung und dieser
-     * Thrad wird deaktiviert
+     * Dieser Thread empfängt Tcp-Pakete, solange die Engine noch niht geladen ist wenn die Engine gestartet wird
+     * übernimmt sie die Tcp-Verarbeitung und dieser Thrad wird deaktiviert
      */
     private Thread initTcpReceiverThread;
     /**
@@ -237,6 +237,17 @@ public class ClientMessageInterpreter {
                 int y = Bits.getInt(message, 4);
                 int newGround = Bits.getInt(message, 8);
                 Client.currentLevel.getGround()[x][y] = newGround;
+                break;
+            case Settings.NET_TCP_CMD_CHANGE_COLLISION:
+                // Geänderten Boden übernehmen:
+                int tx = Bits.getInt(message, 0);
+                int ty = Bits.getInt(message, 4);
+                int newCollision = Bits.getInt(message, 8);
+                if (newCollision == 1) {
+                    Client.currentLevel.getCollisionMap()[tx][ty] = true;
+                } else {
+                    Client.currentLevel.getCollisionMap()[tx][ty] = false;
+                }
                 break;
             case Settings.NET_TCP_CMD_SWITCH_WEAPON:
                 // Ein Client will andere Waffe auswählen

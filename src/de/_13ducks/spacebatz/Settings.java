@@ -149,6 +149,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_CHANGE_GROUND = 35;
     /**
+     * Die cmdId für Kollisionsänderung
+     */
+    public static final byte NET_TCP_CMD_CHANGE_COLLISION = 44;
+    /**
      * Client will was anziehen, muss dafür aber erst Server fragen
      */
     public static final byte NET_TCP_CMD_REQUEST_ITEM_EQUIP = 36;

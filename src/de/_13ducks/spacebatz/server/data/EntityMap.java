@@ -100,6 +100,8 @@ public class EntityMap {
     public void insertEntity(Entity entity) {
         if (0 < entity.getX() && entity.getX() < entityMapWidth && 0 < entity.getY() && entity.getY() < entityMapHeight) {
             getSector(entity.getX(), entity.getY()).add(entity);
+	    entity.entityMapPos[0] = (int) (entity.getX() / SECTORSIZE);
+	    entity.entityMapPos[1] = (int) (entity.getY() / SECTORSIZE);
         } else {
             throw new RuntimeException("Cannot add Entity " + entity.netID + " to EntityMap, it has left the map (Position: " + entity.getX() + "/" + entity.getY() + ")!");
         }
@@ -112,39 +114,7 @@ public class EntityMap {
      * @param entity die Entity die entfernt werden soll
      */
     public void removeEntity(Entity entity) {
-        int x1 = (int) (entity.getX() / SECTORSIZE) - 1;
-        int y1 = (int) (entity.getY() / SECTORSIZE) - 1;
-
-        // Entity in den Nachbarsektoren ihres letzten bekannten Sektors suchen und löschen:
-        boolean foundAndRemoved = false;
-        for (int x = x1; x < x1 + 2; x++) {
-
-            for (int y = y1; y < y1 + 2; y++) {
-                if (x > 0 && x < entityMapWidth && y > 0 && y < entityMapHeight) {
-                    if (sectors[x][y].contains(entity)) {
-                        sectors[x][y].remove(entity);
-                        foundAndRemoved = true;
-                    }
-                }
-
-            }
-        }
-        // Wenn sie da nicht gefunden wurde die ganze EntityMap durchsuchen:
-        if (!foundAndRemoved) {
-            for (int x = 0; x < entityMapWidth; x++) {
-                for (int y = 0; y < entityMapHeight; y++) {
-                    if (sectors[x][y].contains(entity)) {
-                        sectors[x][y].remove(entity);
-                        foundAndRemoved = true;
-                    }
-                }
-            }
-        }
-        // Wenn sie nicht in der EntityMap registriert ist werfen wir eine Exception:
-        if (!foundAndRemoved) {
-            throw new RuntimeException("Cannot remove Entity " + entity.netID + " from the EntityMap, it is not registered!");
-        }
-
+        sectors[entity.entityMapPos[0]][entity.entityMapPos[1]].remove(entity);
     }
 
     /**
