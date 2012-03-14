@@ -118,8 +118,8 @@ public class Game {
             Server.msgSender.sendSetPlayer(client, player);
             netIDMap.put(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
-	    // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
-	    Server.serverNetwork.udp.addClient(client);
+            // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
+            Server.serverNetwork.udp.addClient(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
@@ -183,9 +183,7 @@ public class Game {
         // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
         // Gegner Spawnen:
-        for (EnemySpawnArea spawner : getLevel().getEnemySpawners()) {
-            spawner.tick();
-        }
+        EnemySpawnManager.spawnEnemys();
     }
 
     /**

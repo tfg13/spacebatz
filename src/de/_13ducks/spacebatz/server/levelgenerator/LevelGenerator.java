@@ -1,9 +1,8 @@
 package de._13ducks.spacebatz.server.levelgenerator;
 
-import de._13ducks.spacebatz.shared.Position;
-import de._13ducks.spacebatz.server.data.EnemySpawnArea;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.shared.Position;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -40,10 +39,7 @@ public class LevelGenerator {
         xSize = level.getSizeX();
         ySize = level.getSizeY();
 
-        // Gegner-Spawn-Gebiet setzen:
-        EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
-        dangerZone.setMaxSpawns(100);
-        level.addEnemySpawnArea(dangerZone);
+
 
         for (int i = 0; i < 4 + random.nextInt(4); i++) {
             Position center = new Position((int) ((random.nextDouble() * 0.8 + 0.1) * xSize), (int) ((random.nextDouble() * 0.8 + 0.1) * ySize));
