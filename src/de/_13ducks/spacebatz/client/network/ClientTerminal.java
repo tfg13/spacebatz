@@ -18,6 +18,10 @@ public class ClientTerminal {
      * Die aktuelle Eingabezeile.
      */
     private StringBuffer inputLine;
+    /**
+     * Um wie viele Zeilen nach oben gescrollt wurde.
+     */
+    private int scroll = 0;
 
     /**
      * Neues ClientTerminal erstellen
@@ -107,6 +111,9 @@ public class ClientTerminal {
 
     private void outln(String s) {
 	outbuffer.add(s);
+	if (scroll != 0) {
+	    scroll++; // Autoscroll nur, wenn wir ganz unten sind
+	}
     }
 
     private void resetInput() {
@@ -118,10 +125,25 @@ public class ClientTerminal {
     }
 
     public String getHistory(int i) {
-	if (outbuffer.size() > i) {
-	    return outbuffer.get(outbuffer.size() - i - 1);
+	if (outbuffer.size() > i + scroll) {
+	    return outbuffer.get(outbuffer.size() - i - 1 - scroll);
 	}
 	return "";
+    }
+
+    public void scrollForward() {
+	if (scroll > 0) {
+	    scroll--;
+	}
+    }
+
+    /**
+     * Scrollt weiter nach hinten
+     */
+    public void scrollBack() {
+	if (scroll < outbuffer.size() - 1) {
+	    scroll++;
+	}
     }
 
     /**

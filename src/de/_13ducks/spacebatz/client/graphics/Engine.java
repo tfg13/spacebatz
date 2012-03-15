@@ -346,6 +346,10 @@ public class Engine {
 			Client.terminal.enter();
 		    } else if (key == Keyboard.KEY_BACK) {
 			Client.terminal.backspace();
+		    } else if (key == Keyboard.KEY_UP) {
+			Client.terminal.scrollBack();
+		    } else if (key == Keyboard.KEY_DOWN) {
+			Client.terminal.scrollForward();
 		    } else if (key == Keyboard.KEY_F1) {
 			terminal = false;
 			break;
