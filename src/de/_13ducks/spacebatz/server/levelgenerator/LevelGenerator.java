@@ -41,9 +41,9 @@ public class LevelGenerator {
         ySize = level.getSizeY();
 
         // Gegner-Spawn-Gebiet setzen:
-        EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
-        dangerZone.setMaxSpawns(100);
-        level.addEnemySpawnArea(dangerZone);
+//        EnemySpawnArea dangerZone = new EnemySpawnArea(1, 1, xSize - 2, ySize - 2);
+//        dangerZone.setMaxSpawns(100);
+//        level.addEnemySpawnArea(dangerZone);
 
         for (int i = 0; i < 4 + random.nextInt(4); i++) {
             Position center = new Position((int) ((random.nextDouble() * 0.8 + 0.1) * xSize), (int) ((random.nextDouble() * 0.8 + 0.1) * ySize));
@@ -76,7 +76,7 @@ public class LevelGenerator {
         level.respawnX = circleList.get(0).getCenter().getX();
         level.respawnY = circleList.get(0).getCenter().getY();
 
-        // WÃ¤nde am Levelrand
+        // Wände am Levelrand
         createWall(0, 0, 1, ySize - 1, level);
         createWall(0, ySize - 1, xSize - 1, ySize - 2, level);
         createWall(xSize - 1, ySize - 1, xSize - 2, 0, level);
@@ -187,7 +187,7 @@ public class LevelGenerator {
                     z = 0;
                 }
 
-                ArrayList<Position> trianglepos = findTriangle(circleList.get(i).getShape().get(a), circleList.get(i).getShape().get(z), circleList.get(i).getCenter());
+                ArrayList<Position> trianglepos = findTriangleFields(circleList.get(i).getShape().get(a), circleList.get(i).getShape().get(z), circleList.get(i).getCenter());
                 innerFields.addAll(trianglepos);
             }
         }
@@ -200,52 +200,103 @@ public class LevelGenerator {
     /**
      * Alle Punkte innerhalb eines Dreiecks finden
      */
-    public static ArrayList<Position> findTriangle(Position a, Position b, Position c) {
-        ArrayList<Position> triangle = new ArrayList<>();
+    public static ArrayList<Position> findTriangleFields(Position xpos, Position ypos, Position zpos) {
+        ArrayList<Position> triangleFields = new ArrayList<>();
+        Position a; // oberster Punkt
+        Position b; // mittlerer Punkt
+        Position c; // unterster Punkt
 
-        // Ã¤uÃŸere Grenzen
-        int ymin = Math.min(a.getY(), Math.min(b.getY(), c.getY()));
-        int ymax = Math.max(a.getY(), Math.max(b.getY(), c.getY()));
-        int xmin = Math.min(a.getX(), Math.min(b.getX(), c.getX()));
-        int xmax = Math.max(a.getX(), Math.max(b.getX(), c.getX()));
+        // Positionen nach y-Wert sortieren:
+        if (xpos.getY() < ypos.getY() && xpos.getY() < zpos.getY()) {
+            a = xpos;
+            if (ypos.getY() < zpos.getY()) {
+                b = ypos;
+                c = zpos;
+            } else {
+                c = ypos;
+                b = zpos;
+            }
+        } else if (ypos.getY() < zpos.getY()) {
+            a = ypos;
+            if (xpos.getY() < zpos.getY()) {
+                b = xpos;
+                c = zpos;
+            } else {
+                c = xpos;
+                b = zpos;
+            }
+        } else {
+            a = zpos;
+            if (xpos.getY() < ypos.getY()) {
+                b = xpos;
+                c = ypos;
+            } else {
+                c = xpos;
+                b = ypos;
+            }
+        }
+        
+        // Workaround bis mir was besseres einfällt
+        if (a.getY() == b.getY()) {
+            a.setY(a.getY() - 1);
+        }
 
         // Kehrwert der Steigungen zwischen je 2 Punkten
         double ab = ((double) b.getX() - a.getX()) / (b.getY() - a.getY());
+        if (a.getY() == b.getY()) {
+            ab = 0;
+        }
         double bc = ((double) c.getX() - b.getX()) / (c.getY() - b.getY());
-        double ca = ((double) a.getX() - c.getX()) / (a.getY() - c.getY());
-
-        // jede Zeile durchgehen
-        for (int y = ymin; y <= ymax; y++) {
-
-            // Schnittpunkt der Geraden ab, bc und ca mit aktueller Zeile (y)
-            double abintersect = (double) ((y - a.getY())) * ab + a.getX();
-            double bcintersect = (double) ((y - b.getY())) * bc + b.getX();
-            double caintersect = (double) ((y - c.getY())) * ca + c.getX();
-
-            int startx = xmin; // x-Wert, ab dem die Felder im Dreieck sind
-            int endx = xmax; // x-Wert, bis zu dem die Felder im Dreieck sind
-
-            // grÃ¶ÃŸter und kleinster x-Wert von ab, bc und ca finden, der innerhalb von xmin und xmax ist
-            if (abintersect >= xmin && abintersect <= xmax) {
-                startx = (int) abintersect;
-                endx = (int) Math.ceil(abintersect);
-            }
-            if (bcintersect >= xmin && bcintersect <= xmax) {
-                startx = Math.min((int) bcintersect, startx);
-                endx = Math.max((int) Math.ceil(bcintersect), endx);
-            }
-            if (caintersect >= xmin && caintersect <= xmax) {
-                startx = Math.min((int) caintersect, startx);
-                endx = Math.max((int) Math.ceil(caintersect), endx);
-            }
-
-            // alle gefundenen inneren Punkte in Liste tun
-            for (int x = startx; x < endx; x++) {
-                triangle.add(new Position(x, y));
-            }
+        if (b.getY() == c.getY()) {
+            bc = 0;
+        }
+        double ac = ((double) c.getX() - a.getX()) / (c.getY() - a.getY());
+        if (a.getY() == c.getY()) {
+            ac = 0;
         }
 
-        return triangle;
+        double startx = a.getX(); // x-Wert, ab dem die Felder im Dreieck sind
+        double endx = a.getX(); // x-Wert, bis zu dem die Felder im Dreieck sind
+
+        if (ab > ac) {
+            
+            for (int y = a.getY(); y < b.getY(); y++) {
+                startx += ac;
+                endx += ab;
+                for (int x = (int) startx; x <= Math.ceil(endx); x++) {
+                    triangleFields.add(new Position(x, y));
+                }
+            }
+            endx = b.getX();
+            for (int y = b.getY(); y <= c.getY(); y++) {
+                startx += ac;
+                endx += bc;
+                for (int x = (int) startx; x <= Math.ceil(endx); x++) {
+                    triangleFields.add(new Position(x, y));
+                }
+            }
+            
+        } else {
+            
+            for (int y = a.getY(); y < b.getY(); y++) {
+                startx += ab;
+                endx += ac;
+                for (int x = (int) startx; x <= Math.ceil(endx); x++) {
+                    triangleFields.add(new Position(x, y));
+                }
+            }
+            startx = b.getX();
+            for (int y = b.getY(); y <= c.getY(); y++) {
+                startx += bc;
+                endx += ac;
+                for (int x = (int) startx; x <= Math.ceil(endx); x++) {
+                    triangleFields.add(new Position(x, y));
+                }
+            }
+            
+        }
+
+        return triangleFields;
     }
 
     public static void drawPositions(ArrayList<Position> posarray, int groundnumber) {
