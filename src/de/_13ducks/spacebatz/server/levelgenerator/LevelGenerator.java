@@ -180,8 +180,8 @@ public class LevelGenerator {
         int numberofparts = (int) (length / 30); // in einzelne Stücke unterteilen
         double partlength = length / numberofparts; // Länge eines Stücks
 
-        double minwidth = 10 + random.nextDouble() * xSize * 0.01;
-        double maxwidth = 20 + (random.nextDouble() + 0.02) * xSize * 0.08;
+        double minwidth = 8 + random.nextDouble() * xSize * 0.01;
+        double maxwidth = 20 + (random.nextDouble() + 0.1) * xSize * 0.08;
 
         double lineangle = Math.atan2(b.getY() - a.getY(), b.getX() - a.getX());
         double inverseangle = lineangle + 0.5 * Math.PI;
@@ -192,8 +192,9 @@ public class LevelGenerator {
         for (int i = 0; i <= numberofparts; i++) {
             Position middlepos = new Position((int) (a.getX() + Math.cos(lineangle) * partlength * i), (int) (a.getY() + Math.sin(lineangle) * partlength * i));
             double width = minwidth + random.nextDouble() * (maxwidth - minwidth);
-            Position pos1 = new Position((int) (middlepos.getX() + Math.cos(inverseangle) * width), (int) (middlepos.getY() + Math.cos(inverseangle) * width));
-            Position pos2 = new Position((int) (middlepos.getX() - Math.cos(inverseangle) * width), (int) (middlepos.getY() - Math.cos(inverseangle) * width));
+            Position pos1 = new Position((int) (middlepos.getX() + Math.cos(inverseangle) * width), (int) (middlepos.getY() + Math.sin(inverseangle) * width));
+            width = minwidth + random.nextDouble() * (maxwidth - minwidth);
+            Position pos2 = new Position((int) (middlepos.getX() - Math.cos(inverseangle) * width), (int) (middlepos.getY() - Math.sin(inverseangle) * width));
             shape.add(pos1);
             shape.add(pos2);
         }
