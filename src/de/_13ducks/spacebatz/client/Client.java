@@ -193,7 +193,7 @@ public class Client {
 	frozenGametick = gametick;
     }
 
-    public static void startTickCounting(int serverStartTick) {
+    public static boolean startTickCounting(int serverStartTick) {
 	gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / tickrate);
 	if (tickTimer == null) {
 	    tickTimer = new Timer("Client_tickcounter", true);
@@ -204,7 +204,9 @@ public class Client {
 		    gametick++;
 		}
 	    }, 0, tickrate);
+	    return false;
 	}
+	return true;
     }
 
     public static HashMap<Integer, Item> getItemMap() {

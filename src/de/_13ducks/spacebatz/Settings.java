@@ -181,6 +181,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_SWITCH_WEAPON = 42;
     /**
+     * Client will resync.
+     */
+    public static final byte NET_TCP_CMD_REQUEST_RESYNC = 43;
+    /**
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;

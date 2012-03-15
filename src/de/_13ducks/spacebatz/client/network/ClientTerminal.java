@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.client.Client;
 import java.util.ArrayList;
 
 /**
@@ -34,13 +35,13 @@ public class ClientTerminal {
     public void input(char c) {
 	inputLine.append(c);
     }
-    
+
     /**
      * Löscht ein Zeichen.
      */
     public void backspace() {
 	if (inputLine.length() > 2) {
-	    inputLine.deleteCharAt(inputLine.length() -1 );
+	    inputLine.deleteCharAt(inputLine.length() - 1);
 	}
     }
 
@@ -71,6 +72,10 @@ public class ClientTerminal {
 			}
 			outln("usage: net_graph MODE (0=off, 1=on)");
 			break;
+		    case "resync":
+			Client.getMsgSender().sendRequestResync();
+			outln("request for resyncing was sent");
+			break;
 		    case "about":
 			outln("spacebatz aurora");
 			outln("13ducks PROPRIETARY/CONFIDENTIAL");
@@ -98,19 +103,28 @@ public class ClientTerminal {
     private void outln(String s) {
 	outbuffer.add(s);
     }
-    
+
     private void resetInput() {
 	inputLine = new StringBuffer("> ");
     }
-    
+
     public String getCurrentLine() {
 	return inputLine.toString();
     }
-    
+
     public String getHistory(int i) {
 	if (outbuffer.size() > i) {
 	    return outbuffer.get(outbuffer.size() - i - 1);
 	}
 	return "";
+    }
+
+    /**
+     * Gibt die Zeile auf der Konsole aus.
+     *
+     * @param s die Zeile, die Ausgegeben werden soll.
+     */
+    public void info(String s) {
+	outln(s);
     }
 }

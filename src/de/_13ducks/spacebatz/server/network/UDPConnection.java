@@ -373,4 +373,10 @@ public class UDPConnection {
 	    ex.printStackTrace();
 	}
     }
+
+    void resyncClient(Client sender) {
+	if (!syncClients.contains(sender)) {
+		syncClients.add(sender);
+	}
+    }
 }
