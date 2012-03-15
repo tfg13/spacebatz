@@ -72,11 +72,10 @@ public class ClientTerminal {
 			outln("usage: net_graph MODE (0 = Off, 1 = On)");
 			break;
 		    case "help":
-		    case "?":
 			outln("available commands:");
 			outln("-------------------");
-			outln("net_graph N - control netgraph");
-			outln("help - display this help");
+			outln("net_graph");
+			outln("help");
 			outln("-------------------");
 			break;
 		    default:
