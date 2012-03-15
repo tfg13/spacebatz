@@ -51,6 +51,10 @@ public class Entity {
      * Ob das aktuelle Movement stimmt.
      */
     private boolean movementDirty = true;
+    /**
+     * Die aktuelle Positon auf der EntityMap.
+     */
+    int[] entityMapPos;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -63,6 +67,7 @@ public class Entity {
 	this.entityTypeID = entityTypeID;
 	this.posX = x;
 	this.posY = y;
+	entityMapPos = new int[2];
 	Server.entityMap.insertEntity(this);
 	this.netID = netID;
     }
@@ -110,12 +115,12 @@ public class Entity {
     public void stopMovementX() {
 	// Bewegen wir uns überhaupt (in X-Richtung)
 	if (moveStartTick != -1 && vecX != 0) {
-	    if (vecY != 0) { 
+	    if (vecY != 0) {
 		setVector(0, vecY);
 	    } else {
 		stopMovement();
 	    }
-	}	
+	}
     }
 
     /**
@@ -124,13 +129,14 @@ public class Entity {
     public void stopMovementY() {
 	// Bewegen wir uns überhaupt (in Y-Richtung)
 	if (moveStartTick != -1 && vecY != 0) {
-	    if (vecX != 0) { 
+	    if (vecX != 0) {
 		setVector(vecX, 0);
 	    } else {
 		stopMovement();
 	    }
-	}	
+	}
     }
+
     /**
      * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
      *

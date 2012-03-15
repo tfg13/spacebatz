@@ -1,9 +1,8 @@
 package de._13ducks.spacebatz.server.levelgenerator;
 
-import de._13ducks.spacebatz.shared.Position;
-import de._13ducks.spacebatz.server.data.EnemySpawnArea;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.shared.Position;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,6 +28,8 @@ public class LevelGenerator {
     private static final int texground = 4;
 
     public static ServerLevel generateLevel() {
+        long start = System.currentTimeMillis();
+
         ArrayList<Circle> circleList = new ArrayList<>();
         ArrayList<Bridge> bridgeList = new ArrayList<>();
 
@@ -58,7 +59,7 @@ public class LevelGenerator {
         ArrayList<Circle> circleList2 = (ArrayList<Circle>) circleList.clone();
         bridgeList = createBridges(circleList2);
 
-        ArrayList<Position> innerFields = findInnerFields(circleList);
+        ArrayList<Position> innerFields = findInnerFields(circleList, bridgeList);
 
         // Default-Bodentextur:
         for (int x = 0; x < xSize; x++) {
@@ -68,6 +69,12 @@ public class LevelGenerator {
             }
         }
         for (int i = 0; i < innerFields.size(); i++) {
+            if (innerFields.get(i).getX() < 0 || innerFields.get(i).getX() > xSize) {
+                continue;
+            }
+            if (innerFields.get(i).getY() < 0 || innerFields.get(i).getY() > ySize) {
+                continue;
+            }
             ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = texground;
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
@@ -82,6 +89,7 @@ public class LevelGenerator {
         createWall(xSize - 1, ySize - 1, xSize - 2, 0, level);
         createWall(xSize - 1, 0, 0, 1, level);
 
+        System.out.println("LevelGenerator Zeit: " + (System.currentTimeMillis() - start) + " ms");
         return level;
     }
 
@@ -133,6 +141,8 @@ public class LevelGenerator {
 
         int firstnearestcir = findNearestCircle(notConn.get(0), notConn);
         // Brücke bauen
+        Bridge firstbridge = buildBridge(notConn.get(0), notConn.get(firstnearestcir));
+        bridges.add(firstbridge);
 
         Conn.add(notConn.get(firstnearestcir));
         notConn.remove(firstnearestcir);
@@ -144,12 +154,53 @@ public class LevelGenerator {
             int nearestcir = findNearestCircle(notConn.get(0), Conn);
 
             // Brücke bauen
+            Bridge bridge = buildBridge(notConn.get(0), Conn.get(nearestcir));
+            bridges.add(bridge);
 
             Conn.add(notConn.get(0));
             notConn.remove(0);
         }
 
         return bridges;
+    }
+
+    private static Bridge buildBridge(Circle circlea, Circle circleb) {
+        ArrayList<Position> shape = new ArrayList<>();
+        Position a;
+        Position b;
+        if (circlea.getCenter().getX() < circleb.getCenter().getX()) {
+            a = circlea.getCenter();
+            b = circleb.getCenter();
+        } else {
+            a = circleb.getCenter();
+            b = circlea.getCenter();
+        }
+
+        double length = Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()));
+        int numberofparts = (int) (length / 30); // in einzelne Stücke unterteilen
+        double partlength = length / numberofparts; // Länge eines Stücks
+
+        double minwidth = 10 + random.nextDouble() * xSize * 0.01;
+        double maxwidth = 20 + (random.nextDouble() + 0.02) * xSize * 0.08;
+
+        double lineangle = Math.atan2(b.getY() - a.getY(), b.getX() - a.getX());
+        double inverseangle = lineangle + 0.5 * Math.PI;
+        if (inverseangle > Math.PI) {
+            inverseangle -= 2 * Math.PI;
+        }
+
+        for (int i = 0; i <= numberofparts; i++) {
+            Position middlepos = new Position((int) (a.getX() + Math.cos(lineangle) * partlength * i), (int) (a.getY() + Math.sin(lineangle) * partlength * i));
+            double width = minwidth + random.nextDouble() * (maxwidth - minwidth);
+            Position pos1 = new Position((int) (middlepos.getX() + Math.cos(inverseangle) * width), (int) (middlepos.getY() + Math.cos(inverseangle) * width));
+            Position pos2 = new Position((int) (middlepos.getX() - Math.cos(inverseangle) * width), (int) (middlepos.getY() - Math.cos(inverseangle) * width));
+            shape.add(pos1);
+            shape.add(pos2);
+        }
+
+        Bridge bridge = new Bridge(a, b, shape);
+
+        return bridge;
     }
 
     /**
@@ -175,7 +226,7 @@ public class LevelGenerator {
         return nearest;
     }
 
-    private static ArrayList<Position> findInnerFields(ArrayList<Circle> circleList) {
+    private static ArrayList<Position> findInnerFields(ArrayList<Circle> circleList, ArrayList<Bridge> bridgeList) {
         ArrayList<Position> innerFields = new ArrayList<>();
 
         // Für jeden Circle:
@@ -192,7 +243,14 @@ public class LevelGenerator {
             }
         }
 
-
+        // Für jede Bridge:
+        for (int i = 0; i < bridgeList.size(); i++) {
+            // Für jeden Randpunkt:
+            for (int a = 0; a < bridgeList.get(i).getShape().size() - 2; a++) {
+                ArrayList<Position> trianglepos = findTriangleFields(bridgeList.get(i).getShape().get(a), bridgeList.get(i).getShape().get(a + 1), bridgeList.get(i).getShape().get(a + 2));
+                innerFields.addAll(trianglepos);
+            }
+        }
 
         return innerFields;
     }
@@ -235,7 +293,7 @@ public class LevelGenerator {
                 b = ypos;
             }
         }
-        
+
         // Workaround bis mir was besseres einfällt
         if (a.getY() == b.getY()) {
             a.setY(a.getY() - 1);
@@ -259,7 +317,7 @@ public class LevelGenerator {
         double endx = a.getX(); // x-Wert, bis zu dem die Felder im Dreieck sind
 
         if (ab > ac) {
-            
+
             for (int y = a.getY(); y < b.getY(); y++) {
                 startx += ac;
                 endx += ab;
@@ -275,9 +333,9 @@ public class LevelGenerator {
                     triangleFields.add(new Position(x, y));
                 }
             }
-            
+
         } else {
-            
+
             for (int y = a.getY(); y < b.getY(); y++) {
                 startx += ab;
                 endx += ac;
@@ -293,7 +351,7 @@ public class LevelGenerator {
                     triangleFields.add(new Position(x, y));
                 }
             }
-            
+
         }
 
         return triangleFields;

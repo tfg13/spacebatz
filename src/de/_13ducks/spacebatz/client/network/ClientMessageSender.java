@@ -44,4 +44,8 @@ public class ClientMessageSender {
         Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
     }
 
+    void sendRequestResync() {
+	Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_RESYNC, new byte[1]);
+    }
+
 }

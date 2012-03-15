@@ -125,6 +125,9 @@ public class ServerMessageInterpreter {
             case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
                 Server.disconnectClient(sender);
                 break;
+	    case Settings.NET_TCP_CMD_REQUEST_RESYNC:
+		Server.serverNetwork.udp.resyncClient(sender);
+		break;
             default:
                 System.out.println("WARNING: Received CTS-TCP with unknown cmdid! (was " + cmdID + ")");
         }
