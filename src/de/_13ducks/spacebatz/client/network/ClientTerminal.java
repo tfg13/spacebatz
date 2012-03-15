@@ -69,13 +69,22 @@ public class ClientTerminal {
 			    } catch (NumberFormatException ex) {
 			    }
 			}
-			outln("usage: net_graph MODE (0 = Off, 1 = On)");
+			outln("usage: net_graph MODE (0=off, 1=on)");
+			break;
+		    case "about":
+			outln("spacebatz aurora");
+			outln("13ducks PROPRIETARY/CONFIDENTIAL");
+			outln("internal testing only. DO NOT DISTRIBUTE");
+			outln("");
+			outln("Copyright 2012 13ducks");
+			outln("All rights reserved.");
 			break;
 		    case "help":
 			outln("available commands:");
 			outln("-------------------");
-			outln("net_graph");
+			outln("about");
 			outln("help");
+			outln("net_graph");
 			outln("-------------------");
 			break;
 		    default:

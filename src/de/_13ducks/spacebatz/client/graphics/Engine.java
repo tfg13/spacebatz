@@ -747,9 +747,9 @@ public class Engine {
 	    glColor4f(1f, 1f, 1f, 1f);
 	    glEnable(GL_TEXTURE_2D);
 	    renderText(Client.terminal.getCurrentLine(), tilesX / 3, 0);
-	    int numberoflines = tilesY; // tilesY / 2 * 2
-	    for (int i = 0; i < numberoflines; i++) {
-		renderText(Client.terminal.getHistory(i), tilesX / 3, i * .5f + .5f);
+	    int numberoflines = (int) (tilesY / 2 * 1.6);
+	    for (int i = 0; i < numberoflines - 1; i++) {
+		renderText(Client.terminal.getHistory(i), tilesX / 3, i * .625f + .75f);
 	    }
 	}
     }
