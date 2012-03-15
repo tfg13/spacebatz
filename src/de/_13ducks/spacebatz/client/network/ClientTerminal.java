@@ -76,6 +76,9 @@ public class ClientTerminal {
 			Client.getMsgSender().sendRequestResync();
 			outln("request for resyncing was sent");
 			break;
+		    case "clear":
+			outbuffer.clear();
+			break;
 		    case "about":
 			outln("spacebatz aurora");
 			outln("13ducks PROPRIETARY/CONFIDENTIAL");
@@ -88,8 +91,10 @@ public class ClientTerminal {
 			outln("available commands:");
 			outln("-------------------");
 			outln("about");
+			outln("clear");
 			outln("help");
 			outln("net_graph");
+			outln("resync");
 			outln("-------------------");
 			break;
 		    default:
