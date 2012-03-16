@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Entity;
 import java.io.*;
 import java.util.LinkedList;
@@ -158,6 +159,12 @@ public class DebugConsole {
                             }
                         }
                         break;
+		    case "list":
+			outStream.println("connected clients:");
+			for (Client c : Server.game.clients.values()) {
+			    outStream.println(c.clientID + ": " + c.getNetworkConnection().getSocket().getInetAddress());
+			}
+			break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entitystats          - Prints some information about the netIdMap");
@@ -165,6 +172,7 @@ public class DebugConsole {
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
                         outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
+			outStream.println("list                 - Lists connected clients");
                         outStream.println("help                 - prints this help");
                         break;
                     default:
