@@ -92,7 +92,7 @@ public class Entity {
      * @param x die neue X-Position.
      */
     public void setStillX(double x) {
-	moveStartTick = -1;
+	stopMovementX();
 	posX = x;
 	movementDirty = true;
     }
@@ -103,7 +103,7 @@ public class Entity {
      * @param x die neue X-Position.
      */
     public void setStillY(double y) {
-	moveStartTick = -1;
+	stopMovementY();
 	posY = y;
 	movementDirty = true;
     }
