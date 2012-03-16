@@ -5,6 +5,7 @@ package de._13ducks.spacebatz.shared;
  * @author Jj
  */
 public class EnemyTypeStats implements java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private int healthpoints;
     private int damage;
     private int picture;

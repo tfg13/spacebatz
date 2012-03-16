@@ -10,6 +10,7 @@ import java.util.HashMap;
  * @author michael
  */
 public class ServerLevel extends Level {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Liste der Typen von zerstörbaren Blocken

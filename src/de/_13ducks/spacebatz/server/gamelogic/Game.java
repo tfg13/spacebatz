@@ -2,16 +2,17 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.*;
+import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.Entity;
+import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.util.Distance;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 

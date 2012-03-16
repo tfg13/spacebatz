@@ -31,7 +31,7 @@ public class LevelGenerator {
         long start = System.currentTimeMillis();
 
         ArrayList<Circle> circleList = new ArrayList<>();
-        ArrayList<Bridge> bridgeList = new ArrayList<>();
+        ArrayList<Bridge> bridgeList;
 
         level = new ServerLevel(1000, 1000);
         ground = level.getGround();
@@ -360,7 +360,7 @@ public class LevelGenerator {
 
     public static void drawPositions(ArrayList<Position> posarray, int groundnumber) {
         for (Position pos : posarray) {
-            ground[(int) pos.getX()][(int) pos.getY()] = groundnumber;
+            ground[pos.getX()][pos.getY()] = groundnumber;
         }
     }
 
@@ -370,8 +370,8 @@ public class LevelGenerator {
     public static ArrayList<Position> findLine(Position alpha, Position beta) {
         ArrayList<Position> Returnthis = new ArrayList<>();
 
-        int vX = (int) beta.getX() - (int) alpha.getX();
-        int vY = (int) beta.getY() - (int) alpha.getY();
+        int vX = beta.getX() - alpha.getX();
+        int vY = beta.getY() - alpha.getY();
         if (Math.abs(vX) >= Math.abs(vY)) {
             if (vX > 0) {
                 for (int i = 0; i <= vX; i++) {
@@ -445,7 +445,7 @@ public class LevelGenerator {
      */
     private static void setCollision(ArrayList<Position> positions, boolean collision, Level level) {
         for (Position p : positions) {
-            level.getCollisionMap()[(int) p.getX()][(int) p.getY()] = collision;
+            level.getCollisionMap()[p.getX()][p.getY()] = collision;
 
         }
     }

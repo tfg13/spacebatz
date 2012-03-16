@@ -8,6 +8,7 @@ import java.util.HashMap;
  * @author Jojo
  */
 public class ItemTypeStats implements java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     public HashMap<String, Serializable> itemStats;
     
     public ItemTypeStats(String name, int pic, int itemclass, int quality, int amount, int armor, ItemTypeWeaponStats weaponstats) {

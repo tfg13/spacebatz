@@ -11,6 +11,7 @@ import java.util.HashMap;
  * @author Jojo
  */
 public class ItemAttribute implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Name des Attributs

@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @author michael
  */
 public class DestroyableBlockType implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Die Textur des Felds auf dem der zerstörbare Block steht

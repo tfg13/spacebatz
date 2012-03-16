@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * @author Jojo
  */
 public class Item implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private ItemTypeStats stats;
     /**

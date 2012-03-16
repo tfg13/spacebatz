@@ -91,11 +91,11 @@ public class Char {
         this.speed = m.speed;
 	// Nicht drehen beim Stehenbleiben
 	if (startTick != -1) {
-	    double dir = Math.atan2(vY, vX);
-	    if (dir < 0) {
-		dir += 2 * Math.PI;
+	    double tempdir = Math.atan2(vY, vX);
+	    if (tempdir < 0) {
+		tempdir += 2 * Math.PI;
 	    }
-	    this.dir = (int) ((dir / (2 * Math.PI) * 8));
+	    this.dir = (int) ((tempdir / (2 * Math.PI) * 8));
 	}
     }
 

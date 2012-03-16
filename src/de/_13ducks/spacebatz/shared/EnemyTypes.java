@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * @author ojoj
  */
 public class EnemyTypes implements java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private ArrayList<EnemyTypeStats> enemytypelist;
     
     public EnemyTypes() {

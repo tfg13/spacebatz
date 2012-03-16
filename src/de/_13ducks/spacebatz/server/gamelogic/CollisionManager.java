@@ -37,7 +37,7 @@ public class CollisionManager {
         Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
 
         while (listIterator.hasNext()) {
-            Bullet bullet = null;
+            Bullet bullet;
             Entity entity = listIterator.next();
             if (entity instanceof Bullet) {
                 bullet = (Bullet) entity;

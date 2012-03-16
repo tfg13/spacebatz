@@ -8,6 +8,7 @@ package de._13ducks.spacebatz.shared;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Level implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Die Bodentexturen. Indizes der Tiles

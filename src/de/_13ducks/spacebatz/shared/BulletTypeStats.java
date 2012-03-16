@@ -5,6 +5,7 @@ package de._13ducks.spacebatz.shared;
  * @author blub
  */
 public class BulletTypeStats implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int damage;
     private int picture; // Bild-Nummer auf der Tilemap
