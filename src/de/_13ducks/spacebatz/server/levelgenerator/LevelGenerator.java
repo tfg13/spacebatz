@@ -71,27 +71,31 @@ public class LevelGenerator {
 
         ArrayList<Position> innerFields = findInnerFields(circleList, bridgeList);
 
-        // Default-Bodentextur:
+        // Default-Textur (Felsen):
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
                 ground[x][y] = texrock;
                 level.getCollisionMap()[x][y] = true;
             }
         }
+
+        // Begehbare Felder
         for (int i = 0; i < innerFields.size(); i++) {
-            if (innerFields.get(i).getX() < 0 || innerFields.get(i).getX() > xSize) {
+            if (innerFields.get(i).getX() < 0 || innerFields.get(i).getX() >= xSize) {
                 continue;
             }
-            if (innerFields.get(i).getY() < 0 || innerFields.get(i).getY() > ySize) {
+            if (innerFields.get(i).getY() < 0 || innerFields.get(i).getY() >= ySize) {
                 continue;
             }
             ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = texground;
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
 
-        // Respawn-Koordinaten setzen:
-        level.respawnX = circleList.get(0).getCenter().getX();
-        level.respawnY = circleList.get(0).getCenter().getY();
+        // Manche begehbaren Felder zu zerstörbaren Bergen machen:
+        createDestroyableBlocks();
+
+        // Spawn-Koordinaten setzen:
+        setSpawn(circleList.get(0).getCenter());
 
         // Wände am Levelrand
         createWall(0, 0, 1, ySize - 1, level);
@@ -374,8 +378,110 @@ public class LevelGenerator {
         }
     }
 
+    /**
+     * Setzt zerstörbare Blöcke auf die Map
+     */
+    private static void createDestroyableBlocks() {
+        // Zufällige Werte für alle freien Felder!
+        for (int i = 0; i < ground[0].length; i++) {
+            for (int j = 0; j < ground.length; j++) {
+                if (ground[i][j] == 4) {
+                    ground[i][j] = -1 - random.nextInt(100);
+                }
+            }
+        }
+
+        // Felder an Nachbarfelder anpassen -> Berge
+        for (int a = 0; a < 16; a++) {
+            for (int i = 0; i < ground[0].length; i++) {
+                for (int j = 0; j < ground.length; j++) {
+                    if (ground[i][j] < 0) {
+                        int neighbours = 0;
+
+                        // direkte Nachbaren
+                        if (i > 0 && (ground[i - 1][j] < -80 || ground[i - 1][j] == 1)) {
+                            neighbours += 2;
+                        }
+                        if (i < xSize - 1 && (ground[i + 1][j] < -80 || ground[i + 1][j] == 1)) {
+                            neighbours += 2;
+                        }
+                        if (j > 0 && (ground[i][j - 1] < -80 || ground[i][j - 1] == 1)) {
+                            neighbours += 2;
+                        }
+                        if (j < ySize - 1 && (ground[i][j + 1] < -80 || ground[i][j + 1] == 1)) {
+                            neighbours += 2;
+                        }
+
+                        // Nachbaren über Ecke
+                        if (i > 0 && j > 0 && (ground[i - 1][j - 1] < -80 || ground[i - 1][j - 1] == 1)) {
+                            neighbours++;
+                        }
+                        if (i < xSize - 1 && j < ySize - 1 && (ground[i + 1][j + 1] < -80 || ground[i + 1][j + 1] == 1)) {
+                            neighbours++;
+                        }
+                        if (i < xSize - 1 && j > 0 && (ground[i + 1][j - 1] < -80 || ground[i + 1][j - 1] == 1)) {
+                            neighbours++;
+                        }
+                        if (i > 0 && j < ySize - 1 && (ground[i - 1][j + 1] < -80 || ground[i - 1][j + 1] == 1)) {
+                            neighbours++;
+                        }
+
+                        ground[i][j] += (12 - neighbours) * random.nextInt(15) - neighbours * random.nextInt(30);
+                        if (ground[i][j] < -100) {
+                            ground[i][j] = -100;
+                        } else if (ground[i][j] >= 0) {
+                            ground[i][j] = -1;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Zufallswerte wieder zu richtigen Texturen machen:
+        for (int i = 0; i < ground[0].length; i++) {
+            for (int j = 0; j < ground.length; j++) {
+                if (ground[ i][j] < -80) {
+                    ground[i][j] = 2;
+                    level.getCollisionMap()[i][j] = true;
+                } else if (ground[ i][j] < 0) {
+                    ground[i][j] = 4;
+                }
+            }
+        }
+    }
+
+    /**
+     * Setzt den Spielerspawn
+     */
+    public static void setSpawn(Position a) {
+        level.respawnX = a.getX();
+        level.respawnY = a.getY();
+
+        // Umliegende Felder freiräumen:
+        int spawnsize = 4;
+        for (int x = a.getX() - spawnsize; x <= a.getX() + spawnsize; x++) {
+            for (int y = a.getY() - spawnsize; y <= a.getY() + spawnsize; y++) {
+                if (groundExists(x, y)) {
+                    ground[x][y] = 4;
+                    level.getCollisionMap()[x][y] = false;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Testet, ob dieses Feld gültig (= innerhalb der Map) ist
+     */
+    public static boolean groundExists(int x, int y) {
+        if (x < 0 || x >= xSize || y < 0 || y > ySize) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /*
-     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurÃƒÂ¼ck (als ArrayList<Position>).
+     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurück (als ArrayList<Position>).
      */
     public static ArrayList<Position> findLine(Position alpha, Position beta) {
         ArrayList<Position> Returnthis = new ArrayList<>();
@@ -405,27 +511,6 @@ public class LevelGenerator {
                     Position argh = new Position(alpha.getX() + (i * vX / vY), alpha.getY() + i);
                     Returnthis.add(argh);
                 }
-            }
-        }
-        return Returnthis;
-    }
-
-    public static ArrayList<Position> findRectangleHollow(int x1, int y1, int x2, int y2) {
-        ArrayList<Position> Returnthis = new ArrayList<>();
-
-        Returnthis.addAll(findLine(new Position(x1, y1), new Position(x2, y1)));
-        Returnthis.addAll(findLine(new Position(x1, y1), new Position(x1, y2)));
-        Returnthis.addAll(findLine(new Position(x1, y2), new Position(x2, y2)));
-        Returnthis.addAll(findLine(new Position(x2, y1), new Position(x2, y2)));
-
-        return Returnthis;
-    }
-
-    public static ArrayList<Position> findRectangleFull(int x1, int y1, int x2, int y2) {
-        ArrayList<Position> Returnthis = new ArrayList<>();
-        for (int a = x1; a <= x2; a++) {
-            for (int b = y1; b <= y2; b++) {
-                Returnthis.add(new Position(a, b));
             }
         }
         return Returnthis;
