@@ -212,7 +212,7 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_REQUEST_RCON = 45;
     /**
-     * Server antwortet auf die Client-Rconanfrage.
+     * Server antwortet auf die Client-Rconanfrage
      */
     public static final byte NET_TCP_CMD_ANSWER_RCON = 46;
     /**
@@ -236,11 +236,11 @@ public final class Settings {
     /**
      * Die Größe der Chars für Kollision
      */
-    public static final double CHARSIZE = 0.16;
+    public static final double CHARSIZE = 0.8;
     /**
      * Die Geschwindigkeit der Chars
      */
-    public static final double CHARSPEED = 1;
+    public static final double CHARSPEED = 0.16;
     /**
      * Die HP der Chars
      */
