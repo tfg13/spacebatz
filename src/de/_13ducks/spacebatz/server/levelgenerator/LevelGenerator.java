@@ -89,6 +89,8 @@ public class LevelGenerator {
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
 
+        createDestroyableBlocks();
+
         // Respawn-Koordinaten setzen:
         level.respawnX = circleList.get(0).getCenter().getX();
         level.respawnY = circleList.get(0).getCenter().getY();
@@ -374,8 +376,31 @@ public class LevelGenerator {
         }
     }
 
+    /**
+     * Setzt zerstörbare Blöcke auf die Map
+     */
+    private static void createDestroyableBlocks() {
+        for (int i = 0; i < ground[0].length; i++) {
+            for (int j = 0; j < ground.length; j++) {
+                if (ground[i][j] == 4) {
+                    ground[i][j] = -1 - random.nextInt(100);
+                }
+            }
+        }
+        for (int i = 0; i < ground[0].length; i++) {
+            for (int j = 0; j < ground.length; j++) {
+                if (ground[ i][j] < -80) {
+                    ground[i][j] = 2;
+                    level.getCollisionMap()[i][j] = true;
+                } else if (ground[ i][j] < 0) {
+                    ground[i][j] = 4;
+                }
+            }
+        }
+    }
+
     /*
-     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurÃƒÂ¼ck (als ArrayList<Position>).
+     * Kriegt 2 Positions. Gibt eine Gerade dazwischen zurück (als ArrayList<Position>).
      */
     public static ArrayList<Position> findLine(Position alpha, Position beta) {
         ArrayList<Position> Returnthis = new ArrayList<>();
@@ -405,27 +430,6 @@ public class LevelGenerator {
                     Position argh = new Position(alpha.getX() + (i * vX / vY), alpha.getY() + i);
                     Returnthis.add(argh);
                 }
-            }
-        }
-        return Returnthis;
-    }
-
-    public static ArrayList<Position> findRectangleHollow(int x1, int y1, int x2, int y2) {
-        ArrayList<Position> Returnthis = new ArrayList<>();
-
-        Returnthis.addAll(findLine(new Position(x1, y1), new Position(x2, y1)));
-        Returnthis.addAll(findLine(new Position(x1, y1), new Position(x1, y2)));
-        Returnthis.addAll(findLine(new Position(x1, y2), new Position(x2, y2)));
-        Returnthis.addAll(findLine(new Position(x2, y1), new Position(x2, y2)));
-
-        return Returnthis;
-    }
-
-    public static ArrayList<Position> findRectangleFull(int x1, int y1, int x2, int y2) {
-        ArrayList<Position> Returnthis = new ArrayList<>();
-        for (int a = x1; a <= x2; a++) {
-            for (int b = y1; b <= y2; b++) {
-                Returnthis.add(new Position(a, b));
             }
         }
         return Returnthis;

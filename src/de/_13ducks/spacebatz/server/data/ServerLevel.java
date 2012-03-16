@@ -36,6 +36,7 @@ public class ServerLevel extends Level {
     public ServerLevel(int xSize, int ySize) {
         super(xSize, ySize);
         destroyableBlockTypes = new HashMap<>();
+        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3));
         destroyableBlockTypes.put(6, new DestroyableBlockType(6, 3));
 
     }
