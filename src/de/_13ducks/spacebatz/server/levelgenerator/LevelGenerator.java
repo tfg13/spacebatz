@@ -380,6 +380,7 @@ public class LevelGenerator {
      * Setzt zerstörbare Blöcke auf die Map
      */
     private static void createDestroyableBlocks() {
+        // Zufall!
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
                 if (ground[i][j] == 4) {
@@ -387,6 +388,36 @@ public class LevelGenerator {
                 }
             }
         }
+        
+        for (int a = 0; a < 40; a++) {
+            for (int i = 0; i < ground[0].length; i++) {
+                for (int j = 0; j < ground.length; j++) {
+                    if (ground[i][j] < 0) {
+                        int neighbours = 0;
+                        if (i > 0 && (ground[i - 1][j] < -80 || ground[i - 1][j] == 1)) {
+                            neighbours++;
+                        }
+                        if (i < xSize - 1 && (ground[i + 1][j] < -80 || ground[i + 1][j] == 1)) {
+                            neighbours++;
+                        }
+                        if (j > 0 && (ground[i][j - 1] < -80 || ground[i][j - 1] == 1)) {
+                            neighbours++;
+                        }
+                        if (j < ySize - 1 && (ground[i][j + 1] < -80 || ground[i][j + 1] == 1)) {
+                            neighbours++;
+                        }
+                        ground[i][j] += (4 - neighbours) * random.nextInt(10) - neighbours * random.nextInt(20);
+                        if (ground[i][j] < -100) {
+                            ground[i][j] = -100;
+                        } else if (ground[i][j] >= 0) {
+                            ground[i][j] = -1;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Wieder richtige Texturen:
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
                 if (ground[ i][j] < -80) {
