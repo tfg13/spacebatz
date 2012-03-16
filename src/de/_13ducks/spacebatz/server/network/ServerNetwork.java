@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -59,87 +60,126 @@ public class ServerNetwork {
      * Konstruktor initialisiert die Datenempfangs-Threads
      */
     public ServerNetwork() {
-        connections = new ArrayList<>();
-        udp = new UDPConnection();
-        pendingClients = new ConcurrentLinkedQueue<>();
-        messageSendBuffer = new ConcurrentLinkedQueue<>();
+	connections = new ArrayList<>();
+	udp = new UDPConnection();
+	pendingClients = new ConcurrentLinkedQueue<>();
+	messageSendBuffer = new ConcurrentLinkedQueue<>();
 
-        // neuer thread, der über TCP daten empfängt:
-        receiveTcpDataThread = new Thread(new Runnable() {
+	// neuer thread, der über TCP daten empfängt:
+	receiveTcpDataThread = new Thread(new Runnable() {
 
-            @Override
-            public void run() {
-                receiveTcpData();
-            }
-        });
-        receiveTcpDataThread.setName("DataReceiverThread");
-        receiveTcpDataThread.setDaemon(true);
-        receiveTcpDataThread.start();
+	    @Override
+	    public void run() {
+		receiveTcpData();
+	    }
+	});
+	receiveTcpDataThread.setName("DataReceiverThread");
+	receiveTcpDataThread.setDaemon(true);
+	receiveTcpDataThread.start();
 
-        // neuer thread, der clients akzeptiert:
-        clientAcceptorThread = new Thread(new Runnable() {
+	// neuer thread, der clients akzeptiert:
+	clientAcceptorThread = new Thread(new Runnable() {
 
-            @Override
-            public void run() {
+	    @Override
+	    public void run() {
 
-                try {
-                    ServerSocket ss = new ServerSocket(Settings.SERVER_TCPPORT);
+		try {
+		    ServerSocket ss = new ServerSocket(Settings.SERVER_TCPPORT);
 
-                    while (true) {
-                        Socket clientSocket = ss.accept();
-                        ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
-                        Client newClient = new Client(client, Server.game.newClientID());
-                        client.setClient(newClient);
-                        connections.add(client);
-                        pendingClients.add(newClient);
-                    }
-
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-            }
-        });
-        clientAcceptorThread.setName("ClientAcceptorThread");
-        clientAcceptorThread.setDaemon(true);
-
-        sendTcpDataThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        sendTcpBuffer();
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-        sendTcpDataThread.setName("SendTcpDataThread");
-        sendTcpDataThread.setDaemon(true);
-        sendTcpDataThread.start();
+		    while (true) {
+			Socket clientSocket = ss.accept();
+			ServerNetworkConnection client = new ServerNetworkConnection(clientSocket);
+			Client newClient = new Client(client, Server.game.newClientID());
+			client.setClient(newClient);
+			connections.add(client);
+			pendingClients.add(newClient);
+		    }
 
 
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+
+	    }
+	});
+	clientAcceptorThread.setName("ClientAcceptorThread");
+	clientAcceptorThread.setDaemon(true);
+
+	// RCON
+	if (Settings.SERVER_ENABLE_RCON) {
+	    Thread rconThread = new Thread(new Runnable() {
+
+		@Override
+		public void run() {
+		    try {
+			ServerSocket rs = new ServerSocket(Settings.SERVER_RCONPORT);
+
+			while (true) {
+			    Socket sock = rs.accept(); // blocks
+			    Server.debugConsole.addRcon(findClient(sock.getInetAddress()), sock.getInputStream(), sock.getOutputStream());
+			}
+		    } catch (Exception ex) {
+			ex.printStackTrace();
+		    }
+		}
+	    });
+	    rconThread.setName("SERVER_RCON_ACC");
+	    rconThread.setDaemon(true);
+	    rconThread.start();
+	}
+
+	sendTcpDataThread = new Thread(new Runnable() {
+
+	    @Override
+	    public void run() {
+		while (true) {
+		    try {
+			sendTcpBuffer();
+			Thread.sleep(10);
+		    } catch (InterruptedException ex) {
+			ex.printStackTrace();
+		    }
+		}
+	    }
+	});
+	sendTcpDataThread.setName("SendTcpDataThread");
+	sendTcpDataThread.setDaemon(true);
+	sendTcpDataThread.start();
+
+
+    }
+
+    /**
+     * Findet einen Client anhand seiner Inet-Adresse
+     * Wirft eine Exception, wenn der Client nicht gefunden wurde.
+     *
+     * @param adr die Adresse
+     * @return den gefundenen Client.
+     */
+    private Client findClient(InetAddress adr) {
+	for (Client c : Server.game.clients.values()) {
+	    if (c.getNetworkConnection().getSocket().getInetAddress().equals(adr)) {
+		return c;
+	    }
+	}
+	throw new RuntimeException("Client nicht gefunden");
     }
 
     /**
      * Akzeptiert alle wartenden Clients
      */
     public void acceptPendingClients() {
-        for (int i = 0; i < pendingClients.size(); i++) {
-            Server.game.clientJoined(pendingClients.poll());
-        }
+	for (int i = 0; i < pendingClients.size(); i++) {
+	    Server.game.clientJoined(pendingClients.poll());
+	}
     }
 
     /**
      * Stellt eine Verbindung mit jedem anfragenden Client her. Forkt sofort.
      */
     public void startServer() {
-        clientAcceptorThread.start();
-        udp.start();
+	clientAcceptorThread.start();
+	udp.start();
     }
 
     /**
@@ -149,73 +189,73 @@ public class ServerNetwork {
      * @param message der Byte-Array der gesendet werden soll
      */
     public void sendTcpData(byte cmdId, byte message[], Client client) {
-        messageSendBuffer.add(new ServerTcpMessage(cmdId, message, client));
+	messageSendBuffer.add(new ServerTcpMessage(cmdId, message, client));
     }
 
     /**
      * Sendet alle Packete im Tcp-Puffer
      */
     private void sendTcpBuffer() {
-        try {
-            while (!messageSendBuffer.isEmpty()) {
-                ServerTcpMessage theMessage = messageSendBuffer.poll();
-                byte cmdId = theMessage.getCmdID();
-                byte[] message = theMessage.getData();
-                Client client = theMessage.getClient();
+	try {
+	    while (!messageSendBuffer.isEmpty()) {
+		ServerTcpMessage theMessage = messageSendBuffer.poll();
+		byte cmdId = theMessage.getCmdID();
+		byte[] message = theMessage.getData();
+		Client client = theMessage.getClient();
 
-                int blocks = message.length / 100;
-                int rest = message.length % 100;
+		int blocks = message.length / 100;
+		int rest = message.length % 100;
 
-                // cmdID senden
-                client.getNetworkConnection().getSendStream().writeByte(cmdId);
-                client.getNetworkConnection().getSendStream().flush();
+		// cmdID senden
+		client.getNetworkConnection().getSendStream().writeByte(cmdId);
+		client.getNetworkConnection().getSendStream().flush();
 
-                // Packetlänge senden
-                client.getNetworkConnection().getSendStream().writeLong(message.length);
-                client.getNetworkConnection().getSendStream().flush();
+		// Packetlänge senden
+		client.getNetworkConnection().getSendStream().writeLong(message.length);
+		client.getNetworkConnection().getSendStream().flush();
 
-                // alle Hunderterblöcke senden:
-                byte msg[] = new byte[100];
-                for (int b = 0; b < blocks; b++) {
-                    for (int i = 0; i < 100; i++) {
-                        msg[i] = message[100 * b + i];
-                    }
-                    client.getNetworkConnection().getSendStream().write(msg);
-                    client.getNetworkConnection().getSendStream().flush();
-                }
+		// alle Hunderterblöcke senden:
+		byte msg[] = new byte[100];
+		for (int b = 0; b < blocks; b++) {
+		    for (int i = 0; i < 100; i++) {
+			msg[i] = message[100 * b + i];
+		    }
+		    client.getNetworkConnection().getSendStream().write(msg);
+		    client.getNetworkConnection().getSendStream().flush();
+		}
 
-                // rest senden:
-                msg = new byte[rest];
-                for (int i = 0; i < rest; i++) {
-                    msg[i] = message[100 * blocks + i];
-                }
-                client.getNetworkConnection().getSendStream().write(msg);
-                client.getNetworkConnection().getSendStream().flush();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+		// rest senden:
+		msg = new byte[rest];
+		for (int i = 0; i < rest; i++) {
+		    msg[i] = message[100 * blocks + i];
+		}
+		client.getNetworkConnection().getSendStream().write(msg);
+		client.getNetworkConnection().getSendStream().flush();
+	    }
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
     }
 
     /**
      * liest in einer endlosschleife bytes von allen verbundenen sockets ein
      */
     private void receiveTcpData() {
-        while (true) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            if (!connections.isEmpty()) {
-                try {
-                    for (int c = 0; c < connections.size(); c++) {
-                        connections.get(c).receiveData();
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+	while (true) {
+	    try {
+		Thread.sleep(10);
+	    } catch (InterruptedException ex) {
+		ex.printStackTrace();
+	    }
+	    if (!connections.isEmpty()) {
+		try {
+		    for (int c = 0; c < connections.size(); c++) {
+			connections.get(c).receiveData();
+		    }
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+	    }
+	}
     }
 }

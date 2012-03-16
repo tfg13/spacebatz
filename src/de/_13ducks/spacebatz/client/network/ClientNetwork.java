@@ -412,4 +412,13 @@ public class ClientNetwork {
             System.out.println("ERROR: UDP-Sending failed!");
         }
     }
+    
+    /**
+     * Liefert die Serveradresse, zu der wir verbunden sind.
+     * Das Verhalten, wenn noch nicht connected ist nicht definiert.
+     * @return die Serveradresse
+     */
+    public InetAddress getServerAdr() {
+	return serverAdr;
+    }
 }

@@ -13,11 +13,10 @@ package de._13ducks.spacebatz.server;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Entity;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -56,14 +55,24 @@ public class DebugConsole {
      */
     private int loglevel = LOGLEVEL_ALL;
     /**
-     * Der Original-System.out -Stream. Hiermit werden die gefilterten "normalen" Ausgaben dann wirklich ausgegeben.
+     * Ein Stream zum ungefilternen Ausgeben für die interne Nutzung der Debug-Console.
      */
     private PrintStream outStream;
+    /**
+     * Die Streams zu den rcons.
+     */
+    private ArrayList<PrintStream> rconOutput;
+    /**
+     * Die verbundenen rcons.
+     */
+    private ConcurrentHashMap<Integer, Object[]> rcons;
 
     /**
      * Konstruktor Erzeugt einen neuen Thread der alle Eingaben zwischenspeichert
      */
     public DebugConsole() {
+	rconOutput = new ArrayList<>();
+	rcons = new ConcurrentHashMap<>();
 	reader = new BufferedReader(new java.io.InputStreamReader(System.in));
 	commands = new ConcurrentLinkedQueue<>();
 	Thread debugConsoleThread = new Thread(new Runnable() {
@@ -83,7 +92,20 @@ public class DebugConsole {
 	debugConsoleThread.setDaemon(true);
 	// Den normalen Sysout abfangen:
 	try {
-	    outStream = System.out;
+	    final PrintStream realout = System.out;
+	    outStream = new PrintStream(new OutputStream() {
+
+		@Override
+		public void write(int b) throws IOException {
+		    // Eventuell an die rcons verteilen
+		    for (PrintStream rcon : rconOutput) {
+			rcon.write(b);
+			rcon.flush();
+		    }
+		    // Normal ausgeben
+		    realout.write(b);
+		}
+	    });
 	    System.setOut(new PrintStream(new OutputStream() {
 
 		StringBuffer buf = new StringBuffer();
@@ -109,6 +131,60 @@ public class DebugConsole {
 	}
 	debugConsoleThread.start();
 	System.out.println("Welcome to ServerDebugConsole!");
+    }
+
+    /**
+     * Fügt einen Rcon-Client hinzu.
+     *
+     * @param c der Client
+     * @param i der Stream vom Client
+     * @param o der Stream zum Client
+     */
+    public void addRcon(Client c, InputStream i, OutputStream o) {
+	if (!rcons.containsKey(c.clientID)) {
+	    Object[] br = new Object[2];
+	    final BufferedReader input = new BufferedReader(new InputStreamReader(i));
+	    PrintStream output = new PrintStream(o);
+	    br[0] = input;
+	    br[1] = output;
+	    outStream.println("client " + c.clientID + " connected via rcon");
+	    rconOutput.add(output);
+	    rcons.put(c.clientID, br);
+	    Thread rconReader = new Thread(new Runnable() {
+
+		@Override
+		public void run() {
+		    try {
+			while (true) {
+			    commands.add(input.readLine().toLowerCase().split("\\s+"));
+
+			}
+		    } catch (IOException ex) {
+		    }
+		}
+	    });
+	    rconReader.setName("RconReader_client_" + c.clientID);
+	    rconReader.setDaemon(true);
+	    rconReader.start();
+	}
+    }
+
+    /**
+     * Entfernt einen Client richtig.
+     *
+     * @param c der client
+     */
+    public void rmRcon(Client c) {
+	Object[] streams = rcons.get(c.clientID);
+	if (streams != null) {
+	    try {
+		((BufferedReader) streams[0]).close();
+	    } catch (IOException ex) {
+	    }
+	    ((PrintStream) streams[1]).close();
+	    rconOutput.remove((PrintStream) streams[1]);
+	    outStream.println("client " + c.clientID + " is no longer connected via rcon");
+	}
     }
 
     /**

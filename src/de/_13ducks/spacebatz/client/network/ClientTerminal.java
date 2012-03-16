@@ -11,6 +11,10 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
 import java.util.ArrayList;
 
 /**
@@ -32,6 +36,22 @@ public class ClientTerminal {
      * Um wie viele Zeilen nach oben gescrollt wurde.
      */
     private int scroll = 0;
+    /**
+     * Das Socket für Rcon-Verbindungen.
+     */
+    private Socket rconSock;
+    /**
+     * Der Writer für Rcon
+     */
+    private PrintStream rconOut;
+    /**
+     * Der Reader für Rcon
+     */
+    private BufferedReader rconRead;
+    /**
+     * Ist rcon aktiv?
+     */
+    private boolean rcon = false;
 
     /**
      * Neues ClientTerminal erstellen
@@ -65,57 +85,67 @@ public class ClientTerminal {
     public void enter() {
 	String input = inputLine.toString();
 	resetInput();
-	outln(input);
-	// Die Promt absägen (das "> " am anfang);
-	input = input.substring(2);
-	if (!input.isEmpty()) {
-	    String[] words = input.split("\\s+");
-	    if (words.length >= 1) {
-		String cmd = words[0].toLowerCase();
-		switch (cmd) {
-		    case "net_graph":
-			if (words.length == 2) {
-			    try {
-				int num = Integer.parseInt(words[1]);
-				if (num == 0 || num == 1) {
-				    NetStats.netGraph = num == 1;
-				    break;
+	if (!rcon) {
+	    outln(input);
+	    // Die Promt absägen (das "> " am anfang);
+	    input = input.substring(2);
+	    if (!input.isEmpty()) {
+		String[] words = input.split("\\s+");
+		if (words.length >= 1) {
+		    String cmd = words[0].toLowerCase();
+		    switch (cmd) {
+			case "net_graph":
+			    if (words.length == 2) {
+				try {
+				    int num = Integer.parseInt(words[1]);
+				    if (num == 0 || num == 1) {
+					NetStats.netGraph = num == 1;
+					break;
+				    }
+				} catch (NumberFormatException ex) {
 				}
-			    } catch (NumberFormatException ex) {
 			    }
-			}
-			outln("usage: net_graph MODE (0=off, 1=on)");
-			break;
-		    case "resync":
-			Client.getMsgSender().sendRequestResync();
-			outln("request for resyncing was sent");
-			break;
-		    case "clear":
-			outbuffer.clear();
-			break;
-		    case "about":
-			outln("spacebatz aurora");
-			outln("13ducks PROPRIETARY/CONFIDENTIAL");
-			outln("internal testing only. DO NOT DISTRIBUTE");
-			outln("");
-			outln("Copyright 2012 13ducks");
-			outln("All rights reserved.");
-			break;
-		    case "help":
-			outln("available commands:");
-			outln("-------------------");
-			outln("about");
-			outln("clear");
-			outln("help");
-			outln("net_graph");
-			outln("resync");
-			outln("-------------------");
-			break;
-		    default:
-			outln("unknown command. try help");
-			break;
+			    outln("usage: net_graph MODE (0=off, 1=on)");
+			    break;
+			case "resync":
+			    Client.getMsgSender().sendRequestResync();
+			    outln("request for resyncing was sent");
+			    break;
+			case "clear":
+			    outbuffer.clear();
+			    break;
+			case "rcon":
+			    // Anfragen
+			    Client.getMsgSender().sendRconRequest();
+			    outln("rcon: request sent");
+			    break;
+			case "about":
+			    outln("spacebatz aurora");
+			    outln("13ducks PROPRIETARY/CONFIDENTIAL");
+			    outln("internal testing only. DO NOT DISTRIBUTE");
+			    outln("");
+			    outln("Copyright 2012 13ducks");
+			    outln("All rights reserved.");
+			    break;
+			case "help":
+			    outln("available commands:");
+			    outln("-------------------");
+			    outln("about");
+			    outln("clear");
+			    outln("help");
+			    outln("net_graph");
+			    outln("resync");
+			    outln("rcon");
+			    outln("-------------------");
+			    break;
+			default:
+			    outln("unknown command. try help");
+			    break;
+		    }
 		}
 	    }
+	} else {
+	    rconOut.println(input.substring(3));
 	}
     }
 
@@ -127,7 +157,7 @@ public class ClientTerminal {
     }
 
     private void resetInput() {
-	inputLine = new StringBuffer("> ");
+	inputLine = new StringBuffer(rcon ? "r> " : "> ");
     }
 
     public String getCurrentLine() {
@@ -163,5 +193,48 @@ public class ClientTerminal {
      */
     public void info(String s) {
 	outln(s);
+    }
+
+    /**
+     * Gibt einen String mit rcon-Markierung aus.
+     *
+     * @param s
+     */
+    private void rcOut(String s) {
+	outln("r " + s);
+    }
+
+    /**
+     * Baut eine Rcon-Verbindung auf.
+     *
+     * @param port
+     */
+    void rcon(int port) {
+	try {
+	    rconSock = new Socket(Client.getNetwork().getServerAdr(), port);
+	    rconOut = new PrintStream(rconSock.getOutputStream());
+	    rconRead = new BufferedReader(new InputStreamReader(rconSock.getInputStream()));
+	    Thread rconReader = new Thread(new Runnable() {
+
+		@Override
+		public void run() {
+		    try {
+			while (true) {
+			    rcOut(rconRead.readLine());
+			}
+		    } catch (Exception ex) {
+		    }
+		}
+	    });
+	    rconReader.setName("CLIENT_RCON_READER");
+	    rconReader.setDaemon(true);
+	    rconReader.start();
+	    rcon = true;
+	    resetInput();
+	    outln("rcon: connection established");
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	    outln("rcon: connecting failed");
+	}
     }
 }
