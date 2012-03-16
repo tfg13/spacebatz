@@ -165,11 +165,21 @@ public class DebugConsole {
 			    outStream.println(c.clientID + ": " + c.getNetworkConnection().getSocket().getInetAddress());
 			}
 			break;
+		    case "resync":
+			if (words.length == 2) {
+			    int i = Integer.parseInt(words[1]);
+			    Server.serverNetwork.udp.resyncClient(Server.game.clients.get(i));
+			    outStream.println("Resyncing client " + i);
+			} else {
+			    outStream.println("Usage: resync CLIENTID (use \"list\")");
+			}
+			break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entitystats          - Prints some information about the netIdMap");
                         outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
+			outStream.println("resync N             - Resync client with id N");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
                         outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
 			outStream.println("list                 - Lists connected clients");

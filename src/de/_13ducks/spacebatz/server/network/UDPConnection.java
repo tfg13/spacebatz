@@ -167,6 +167,7 @@ public class UDPConnection {
 		Server.msgSender.sendStartGame(c);
 	    }
 	}
+	System.out.println("client " + clientID + ": (re)sync complete");
     }
 
     /**
@@ -374,7 +375,7 @@ public class UDPConnection {
 	}
     }
 
-    void resyncClient(Client sender) {
+    public void resyncClient(Client sender) {
 	if (!syncClients.contains(sender)) {
 		syncClients.add(sender);
 	}
