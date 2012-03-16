@@ -176,14 +176,14 @@ public class DebugConsole {
 			break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
+			outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
                         outStream.println("entitystats          - Prints some information about the netIdMap");
-                        outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
+                        outStream.println("help                 - prints this help");
+			outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
+			outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
 			outStream.println("resync N             - Resync client with id N");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
-                        outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
-			outStream.println("list                 - Lists connected clients");
-                        outStream.println("help                 - prints this help");
                         break;
                     default:
                         outStream.println("Command not recognized. Try help");
