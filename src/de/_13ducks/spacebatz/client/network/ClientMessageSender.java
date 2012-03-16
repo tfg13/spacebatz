@@ -58,4 +58,8 @@ public class ClientMessageSender {
 	Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_RESYNC, new byte[1]);
     }
 
+    void sendRconRequest() {
+	Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_RCON, new byte[1]);
+    }
+
 }

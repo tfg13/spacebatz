@@ -267,7 +267,12 @@ public class ClientMessageInterpreter {
                     Client.getPlayer().setSelectedattack(wslot);
                 }
                 break;
-
+	    case Settings.NET_TCP_CMD_ANSWER_RCON:
+		if (message[0] == 1) {
+		    // Server erlaubt rcon
+		    Client.terminal.rcon(Bits.getInt(message, 1));
+		}
+		break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command " + cmdId);
         }

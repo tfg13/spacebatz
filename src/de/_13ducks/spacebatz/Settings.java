@@ -54,6 +54,11 @@ public final class Settings {
      */
     public static final int SERVER_TCPPORT = 10000;
     /**
+     * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt.
+     * Clients dürfen sich dahin aber nicht einfach so verbinden.
+     */
+    public static final int SERVER_RCONPORT = 13946;
+    /**
      * Auf diesem Port ist der Server per UDP zu erreichen. Darf nicht der gleiche sein, wie CLIENT_UDPPORT
      */
     public static final int SERVER_UDPPORT = 13947;
@@ -66,6 +71,10 @@ public final class Settings {
      * 15 entspricht also einer Tickrate von 66,66666666...
      */
     public static final int SERVER_TICKRATE = 15;
+    /**
+     * Ob der Server eingehende rcon-Verbindungen akzeptiert.
+     */
+    public static final boolean SERVER_ENABLE_RCON = true;
     /**
      * Wieviel der Server maximal hinter seiner Target-Tickrate sein darf, bevor eine Warnung ausgespuckt wird.
      */
@@ -198,6 +207,14 @@ public final class Settings {
      * Normales Input-an-Server-Schicken.
      */
     public static final byte NET_UDP_CMD_REQUEST_BULLET = -11;
+    /**
+     * Client möchte RCON aufbauen.
+     */
+    public static final byte NET_TCP_CMD_REQUEST_RCON = 45;
+    /**
+     * Server antwortet auf die Client-Rconanfrage
+     */
+    public static final byte NET_TCP_CMD_ANSWER_RCON = 46;
     /**
      * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die
      * eigene Spielfigur sich auch bei den anderen verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen,

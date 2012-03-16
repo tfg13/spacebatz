@@ -209,4 +209,17 @@ public class ServerMessageSender {
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SWITCH_WEAPON, b, c);
         }
     }
+
+    /**
+     * Antwortet dem Client mit ja oder nein auf seine rcon-anfrage
+     * @param sender
+     * @param answer
+     * @param port 
+     */
+    void sendRconAnswer(Client sender, boolean answer, int port) {
+	byte[] b = new byte[5];
+	b[0] = (byte) (answer ? 1 : 0);
+	Bits.putInt(b, 1, port);
+	Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_ANSWER_RCON, b, sender);
+    }
 }
