@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.shared;
 
 import java.io.Serializable;
@@ -8,6 +18,7 @@ import java.util.HashMap;
  * @author Jojo
  */
 public class ItemTypeStats implements java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     public HashMap<String, Serializable> itemStats;
     
     public ItemTypeStats(String name, int pic, int itemclass, int quality, int amount, int armor, ItemTypeWeaponStats weaponstats) {

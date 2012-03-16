@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
@@ -10,6 +20,7 @@ import java.util.HashMap;
  * @author michael
  */
 public class ServerLevel extends Level {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Liste der Typen von zerstörbaren Blocken

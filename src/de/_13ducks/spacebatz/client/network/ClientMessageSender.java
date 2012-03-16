@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
@@ -42,6 +52,10 @@ public class ClientMessageSender {
 
     public void sendDisconnect() {
         Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
+    }
+
+    void sendRequestResync() {
+	Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_RESYNC, new byte[1]);
     }
 
 }

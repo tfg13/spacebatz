@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz;
 
 /**
@@ -180,6 +190,10 @@ public final class Settings {
      * Server ändert für einen Client die gerade ausgewählte Waffe
      */
     public static final byte NET_TCP_CMD_SWITCH_WEAPON = 42;
+    /**
+     * Client will resync.
+     */
+    public static final byte NET_TCP_CMD_REQUEST_RESYNC = 43;
     /**
      * Normales Input-an-Server-Schicken.
      */

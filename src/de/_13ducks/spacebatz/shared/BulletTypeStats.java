@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.shared;
 
 /**
@@ -5,6 +15,7 @@ package de._13ducks.spacebatz.shared;
  * @author blub
  */
 public class BulletTypeStats implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int damage;
     private int picture; // Bild-Nummer auf der Tilemap

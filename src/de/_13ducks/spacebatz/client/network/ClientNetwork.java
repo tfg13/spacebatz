@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
@@ -196,7 +206,9 @@ public class ClientNetwork {
 	    case Settings.NET_UDP_CMD_TICK_SYNC_PING:
 		// Tick syncen:
 		Client.tickrate = Bits.getInt(data, 5);
-		Client.startTickCounting(Bits.getInt(data, 1));
+		if (Client.startTickCounting(Bits.getInt(data, 1))) {
+		    Client.terminal.info("resync complete");
+		}
 		// Antworten:
 		ackTickSync();
 		break;

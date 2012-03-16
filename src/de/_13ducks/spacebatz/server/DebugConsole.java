@@ -1,6 +1,17 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Entity;
 import java.io.*;
 import java.util.LinkedList;
@@ -158,14 +169,31 @@ public class DebugConsole {
                             }
                         }
                         break;
+		    case "list":
+			outStream.println("connected clients:");
+			for (Client c : Server.game.clients.values()) {
+			    outStream.println(c.clientID + ": " + c.getNetworkConnection().getSocket().getInetAddress());
+			}
+			break;
+		    case "resync":
+			if (words.length == 2) {
+			    int i = Integer.parseInt(words[1]);
+			    Server.serverNetwork.udp.resyncClient(Server.game.clients.get(i));
+			    outStream.println("Resyncing client " + i);
+			} else {
+			    outStream.println("Usage: resync CLIENTID (use \"list\")");
+			}
+			break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
+			outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
                         outStream.println("entitystats          - Prints some information about the netIdMap");
-                        outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
-                        outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
-                        outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
-                        outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
                         outStream.println("help                 - prints this help");
+			outStream.println("list                 - Lists connected clients");
+                        outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
+			outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
+			outStream.println("resync N             - Resync client with id N");
+                        outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
                         break;
                     default:
                         outStream.println("Command not recognized. Try help");

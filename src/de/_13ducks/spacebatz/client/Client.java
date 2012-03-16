@@ -1,9 +1,20 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
+import de._13ducks.spacebatz.client.network.ClientTerminal;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
@@ -91,6 +102,10 @@ public class Client {
      * TCP-Sender zum Server
      */
     private static ClientMessageSender msgSender;
+    /**
+     * Das Client-Terminal.
+     */
+    public static ClientTerminal terminal = new ClientTerminal();
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
@@ -188,7 +203,7 @@ public class Client {
 	frozenGametick = gametick;
     }
 
-    public static void startTickCounting(int serverStartTick) {
+    public static boolean startTickCounting(int serverStartTick) {
 	gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / tickrate);
 	if (tickTimer == null) {
 	    tickTimer = new Timer("Client_tickcounter", true);
@@ -199,7 +214,9 @@ public class Client {
 		    gametick++;
 		}
 	    }, 0, tickrate);
+	    return false;
 	}
+	return true;
     }
 
     public static HashMap<Integer, Item> getItemMap() {
