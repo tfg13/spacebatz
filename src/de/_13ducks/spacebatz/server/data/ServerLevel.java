@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Level;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -20,12 +21,16 @@ import java.util.HashMap;
  * @author michael
  */
 public class ServerLevel extends Level {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     /**
      * Liste der Typen von zerstörbaren Blocken
      */
     HashMap<Integer, DestroyableBlockType> destroyableBlockTypes;
+    /**
+     * Die Liste mit Gebieten
+     */
+    private ArrayList<Area> areas;
 
     /**
      * Konstruktor
@@ -35,6 +40,7 @@ public class ServerLevel extends Level {
      */
     public ServerLevel(int xSize, int ySize) {
         super(xSize, ySize);
+        areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
         destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3));
         destroyableBlockTypes.put(6, new DestroyableBlockType(6, 3));
@@ -86,5 +92,28 @@ public class ServerLevel extends Level {
      */
     public void addNewDestroyableBlockType(DestroyableBlockType newBlock) {
         destroyableBlockTypes.put(newBlock.texture, newBlock);
+    }
+
+    /**
+     * Fügt der Map ein neues Gebiet hinzu
+     *
+     * @param area das neue Gebiet
+     */
+    public void addArea(Area area) {
+        areas.add(area);
+    }
+
+    /**
+     * Gibt das Gebiet mit dem angegebenen Namen zurück oder null wenns keins gibt
+     *
+     * @return das Gebiet mit dem Namen oder null wenns keins gibt
+     */
+    public Area getArea(String name) {
+        for (Area area : areas) {
+            if (area.getName().equals(name)) {
+                return area;
+            }
+        }
+        return null;
     }
 }
