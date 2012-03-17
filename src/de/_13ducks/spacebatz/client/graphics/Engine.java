@@ -188,7 +188,6 @@ public class Engine {
 
             // Mausklick suchen
             if (Mouse.isButtonDown(0)) {
-                System.out.println("bla");
                 if (showinventory) {
                     if (!lmbpressed) {
                         lmbpressed = true;
