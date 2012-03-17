@@ -114,6 +114,7 @@ public class DebugConsole {
                 }
             });
             System.setOut(new PrintStream(new OutputStream() {
+
                 StringBuffer buf = new StringBuffer();
 
                 @Override
@@ -284,9 +285,9 @@ public class DebugConsole {
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
                         outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
                         outStream.println("resync N             - Resync client with id N");
+                        outStream.println("spawnitem            - Spawns an item on every player's position");
+                        outStream.println("spawnenemy           - Spawns an enemy on every player's position");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
-                        outStream.println("spawnitem            - Spawn an Item on every player's position");
-                        outStream.println("spawnenemy           - Spawn an Enemy on every player's position");
                         break;
                     default:
                         outStream.println("Command not recognized. Try help");
