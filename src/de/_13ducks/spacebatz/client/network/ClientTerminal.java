@@ -116,9 +116,15 @@ public class ClientTerminal {
 			    outbuffer.clear();
 			    break;
 			case "rcon":
-			    // Anfragen
-			    Client.getMsgSender().sendRconRequest();
-			    outln("rcon: request sent");
+			    if (rconOut != null) {
+				// Rcon ist schon an, wieder aktivieren
+				rcon = true;
+				resetInput();
+			    } else {
+				// Anfragen
+				Client.getMsgSender().sendRconRequest();
+				outln("rcon: request sent");
+			    }
 			    break;
 			case "about":
 			    outln("spacebatz aurora");
@@ -147,17 +153,24 @@ public class ClientTerminal {
 	    }
 	} else {
 	    input = input.substring(3);
-	    if (input.startsWith("exit")) {
-		try {
-		    // Rcon ganz abschalten
-		    rconOut.close();
-		    rconRead.close();
-		    rconSock.close();
+	    switch (input) {
+		case "exit":
+		    try {
+			// Rcon ganz abschalten
+			rconOut.close();
+			rconRead.close();
+			rconSock.close();
+			rcon = false;
+			resetInput();
+			outln("rcon: disconnected");
+		    } catch (IOException ex) {
+		    }
+		    return;
+		case "bg":
+		    // Rcon verstecken
 		    rcon = false;
 		    resetInput();
-		    outln("rcon: disconnected");
-		} catch (IOException ex) {
-		}
+		    return;
 	    }
 	    rconOut.println(input);
 	}
