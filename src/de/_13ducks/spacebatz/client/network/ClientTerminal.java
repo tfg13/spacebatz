@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -41,15 +42,15 @@ public class ClientTerminal {
      */
     private Socket rconSock;
     /**
-     * Der Writer für Rcon
+     * Der Writer für Rcon.
      */
     private PrintStream rconOut;
     /**
-     * Der Reader für Rcon
+     * Der Reader für Rcon.
      */
     private BufferedReader rconRead;
     /**
-     * Ist rcon aktiv?
+     * Ist rcon aktiv?.
      */
     private boolean rcon = false;
 
@@ -145,7 +146,20 @@ public class ClientTerminal {
 		}
 	    }
 	} else {
-	    rconOut.println(input.substring(3));
+	    input = input.substring(3);
+	    if (input.startsWith("exit")) {
+		try {
+		    // Rcon ganz abschalten
+		    rconOut.close();
+		    rconRead.close();
+		    rconSock.close();
+		    rcon = false;
+		    resetInput();
+		    outln("rcon: disconnected");
+		} catch (IOException ex) {
+		}
+	    }
+	    rconOut.println(input);
 	}
     }
 
