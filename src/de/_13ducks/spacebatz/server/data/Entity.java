@@ -251,7 +251,7 @@ public class Entity {
      * @return die X-Koordinate des Chars nach der angegebenen Zahl Ticks
      */
     public double extrapolateX(int ticks) {
-	return getX() + vecX * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
+	return this.posX + vecX * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
     }
 
     /**
@@ -260,7 +260,7 @@ public class Entity {
      * @return die Y-Koordinate des Chars nach der angegebenen Zahl Ticks
      */
     public double extrapolateY(int ticks) {
-	return getY() + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
+	return this.posY + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
     }
 
     /**
