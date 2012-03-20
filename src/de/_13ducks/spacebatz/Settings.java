@@ -234,6 +234,10 @@ public final class Settings {
      */
     public static final double SERVER_COLLISION_DISTANCE = 1.5;
     /**
+     * Wie häufig der Spawner pro Sekunde aufgerufen wird.
+     */
+    public static final int SERVER_SPAWNER_EXECSPERSEC = 2;
+    /**
      * Die Größe der Chars für Kollision
      */
     public static final double CHARSIZE = 0.8;
