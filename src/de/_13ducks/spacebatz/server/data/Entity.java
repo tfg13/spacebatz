@@ -84,6 +84,7 @@ public class Entity {
 
     /**
      * Liefert true, wenn die Einheit sich gerade bewegt.
+     *
      * @return true, wenn die Einheit sich gerade bewegt
      */
     public boolean isMoving() {
@@ -296,5 +297,20 @@ public class Entity {
     public void netPack(byte[] b, int offset) {
 	b[offset] = entityTypeID;
 	Bits.putInt(b, offset + 1, netID);
+    }
+
+    /**
+     * Liefert die Richtung in die sich diese Einheit gerade bewegt.
+     * Die Angabe ist eine Fließkommazahl von 0 bis 2PI im üblichen Einheitskreisverfahren.
+     * Das Verhalten, wenn die Einheit sich nicht bewegt ist nicht definiert.
+     *
+     * @return die Richtung in die sich diese Einheit gerade bewegt
+     */
+    public double getDirection() {
+	double dir = Math.atan2(vecY, vecX);
+	if (dir < 0) {
+	    dir += 2 * Math.PI;
+	}
+	return dir;
     }
 }
