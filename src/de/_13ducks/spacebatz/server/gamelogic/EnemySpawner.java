@@ -13,14 +13,15 @@ package de._13ducks.spacebatz.server.gamelogic;
 /**
  * Verwaltet das spawnen von Gegnern in der Nähe der Spieler
  *
- * @author michael
+ * @author tobi
  */
-public class EnemySpawnManager {
+public class EnemySpawner {
 
     /**
-     * Spawn Gegner in der Nähe der Spieler, wenn Die Gegnerdicht nicht zu hoch ist
+     * Muss jeden Gametick aufgerufen werden.
+     * Entscheidet für alle Spieler, ob neue Gegner benötigt werden
      */
-    public static void spawnEnemys() {
+    public static void tick() {
         
 
     }

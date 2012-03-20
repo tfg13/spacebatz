@@ -194,7 +194,7 @@ public class Game {
         // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
         // Gegner Spawnen:
-        EnemySpawnManager.spawnEnemys();
+        EnemySpawner.tick();
     }
 
     /**
