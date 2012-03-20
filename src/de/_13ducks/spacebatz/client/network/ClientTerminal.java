@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -41,15 +42,15 @@ public class ClientTerminal {
      */
     private Socket rconSock;
     /**
-     * Der Writer für Rcon
+     * Der Writer für Rcon.
      */
     private PrintStream rconOut;
     /**
-     * Der Reader für Rcon
+     * Der Reader für Rcon.
      */
     private BufferedReader rconRead;
     /**
-     * Ist rcon aktiv?
+     * Ist rcon aktiv?.
      */
     private boolean rcon = false;
 
@@ -115,9 +116,15 @@ public class ClientTerminal {
 			    outbuffer.clear();
 			    break;
 			case "rcon":
-			    // Anfragen
-			    Client.getMsgSender().sendRconRequest();
-			    outln("rcon: request sent");
+			    if (rconOut != null) {
+				// Rcon ist schon an, wieder aktivieren
+				rcon = true;
+				resetInput();
+			    } else {
+				// Anfragen
+				Client.getMsgSender().sendRconRequest();
+				outln("rcon: request sent");
+			    }
 			    break;
 			case "about":
 			    outln("spacebatz aurora");
@@ -145,7 +152,27 @@ public class ClientTerminal {
 		}
 	    }
 	} else {
-	    rconOut.println(input.substring(3));
+	    input = input.substring(3);
+	    switch (input) {
+		case "exit":
+		    try {
+			// Rcon ganz abschalten
+			rconOut.close();
+			rconRead.close();
+			rconSock.close();
+			rcon = false;
+			resetInput();
+			outln("rcon: disconnected");
+		    } catch (IOException ex) {
+		    }
+		    return;
+		case "bg":
+		    // Rcon verstecken
+		    rcon = false;
+		    resetInput();
+		    return;
+	    }
+	    rconOut.println(input);
 	}
     }
 

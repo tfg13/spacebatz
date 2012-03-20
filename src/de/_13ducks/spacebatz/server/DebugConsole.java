@@ -16,10 +16,6 @@ import de._13ducks.spacebatz.server.data.Enemy;
 import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -147,7 +143,7 @@ public class DebugConsole {
      * @param i der Stream vom Client
      * @param o der Stream zum Client
      */
-    public void addRcon(Client c, InputStream i, OutputStream o) {
+    public void addRcon(final Client c, InputStream i, OutputStream o) {
         if (!rcons.containsKey(c.clientID)) {
             Object[] br = new Object[2];
             final BufferedReader input = new BufferedReader(new InputStreamReader(i));
@@ -166,7 +162,8 @@ public class DebugConsole {
                             commands.add(input.readLine().toLowerCase().split("\\s+"));
 
                         }
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
+			rmRcon(c);
                     }
                 }
             });

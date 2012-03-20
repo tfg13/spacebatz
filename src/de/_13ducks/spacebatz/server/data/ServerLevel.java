@@ -30,7 +30,7 @@ public class ServerLevel extends Level {
     /**
      * Die Liste mit Gebieten
      */
-    private ArrayList<Area> areas;
+    private ArrayList<Zone> areas;
 
     /**
      * Konstruktor
@@ -99,7 +99,7 @@ public class ServerLevel extends Level {
      *
      * @param area das neue Gebiet
      */
-    public void addArea(Area area) {
+    public void addArea(Zone area) {
         areas.add(area);
     }
 
@@ -108,8 +108,8 @@ public class ServerLevel extends Level {
      *
      * @return das Gebiet mit dem Namen oder null wenns keins gibt
      */
-    public Area getArea(String name) {
-        for (Area area : areas) {
+    public Zone getArea(String name) {
+        for (Zone area : areas) {
             if (area.getName().equals(name)) {
                 return area;
             }
