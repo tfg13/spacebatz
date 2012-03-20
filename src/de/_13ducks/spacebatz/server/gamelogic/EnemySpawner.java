@@ -17,6 +17,9 @@ import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.server.data.Zone;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Verwaltet das Spawnen von Gegnern in der Nähe der Spieler
@@ -58,8 +61,12 @@ public class EnemySpawner {
 		    if (h.timeSinceLastSpawn() / getSpawnRate(zone) * Math.random() > .5) {
 			// Spawnen!
 			h.spawn();
-			Enemy enem = new Enemy(player.getX() + 2, player.getY() + 2, Server.game.newNetID(), 1);
-			Server.game.netIDMap.put(enem.netID, enem);
+			double[] pos = calcPosition(player);
+			if (pos != null) {
+			    Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), 1);
+			    Server.game.netIDMap.put(enem.netID, enem);
+			    enem.setMyTarget(player);
+			}
 		    }
 		}
 	    }
@@ -83,6 +90,7 @@ public class EnemySpawner {
 
     /**
      * Liefert die Spawnrate für diese Zone.
+     *
      * @param zone die Zone, deren Rate interessiert
      * @return die Rate, oder ein default-Wert
      */
@@ -93,6 +101,60 @@ public class EnemySpawner {
 	    rate = (Integer) rrate;
 	}
 	return rate;
+    }
+
+    /**
+     * Berechnet eine Spawnposition für die angegebene Einheit.
+     *
+     * @param p die Einheit
+     * @return eine Spawnposition oder null
+     */
+    private static double[] calcPosition(Player p) {
+	LinkedList<double[]> positions = positionsOnCircleSegment(p.getX(), p.getY(), 15, p.getDirection(), p.isMoving() ? Math.PI / 2 : Math.PI * 2);
+	// Nur die freien Positionen nehmen:
+	removeNonFree(positions);
+	// Noch Position übrig?
+	if (!positions.isEmpty()) {
+	    // Eine Auslosen
+	    int index = (int) (Math.random() * positions.size());
+	    return positions.get(index);
+	}
+	return null;
+    }
+
+    /**
+     * Findet alle Positionen, die auf einem Kreissegment liegen.
+     *
+     * @param x Mitte des Kreises X
+     * @param y Mitte des Kreises Y
+     * @param radius Radius
+     * @param dir Richtung (0-2PI)
+     * @param area Größe des Segments (0-2PI)
+     * @return eine Liste mit Positionen auf dem Kreissegment
+     */
+    private static LinkedList<double[]> positionsOnCircleSegment(double x, double y, double radius, double dir, double area) {
+	LinkedList<double[]> positions = new LinkedList<>();
+	// Auf der Kreisbahn entlang laufen und auf Felder runden
+	for (double d = dir - (area / 2); d <= dir + (area / 2); d += .5) {
+	    // Position berechnen
+	    positions.add(new double[]{x + Math.cos(d) * radius, y + Math.sin(d) * radius});
+	}
+	return positions;
+    }
+
+    /**
+     * Löscht alle Position aus der Liste, die derzeit nicht frei sind.
+     *
+     * @param positions die Liste
+     */
+    private static void removeNonFree(List<double[]> positions) {
+	Iterator<double[]> iter = positions.iterator();
+	while (iter.hasNext()) {
+	    double[] pos = iter.next();
+	    if (Server.game.getLevel().getCollisionMap()[(int) Math.round(pos[0])][(int) Math.round(pos[1])]) {
+		iter.remove();
+	    }
+	}
     }
 
     /**
