@@ -41,7 +41,7 @@ public class Zone {
     /**
      * Die Werte, die für dieses Gebiet gespeichert werden.
      */
-    private HashMap<String, Object> values;
+    private HashMap<String, Object> values = new HashMap<>();
     /**
      * Das Obergebiet dieser Zone.
      * Nur global hat keine.
@@ -156,11 +156,8 @@ public class Zone {
      */
     public Object getValue(String s) {
 	Zone current = this;
-	while (!current.values.containsKey(s)) {
+	while (!current.values.containsKey(s) && !current.global) {
 	    current = current.parent;
-	    if (current.global) {
-		break;
-	    }
 	}
 	return current.values.get(s);
     }
