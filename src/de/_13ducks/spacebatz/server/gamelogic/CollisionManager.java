@@ -16,8 +16,6 @@ import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Iterator;
 
 /**
@@ -33,7 +31,7 @@ public class CollisionManager {
     private static double HARDCODEDCOLLISIONAROUNDMERADIUS = 2.0;
 
     /**
-     * Berechnet Kollision für Bullets
+     * Berechnet Kollision für alle Entities
      */
     public static void computeCollision() {
         computeBulletCollision();
@@ -204,10 +202,20 @@ public class CollisionManager {
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
 
+                    // ALTE BERECHNUNG, ERZEUGT RUNDUNGSFEHLER!!!
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
-                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
+                    //double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-                    if (0 <= d && d <= 1 && yDistance < ((mover.getSize() / 2.0) + 0.5)) {
+
+                    double yDistance = 0;
+                    try {
+                        yDistance = BigDecimal.valueOf(blockMidY).subtract(BigDecimal.valueOf(fromY + d * deltaY)).doubleValue();
+                    } catch (NumberFormatException ex) {
+                        // Ungültige zahl, also yDistance auf ungültigen wert setzen
+                        yDistance = Double.NaN;
+                    }
+
+                    if (yDistance != Double.NaN && 0 <= d && d <= 1 && yDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -223,9 +231,20 @@ public class CollisionManager {
                         d2 = ((blockMidY - (0.5 + mover.getSize() / 2.0)) - fromY) / deltaY;
                         // Das kleinere d wählen:
                         d = Math.min(d1, d2);
+                        // ALTE FEHLERHAFTE BERECHNUNG (RUNDUNGSFEHLER)
                         // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit x-Abstand vorbeifahren:
-                        double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-                        if (0 <= d && d <= 1 && xDistance < ((mover.getSize() / 2.0) + 0.5)) {
+                        //double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
+
+
+                        double xDistance = 0;
+                        try {
+                            xDistance = BigDecimal.valueOf(blockMidX).subtract(BigDecimal.valueOf(fromX + d * deltaX)).doubleValue();
+                        } catch (NumberFormatException ex) {
+                            // Ungültige zahl, also yDistance auf ungültigen wert setzen
+                            xDistance = Double.NaN;
+                        }
+
+                        if (xDistance != Double.NaN && 0 <= d && d <= 1 && xDistance < ((mover.getSize() / 2.0) + 0.5)) {
                             // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                             // Also wenn die Kollision näher ist als die anderen speichern:
                             if (d < smallestD) {
