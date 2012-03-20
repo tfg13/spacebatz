@@ -55,7 +55,6 @@ public class EnemySpawner {
 		     * tsl ist die Zeit in Millisekunden seit dem letzten Spawnen
 		     * rate ist die Spawnrate des Sektors. Die Durchschnittliche Wartezeit zwischen 2 spawnenden Einheiten.
 		     */
-
 		    if (h.timeSinceLastSpawn() / getSpawnRate(zone) * Math.random() > .5) {
 			// Spawnen!
 			h.spawn();
@@ -87,8 +86,8 @@ public class EnemySpawner {
      * @param zone die Zone, deren Rate interessiert
      * @return die Rate, oder ein default-Wert
      */
-    private static int getSpawnRate(Zone zone) {
-	int rate = 2000; // default
+    private static double getSpawnRate(Zone zone) {
+	int rate = 5000; // default
 	Object rrate = zone.getValue("SPAWNRATE");
 	if (rrate != null) {
 	    rate = (Integer) rrate;
@@ -111,7 +110,7 @@ public class EnemySpawner {
 	 *
 	 * @return die Zeit, die seit dem letzten Spawnen vergangen ist.
 	 */
-	private long timeSinceLastSpawn() {
+	private double timeSinceLastSpawn() {
 	    return System.currentTimeMillis() - lastSpawnTime;
 	}
 
