@@ -82,6 +82,10 @@ public class Entity {
 	this.netID = netID;
     }
 
+    /**
+     * Liefert true, wenn die Einheit sich gerade bewegt.
+     * @return true, wenn die Einheit sich gerade bewegt
+     */
     public boolean isMoving() {
 	return getMoveStartTick() != -1;
     }
