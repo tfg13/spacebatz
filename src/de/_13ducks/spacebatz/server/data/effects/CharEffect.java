@@ -7,21 +7,26 @@ import de._13ducks.spacebatz.server.data.Char;
  *
  * @author michael
  */
-public abstract class CharEffect {
+public abstract class CharEffect implements Effect {
 
     /**
      * Der Char der von diesem Effekt beeinflusst wird
      */
-    private Char affectedChar;
+    protected Char affectedChar;
 
     /**
      * Wendet diesen Effekt auf einen Char an
      *
      * @param affectedChar der Char auf den der Effekt angewendet wird
      */
-    public void applyToChar(Char affectedChar) {
-        this.affectedChar = affectedChar;
-        onApply();
+    public void applyEffectToChar(Char affectedChar) {
+        if (affectedChar != null) {
+            throw new IllegalStateException("Dieser Effekt wurde bereits einem Char zugewiesen.");
+        } else {
+            this.affectedChar = affectedChar;
+            applyToChar(affectedChar);
+        }
+
     }
 
     /**
@@ -29,7 +34,7 @@ public abstract class CharEffect {
      */
     public void tick() {
         if (affectedChar == null) {
-            throw new IllegalStateException("Dieser Effekt wurde noch nicht auf einen Char angewendet!");
+            throw new IllegalStateException("Dieser Effekt muss auf einen Char angewendet werden bevor seine tick()-Funktion aufgerufen wird!");
         } else {
             onTick();
         }
@@ -37,11 +42,29 @@ public abstract class CharEffect {
 
     /**
      * Wird aufgerufen, wenn dieser Effekt auf einen Char angewandt wird
+     *
+     * @param affectedChar der Char auf den der Effekt angewandt wird
      */
-    public abstract void onApply();
+    public abstract void applyToChar(Char affectedChar);
 
     /**
      * Wenn ein Char von diesem Effekt beeinflust wird ruft er regelmäßig diese Funktion auf
      */
     public abstract void onTick();
+
+    /**
+     * Entfernt den Effekt wieder
+     */
+    public void removeEffect() {
+        if (affectedChar == null) {
+            throw new IllegalStateException("Der Effekt wurde noch nicht angewandt, also kann er auch nicht entfernt werden!");
+        } else {
+            remove();
+        }
+    }
+
+    /**
+     * Entfernt den Effekt wieder
+     */
+    public abstract void remove();
 }

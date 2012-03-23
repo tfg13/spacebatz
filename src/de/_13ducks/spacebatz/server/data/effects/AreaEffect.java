@@ -5,7 +5,7 @@ package de._13ducks.spacebatz.server.data.effects;
  *
  * @author michael
  */
-public abstract class AreaEffect {
+public abstract class AreaEffect implements Effect {
 
     /**
      * Löst den Effekt an der gegebenen Position aus
