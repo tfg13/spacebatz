@@ -43,6 +43,8 @@ public abstract class CharEffect implements Effect {
     /**
      * Wird aufgerufen, wenn dieser Effekt auf einen Char angewandt wird
      *
+     * DIESE METHODE DARF NICHT VON AUSSEN AUFGERUFEN WERDEN
+     *
      * @param affectedChar der Char auf den der Effekt angewandt wird
      */
     public abstract void applyToChar(Char affectedChar);
