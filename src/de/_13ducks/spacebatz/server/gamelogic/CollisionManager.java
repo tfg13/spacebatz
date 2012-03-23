@@ -336,8 +336,4 @@ public class CollisionManager {
             }
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(712.5 - 713.9);
-    }
 }
