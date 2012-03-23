@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.data.Char;
+import de._13ducks.spacebatz.server.data.effects.Effect;
 
 /**
  * Superklasse für alle Fähigkeiten
@@ -52,4 +53,13 @@ public abstract class Ability {
      * @return true, wenn die Fähigkeit benutzt werden kann
      */
     public abstract boolean isReady();
+
+    /**
+     * Fügt der Fähigkeit einen Bonuseffekt hinzu.
+     *
+     * z.B. könnte man der "Schießen"-Fähigkeit einen Giftschaden-Effekt oder einen "Flächenschaden"-Effekt hinzufügen.
+     *
+     * @param effect der Effekt der hinzugefügt werden soll
+     */
+    public abstract void addBonusEffect(Effect effect);
 }
