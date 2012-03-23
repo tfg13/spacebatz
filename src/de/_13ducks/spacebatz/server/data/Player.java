@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,14 @@ public class Player extends Char {
      * Nummer des Angriffs, der zurzeit ausgewählt ist
      */
     private int selectedattack = 0;
+    /**
+     * Das Inventar des Clients
+     */
+    private Inventory inventory;
+    /**
+     * Hier kommen die Items rein, die gerade angelegt sind
+     */
+    private EquippedItems equippedItems;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -48,6 +57,8 @@ public class Player extends Char {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
+        inventory = new Inventory();
+        equippedItems = new EquippedItems();
     }
 
     /**
@@ -135,11 +146,11 @@ public class Player extends Char {
             ArrayList<Item> checkitems = new ArrayList<>();
 
             // Eine der Waffen hinzufügen
-            checkitems.add(this.getClient().getEquippedItems().getEquipslots()[1][w]);
+            checkitems.add(getEquippedItems().getEquipslots()[1][w]);
 
             // Alle Equip-Items hinzufügen (außer Waffen)
-            for (int i = 2; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
-                checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
+            for (int i = 2; i < getEquippedItems().getEquipslots().length; i++) {
+                checkitems.addAll(Arrays.asList(getEquippedItems().getEquipslots()[i]));
             }
 
             for (int i = 0; i < checkitems.size(); i++) {
@@ -147,7 +158,7 @@ public class Player extends Char {
                 if (item == null) {
                     continue;
                 }
-                
+
                 // Waffenstats:
                 if ((int) item.getStats().itemStats.get("itemclass") == 1) {
                     newdamage = (int) item.getStats().itemStats.get("damage");
@@ -158,7 +169,7 @@ public class Player extends Char {
                     newspread = (double) item.getStats().itemStats.get("spread");
                     newexplosionradius = (double) item.getStats().itemStats.get("explosionradius");
                 }
-                
+
                 // Attribute von allen Waffen
                 for (int k = 0; k < item.getItemattributes().size(); k++) {
                     for (String astatname : item.getItemattributes().get(k).getStats().keySet()) {
@@ -177,7 +188,7 @@ public class Player extends Char {
                     }
                 }
             }
-            
+
             newdamage *= newdamagemulti;
             newattackcooldown /= newattackspeedmulti;
 
@@ -194,8 +205,8 @@ public class Player extends Char {
         ArrayList<Item> checkitems = new ArrayList<>();
 
         // Alle Equip-Items hinzufügen (auch Waffen)
-        for (int i = 1; i < this.getClient().getEquippedItems().getEquipslots().length; i++) {
-            checkitems.addAll(Arrays.asList(this.getClient().getEquippedItems().getEquipslots()[i]));
+        for (int i = 1; i < getEquippedItems().getEquipslots().length; i++) {
+            checkitems.addAll(Arrays.asList(getEquippedItems().getEquipslots()[i]));
         }
 
         for (int i = 0; i < checkitems.size(); i++) {
@@ -210,7 +221,7 @@ public class Player extends Char {
                     switch (astatname) {
                         case "healthpoints":
                             newhealth += astatval;
-                            break;       
+                            break;
                         case "armor":
                             newarmor += astatval;
                             break;
@@ -224,7 +235,7 @@ public class Player extends Char {
 
         speed = newmovespeed;
         armor = newarmor;
-        healthpoints = Math.max((int) ((((double) healthpoints) / healthpointsmax) * newhealth) , 1);
+        healthpoints = Math.max((int) ((((double) healthpoints) / healthpointsmax) * newhealth), 1);
         healthpointsmax = newhealth;
     }
 
@@ -264,5 +275,19 @@ public class Player extends Char {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return the inventory
+     */
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    /**
+     * @return the equippedItems
+     */
+    public EquippedItems getEquippedItems() {
+        return equippedItems;
     }
 }

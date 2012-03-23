@@ -323,11 +323,11 @@ public class CollisionManager {
                     double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (item.getStats().itemStats.get("name").equals("Money")) {
-                            mover.getClient().getInventory().setMoney(mover.getClient().getInventory().getMoney() + item.getAmount());
+                            mover.getInventory().setMoney(mover.getInventory().getMoney() + item.getAmount());
                             iterator.remove();
                             Server.msgSender.sendItemGrab(item.getNetID(), mover.getClient().clientID);
-                        } else if (mover.getClient().getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
-                            mover.getClient().getInventory().putItem(item.getNetID(), item);
+                        } else if (mover.getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
+                            mover.getInventory().putItem(item.getNetID(), item);
                             iterator.remove();
                             Server.msgSender.sendItemGrab(item.getNetID(), mover.getClient().clientID);
                         }

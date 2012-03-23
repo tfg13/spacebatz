@@ -32,14 +32,7 @@ public class Client {
      * Die ID, mit der der Server den Client identifiziert
      */
     public final int clientID;
-    /**
-     * Das Inventar des Clients
-     */
-    private Inventory inventory;
-    /**
-     * Hier kommen die Items rein, die gerade angelegt sind
-     */
-    private EquippedItems equippedItems;
+    
     /**
      * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
      * verarbeitet wurde.
@@ -59,8 +52,7 @@ public class Client {
         this.connection = connection;
         this.clientID = clientID;
         context = new ClientContext();
-        inventory = new Inventory();
-        equippedItems = new EquippedItems();
+        
     }
 
     /**
@@ -92,17 +84,4 @@ public class Client {
         return context;
     }
 
-    /**
-     * @return the inventory
-     */
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    /**
-     * @return the equippedItems
-     */
-    public EquippedItems getEquippedItems() {
-        return equippedItems;
-    }
 }
