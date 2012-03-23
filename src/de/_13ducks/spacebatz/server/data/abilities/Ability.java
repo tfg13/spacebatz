@@ -14,7 +14,7 @@ public abstract class Ability {
     /**
      * Der Charakter, der diese Fähigkeit hat
      */
-    private Char owner;
+    protected Char owner;
 
     /**
      * Setzt den Besitzer dieser Fähigkeit
