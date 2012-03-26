@@ -91,8 +91,11 @@ public class LevelGenerator {
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
 
-        // Manche begehbaren Felder zu zerstörbaren Bergen machen:
+        // Manche begehbaren Felder zu zerstöbaren Bergen machen:
         createDestroyableBlocks();
+
+        // Rohstoffe in Berge setzen:
+        createOre();
 
         // Spawn-Koordinaten setzen:
         setSpawn(circleList.get(0).getCenter());
@@ -398,7 +401,7 @@ public class LevelGenerator {
                     if (ground[i][j] < 0) {
                         int neighbours = 0;
 
-                        // direkte Nachbaren
+                        // direkte Nachbarn
                         if (i > 0 && (ground[i - 1][j] < -80 || ground[i - 1][j] == 1)) {
                             neighbours += 2;
                         }
@@ -412,7 +415,7 @@ public class LevelGenerator {
                             neighbours += 2;
                         }
 
-                        // Nachbaren über Ecke
+                        // Nachbarn über Ecke
                         if (i > 0 && j > 0 && (ground[i - 1][j - 1] < -80 || ground[i - 1][j - 1] == 1)) {
                             neighbours++;
                         }
@@ -468,7 +471,59 @@ public class LevelGenerator {
             }
         }
     }
-    
+
+    /**
+     * Setzt Rohstoffe in Berge
+     */
+    public static void createOre() {
+        ArrayList<Position> hill = new ArrayList<>(); // Alle Bergfelder (zerstöbare Blöcke)
+
+        // Alle Bergfelder suchen:
+        for (int i = 0; i < ground[0].length; i++) {
+            for (int j = 0; j < ground.length; j++) {
+                if (ground[i][j] == 2) {
+                    hill.add(new Position(i, j));
+                }
+            }
+        }
+
+        // 200 Ressourcen-Häufen setzen
+        for (int a = 0; a < 200; a++) {
+            ArrayList<Position> res = new ArrayList<>(); // Die Bergfelder, die zu Ressourcenblöcken werden
+
+            // zufälliges Bergfeld:
+            Position firstpos = hill.get(random.nextInt(hill.size()));
+            res.add(firstpos);
+
+            int blub = random.nextInt(8) + 3;
+            
+            for (int b = 0; b < blub; b++) {      
+                Position bla = res.get(random.nextInt(res.size()));
+                // direkte Nachbarn
+                if (bla.getX() > 0 && (ground[bla.getX() - 1][bla.getY()] < -80 || ground[bla.getX() - 1][bla.getY()] == 2)) {
+                    res.add(new Position(bla.getX() - 1, bla.getY()));
+                }
+                if (bla.getX() < xSize - 1 && (ground[bla.getX() + 1][bla.getY()] < -80 || ground[bla.getX() + 1][bla.getY()] == 2)) {
+                    res.add(new Position(bla.getX() + 1, bla.getY()));
+                }
+                if (bla.getY() > 0 && (ground[bla.getX()][bla.getY() - 1] < -80 || ground[bla.getX()][bla.getY() - 1] == 2)) {
+                    res.add(new Position(bla.getX(), bla.getY() - 1));
+                }
+                if (bla.getY() < ySize - 1 && (ground[bla.getX()][bla.getY() + 1] < -80 || ground[bla.getX()][bla.getY() + 1] == 2)) {
+                    res.add(new Position(bla.getX(), bla.getY() + 1));
+                }
+            }
+
+            // Textur
+            for (int i = 0; i < res.size(); i++) {
+                ground[res.get(i).getX()][res.get(i).getY()] = 6;
+            }
+
+            // Ressourcenfelder aud der Bergfeld-Liste entfernen
+            hill.removeAll(res);
+        }
+    }
+
     /**
      * Testet, ob dieses Feld gültig (= innerhalb der Map) ist
      */
@@ -523,7 +578,7 @@ public class LevelGenerator {
      * @param y1 Y-Koordinate des Startpunktes der Wand
      * @param x2 X-Koordinate des Endpunktes der Wand
      * @param y2 Y-Koordinate des Endpunktes der Wand
-     * @param level das Level, dem die Wand hinzugefÃƒÆ’Ã‚Â¼gt wird
+     * @param level das Level, dem die Wand hinzugefügt wird
      */
     private static void createWall(int x1, int y1, int x2, int y2, Level level) {
 
