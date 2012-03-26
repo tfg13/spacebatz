@@ -236,7 +236,7 @@ public final class Settings {
     /**
      * Wie häufig der Spawner pro Sekunde aufgerufen wird.
      */
-    public static final int SERVER_SPAWNER_EXECSPERSEC = 2;
+    public static final int SERVER_SPAWNER_EXECSPERSEC = 5;
     /**
      * Die Größe der Chars für Kollision
      */

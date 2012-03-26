@@ -126,6 +126,19 @@ public class ClientTerminal {
 				outln("rcon: request sent");
 			    }
 			    break;
+			case "zoom":
+			    if (words.length == 2) {
+				try {
+				    int fact = Integer.parseInt(words[1]);
+				    if (fact > 0) {
+					Client.getEngine().setZoomFact(fact);
+					break;
+				    }
+				} catch (NumberFormatException ex) {
+				}
+			    }
+			    outln("usage: zoom (>0)");
+			    break;
 			case "about":
 			    outln("spacebatz aurora");
 			    outln("13ducks PROPRIETARY/CONFIDENTIAL");
