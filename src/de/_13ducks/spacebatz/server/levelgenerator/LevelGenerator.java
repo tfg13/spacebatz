@@ -92,10 +92,10 @@ public class LevelGenerator {
         }
 
         // Manche begehbaren Felder zu zerstöbaren Bergen machen:
-        createDestroyableBlocks();
+        int hillfields = createDestroyableBlocks();
 
         // Rohstoffe in Berge setzen:
-        createOre();
+        createOre(hillfields);
 
         // Spawn-Koordinaten setzen:
         setSpawn(circleList.get(0).getCenter());
@@ -382,9 +382,9 @@ public class LevelGenerator {
     }
 
     /**
-     * Setzt zerstörbare Blöcke auf die Map
+     * Setzt zerstörbare Blöcke auf die Map, gibt Anzahl zurück
      */
-    private static void createDestroyableBlocks() {
+    private static int createDestroyableBlocks() {
         // Zufällige Werte für alle freien Felder!
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
@@ -441,16 +441,20 @@ public class LevelGenerator {
         }
 
         // Zufallswerte wieder zu richtigen Texturen machen:
+        int counter = 0;
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
                 if (ground[ i][j] < -80) {
                     ground[i][j] = 2;
                     level.getCollisionMap()[i][j] = true;
+                    counter++;
                 } else if (ground[ i][j] < 0) {
                     ground[i][j] = 4;
                 }
             }
         }
+
+        return counter;
     }
 
     /**
@@ -475,52 +479,62 @@ public class LevelGenerator {
     /**
      * Setzt Rohstoffe in Berge
      */
-    public static void createOre() {
-        ArrayList<Position> hill = new ArrayList<>(); // Alle Bergfelder (zerstöbare Blöcke)
+    public static void createOre(int hillfields) {
+        Position[] hill = new Position[hillfields];
 
         // Alle Bergfelder suchen:
+        int counter = 0;
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
                 if (ground[i][j] == 2) {
-                    hill.add(new Position(i, j));
+                    hill[counter] = new Position(i, j);
+                    counter++;
                 }
             }
         }
 
+        ArrayList<Position> resall = new ArrayList<>(); // Die Bergfelder, die zu Ressourcenblöcken werden sollen
+
         // 200 Ressourcen-Häufen setzen
         for (int a = 0; a < 200; a++) {
-            ArrayList<Position> res = new ArrayList<>(); // Die Bergfelder, die zu Ressourcenblöcken werden
+            ArrayList<Position> resnow = new ArrayList<>(); // Ressourcenblöcke, die in diesem for-Durchlauf gefunden werden
 
-            // zufälliges Bergfeld:
-            Position firstpos = hill.get(random.nextInt(hill.size()));
-            res.add(firstpos);
+            // zufälliges Bergfeld, das kein Ressourcenfeld ist:
+            Position firstpos = hill[random.nextInt(counter)];
+            for (int x = 0; x < 100; x++) {
+                if (resall.contains(firstpos)) {
+                    firstpos = hill[random.nextInt(counter)];
+                } else {
+                    break;
+                }
+            }
+            resnow.add(firstpos);
 
             int blub = random.nextInt(8) + 3;
-            
-            for (int b = 0; b < blub; b++) {      
-                Position bla = res.get(random.nextInt(res.size()));
+
+            for (int b = 0; b < blub; b++) {
+                Position bla = resnow.get(random.nextInt(resnow.size()));
                 // direkte Nachbarn
                 if (bla.getX() > 0 && (ground[bla.getX() - 1][bla.getY()] < -80 || ground[bla.getX() - 1][bla.getY()] == 2)) {
-                    res.add(new Position(bla.getX() - 1, bla.getY()));
+                    resnow.add(new Position(bla.getX() - 1, bla.getY()));
                 }
                 if (bla.getX() < xSize - 1 && (ground[bla.getX() + 1][bla.getY()] < -80 || ground[bla.getX() + 1][bla.getY()] == 2)) {
-                    res.add(new Position(bla.getX() + 1, bla.getY()));
+                    resnow.add(new Position(bla.getX() + 1, bla.getY()));
                 }
                 if (bla.getY() > 0 && (ground[bla.getX()][bla.getY() - 1] < -80 || ground[bla.getX()][bla.getY() - 1] == 2)) {
-                    res.add(new Position(bla.getX(), bla.getY() - 1));
+                    resnow.add(new Position(bla.getX(), bla.getY() - 1));
                 }
                 if (bla.getY() < ySize - 1 && (ground[bla.getX()][bla.getY() + 1] < -80 || ground[bla.getX()][bla.getY() + 1] == 2)) {
-                    res.add(new Position(bla.getX(), bla.getY() + 1));
+                    resnow.add(new Position(bla.getX(), bla.getY() + 1));
                 }
             }
 
-            // Textur
-            for (int i = 0; i < res.size(); i++) {
-                ground[res.get(i).getX()][res.get(i).getY()] = 6;
-            }
+            resall.addAll(resnow);
+        }
 
-            // Ressourcenfelder aud der Bergfeld-Liste entfernen
-            hill.removeAll(res);
+        // Textur drauf:
+        for (int i = 0; i < resall.size(); i++) {
+            ground[resall.get(i).getX()][resall.get(i).getY()] = 6;
         }
     }
 
