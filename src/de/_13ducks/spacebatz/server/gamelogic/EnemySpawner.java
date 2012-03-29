@@ -16,11 +16,7 @@ import de._13ducks.spacebatz.server.data.Enemy;
 import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.server.data.Player;
 import de._13ducks.spacebatz.server.data.Zone;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Verwaltet das Spawnen von Gegnern in der Nähe der Spieler
@@ -48,37 +44,56 @@ public class EnemySpawner {
                     Player player = (Player) e;
                     // Das Gebiet dieses Spielers finden
                     Zone zone = Zone.getMostSpecializedZone(player.getX(), player.getY());
-                    // Die Spawngeschichte dieses Spielers finden
-                    PlayerSpawnHistory h = getHistory(player);
-                    // Entscheiden, ob ein Gegner gespawnt werden soll.
-		    /*
-                     * Die Spawnformel ist:
-                     *
-                     * s = (tsl/rate)*Math.random()
-                     * Wenn s > .5 ist wird gespawnt
-                     *
-                     * tsl ist die Zeit in Millisekunden seit dem letzten Spawnen
-                     * rate ist die Spawnrate des Sektors. Die Durchschnittliche Wartezeit zwischen 2 spawnenden Einheiten.
-                     */
-                    if (h.inWaveSpawn()) {
-                        // es wird gerade eine Gegnerwelle gespawnt -> schnelles Spawnen
-                        if (h.timeSinceLastSpawn() / 300 * random.nextDouble() > .5) {
-                            // Spawnen!
-                            h.spawn(player);
-                        }
-                    } else {
-                        // es wird gerade keine Gegnerwelle gespawnt -> lange bis zum nächsten Spawnen
-                        if (h.timeSinceLastSpawn() / getSpawnRate(zone) * random.nextDouble() > .5) {
-                            // Anzahl der Gegner in dieser Welle festlegen
-                            int enemywave = Math.min((int) Math.abs(random.nextGaussian() * 2.5) + 1, 6);
-                            h.startWaveSpawn(enemywave);
-                            // Spawnen!
-                            h.spawn(player);
-                        }
-                    }
-                }
+		    // In dieser Zone überhaupt spawnen?
+		    if (isSpawnEnabled(zone)) {
+			// Die Spawngeschichte dieses Spielers finden
+			PlayerSpawnHistory h = getHistory(player);
+			// Entscheiden, ob ein Gegner gespawnt werden soll.
+			/*
+			* Die Spawnformel ist:
+			*
+			* s = (tsl/rate)*Math.random()
+			* Wenn s > .5 ist wird gespawnt
+			*
+			* tsl ist die Zeit in Millisekunden seit dem letzten Spawnen
+			* rate ist die Spawnrate des Sektors. Die Durchschnittliche Wartezeit zwischen 2 spawnenden Einheiten.
+			*/
+			if (h.inWaveSpawn()) {
+			    // es wird gerade eine Gegnerwelle gespawnt -> schnelles Spawnen
+			    if (h.timeSinceLastSpawn() / 300 * random.nextDouble() > .5) {
+				// Spawnen!
+				h.spawn(player);
+			    }
+			} else {
+			    // es wird gerade keine Gegnerwelle gespawnt -> lange bis zum nächsten Spawnen
+			    if (h.timeSinceLastSpawn() / getSpawnRate(zone) * random.nextDouble() > .5) {
+				// Anzahl der Gegner in dieser Welle festlegen
+				int enemywave = Math.min((int) Math.abs(random.nextGaussian() * 2.5) + 1, 6);
+				h.startWaveSpawn(enemywave);
+				// Spawnen!
+				h.spawn(player);
+			    }
+			}
+		    }
+		}
             }
         }
+    }
+
+    /**
+     * Prüft, ob in diesem Gebiet überhaupt Gegner gespawnt werden sollen
+     * @param zone die Zone
+     * @return true, wenn Spawnen erlaubt
+     */
+    private static boolean isSpawnEnabled(Zone zone) {
+	int val = 1; // Notfall-Default ist an
+	Object spawnOn = zone.getValue("spawn_enabled");
+	if (spawnOn != null) {
+	    val = (Integer) spawnOn;
+	} else {
+	    System.out.println("WARNING: global zone does not define \"spawn_enabled\" (i)");
+	}
+	return val != 0;
     }
 
     /**
@@ -103,11 +118,13 @@ public class EnemySpawner {
      * @return die Rate, oder ein default-Wert
      */
     private static double getSpawnRate(Zone zone) {
-        int rate = 9000; // default
-        Object rrate = zone.getValue("SPAWNRATE");
+        int rate = 9000; // Notfall-Wert. Default-Wert in Zone einstellen!
+        Object rrate = zone.getValue("spawnrate");
         if (rrate != null) {
             rate = (Integer) rrate;
-        }
+        } else {
+	    System.out.println("WARNING: global zone does not define \"spawnrate\" (i)");
+	}
         return rate;
     }
 
