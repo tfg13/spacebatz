@@ -82,7 +82,7 @@ public final class Settings {
     /**
      * Größe des Empfangspuffers für ein Clientpacket auf Serverseite. NICHT EINFACH VERÄNDERN!
      */
-    public static final int NET_UDP_CTS_SIZE = 10;
+    public static final int NET_UDP_CTS_SIZE = 512;
     /**
      * Größe des Empfangspuffers für ein Serverpacket auf Clientseite. NICHT EINFACH VERÄNDERN!
      */

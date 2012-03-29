@@ -213,6 +213,8 @@ public class UDPConnection {
 		client.lastTick = tick;
 		// Input auswerten:
 		computeApprovedPacket(data, client);
+	    } else {
+		System.out.println("packetdrop!");
 	    }
 	} else {
 	    System.out.println("INFO: Received data from unknown client. Ignoring. (id was " + data[0] + ")");
@@ -235,9 +237,9 @@ public class UDPConnection {
 		client.getPlayer().playerShoot(Bits.getFloat(data, 6));
 		break;
 	    case Settings.NET_UDP_CMD_ACK_MOVE:
-		int ackNumber = (data.length - 6) / 4;
+		byte ackNumber = data[6];
 		for (int i = 0; i < ackNumber; i++) {
-		    client.getContext().makeMovementKnown(Bits.getInt(data, 6 + (i * 4)));
+		    client.getContext().makeMovementKnown(Bits.getInt(data, 7 + (i * 4)));
 		}
 		break;
 	    case Settings.NET_UDP_CMD_ACK_ADD_ENTITY:
