@@ -34,8 +34,10 @@ public class LevelGenerator {
     private static Random random;
     private static int xSize;
     private static int ySize;
-    private static final int texrock = 1;
-    private static final int texground = 4;
+    private static final int TEXrock = 1;
+    private static final int TEXground = 4;
+    private static final int TEXhill = 2;
+    private static final int TEXore = 11;
 
     public static ServerLevel generateLevel() {
         long start = System.currentTimeMillis();
@@ -74,7 +76,7 @@ public class LevelGenerator {
         // Default-Textur (Felsen):
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
-                ground[x][y] = texrock;
+                ground[x][y] = TEXrock;
                 level.getCollisionMap()[x][y] = true;
             }
         }
@@ -87,7 +89,7 @@ public class LevelGenerator {
             if (innerFields.get(i).getY() < 0 || innerFields.get(i).getY() >= ySize) {
                 continue;
             }
-            ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = texground;
+            ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = TEXground;
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
 
@@ -534,7 +536,7 @@ public class LevelGenerator {
 
         // Textur drauf:
         for (int i = 0; i < resall.size(); i++) {
-            ground[resall.get(i).getX()][resall.get(i).getY()] = 6;
+            ground[resall.get(i).getX()][resall.get(i).getY()] = TEXore;
         }
     }
 
@@ -596,7 +598,7 @@ public class LevelGenerator {
      */
     private static void createWall(int x1, int y1, int x2, int y2, Level level) {
 
-        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), texrock);
+        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), TEXrock);
         setCollision(findLine(new Position(x1, y1), new Position(x2, y2)), true, level);
     }
 
