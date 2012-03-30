@@ -447,7 +447,7 @@ public class LevelGenerator {
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
                 if (ground[ i][j] < -80) {
-                    ground[i][j] = 2;
+                    ground[i][j] = TEXhill;
                     level.getCollisionMap()[i][j] = true;
                     counter++;
                 } else if (ground[ i][j] < 0) {
@@ -517,16 +517,16 @@ public class LevelGenerator {
             for (int b = 0; b < blub; b++) {
                 Position bla = resnow.get(random.nextInt(resnow.size()));
                 // direkte Nachbarn
-                if (bla.getX() > 0 && (ground[bla.getX() - 1][bla.getY()] < -80 || ground[bla.getX() - 1][bla.getY()] == 2)) {
+                if (bla.getX() > 0 && (ground[bla.getX() - 1][bla.getY()] < -80 || ground[bla.getX() - 1][bla.getY()] == TEXhill)) {
                     resnow.add(new Position(bla.getX() - 1, bla.getY()));
                 }
-                if (bla.getX() < xSize - 1 && (ground[bla.getX() + 1][bla.getY()] < -80 || ground[bla.getX() + 1][bla.getY()] == 2)) {
+                if (bla.getX() < xSize - 1 && (ground[bla.getX() + 1][bla.getY()] < -80 || ground[bla.getX() + 1][bla.getY()] == TEXhill)) {
                     resnow.add(new Position(bla.getX() + 1, bla.getY()));
                 }
-                if (bla.getY() > 0 && (ground[bla.getX()][bla.getY() - 1] < -80 || ground[bla.getX()][bla.getY() - 1] == 2)) {
+                if (bla.getY() > 0 && (ground[bla.getX()][bla.getY() - 1] < -80 || ground[bla.getX()][bla.getY() - 1] == TEXhill)) {
                     resnow.add(new Position(bla.getX(), bla.getY() - 1));
                 }
-                if (bla.getY() < ySize - 1 && (ground[bla.getX()][bla.getY() + 1] < -80 || ground[bla.getX()][bla.getY() + 1] == 2)) {
+                if (bla.getY() < ySize - 1 && (ground[bla.getX()][bla.getY() + 1] < -80 || ground[bla.getX()][bla.getY() + 1] == TEXhill)) {
                     resnow.add(new Position(bla.getX(), bla.getY() + 1));
                 }
             }
