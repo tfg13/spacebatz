@@ -1,10 +1,10 @@
 package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.data.Char;
-import de._13ducks.spacebatz.server.data.effects.Effect;
+import de._13ducks.spacebatz.server.data.Entity;
 
 /**
- * Superklasse für alle Fähigkeiten
+ * Superklasse für alle Fähigkeiten.
  * Fähigkeiten sind alle Aktionen, wie z.B. Schießen, Bohren und Sprinten
  *
  * @author michael
@@ -12,12 +12,13 @@ import de._13ducks.spacebatz.server.data.effects.Effect;
 public abstract class Ability {
 
     /**
-     * Der Charakter, der diese Fähigkeit hat
+     * Der Charakter, der diese Fähigkeit "besitzt"
      */
     protected Char owner;
 
     /**
-     * Setzt den Besitzer dieser Fähigkeit
+     * Setzt den Besitzer dieser Fähigkeit.
+     * Der Besitzer muss gesetzt werden, bevor die Fähigkeit eingesetzt werden kann!
      *
      * @param owner der Char, der die Fähigkeit besitzt
      */
@@ -26,40 +27,31 @@ public abstract class Ability {
     }
 
     /**
-     * Aktiviert die Fähigkeit
+     * Benutzt die Fähigkeit
+     *
      */
-    public void useAbility() {
-        if (owner == null) {
-            throw new IllegalStateException("Der Fähigkeit wurde kein Besitzer zugewiesen!");
-        } else if (!isReady()) {
-            throw new IllegalStateException("Die Fähigkeit ist noch nicht bereit!");
-        } else {
-            onUse();
-        }
-    }
+    public abstract void use();
 
     /**
-     * Wird aufgerufen, wenn die Fähigkeit eingesetzt wird
+     * Benutzt die Fähigkeit auf eine Position
      *
-     * Klasen, die Ability erweitern müssen diese Methode überschreiben
+     * @param x die X-Koordinate auf die die Fähigkeit benutzt werden soll
+     * @param y die Y-Koordinate auf die die Fähigkeit benutzt werden soll
      */
-    public abstract void onUse();
+    public abstract void useOnPosition(double x, double y);
 
     /**
-     * Gibt true zurück, wenn alle Bedingungen erfüllt sind um diese Fähigkeit zu verwenden (z.B. Cooldown, Energiekosten, ...)
+     * Benutzt die Fähigkeit auf eine Entity
      *
-     * Klassen, die Ability erweitern müssen diese Methode überschreiben.
+     * @param target die Entity auf die die Fähigkeit benutzt werden soll
+     */
+    public abstract void useOnTarget(Entity target);
+
+    /**
+     * Gibt true zurück, wenn alle Bedingungen erfüllt sind um diese Fähigkeit zu verwenden.
+     * (z.B. Cooldown, Energiekosten, ...)
      *
      * @return true, wenn die Fähigkeit benutzt werden kann
      */
     public abstract boolean isReady();
-
-    /**
-     * Fügt der Fähigkeit einen Bonuseffekt hinzu.
-     *
-     * z.B. könnte man der "Schießen"-Fähigkeit einen Giftschaden-Effekt oder einen "Flächenschaden"-Effekt hinzufügen.
-     *
-     * @param effect der Effekt der hinzugefügt werden soll
-     */
-    public abstract void addBonusEffect(Effect effect);
 }
