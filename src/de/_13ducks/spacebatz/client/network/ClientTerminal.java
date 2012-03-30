@@ -75,7 +75,7 @@ public class ClientTerminal {
      * Löscht ein Zeichen.
      */
     public void backspace() {
-	if (inputLine.length() > 2) {
+	if (inputLine.length() > (rcon ? 3 : 2)) {
 	    inputLine.deleteCharAt(inputLine.length() - 1);
 	}
     }
@@ -185,6 +185,7 @@ public class ClientTerminal {
 		    resetInput();
 		    return;
 	    }
+	    outln(">r " + input);
 	    rconOut.println(input);
 	}
     }
