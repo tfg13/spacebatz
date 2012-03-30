@@ -390,7 +390,7 @@ public class LevelGenerator {
         // Zufällige Werte für alle freien Felder!
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
-                if (ground[i][j] == 4) {
+                if (ground[i][j] == TEXground) {
                     ground[i][j] = -1 - random.nextInt(100);
                 }
             }
@@ -451,7 +451,7 @@ public class LevelGenerator {
                     level.getCollisionMap()[i][j] = true;
                     counter++;
                 } else if (ground[ i][j] < 0) {
-                    ground[i][j] = 4;
+                    ground[i][j] = TEXground;
                 }
             }
         }
@@ -471,7 +471,7 @@ public class LevelGenerator {
         for (int x = a.getX() - spawnsize; x <= a.getX() + spawnsize; x++) {
             for (int y = a.getY() - spawnsize; y <= a.getY() + spawnsize; y++) {
                 if (groundExists(x, y)) {
-                    ground[x][y] = 4;
+                    ground[x][y] = TEXground;
                     level.getCollisionMap()[x][y] = false;
                 }
             }
