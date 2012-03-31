@@ -44,9 +44,9 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Bullets und Chars
      */
     private static void computeBulletCollision() {
-        
+
         Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
-        
+
         while (listIterator.hasNext()) {
             Bullet bullet;
             Entity entity = listIterator.next();
@@ -61,12 +61,12 @@ public class CollisionManager {
             if (Server.game.getTick() > bullet.getDeletetick()) {
                 listIterator.remove();
                 Server.entityMap.removeEntity(bullet);
-                
+
                 continue;
             }
-            
-            
-            
+
+
+
             double x = bullet.getX();
             double y = bullet.getY();
 
@@ -74,7 +74,7 @@ public class CollisionManager {
             if (Server.game.getLevel().isBlockDestroyable((int) x, (int) y)) {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
             }
-            
+
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
@@ -142,13 +142,13 @@ public class CollisionManager {
                     double toX = mover.extrapolateX(1);
                     double toY = mover.extrapolateY(1);
                     computeCharCollision(fromX, fromY, toX, toY, mover);
-                    
-                    
+
+
                 }
             }
         }
     }
-    
+
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
         // Der Vektor der bewegung:
         double deltaX = toX - fromX;
@@ -188,7 +188,7 @@ public class CollisionManager {
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     //double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-                    
+
                     double yDistance = 0;
                     try {
                         yDistance = BigDecimal.valueOf(blockMidY).subtract(BigDecimal.valueOf(fromY + d * deltaY)).doubleValue();
@@ -196,7 +196,7 @@ public class CollisionManager {
                         // Ungültige zahl, also yDistance auf ungültigen wert setzen
                         yDistance = Double.NaN;
                     }
-                    
+
                     if (yDistance != Double.NaN && 0 <= d && d <= 1 && yDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -204,8 +204,8 @@ public class CollisionManager {
                             smallestD = d;
                             xCollision = true;
                         }
-                        
-                        
+
+
                     } else {
                         // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
                         // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
@@ -220,7 +220,7 @@ public class CollisionManager {
                             // Ungültige zahl, also yDistance auf ungültigen wert setzen
                             xDistance = Double.NaN;
                         }
-                        
+
                         if (xDistance != Double.NaN && 0 <= d && d <= 1 && xDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
                             // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                             // Also wenn die Kollision näher ist als die anderen speichern:
@@ -292,22 +292,14 @@ public class CollisionManager {
         Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
-            if (e instanceof Player) {
-                Player mover = (Player) e;
+            if (e instanceof ItemCarrier) {
+                ItemCarrier collector = (ItemCarrier) e;
                 Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
                 while (iterator.hasNext()) {
                     Item item = iterator.next();
-                    double distance = Distance.getDistance(mover.getX(), mover.getY(), item.getPosX(), item.getPosY());
+                    double distance = Distance.getDistance(collector.getX(), collector.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                        if (item.getStats().itemStats.get("name").equals("Money")) {
-                            mover.getInventory().setMoney(mover.getInventory().getMoney() + item.getAmount());
-                            iterator.remove();
-                            Server.msgSender.sendItemGrab(item.getNetID(), mover.getClient().clientID);
-                        } else if (mover.getInventory().getItems().size() < Settings.INVENTORY_SIZE) {
-                            mover.getInventory().putItem(item.getNetID(), item);
-                            iterator.remove();
-                            Server.msgSender.sendItemGrab(item.getNetID(), mover.getClient().clientID);
-                        }
+                        collector.collectItem(item);
                     }
                 }
             }
