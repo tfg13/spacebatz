@@ -69,7 +69,7 @@ public class ItemCarrier extends AbilityUser {
     }
 
     /**
-     * Sammelt ein Item ein und platziert es im Inventar.
+     * Sammelt ein Item ein und platziert es im Backpack.
      *
      * @param item das Item das aufgesammelt werden soll
      */
