@@ -35,33 +35,36 @@ public class ItemCarrier extends AbilityUser {
     }
 
     /**
-     * Rüstet ein Item aus.
-     * Das Item muss im Backpack sein.
+     * Rüstet ein Item aus dem backpack aus.
+     * Wendet die Boni des Items auf die Eigenschaften des Chars an.
      *
      * @param netId die netId des Items das ausgerüstet werden soll
      */
-    final public void equipItem(int netId) {
+    final protected void equipItem(int netId) {
         Item item = getItemFromBackpackByNetId(netId);
         if (item == null) {
             throw new IllegalArgumentException("Item with netId " + item.getNetID() + " is not in backpack!");
         } else {
             equipedItems.add(item);
             backpack.remove(item);
+            // TODO: apply item stats to char stats
         }
     }
 
     /**
      * Legt ein Item von der Ausrüstung ab und platziert es im Inventar.
+     * Entfernt die Boni des Items wieder von den Char-Eigenschaften.
      *
      * @param netId die netID des Items, das abgelegt werden soll
      */
-    final public void deQuipItem(int netId) {
+    final protected void deQuipItem(int netId) {
         Item item = getItemFromEquipByNetId(netId);
         if (item == null) {
             throw new IllegalArgumentException("Item with netId " + netId + " is not equiped!");
         } else {
             equipedItems.remove(item);
             backpack.add(item);
+            // TODO remove item bonuses
         }
     }
 
@@ -80,7 +83,7 @@ public class ItemCarrier extends AbilityUser {
      * @param netId die netID des Items das weggeworfen werden soll
      * @return the Item that was removed
      */
-    final public Item removeItemFromBackpack(int netId) {
+    final protected Item removeItemFromBackpack(int netId) {
         Item item = getItemFromBackpackByNetId(netId);
         if (item == null) {
             throw new IllegalArgumentException("There is no item with netId " + netId + " in backpack!");
