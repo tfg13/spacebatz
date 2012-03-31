@@ -12,6 +12,8 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.ArrayList;
@@ -59,6 +61,7 @@ public class Player extends Char {
         this.client = client;
         inventory = new Inventory();
         equippedItems = new EquippedItems();
+        addAbility(Ability.SHOOT, new FireBulletAbility());
     }
 
     /**
@@ -111,16 +114,13 @@ public class Player extends Char {
         return client;
     }
 
+    /**
+     * Lässt den Player seine "Shoot"-Fähigkeit einsetzen
+     *
+     * @param angle der Winkel in dem der Player schießen soll
+     */
     public void playerShoot(float angle) {
-        int thistick = Server.game.getTick();
-        if (thistick >= attackcooldowntick + attack[selectedattack].getAttackcooldown()) {
-            attackcooldowntick = thistick;
-
-            Random random = new Random();
-            Bullet bullet = new Bullet(thistick, getX(), getY(), angle + random.nextGaussian() * attack[selectedattack].getSpread(), attack[selectedattack].getBulletspeed(), attack[selectedattack].getBulletpic(), Server.game.newNetID(), this);
-
-            Server.game.netIDMap.put(bullet.netID, bullet);
-        }
+        useAbilityInAngle(Ability.SHOOT, angle);
     }
 
     /**
