@@ -4,7 +4,7 @@ import de._13ducks.spacebatz.server.data.abilities.Ability;
 import java.util.HashMap;
 
 /**
- * Eine Entity, die Fähigkeiten verwenden kann.
+ * Ein Char, der Fähigkeiten verwenden kann.
  *
  * @author michael
  */
