@@ -107,10 +107,24 @@ public class AbilityUser extends Char {
      */
     public void removeAbility(int id) {
         if (!abilities.containsKey(id)) {
-            throw new IllegalArgumentException("Char has no such Ability!");
+            throw new IllegalArgumentException("Cant find Ability with id " + id + "!");
         } else {
             abilities.get(id).setOwner(null);
             abilities.remove(id);
+        }
+    }
+
+    /**
+     * Gibt die Ability mit der angegebenen id zurück oder null wenn es keine gibt.
+     *
+     * @param id die id der gesuchten Ability
+     * @return die Ability mit dieser id oder null wenn es keine gibt
+     */
+    public Ability getAbility(int id) {
+        if (abilities.containsKey(id)) {
+            return abilities.get(id);
+        } else {
+            return null;
         }
     }
 }
