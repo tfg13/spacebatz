@@ -18,13 +18,12 @@ import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class Player extends Char {
+public class Player extends AbilityUser {
 
     /**
      * Der, Client, dem der Player gehört
