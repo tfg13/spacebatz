@@ -107,12 +107,4 @@ public class Player extends ItemCarrier {
     public void playerShoot(float angle) {
         useAbilityInAngle(Ability.SHOOT, angle);
     }
-
-    /**
-     * Rüstet ein Item aus dem Inventar aus
-     *
-     * @param netId
-     */
-    public void equipItem(int netId) {
-    }
 }
