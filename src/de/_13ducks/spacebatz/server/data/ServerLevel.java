@@ -26,7 +26,7 @@ public class ServerLevel extends Level {
     /**
      * Liste der Typen von zerstörbaren Blocken
      */
-    HashMap<Integer, DestroyableBlockType> destroyableBlockTypes;
+    private HashMap<Integer, DestroyableBlockType> destroyableBlockTypes;
     /**
      * Die Liste mit Gebieten
      */
