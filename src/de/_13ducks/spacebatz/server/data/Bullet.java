@@ -13,21 +13,18 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
- * Ein Geschoss
+ * Ein Geschoss.
+ * Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre lifetime
+ * abgelaufen ist
  *
  * @author J.K.
  */
 public class Bullet extends Entity {
 
+    /**
+     * Der Besitzer des Bullets, i.d.R. der Char der es erzeugt hat.
+     */
     private Char owner;
-    /*
-     * Schaden
-     */
-    private int damage;
-    /*
-     * Explosionsradius;
-     */
-    private double explosionradius;
     /*
      * ID des BulletTypes
      */
@@ -37,67 +34,32 @@ public class Bullet extends Entity {
      */
     private int deletetick;
 
-    public Bullet(int spawntick, double spawnposx, double spawnposy, double angle, double speed, int typeID, int netID, Char owner) {
+    /**
+     * Erzeugt ein neues Bullet
+     *
+     * @param spawntick der Tick, zu dem das Bullet erzeugt wurde bzw. mit der Bewegung begann
+     * @param lifetime die Zahl der Ticks, nach der das Bullet gelöscht wird
+     * @param spawnposx X-Koordinate des Anfangspunktes der Bewegung
+     * @param spawnposy Y-Koordinate des Anfangspunktes der Bewegung
+     * @param angle der Winkel, in dem das Bullet fliegt
+     * @param speed die Geschwindigkeit des Bullets
+     * @param pictureID die ID des Bildes des Bullets
+     * @param netID die netID des Bullets
+     * @param owner der Besitzer, i.d.R. der Char der das Bullet erzeugt hat
+     */
+    public Bullet(int spawntick, int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Char owner) {
         super(spawnposx, spawnposy, netID, (byte) 4);
         moveStartTick = spawntick;
-
-        this.bulletpic = typeID;
-
+        this.bulletpic = pictureID;
         setVector(Math.cos(angle), Math.sin(angle));
         setSpeed(speed);
-
-        int lifetime;
-
         this.owner = owner;
-        if (owner instanceof Player) {
-            Player player = (Player) owner;
-            this.damage = player.getSelectedAttack().getDamage();
-            this.explosionradius = player.getSelectedAttack().getExplosionradius();
-            lifetime = (int) (player.getSelectedAttack().getRange() / speed);
-        } else {
-            this.damage = owner.getDamage();
-            lifetime = (int) (owner.getRange() / speed);
-        }
-
         this.deletetick = spawntick + lifetime;
     }
 
     /**
-     * @return the spawntick
-     */
-    public int getSpawntick() {
-        return moveStartTick;
-    }
-
-    /**
-     * @return the spawnposition x
-     */
-    public double getSpawnposX() {
-        return getX();
-    }
-
-    /**
-     * @return the spawnposition y
-     */
-    public double getSpawnposY() {
-        return getY();
-    }
-
-    /**
-     * @return the direction
-     */
-    public double getDirectionX() {
-        return vecX;
-    }
-
-    /**
-     * @return the direction
-     */
-    public double getDirectionY() {
-        return vecY;
-    }
-
-    /**
+     * Gibt den Tick, zu dem das Bullet gelöscht wird, zurück
+     *
      * @return the deletetick
      */
     public int getDeletetick() {
@@ -105,20 +67,8 @@ public class Bullet extends Entity {
     }
 
     /**
-     * @return the damage
-     */
-    public int getDamage() {
-        return damage;
-    }
-
-    /**
-     * @return the explosionradius
-     */
-    public double getExplosionradius() {
-        return explosionradius;
-    }
-
-    /**
+     * Gibt den Besitzer des Bullets zurück
+     *
      * @return the client
      */
     public Char getOwner() {
