@@ -12,7 +12,6 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.gamelogic.AIManager;
-import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -50,13 +49,16 @@ public class Enemy extends AbilityUser {
         AiType = AIManager.AITYPE_STANDARD; // Standard-KI
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
-        this.healthpoints = estats.getHealthpoints();
-        this.damage = estats.getDamage();
+
+        setProperty("hitpoints", estats.getHealthpoints());
+        setProperty("damage", estats.getDamage());
+        setProperty("sightrange", estats.getSightrange());
+        setProperty("pictureId", estats.getPicture());
+        setProperty("attackCooldown", 60.0);
+
         speed = estats.getSpeed();
-        this.sightrange = estats.getSightrange();
-        this.pictureID = estats.getPicture();
         this.enemylevel = estats.getEnemylevel();
-        this.attackcooldown = 60;
+
     }
 
     /**
@@ -144,11 +146,6 @@ public class Enemy extends AbilityUser {
      * @param e das was angegriffen wird
      */
     public void attack(Char c) {
-        int thistick = Server.game.getTick();
-        if (thistick > attackcooldowntick + attackcooldown) {
-            c.decreaseHealthpoints(this);
-            attackcooldowntick = thistick;
-        }
     }
 
     @Override

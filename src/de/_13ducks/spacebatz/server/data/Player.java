@@ -233,9 +233,12 @@ public class Player extends AbilityUser {
         }
 
         speed = newmovespeed;
-        armor = newarmor;
-        healthpoints = Math.max((int) ((((double) healthpoints) / healthpointsmax) * newhealth), 1);
-        healthpointsmax = newhealth;
+
+        double healthpoints = Math.max((int) ((((double) getProperty("hitpoints")) / getProperty("hitpointsmax")) * newhealth), 1);
+        setProperty("hitpoints", healthpoints);
+
+        setProperty("hitpointsmax", newhealth);
+        setProperty("armor", newarmor);
     }
 
     /**
@@ -249,32 +252,32 @@ public class Player extends AbilityUser {
         this.selectedattack = select;
     }
 
-    /**
-     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
-     *
-     * @param Entity, das den Schaden anrichtet
-     * @return true, wenn Enemy stirbt, sonst false
-     */
-    @Override
-    public boolean decreaseHealthpoints(Entity e) {
-        if (e instanceof Enemy) {
-            Enemy enemy = (Enemy) e;
-            healthpoints -= enemy.getDamage();
-
-            if (healthpoints <= 0) {
-                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);
-                setStillX(Server.game.getLevel().respawnX);
-                setStillY(Server.game.getLevel().respawnY);
-                healthpoints = healthpointsmax;
-                return true;
-            } else {
-                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), false);
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+//    /**
+//     * Zieht Schadenspunkte von HP ab, returned true wenn Einheit stirbt
+//     *
+//     * @param Entity, das den Schaden anrichtet
+//     * @return true, wenn Enemy stirbt, sonst false
+//     */
+//    @Override
+//    public boolean decreaseHealthpoints(Entity e) {
+//        if (e instanceof Enemy) {
+//            Enemy enemy = (Enemy) e;
+//            healthpoints -= enemy.getDamage();
+//
+//            if (healthpoints <= 0) {
+//                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), true);
+//                setStillX(Server.game.getLevel().respawnX);
+//                setStillY(Server.game.getLevel().respawnY);
+//                healthpoints = healthpointsmax;
+//                return true;
+//            } else {
+//                Server.msgSender.sendCharHit(netID, enemy.netID, enemy.getDamage(), false);
+//                return false;
+//            }
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**
      * @return the inventory

@@ -44,9 +44,9 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Bullets und Chars
      */
     private static void computeBulletCollision() {
-
+        
         Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
-
+        
         while (listIterator.hasNext()) {
             Bullet bullet;
             Entity entity = listIterator.next();
@@ -61,12 +61,12 @@ public class CollisionManager {
             if (Server.game.getTick() > bullet.getDeletetick()) {
                 listIterator.remove();
                 Server.entityMap.removeEntity(bullet);
-
+                
                 continue;
             }
-
-
-
+            
+            
+            
             double x = bullet.getX();
             double y = bullet.getY();
 
@@ -74,7 +74,7 @@ public class CollisionManager {
             if (Server.game.getLevel().isBlockDestroyable((int) x, (int) y)) {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
             }
-
+            
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
@@ -82,24 +82,7 @@ public class CollisionManager {
                     Char c = (Char) e;
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
                         if (!c.equals(bullet.getOwner())) {
-                            if (c instanceof Enemy) {
-                                Enemy en = (Enemy) c;
-                                // Schaden von HP abziehen
-                                if (en.decreaseHealthpoints(bullet)) {
-                                } else {
-                                    if (en.getMyTarget() == null) {
-                                        en.setMyTarget(bullet.getOwner());
-                                    }
-                                }
-                                // Flächenschaden
-                                if (bullet.getExplosionradius() > 0) {
-                                    computeBulletExplosionCollision(bullet, c);
-                                }
-                            }
-                            listIterator.remove();
-
-
-                            break;
+                            // Bullet kollidiert mit einer Entity die nicht der owner des Bullets ist
                         }
                     }
                 }
@@ -107,41 +90,40 @@ public class CollisionManager {
         }
     }
 
-    /**
-     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden
-     * kriegt
-     */
-    private static void computeBulletExplosionCollision(Bullet bullet, Char charhit) {
-        double x = bullet.getX();
-        double y = bullet.getY();
-
-        Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, bullet.getExplosionradius()).iterator();
-        while (iter.hasNext()) {
-            Entity e = iter.next();
-            if (e instanceof Char) {
-                Char c = (Char) e;
-                if (c == charhit) {
-                    continue;
-                }
-                double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
-
-                if (!c.equals(bullet.getOwner())) {
-                    if (c instanceof Enemy) {
-                        Enemy en = (Enemy) c;
-                        // Schaden von HP abziehen, wird von Distanz verringert
-                        if (en.decreaseHealthpoints(bullet, 1.0 - distance / bullet.getExplosionradius() * 2 / 3)) {
-                        } else {
-                            if (en.getMyTarget() == null) {
-                                en.setMyTarget(bullet.getOwner());
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-    }
-
+//    /**
+//     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden
+//     * kriegt
+//     */
+//    private static void computeBulletExplosionCollision(Bullet bullet, Char charhit) {
+//        double x = bullet.getX();
+//        double y = bullet.getY();
+//
+//        Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, bullet.getExplosionradius()).iterator();
+//        while (iter.hasNext()) {
+//            Entity e = iter.next();
+//            if (e instanceof Char) {
+//                Char c = (Char) e;
+//                if (c == charhit) {
+//                    continue;
+//                }
+//                double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
+//
+//                if (!c.equals(bullet.getOwner())) {
+//                    if (c instanceof Enemy) {
+//                        Enemy en = (Enemy) c;
+//                        // Schaden von HP abziehen, wird von Distanz verringert
+//                        if (en.decreaseHealthpoints(bullet, 1.0 - distance / bullet.getExplosionradius() * 2 / 3)) {
+//                        } else {
+//                            if (en.getMyTarget() == null) {
+//                                en.setMyTarget(bullet.getOwner());
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//    }
     /**
      * Berechnet Kollisionen zwischen Wänden und Chars
      */
@@ -160,23 +142,23 @@ public class CollisionManager {
                     double toX = mover.extrapolateX(1);
                     double toY = mover.extrapolateY(1);
                     computeCharCollision(fromX, fromY, toX, toY, mover);
-
-
+                    
+                    
                 }
             }
         }
     }
-
+    
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
         // Der Vektor der bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
         // Anfangs- und Ziel-X des Gebiets das gescannt wird
-        int moveAreaStartX = (int) (Math.min(fromX, toX) - mover.getSize() / 2);
-        int moveAreaEndX = (int) (Math.max(fromX, toX) + mover.getSize() / 2) + 1;
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - mover.getProperty("size") / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + mover.getProperty("size") / 2) + 1;
         // Anfangs- und Ziel-Y des Gebiets das gescannt wird
-        int moveAreaStartY = (int) (Math.min(fromY, toY) - mover.getSize() / 2);
-        int moveAreaEndY = (int) (Math.max(fromY, toY) + mover.getSize() / 2) + 1;
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - mover.getProperty("size") / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + mover.getProperty("size") / 2) + 1;
 
 
         // Gesucht ist der Block, mit dem wir als erstes kollidieren
@@ -196,8 +178,8 @@ public class CollisionManager {
                     double blockMidX = x + 0.5;
                     double blockMidY = y + 0.5;
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    double d1 = ((blockMidX + (0.5 + mover.getSize() / 2.0)) - fromX) / deltaX;
-                    double d2 = ((blockMidX - (0.5 + mover.getSize() / 2.0)) - fromX) / deltaX;
+                    double d1 = ((blockMidX + (0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
+                    double d2 = ((blockMidX - (0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
@@ -206,7 +188,7 @@ public class CollisionManager {
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     //double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-
+                    
                     double yDistance = 0;
                     try {
                         yDistance = BigDecimal.valueOf(blockMidY).subtract(BigDecimal.valueOf(fromY + d * deltaY)).doubleValue();
@@ -214,28 +196,23 @@ public class CollisionManager {
                         // Ungültige zahl, also yDistance auf ungültigen wert setzen
                         yDistance = Double.NaN;
                     }
-
-                    if (yDistance != Double.NaN && 0 <= d && d <= 1 && yDistance < ((mover.getSize() / 2.0) + 0.5)) {
+                    
+                    if (yDistance != Double.NaN && 0 <= d && d <= 1 && yDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
                             smallestD = d;
                             xCollision = true;
                         }
-
-
+                        
+                        
                     } else {
                         // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
                         // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                        d1 = ((blockMidY + (0.5 + mover.getSize() / 2.0)) - fromY) / deltaY;
-                        d2 = ((blockMidY - (0.5 + mover.getSize() / 2.0)) - fromY) / deltaY;
+                        d1 = ((blockMidY + (0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
+                        d2 = ((blockMidY - (0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
                         // Das kleinere d wählen:
                         d = Math.min(d1, d2);
-                        // ALTE FEHLERHAFTE BERECHNUNG (RUNDUNGSFEHLER)
-                        // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit x-Abstand vorbeifahren:
-                        //double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-
-
                         double xDistance = 0;
                         try {
                             xDistance = BigDecimal.valueOf(blockMidX).subtract(BigDecimal.valueOf(fromX + d * deltaX)).doubleValue();
@@ -243,8 +220,8 @@ public class CollisionManager {
                             // Ungültige zahl, also yDistance auf ungültigen wert setzen
                             xDistance = Double.NaN;
                         }
-
-                        if (xDistance != Double.NaN && 0 <= d && d <= 1 && xDistance < ((mover.getSize() / 2.0) + 0.5)) {
+                        
+                        if (xDistance != Double.NaN && 0 <= d && d <= 1 && xDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
                             // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                             // Also wenn die Kollision näher ist als die anderen speichern:
                             if (d < smallestD) {
