@@ -31,18 +31,24 @@ public abstract class Ability {
     }
 
     /**
-     * Benutzt die Fähigkeit
-     *
+     * Liest die Eigenschaften des BesitzerChars neu ein.
+     * Muss immer aufgerufen werden, wenn sich die Eigenschaften des BesitzerChars ändern oder die Fähigkeit einem
+     * (anderen) Char zugewiesen wird.
+     */
+    public abstract void refreshProperties();
+
+    /**
+     * Benutzt die Fähigkeit.
      */
     public abstract void use();
 
     /**
      * Benutzt die Fähigkeit auf eine Position
      *
-     * @param x die X-Koordinate auf die die Fähigkeit benutzt werden soll
-     * @param y die Y-Koordinate auf die die Fähigkeit benutzt werden soll
+     * @param targetX die X-Koordinate des Ziels
+     * @param targetY die Y-Koordinate des Ziels
      */
-    public abstract void useOnPosition(double x, double y);
+    public abstract void useOnPosition(double targetX, double targetY);
 
     /**
      * Benutzt die Fähigkeit auf eine Entity

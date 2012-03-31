@@ -38,4 +38,9 @@ public class FireBulletAbility extends Ability {
         // IMMER BEREIT!
         return true;
     }
+
+    @Override
+    public void refreshProperties() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
