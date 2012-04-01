@@ -18,10 +18,13 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class Item implements java.io.Serializable {
-    private static final long serialVersionUID = 1L;
+public class Item extends Properties {
 
-    private ItemTypeStats stats;
+    private static final long serialVersionUID = 1L;
+    /**
+     * Die Grundwerte für dieses Item.
+     */
+    private ItemAttribute baseAttribute;
     /**
      * Die netID des Items.
      */
@@ -38,19 +41,56 @@ public class Item implements java.io.Serializable {
     /**
      * Attribute des Items
      */
-    private ArrayList<ItemAttribute> itemattributes;
+    private ArrayList<ItemAttribute> itemAttributes;
     /**
      * Inventarplatz des Items, nur für Client wichtig
      */
     private InventorySlot inventoryslot;
 
-    public Item(double posX, double posY, ItemTypeStats stats, int netID) {
+    /**
+     * Erzeugt ein neues Item
+     *
+     * @param posX
+     * @param posY
+     * @param baseAttribute
+     * @param netID
+     */
+    public Item(double posX, double posY, ItemAttribute baseAttribute, int netID) {
         this.posX = posX;
         this.posY = posY;
-        this.stats = stats;
+        this.baseAttribute = baseAttribute;
         this.netID = netID;
         this.amount = 1;
-        itemattributes = new ArrayList<>();
+        itemAttributes = new ArrayList<>();
+
+    }
+
+    /**
+     * Gibt dem Item ein Attribut.
+     *
+     * @param itemAttribute das Attribut, das das Item bekommen soll
+     */
+    public void addAttribute(ItemAttribute itemAttribute) {
+        // Das Attribut in die Liste aufnehmen:
+        itemAttributes.add(itemAttribute);
+        // Die Bonus-Werte des Attributs zu den ItemProperties addieren:
+        addProperties(itemAttribute);
+    }
+
+    /**
+     * Entfernt ein Attribut vom Item.
+     *
+     * @param itemAttribute das Attribut, entfernt werden soll
+     */
+    public void removeAttribute(ItemAttribute itemAttribute) {
+        if (itemAttributes.contains(itemAttribute)) {
+            // Das Attribut von der Liste entfernen:
+            itemAttributes.remove(itemAttribute);
+            // Die Bonus-Werte des Attributs wieder entfernen:
+            removeProperties(itemAttribute);
+        } else {
+            throw new IllegalArgumentException("Dieses Item hat kein \"" + itemAttribute.getName() + "\"-Attribut!");
+        }
     }
 
     /**
@@ -79,20 +119,6 @@ public class Item implements java.io.Serializable {
      */
     public void setPosY(double posY) {
         this.posY = posY;
-    }
-
-    /**
-     * @return the itemattributes
-     */
-    public ArrayList<ItemAttribute> getItemattributes() {
-        return itemattributes;
-    }
-
-    /**
-     * @param itemattributes the itemattributes to set
-     */
-    public void setItemattributes(ArrayList<ItemAttribute> itemattributes) {
-        this.itemattributes = itemattributes;
     }
 
     /**
@@ -128,12 +154,5 @@ public class Item implements java.io.Serializable {
      */
     public int getNetID() {
         return netID;
-    }
-
-    /**
-     * @return the stats
-     */
-    public ItemTypeStats getStats() {
-        return stats;
     }
 }
