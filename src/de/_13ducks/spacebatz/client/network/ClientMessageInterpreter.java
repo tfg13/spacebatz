@@ -193,7 +193,7 @@ public class ClientMessageInterpreter {
                 if (clientID == Client.getClientID()) {
                     Item item = Client.getItemMap().get(netIDItem2);
                     // Geld oder normales Item?
-                    if (item.getStats().itemStats.get("name").equals("Money")) {
+                    if (item.getName().equals("Money")) {
                         Client.addMoney(item.getAmount());
                     } else {
                         Client.addToInventory(item);
@@ -218,7 +218,7 @@ public class ClientMessageInterpreter {
                 int clientID3 = Bits.getInt(message, 5); // clientID des Spielers
                 if (clientID3 == Client.getClientID()) {
                     Item item = Client.getInventoryItems().get(netIDItem3);
-                    Client.getEquippedItems().getEquipslots()[(int) item.getStats().itemStats.get("itemclass")][selslot] = item;
+                    Client.getEquippedItems().getEquipslots()[(int) item.getProperty("itemclass")][selslot] = item;
                     for (int i = 0; i < Client.getInventorySlots().length; i++) {
                         if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
                             Client.getInventorySlots()[i] = null;
@@ -267,12 +267,12 @@ public class ClientMessageInterpreter {
                     Client.getPlayer().setSelectedattack(wslot);
                 }
                 break;
-	    case Settings.NET_TCP_CMD_ANSWER_RCON:
-		if (message[0] == 1) {
-		    // Server erlaubt rcon
-		    Client.terminal.rcon(Bits.getInt(message, 1));
-		}
-		break;
+            case Settings.NET_TCP_CMD_ANSWER_RCON:
+                if (message[0] == 1) {
+                    // Server erlaubt rcon
+                    Client.terminal.rcon(Bits.getInt(message, 1));
+                }
+                break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command " + cmdId);
         }
