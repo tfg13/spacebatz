@@ -11,20 +11,19 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.Settings;
-import java.util.HashMap;
+import de._13ducks.spacebatz.shared.Properties;
 
 /**
- * Ein bewegliches Objekt, das eine dynamische Liste von Eigenschaften hat.
- * Eigenschaften können z.B. Hitpoints, Sichtweite, etc... sein.
+ * Chars sind Entities, die eine dynamische Liste von Eigenschaften wie Hitpoints, Rüstung etc haben.
  *
  * @author michael
  */
 public abstract class Char extends Entity {
 
     /**
-     * Die Liste der Eigenschaften des Chars, bestehend aus Name-Wert Paaren
+     * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
      */
-    private HashMap<String, Double> properties;
+    private Properties properties;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -36,7 +35,7 @@ public abstract class Char extends Entity {
      */
     public Char(double x, double y, int netID, byte entityTypeID) {
         super(x, y, netID, entityTypeID);
-        properties = new HashMap<>();
+        properties = new Properties();
 
         // PictureID setzen:
         setProperty("pictureId", 0);
@@ -57,11 +56,7 @@ public abstract class Char extends Entity {
      * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
      */
     final public double getProperty(String name) {
-        if (properties.containsKey(name)) {
-            return properties.get(name);
-        } else {
-            return 0;
-        }
+        return properties.getProperty(name);
     }
 
     /**
@@ -71,11 +66,7 @@ public abstract class Char extends Entity {
      * @param value der Wert, um den die Eigenschaft inkrementiert werden soll
      */
     final public void incrementProperty(String name, double value) {
-        if (properties.containsKey(name)) {
-            properties.put(name, properties.get(name) + value);
-        } else {
-            properties.put(name, value);
-        }
+        properties.incrementProperty(name, value);
     }
 
     /**
@@ -85,11 +76,7 @@ public abstract class Char extends Entity {
      * @param value der Wert, um den die Eigenschaft dekrementiert werden soll
      */
     final public void decrementProperty(String name, double value) {
-        if (properties.containsKey(name)) {
-            properties.put(name, properties.get(name) - value);
-        } else {
-            properties.put(name, -value);
-        }
+        properties.decrementProperty(name, value);
     }
 
     /**
@@ -99,6 +86,6 @@ public abstract class Char extends Entity {
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setProperty(String name, double value) {
-        properties.put(name, value);
+        properties.setProperty(name, value);
     }
 }
