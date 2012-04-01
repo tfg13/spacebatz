@@ -155,4 +155,13 @@ public class Item extends Properties {
     public int getNetID() {
         return netID;
     }
+
+    /**
+     * Gibt die Liste der Itemattribute zurück.
+     *
+     * @return die Liste der ItemAttribute.
+     */
+    public Object getItemattributes() {
+        return itemAttributes;
+    }
 }
