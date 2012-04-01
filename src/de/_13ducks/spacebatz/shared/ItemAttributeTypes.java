@@ -11,10 +11,10 @@
 package de._13ducks.spacebatz.shared;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Die zufälligen Attribute, die Items bekommen können
+ *
  * @author Jojo
  */
 public class ItemAttributeTypes {
@@ -26,60 +26,60 @@ public class ItemAttributeTypes {
         // name, quality, damage, attackspeed, range, armor, movespeed
 
 
-        HashMap<String, Double> moreDamage = new HashMap<>();
-        moreDamage.put("quality", 1.0);
-        moreDamage.put("damage", 0.1);
+        Properties moreDamage = new Properties();
+        moreDamage.setProperty("quality", 1.0);
+        moreDamage.setProperty("damage", 0.1);
         attributelist.add(new ItemAttribute("More Damage", moreDamage));
 
-        HashMap<String, Double> evenMoreDamage = new HashMap<>();
-        evenMoreDamage.put("quality", 2.0);
-        evenMoreDamage.put("damage", 0.3);
+        Properties evenMoreDamage = new Properties();
+        evenMoreDamage.setProperty("quality", 2.0);
+        evenMoreDamage.setProperty("damage", 0.3);
         attributelist.add(new ItemAttribute("Even More Damage", evenMoreDamage));
 
-        HashMap<String, Double> moreAttackSpeed = new HashMap<>();
-        moreAttackSpeed.put("quality", 1.0);
-        moreAttackSpeed.put("attackspeed", 0.1);
+        Properties moreAttackSpeed = new Properties();
+        moreAttackSpeed.setProperty("quality", 1.0);
+        moreAttackSpeed.setProperty("attackspeed", 0.1);
         attributelist.add(new ItemAttribute("More Attackspeed", moreAttackSpeed));
 
-        HashMap<String, Double> evenMoreAttackSpeed = new HashMap<>();
-        evenMoreAttackSpeed.put("quality", 2.0);
-        evenMoreAttackSpeed.put("attackspeed", 0.3);
+        Properties evenMoreAttackSpeed = new Properties();
+        evenMoreAttackSpeed.setProperty("quality", 2.0);
+        evenMoreAttackSpeed.setProperty("attackspeed", 0.3);
         attributelist.add(new ItemAttribute("Even More Attackspeed", evenMoreAttackSpeed));
 
-        HashMap<String, Double> moreRange = new HashMap<>();
-        moreRange.put("quality", 2.0);
-        moreRange.put("range", 0.2);
+        Properties moreRange = new Properties();
+        moreRange.setProperty("quality", 2.0);
+        moreRange.setProperty("range", 0.2);
         attributelist.add(new ItemAttribute("More Range", moreRange));
 
-        HashMap<String, Double> moreEverything = new HashMap<>();
-        moreEverything.put("quality", 3.0);
-        moreEverything.put("damage", 0.1);
-        moreEverything.put("attackspeed", 0.1);
-        moreEverything.put("range", 0.1);
+        Properties moreEverything = new Properties();
+        moreEverything.setProperty("quality", 3.0);
+        moreEverything.setProperty("damage", 0.1);
+        moreEverything.setProperty("attackspeed", 0.1);
+        moreEverything.setProperty("range", 0.1);
         attributelist.add(new ItemAttribute("More Everything", moreEverything));
 
-        HashMap<String, Double> moreArmor = new HashMap<>();
-        moreArmor.put("quality", 1.0);
-        moreArmor.put("armor", 0.1);
+        Properties moreArmor = new Properties();
+        moreArmor.setProperty("quality", 1.0);
+        moreArmor.setProperty("armor", 0.1);
         attributelist.add(new ItemAttribute("More Armor", moreArmor));
 
-        HashMap<String, Double> evenMoreArmor = new HashMap<>();
-        evenMoreArmor.put("quality", 2.0);
-        evenMoreArmor.put("armor", 0.3);
+        Properties evenMoreArmor = new Properties();
+        evenMoreArmor.setProperty("quality", 2.0);
+        evenMoreArmor.setProperty("armor", 0.3);
         attributelist.add(new ItemAttribute("Even More Armor", evenMoreArmor));
 
-        HashMap<String, Double> moreHP = new HashMap<>();
-        moreHP.put("quality", 1.0);
-        moreHP.put("healthpoints", 5.0);
+        Properties moreHP = new Properties();
+        moreHP.setProperty("quality", 1.0);
+        moreHP.setProperty("healthpoints", 5.0);
         attributelist.add(new ItemAttribute("More Healthpoints", moreHP));
 
-        HashMap<String, Double> moreMovespeed = new HashMap<>();
-        moreMovespeed.put("quality", 2.0);
-        moreMovespeed.put("movespeed", 0.2);
+        Properties moreMovespeed = new Properties();
+        moreMovespeed.setProperty("quality", 2.0);
+        moreMovespeed.setProperty("movespeed", 0.2);
         attributelist.add(new ItemAttribute("More Movespeed", moreMovespeed));
 
-        HashMap<String, Double> unusual = new HashMap<>();
-        unusual.put("quality", 2.0);
+        Properties unusual = new Properties();
+        unusual.setProperty("quality", 2.0);
         attributelist.add(new ItemAttribute("Unusual", unusual));
     }
 
