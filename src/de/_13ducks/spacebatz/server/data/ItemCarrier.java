@@ -47,7 +47,7 @@ public class ItemCarrier extends AbilityUser {
         } else {
             equipedItems.add(item);
             backpack.remove(item);
-            // TODO: apply item stats to char stats
+            addProperties(item);
         }
     }
 
@@ -64,7 +64,7 @@ public class ItemCarrier extends AbilityUser {
         } else {
             equipedItems.remove(item);
             backpack.add(item);
-            // TODO remove item bonuses
+            removeProperties(item);
         }
     }
 
