@@ -87,5 +87,24 @@ public abstract class Char extends Entity {
      */
     final public void setProperty(String name, double value) {
         properties.setProperty(name, value);
+
+    }
+
+    /**
+     * Addiert alle Eigenschaften der angegebenen Properties zu den Properties des Chars.
+     *
+     * @param otherProperties die Properties, die addiert werden sollen
+     */
+    final public void addProperties(Properties otherProperties) {
+        properties.addProperties(otherProperties);
+    }
+
+    /**
+     * Zieht alle Eigenschaften der angegebenen Properties von den Eigenschaften dieses Chars ab.
+     *
+     * @param otherProperties die Properties, die subtrahiert werden sollen
+     */
+    final public void removeProperties(Properties otherProperties) {
+        properties.removeProperties(otherProperties);
     }
 }
