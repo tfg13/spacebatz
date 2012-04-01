@@ -46,6 +46,10 @@ public class Item extends Properties {
      * Inventarplatz des Items, nur für Client wichtig
      */
     private InventorySlot inventoryslot;
+    /**
+     * Der Name ds Items
+     */
+    private String name;
 
     /**
      * Erzeugt ein neues Item
@@ -161,7 +165,25 @@ public class Item extends Properties {
      *
      * @return die Liste der ItemAttribute.
      */
-    public Object getItemattributes() {
+    public ArrayList<ItemAttribute> getItemAttributes() {
         return itemAttributes;
+    }
+
+    /**
+     * Gibt den Namen des Items zurück
+     *
+     * @return der Name des Items
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setzt den Namen des Items
+     *
+     * @param name der Name den das Item haben soll
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }
