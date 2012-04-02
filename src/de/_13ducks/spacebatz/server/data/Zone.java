@@ -82,6 +82,9 @@ public class Zone {
 	name = "global";
 	global = true;
 	parent = null;
+	// Default-Werte adden:
+	values.put("spawnrate", new Integer(9000)); // Default-Spawnwert
+	values.put("spawn_enabled", new Integer(1));// Spawnen ist per default an
     }
 
     /**
@@ -160,6 +163,30 @@ public class Zone {
 	    current = current.parent;
 	}
 	return current.values.get(s);
+    }
+
+    /**
+     * Liefert alle Werte, die von dieser oder einer der darüber liegenden Zonen definiert werden.
+     * Die zurückgegebene HashMap ist nicht mit internen Zuständen verknüpft und kann frei verwendet werden.
+     *
+     * @return eine neue HashMap mit den angeforderten Werten
+     */
+    public HashMap<String, Object> getDefinedValues() {
+	HashMap<String, Object> defVals = new HashMap<>();
+	// Eigene einfügen
+	defVals.putAll(values);
+	// Hoch gehen
+	Zone current = this;
+	while (!current.global) {
+	    current = current.parent;
+	    // Noch nicht definierte einfügen
+	    for (String s : current.values.keySet()) {
+		if (!defVals.containsKey(s)) {
+		    defVals.put(s, current.values.get(s));
+		}
+	    }
+	}
+	return defVals;
     }
 
     /**

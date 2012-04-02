@@ -11,13 +11,11 @@
 package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.client.network.NetStats;
-import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.Enemy;
-import de._13ducks.spacebatz.server.data.Entity;
-import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -159,7 +157,7 @@ public class DebugConsole {
                 public void run() {
                     try {
                         while (true) {
-                            commands.add(input.readLine().toLowerCase().split("\\s+"));
+                            commands.add(input.readLine().split("\\s+"));
 
                         }
                     } catch (Exception ex) {
@@ -255,6 +253,54 @@ public class DebugConsole {
                             outStream.println("Usage: resync CLIENTID (use \"list\")");
                         }
                         break;
+		    case "zone":
+			Zone zone = Zone.getGlobal();
+			if (words.length >= 3) {
+			    zone = Zone.getMostSpecializedZone(Double.parseDouble(words[1]), Double.parseDouble(words[2]));
+			}
+			if (words.length == 2 || words.length == 4) {
+			    // Wert setzen, falls Syntax/Typ stimmt und Wert schon vorhanden:
+			    String zoneValDef = words.length == 2 ? words[1] : words[3];
+			    if (zoneValDef.contains("=")) {
+				String zoneValDefParam = zoneValDef.substring(0, zoneValDef.indexOf("="));
+				String zoneValDefValue = zoneValDef.substring(zoneValDef.indexOf("=") + 1);
+				if (!zoneValDefParam.isEmpty() && !zoneValDefValue.isEmpty()) {
+				    // Es muss den Wert schon vorher geben, wegen dem Typ
+				    Object zoneValDefOld = zone.getValue(zoneValDefParam);
+				    if (zoneValDefOld != null) {
+					// Der Typ muss stimmen:
+					if (zoneValDefOld instanceof String) {
+					    // Alles lässt sich als String behandeln
+					    zone.setValue(zoneValDefParam, zoneValDefValue);
+					    break;
+					} else if (zoneValDefOld instanceof Integer) {
+					    zone.setValue(zoneValDefParam, Integer.parseInt(zoneValDefValue));
+					    break;
+					} else if (zoneValDefOld instanceof Double) {
+					    zone.setValue(zoneValDefParam, Double.parseDouble(zoneValDefValue));
+					    break;
+					}
+				    }
+				}
+			    }
+			    // Wenn wir hier hinkommen, gab es Fehler, auf Syntax hinweisen
+			    outStream.println("usage: zone (X Y) VAR=VAL, VAL type must match existing VAR type!");
+			} else {
+			    HashMap<String, Object> zoneVals = zone.getDefinedValues();
+			    for (String s: zoneVals.keySet()) {
+				Object zoneVal = zoneVals.get(s);
+				char zoneValType = '?';
+				if (zoneVal instanceof String) {
+				    zoneValType = 's';
+				} else if (zoneVal instanceof Integer) {
+				    zoneValType = 'i';
+				} else if (zoneVal instanceof Double) {
+				    zoneValType = 'd';
+				}
+				outStream.println(s + "=" + zoneVals.get(s) + " (" + zoneValType + ")");
+			    }
+			}
+			break;
                     case "spawnitem":
                         int amount = 1;
                         if (words.length >= 2) {
@@ -285,6 +331,7 @@ public class DebugConsole {
                         outStream.println("spawnitem            - Spawns an item on every player's position");
                         outStream.println("spawnenemy           - Spawns an enemy on every player's position");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");
+			outStream.println("zone (X Y) (VAR=VAL) - Lists/Sets zone-parameter");
                         break;
                     default:
                         outStream.println("Command not recognized. Try help");

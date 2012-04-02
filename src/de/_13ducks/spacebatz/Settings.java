@@ -82,7 +82,7 @@ public final class Settings {
     /**
      * Größe des Empfangspuffers für ein Clientpacket auf Serverseite. NICHT EINFACH VERÄNDERN!
      */
-    public static final int NET_UDP_CTS_SIZE = 10;
+    public static final int NET_UDP_CTS_SIZE = 512;
     /**
      * Größe des Empfangspuffers für ein Serverpacket auf Clientseite. NICHT EINFACH VERÄNDERN!
      */
@@ -236,7 +236,7 @@ public final class Settings {
     /**
      * Wie häufig der Spawner pro Sekunde aufgerufen wird.
      */
-    public static final int SERVER_SPAWNER_EXECSPERSEC = 2;
+    public static final int SERVER_SPAWNER_EXECSPERSEC = 5;
     /**
      * Die Größe der Chars für Kollision
      */

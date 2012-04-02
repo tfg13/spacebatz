@@ -30,7 +30,7 @@ public class ItemTypes {
 
         itemtypelist.add(new ItemTypeStats("Better Hat", 1, 2, 4, 0, 42, null));
 
-        ItemTypeWeaponStats pistol = new ItemTypeWeaponStats(5, 15.0, 10.0, 0, 1, 0.35, 0.025, 0.0);
+        ItemTypeWeaponStats pistol = new ItemTypeWeaponStats(7, 15.0, 11.0, 0, 1, 0.35, 0.025, 0.0);
         itemtypelist.add(new ItemTypeStats("Pistol", 4, 1, 1, 0, 0, pistol));
 
         ItemTypeWeaponStats laser = new ItemTypeWeaponStats(4, 6.0, 9.0, 0, 3, 0.35, 0.1, 0.0);
