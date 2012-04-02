@@ -299,7 +299,7 @@ public class CollisionManager {
                     Item item = iterator.next();
                     double distance = Distance.getDistance(collector.getX(), collector.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                        collector.collectItem(item);
+                        //
                     }
                 }
             }
