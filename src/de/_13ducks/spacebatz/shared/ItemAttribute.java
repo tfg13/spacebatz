@@ -23,7 +23,23 @@ public class ItemAttribute extends Properties {
      */
     private String name;
 
+    /**
+     * Erstellt ein neues Attribut und initialisiert es mit den angegebenen Properties.
+     *
+     * @param name der Name des Attributs
+     * @param stats die initalisierungs-stats
+     */
     public ItemAttribute(String name, Properties stats) {
+        super();
+        addProperties(stats);
+    }
+
+    /**
+     * Erstellt eine neues Attribut ohne Werte.
+     *
+     * @param name der Name des Attributs
+     */
+    public ItemAttribute(String name) {
         super();
     }
 

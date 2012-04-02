@@ -20,16 +20,18 @@ import java.util.Random;
 
 /**
  * DropManager bestimmt, welche Items gedroppt werden
+ *
  * @author Jojo
  */
 public class DropManager {
 
     private final static ItemTypes itemtypes = new ItemTypes();
     private final static ItemAttributeTypes itemattribute = new ItemAttributeTypes();
-    private static ArrayList<ItemTypeStats> itemtypelist = itemtypes.getItemtypelist();
+    private static ArrayList<ItemAttribute> itemtypelist = itemtypes.getItemtypelist();
 
     /**
      * dropItem wÃ¤hlt Item aus, dass von diesem Gegner gedroppt wird
+     *
      * @param x x-Position
      * @param y y-Position
      * @param droplevel Gegnerlevel, bestimmt welche Items droppen kÃ¶nnen
@@ -42,18 +44,18 @@ public class DropManager {
 //            return;
 //        }
 
-        ArrayList<ItemTypeStats> dropableitems = new ArrayList<>();
+        ArrayList<ItemAttribute> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
-            int itemquality = (int) itemtypelist.get(i).itemStats.get("quality");
+            int itemquality = (int) itemtypelist.get(i).getProperty("quality");
             //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
             if (itemquality <= droplevel && itemquality != 0) {
                 dropableitems.add(itemtypelist.get(i));
             }
         }
-        ItemTypeStats stats = dropableitems.get(random.nextInt(dropableitems.size()));
+        ItemAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
         Item item = new Item(x, y, stats, Server.game.newNetID());
 
-        if ((int) stats.itemStats.get("itemclass") != 0) {
+        if ((int) stats.getProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);
         } else {
             item = addAmount(item, droplevel);
@@ -82,6 +84,7 @@ public class DropManager {
 
     /**
      * Dem übergebenen Item zufällige Attribute hinzufügen
+     *
      * @param item das Item
      * @return wieder das Item
      */
@@ -95,7 +98,7 @@ public class DropManager {
 
         for (int i = 0; i < attributesofrightclass.size(); i++) {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
-            double test = attributesofrightclass.get(i).getStats().get("quality");
+            double test = attributesofrightclass.get(i).getProperty("quality");
             if (test <= droplevel) {
                 qualityallowedattributes.add(attributesofrightclass.get(i));
             }
@@ -123,16 +126,17 @@ public class DropManager {
         for (int i = 0; i < maxatt; i++) {
             ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
             if (!addattributes.contains(randomatt)) {
-                addattributes.add(randomatt);
+                item.addAttribute(randomatt);
             }
         }
 
-        item.setItemattributes(addattributes);
+
         return item;
     }
 
     /**
      * Dem Item das gedroppt werden soll eine Anzahl hinzufügen (z.B. bei Geld)
+     *
      * @param item Das Item
      * @param droplevel Das Level vom Monster, das es gedroppt hat
      * @return wieder das Item
