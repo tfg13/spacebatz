@@ -37,4 +37,7 @@ public class ItemCarrier extends AbilityUser {
 
     public void unequipItemToInventory(Item item) {
     }
+
+    public void selectActiveWeapon(int slot) {
+    }
 }
