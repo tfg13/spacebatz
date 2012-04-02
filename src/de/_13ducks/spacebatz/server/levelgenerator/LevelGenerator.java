@@ -34,8 +34,10 @@ public class LevelGenerator {
     private static Random random;
     private static int xSize;
     private static int ySize;
-    private static final int texrock = 1;
-    private static final int texground = 4;
+    private static final int TEXrock = 1;
+    private static final int TEXground = 4;
+    private static final int TEXhill = 2;
+    private static final int TEXore = 11;
 
     public static ServerLevel generateLevel() {
         long start = System.currentTimeMillis();
@@ -74,7 +76,7 @@ public class LevelGenerator {
         // Default-Textur (Felsen):
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
-                ground[x][y] = texrock;
+                ground[x][y] = TEXrock;
                 level.getCollisionMap()[x][y] = true;
             }
         }
@@ -87,12 +89,15 @@ public class LevelGenerator {
             if (innerFields.get(i).getY() < 0 || innerFields.get(i).getY() >= ySize) {
                 continue;
             }
-            ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = texground;
+            ground[innerFields.get(i).getX()][innerFields.get(i).getY()] = TEXground;
             level.getCollisionMap()[innerFields.get(i).getX()][innerFields.get(i).getY()] = false;
         }
 
-        // Manche begehbaren Felder zu zerstörbaren Bergen machen:
-        createDestroyableBlocks();
+        // Manche begehbaren Felder zu zerstöbaren Bergen machen:
+        int hillfields = createDestroyableBlocks();
+
+        // Rohstoffe in Berge setzen:
+        createOre(hillfields);
 
         // Spawn-Koordinaten setzen:
         setSpawn(circleList.get(0).getCenter());
@@ -379,13 +384,13 @@ public class LevelGenerator {
     }
 
     /**
-     * Setzt zerstörbare Blöcke auf die Map
+     * Setzt zerstörbare Blöcke auf die Map, gibt Anzahl zurück
      */
-    private static void createDestroyableBlocks() {
+    private static int createDestroyableBlocks() {
         // Zufällige Werte für alle freien Felder!
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
-                if (ground[i][j] == 4) {
+                if (ground[i][j] == TEXground) {
                     ground[i][j] = -1 - random.nextInt(100);
                 }
             }
@@ -398,7 +403,7 @@ public class LevelGenerator {
                     if (ground[i][j] < 0) {
                         int neighbours = 0;
 
-                        // direkte Nachbaren
+                        // direkte Nachbarn
                         if (i > 0 && (ground[i - 1][j] < -80 || ground[i - 1][j] == 1)) {
                             neighbours += 2;
                         }
@@ -412,7 +417,7 @@ public class LevelGenerator {
                             neighbours += 2;
                         }
 
-                        // Nachbaren über Ecke
+                        // Nachbarn über Ecke
                         if (i > 0 && j > 0 && (ground[i - 1][j - 1] < -80 || ground[i - 1][j - 1] == 1)) {
                             neighbours++;
                         }
@@ -438,16 +443,20 @@ public class LevelGenerator {
         }
 
         // Zufallswerte wieder zu richtigen Texturen machen:
+        int counter = 0;
         for (int i = 0; i < ground[0].length; i++) {
             for (int j = 0; j < ground.length; j++) {
                 if (ground[ i][j] < -80) {
-                    ground[i][j] = 2;
+                    ground[i][j] = TEXhill;
                     level.getCollisionMap()[i][j] = true;
+                    counter++;
                 } else if (ground[ i][j] < 0) {
-                    ground[i][j] = 4;
+                    ground[i][j] = TEXground;
                 }
             }
         }
+
+        return counter;
     }
 
     /**
@@ -462,13 +471,75 @@ public class LevelGenerator {
         for (int x = a.getX() - spawnsize; x <= a.getX() + spawnsize; x++) {
             for (int y = a.getY() - spawnsize; y <= a.getY() + spawnsize; y++) {
                 if (groundExists(x, y)) {
-                    ground[x][y] = 4;
+                    ground[x][y] = TEXground;
                     level.getCollisionMap()[x][y] = false;
                 }
             }
         }
     }
-    
+
+    /**
+     * Setzt Rohstoffe in Berge
+     */
+    public static void createOre(int hillfields) {
+        Position[] hill = new Position[hillfields];
+
+        // Alle Bergfelder suchen:
+        int counter = 0;
+        for (int i = 0; i < ground[0].length; i++) {
+            for (int j = 0; j < ground.length; j++) {
+                if (ground[i][j] == 2) {
+                    hill[counter] = new Position(i, j);
+                    counter++;
+                }
+            }
+        }
+
+        ArrayList<Position> resall = new ArrayList<>(); // Die Bergfelder, die zu Ressourcenblöcken werden sollen
+
+        // 200 Ressourcen-Häufen setzen
+        for (int a = 0; a < 200; a++) {
+            ArrayList<Position> resnow = new ArrayList<>(); // Ressourcenblöcke, die in diesem for-Durchlauf gefunden werden
+
+            // zufälliges Bergfeld, das kein Ressourcenfeld ist:
+            Position firstpos = hill[random.nextInt(counter)];
+            for (int x = 0; x < 100; x++) {
+                if (resall.contains(firstpos)) {
+                    firstpos = hill[random.nextInt(counter)];
+                } else {
+                    break;
+                }
+            }
+            resnow.add(firstpos);
+
+            int blub = random.nextInt(8) + 3;
+
+            for (int b = 0; b < blub; b++) {
+                Position bla = resnow.get(random.nextInt(resnow.size()));
+                // direkte Nachbarn
+                if (bla.getX() > 0 && (ground[bla.getX() - 1][bla.getY()] < -80 || ground[bla.getX() - 1][bla.getY()] == TEXhill)) {
+                    resnow.add(new Position(bla.getX() - 1, bla.getY()));
+                }
+                if (bla.getX() < xSize - 1 && (ground[bla.getX() + 1][bla.getY()] < -80 || ground[bla.getX() + 1][bla.getY()] == TEXhill)) {
+                    resnow.add(new Position(bla.getX() + 1, bla.getY()));
+                }
+                if (bla.getY() > 0 && (ground[bla.getX()][bla.getY() - 1] < -80 || ground[bla.getX()][bla.getY() - 1] == TEXhill)) {
+                    resnow.add(new Position(bla.getX(), bla.getY() - 1));
+                }
+                if (bla.getY() < ySize - 1 && (ground[bla.getX()][bla.getY() + 1] < -80 || ground[bla.getX()][bla.getY() + 1] == TEXhill)) {
+                    resnow.add(new Position(bla.getX(), bla.getY() + 1));
+                }
+            }
+
+            resall.addAll(resnow);
+        }
+
+        // Textur drauf:
+        for (int i = 0; i < resall.size(); i++) {
+            ground[resall.get(i).getX()][resall.get(i).getY()] = TEXore;
+        }
+    }
+
     /**
      * Testet, ob dieses Feld gültig (= innerhalb der Map) ist
      */
@@ -523,11 +594,11 @@ public class LevelGenerator {
      * @param y1 Y-Koordinate des Startpunktes der Wand
      * @param x2 X-Koordinate des Endpunktes der Wand
      * @param y2 Y-Koordinate des Endpunktes der Wand
-     * @param level das Level, dem die Wand hinzugefÃƒÆ’Ã‚Â¼gt wird
+     * @param level das Level, dem die Wand hinzugefügt wird
      */
     private static void createWall(int x1, int y1, int x2, int y2, Level level) {
 
-        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), texrock);
+        drawPositions(findLine(new Position(x1, y1), new Position(x2, y2)), TEXrock);
         setCollision(findLine(new Position(x1, y1), new Position(x2, y2)), true, level);
     }
 

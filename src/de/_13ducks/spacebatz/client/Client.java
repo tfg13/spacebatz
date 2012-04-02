@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
 import de._13ducks.spacebatz.client.network.ClientMessageSender;
 import de._13ducks.spacebatz.client.network.ClientNetwork;
@@ -41,6 +42,10 @@ public class Client {
      * Der Nachrichteninterpreter.
      */
     private static ClientMessageInterpreter msgInterpreter;
+    /**
+     * Die Grafikengine.
+     */
+    private static Engine engine;
     /**
      * Der Spieler.
      */
@@ -301,5 +306,24 @@ public class Client {
      */
     public static ClientMessageSender getMsgSender() {
 	return msgSender;
+    }
+
+    /**
+     * Liefert die Engine
+     * @return the engine
+     */
+    public static Engine getEngine() {
+	return engine;
+    }
+
+    /**
+     * Setzt die Engine, falls das noch nicht passiert ist.
+     * @param aEngine the engine to set
+     */
+    public static void setEngine(Engine aEngine) {
+	if (Client.engine != null) {
+	    throw new IllegalArgumentException("Engine already set!");
+	}
+	Client.engine = aEngine;
     }
 }

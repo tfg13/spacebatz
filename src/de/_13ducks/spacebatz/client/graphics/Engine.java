@@ -769,6 +769,13 @@ public class Engine {
         }
     }
 
+    public void setZoomFact(int zoomFact) {
+	glLoadIdentity();
+	GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+	tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact));
+        tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+    }
+
     /**
      * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
      *

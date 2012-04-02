@@ -127,7 +127,8 @@ public class ClientMessageInterpreter {
 
                     @Override
                     public void run() {
-                        new Engine().start();
+                        Client.setEngine(new Engine());
+			Client.getEngine().start();
                     }
                 });
                 t.setName("CLIENT_ENGINE");

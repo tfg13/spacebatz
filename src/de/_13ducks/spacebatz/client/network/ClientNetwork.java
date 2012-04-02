@@ -185,9 +185,10 @@ public class ClientNetwork {
             case Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE:
                 // Dem Server sofort bestätigen
                 byte numberOfCharUpdates = data[5];
-                byte[] ackPack = new byte[4 * numberOfCharUpdates + 6];
+                byte[] ackPack = new byte[4 * numberOfCharUpdates + 7];
+		ackPack[6] = numberOfCharUpdates;
                 for (int i = 0; i < numberOfCharUpdates; i++) {
-                    Bits.putInt(ackPack, 6 + (i * 4), new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))).hashCode());
+                    Bits.putInt(ackPack, 7 + (i * 4), new Movement(Bits.getFloat(data, 36 + (32 * i)), Bits.getFloat(data, 40 + (32 * i)), Bits.getFloat(data, 44 + (32 * i)), Bits.getFloat(data, 48 + (32 * i)), Bits.getInt(data, 52 + (32 * i)), Bits.getFloat(data, 56 + (32 * i))).hashCode());
                 }
                 ackMove(ackPack);
                 break;
