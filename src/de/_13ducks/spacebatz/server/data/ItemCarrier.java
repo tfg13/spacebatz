@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.HashMap;
 
@@ -83,5 +85,72 @@ public class ItemCarrier extends AbilityUser {
      */
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    /**
+     * Item in leeren Slot anlegen
+     */
+    public boolean equipItem(int itemnetID, byte selectedslot) {
+        Item item = getItems().get(itemnetID);
+        // richtiger Itemtyp für diesen Slot?
+        int slottype = (int) item.getProperty("itemclass");
+
+        if (getEquipslots()[slottype] != null && item != null) {
+            // Jetzt neues Item anlegen
+            getEquipslots()[slottype][selectedslot] = item;
+            getItems().remove(item.getNetID());
+            //sender.getPlayer().calcEquipStats();
+            // Item-Anleg-Befehl zum Client senden
+            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Gibt zurück, ob noch ein freier Slot im Inventar ist
+     */
+    public boolean freeInventorySlot() {
+        if (getItems().size() < Settings.INVENTORY_SIZE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Entfernt Item aus gegebenem Itemslot, tut es ins Inventar
+     */
+    public boolean dequipItemToInventar(int slottype, byte selectedslot) {
+        if (getEquipslots()[slottype] != null) {
+            if (getEquipslots()[slottype][selectedslot] != null) {
+                Item itemx = getEquipslots()[slottype][selectedslot];
+                getEquipslots()[slottype][selectedslot] = null;
+                //sender.getPlayer().calcEquipStats();
+                // passt das Item ins Inventar?
+
+                getItems().put(itemx.getNetID(), itemx);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Entfernt Item aus gegebenem Itemslot, gibt es zurück
+     */
+    public Item dequipItemToGround(int slottype, byte selectedslot) {
+        Item item = null;
+        if (getEquipslots()[slottype] != null) {
+            if (getEquipslots()[slottype][selectedslot] != null) {
+                item = getEquipslots()[slottype][selectedslot];
+                getEquipslots()[slottype][selectedslot] = null;
+            }
+        }
+        return item;
     }
 }

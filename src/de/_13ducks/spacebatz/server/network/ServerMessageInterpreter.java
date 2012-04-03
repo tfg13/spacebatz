@@ -62,71 +62,17 @@ public class ServerMessageInterpreter {
      */
     public void interpretTCPMessage(byte cmdID, byte message[], Client sender) {
 
+
         switch (cmdID) {
             case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
                 int netID = Bits.getInt(message, 0);
                 byte selectedslot = message[4];
-
-                Item item = sender.getPlayer().getItems().get(netID);
-
-                // richtiger Itemtyp für diesen Slot?
-                int slottype = (int) item.getProperty("itemclass");
-
-                if (sender.getPlayer().getEquipslots()[slottype] != null) {
-                    if (item != null) {
-                        if (sender.getPlayer().getEquipslots()[slottype][selectedslot] != null) {
-                            // da ist bereits ein Item
-                            Item moveitem = sender.getPlayer().getEquipslots()[slottype][selectedslot];
-
-                            sender.getPlayer().getItems().put(moveitem.getNetID(), moveitem);
-                            Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 0, sender.clientID);
-                        }
-                        // Jetzt neues Item anlegen
-                        sender.getPlayer().getEquipslots()[slottype][selectedslot] = item;
-                        sender.getPlayer().getItems().remove(item.getNetID());
-//                        sender.getPlayer().calcEquipStats();
-                        // Item-Anleg-Befehl zum Client senden
-                        Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, sender.clientID);
-
-                    }
-                }
+                sender.getPlayer().clientEquipItem(netID, selectedslot);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
-                int slottype2 = Bits.getInt(message, 0);
+                int slottype = Bits.getInt(message, 0);
                 byte selslot = message[4];
-                if (sender.getPlayer().getEquipslots()[slottype2] != null) {
-                    if (sender.getPlayer().getEquipslots()[slottype2][selslot] != null) {
-                        Item itemx = sender.getPlayer().getEquipslots()[slottype2][selslot];
-                        sender.getPlayer().getEquipslots()[slottype2][selslot] = null;
-                        //sender.getPlayer().calcEquipStats();
-                        // passt das Item ins Inventar?
-                        if (sender.getPlayer().getItems().size() < Settings.INVENTORY_SIZE) {
-                            sender.getPlayer().getItems().put(itemx.getNetID(), itemx);
-                            Server.msgSender.sendItemDequip(slottype2, selslot, (byte) 0, sender.clientID);
-                        } else {
-                            Server.msgSender.sendItemDequip(slottype2, selslot, (byte) 1, sender.clientID);
-
-                            itemx.setPosX(sender.getPlayer().getX());
-                            itemx.setPosY(sender.getPlayer().getY());
-                            Server.game.getItemMap().put(itemx.getNetID(), itemx);
-                            byte[] serializedItem = null;
-                            ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                            ObjectOutputStream os;
-                            try {
-                                os = new ObjectOutputStream(bs);
-                                os.writeObject(itemx);
-                                os.flush();
-                                bs.flush();
-                                bs.close();
-                                os.close();
-                                serializedItem = bs.toByteArray();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                            Server.msgSender.sendItemDrop(serializedItem);
-                        }
-                    }
-                }
+                sender.getPlayer().clientDequipItem(slottype, selslot);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH:
 //                byte selslot2 = message[0];

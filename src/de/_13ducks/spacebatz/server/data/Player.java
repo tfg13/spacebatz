@@ -10,8 +10,13 @@
  */
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.shared.Item;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * Der Spielercharakter
@@ -106,5 +111,56 @@ public class Player extends ItemCarrier {
      */
     public void playerShoot(float angle) {
         useAbilityInAngle(Ability.SHOOT, angle);
+    }
+
+    /**
+     * Item in leeren Slot anlegen
+     */
+    public void clientEquipItem(int itemnetID, byte selectedslot) {
+        Item item = getItems().get(itemnetID);
+
+        // Item anlegen
+        if (equipItem(itemnetID, selectedslot)) {
+            // Wenn erfolgreich, an Client senden
+            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
+        }
+    }
+
+    /**
+     * Item ablegen
+     */
+    public void clientDequipItem(int slottype, byte selectedslot) {
+        if (freeInventorySlot()) {
+            // Item ins Inventar tun:
+            if (dequipItemToInventar(slottype, selectedslot)) {
+                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 0, netID);
+            }
+        } else {
+            // Item zu Poden werfen:
+            Item item = dequipItemToGround(slottype, selectedslot);
+            
+            if (item != null) {
+                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 1, netID);
+                item.setPosX(getX());
+                item.setPosY(getY());
+                Server.game.getItemMap().put(item.getNetID(), item);
+                byte[] serializedItem = null;
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                ObjectOutputStream os;
+                try {
+                    os = new ObjectOutputStream(bs);
+                    os.writeObject(item);
+                    os.flush();
+                    bs.flush();
+                    bs.close();
+                    os.close();
+                    serializedItem = bs.toByteArray();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                Server.msgSender.sendItemDrop(serializedItem);
+            }
+
+        }
     }
 }
