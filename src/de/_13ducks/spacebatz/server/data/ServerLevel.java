@@ -82,7 +82,7 @@ public class ServerLevel extends Level {
      * @return true wenn der Block zerstörbar ist ,fasle wenn nicht
      */
     public boolean isBlockDestroyable(int x, int y) {
-        if (0 < x && 0 < getSizeX() && 0 < y && y < getSizeY()) {
+        if (0 < x && x < getSizeX() && 0 < y && y < getSizeY()) {
             return destroyableBlockTypes.containsKey(getGround()[x][y]);
         } else {
             return false;

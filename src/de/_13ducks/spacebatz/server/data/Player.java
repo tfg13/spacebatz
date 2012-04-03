@@ -122,7 +122,7 @@ public class Player extends ItemCarrier {
         // Item anlegen
         if (equipItem(itemnetID, selectedslot)) {
             // Wenn erfolgreich, an Client senden
-            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
+            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, getClient().clientID);
         }
     }
 
@@ -133,14 +133,14 @@ public class Player extends ItemCarrier {
         if (freeInventorySlot()) {
             // Item ins Inventar tun:
             if (dequipItemToInventar(slottype, selectedslot)) {
-                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 0, netID);
+                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 0, getClient().clientID);
             }
         } else {
             // Item zu Poden werfen:
             Item item = dequipItemToGround(slottype, selectedslot);
             
             if (item != null) {
-                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 1, netID);
+                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 1, getClient().clientID);
                 item.setPosX(getX());
                 item.setPosY(getY());
                 Server.game.getItemMap().put(item.getNetID(), item);

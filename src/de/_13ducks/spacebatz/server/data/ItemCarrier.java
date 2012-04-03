@@ -95,7 +95,7 @@ public class ItemCarrier extends AbilityUser {
         // richtiger Itemtyp für diesen Slot?
         int slottype = (int) item.getProperty("itemclass");
 
-        if (getEquipslots()[slottype] != null && item != null) {
+        if (getEquipslots()[slottype] != null && getEquipslots()[slottype][selectedslot] == null && item != null) {
             // Jetzt neues Item anlegen
             getEquipslots()[slottype][selectedslot] = item;
             getItems().remove(item.getNetID());

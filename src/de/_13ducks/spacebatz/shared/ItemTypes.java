@@ -24,13 +24,54 @@ public class ItemTypes {
     public ItemTypes() {
         itemtypelist = new ArrayList<>();
 
-        // Hut
+        ItemAttribute money = new ItemAttribute("Money");
+        money.setProperty("pic", 0);
+        money.setProperty("itemclass", 0);
+        money.setProperty("quality", 1);
+        money.setProperty("amount", 1);
+        itemtypelist.add(money);
+
         ItemAttribute hat = new ItemAttribute("Hat");
         hat.setProperty("pic", 1);
-        hat.setProperty("itemclass", 1);
+        hat.setProperty("itemclass", 2);
         hat.setProperty("quality", 1);
-        hat.setProperty("amount", 1);
+        hat.setProperty("amount", 0);
         itemtypelist.add(hat);
+
+        ItemAttribute betterhat = new ItemAttribute("Better Hat");
+        betterhat.setProperty("pic", 1);
+        betterhat.setProperty("itemclass", 2);
+        betterhat.setProperty("quality", 3);
+        betterhat.setProperty("amount", 0);
+        itemtypelist.add(betterhat);
+
+        ItemAttribute pistol = new ItemAttribute("Pistol");
+        pistol.setProperty("pic", 4);
+        pistol.setProperty("itemclass", 1);
+        pistol.setProperty("quality", 1);
+        pistol.setProperty("amount", 0);
+        itemtypelist.add(pistol);
+
+        ItemAttribute laser = new ItemAttribute("Laser");
+        laser.setProperty("pic", 2);
+        laser.setProperty("itemclass", 1);
+        laser.setProperty("quality", 1);
+        laser.setProperty("amount", 0);
+        itemtypelist.add(laser);
+
+        ItemAttribute superlaser = new ItemAttribute("Super Laser");
+        superlaser.setProperty("pic", 3);
+        superlaser.setProperty("itemclass", 1);
+        superlaser.setProperty("quality", 1);
+        superlaser.setProperty("amount", 0);
+        itemtypelist.add(superlaser);
+
+        ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
+        rocketlauncher.setProperty("pic", 5);
+        rocketlauncher.setProperty("itemclass", 1);
+        rocketlauncher.setProperty("quality", 1);
+        rocketlauncher.setProperty("amount", 0);
+        itemtypelist.add(rocketlauncher);
 
 
 
