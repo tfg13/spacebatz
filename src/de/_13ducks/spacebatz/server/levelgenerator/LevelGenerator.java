@@ -12,7 +12,7 @@ package de._13ducks.spacebatz.server.levelgenerator;
 
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.shared.Level;
-import de._13ducks.spacebatz.shared.Position;
+import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 import java.util.Random;
 

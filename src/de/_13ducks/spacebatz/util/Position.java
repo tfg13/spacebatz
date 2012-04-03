@@ -8,7 +8,7 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.shared;
+package de._13ducks.spacebatz.util;
 
 /**
  *

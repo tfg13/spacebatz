@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.levelgenerator;
 
-import de._13ducks.spacebatz.shared.Position;
+import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 
 /**
