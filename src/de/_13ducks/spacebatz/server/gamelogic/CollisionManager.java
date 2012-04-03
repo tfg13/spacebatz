@@ -81,9 +81,7 @@ public class CollisionManager {
                 if (e instanceof Char) {
                     Char c = (Char) e;
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
-                        if (!c.equals(bullet.getOwner())) {
-                            // Bullet kollidiert mit einer Entity die nicht der owner des Bullets ist
-                        }
+                        HitManager.charBulletCollision(c, bullet);
                     }
                 }
             }
