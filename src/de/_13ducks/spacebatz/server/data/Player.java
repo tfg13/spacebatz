@@ -115,6 +115,8 @@ public class Player extends ItemCarrier {
 
     /**
      * Item in leeren Slot anlegen
+     * @param itemnetID NetID des Items
+     * @param selectedslot ausgewählter Slot
      */
     public void clientEquipItem(int itemnetID, byte selectedslot) {
         Item item = getItems().get(itemnetID);
@@ -128,6 +130,8 @@ public class Player extends ItemCarrier {
 
     /**
      * Item ablegen
+     * @param slottype Slotart (Waffe, Hut, ...)
+     * @param selectedslot Nr. des Slots dieser Art
      */
     public void clientDequipItem(int slottype, byte selectedslot) {
         if (freeInventorySlot()) {

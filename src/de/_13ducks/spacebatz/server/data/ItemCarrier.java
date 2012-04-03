@@ -89,6 +89,8 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Item in leeren Slot anlegen
+     * @param itemnetID NetID des Items
+     * @param selectedslot ausgewählter Slot
      */
     public boolean equipItem(int itemnetID, byte selectedslot) {
         Item item = getItems().get(itemnetID);
@@ -121,6 +123,8 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Entfernt Item aus gegebenem Itemslot, tut es ins Inventar
+     * @param slottype Slotart (Waffe, Hut, ...)
+     * @param selectedslot Nr. des Slots dieser Art
      */
     public boolean dequipItemToInventar(int slottype, byte selectedslot) {
         if (getEquipslots()[slottype] != null) {
@@ -142,6 +146,8 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Entfernt Item aus gegebenem Itemslot, gibt es zurück
+     * @param slottype Slotart (Waffe, Hut, ...)
+     * @param selectedslot Nr. des Slots dieser Art
      */
     public Item dequipItemToGround(int slottype, byte selectedslot) {
         Item item = null;
