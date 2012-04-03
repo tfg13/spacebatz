@@ -53,7 +53,7 @@ public class DropManager {
             }
         }
         ItemAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
-        Item item = new Item(x, y, stats, Server.game.newNetID());
+        Item item = new Item(stats.getName(), x, y, stats, Server.game.newNetID());
 
         if ((int) stats.getProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);

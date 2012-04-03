@@ -290,14 +290,24 @@ public class CollisionManager {
         Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
-            if (e instanceof ItemCarrier) {
-                ItemCarrier collector = (ItemCarrier) e;
+            if (e instanceof Player) {
+                Player collector = (Player) e;
                 Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
                 while (iterator.hasNext()) {
                     Item item = iterator.next();
                     double distance = Distance.getDistance(collector.getX(), collector.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                        //
+                        if (distance < Settings.SERVER_COLLISION_DISTANCE) {
+                            if (item.getName().equals("Money")) {
+                                collector.setMoney(collector.getMoney() + item.getAmount());
+                                iterator.remove();
+                                Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
+                            } else if (collector.getItems().size() < Settings.INVENTORY_SIZE) {
+                                collector.putItem(item.getNetID(), item);
+                                iterator.remove();
+                                Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
+                            }
+                        }
                     }
                 }
             }

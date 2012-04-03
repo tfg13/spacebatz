@@ -32,6 +32,7 @@ public class ItemAttribute extends Properties {
     public ItemAttribute(String name, Properties stats) {
         super();
         addProperties(stats);
+        this.name = name;
     }
 
     /**
@@ -41,6 +42,7 @@ public class ItemAttribute extends Properties {
      */
     public ItemAttribute(String name) {
         super();
+        this.name = name;
     }
 
     /**

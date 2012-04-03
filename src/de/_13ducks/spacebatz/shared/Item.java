@@ -54,19 +54,20 @@ public class Item extends Properties {
     /**
      * Erzeugt ein neues Item
      *
+     * @param name der Name des Items
      * @param posX
      * @param posY
      * @param baseAttribute
      * @param netID
      */
-    public Item(double posX, double posY, ItemAttribute baseAttribute, int netID) {
+    public Item(String name, double posX, double posY, ItemAttribute baseAttribute, int netID) {
+        this.name = name;
         this.posX = posX;
         this.posY = posY;
         this.baseAttribute = baseAttribute;
         this.netID = netID;
         this.amount = 1;
         itemAttributes = new ArrayList<>();
-
     }
 
     /**
