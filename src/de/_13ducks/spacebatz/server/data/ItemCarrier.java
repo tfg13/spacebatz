@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.shared.Item;
+import java.util.HashMap;
 
 /**
  * Ein Itemträger, kann Items tragen und ausrüsten.
@@ -9,6 +10,19 @@ import de._13ducks.spacebatz.shared.Item;
  * @author michael
  */
 public class ItemCarrier extends AbilityUser {
+
+    /**
+     * Items im Inventar
+     */
+    private HashMap<Integer, Item> items;
+    /**
+     * Wieviel Geld im Inventar ist
+     */
+    private int money;
+    /**
+     * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
+     */
+    private Item[][] equipslots = new Item[3][];
 
     /**
      * Erzeugt einen neuen ItemCarrier
@@ -20,24 +34,54 @@ public class ItemCarrier extends AbilityUser {
      */
     public ItemCarrier(double posX, double posY, int netId, byte typeId) {
         super(posX, posY, netId, typeId);
+        items = new HashMap<>();
+        Item[] wslot = new Item[3];
+        Item[] aslot = new Item[1];
+
+        equipslots[1] = wslot;
+        equipslots[2] = aslot;
 
     }
 
-    public void collectItemToInventory(Item item) {
+    public Item[][] getEquipslots() {
+        return equipslots;
     }
 
-    public void dropItemFromInventory(Item item) {
+    /**
+     * @return the items
+     */
+    public HashMap<Integer, Item> getItems() {
+        return items;
     }
 
-    public void equipItem(Item item, int Slot) {
+    /**
+     * @param items the items to set
+     */
+    public void setItems(HashMap<Integer, Item> items) {
+        this.items = items;
     }
 
-    public void dropEquipedItem(Item item) {
+    /**
+     * @param items the items to add
+     */
+    public void putItem(int netID, Item item) {
+        this.items.put(netID, item);
+        if (item.getProperty("itemclass") == 0) {
+            setMoney(getMoney() + (int) item.getProperty("amount"));
+        }
     }
 
-    public void unequipItemToInventory(Item item) {
+    /**
+     * @return the money
+     */
+    public int getMoney() {
+        return money;
     }
 
-    public void selectActiveWeapon(int slot) {
+    /**
+     * @param money the money to set
+     */
+    public void setMoney(int money) {
+        this.money = money;
     }
 }
