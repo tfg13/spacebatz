@@ -39,7 +39,6 @@ public abstract class Char extends Entity {
 
         // PictureID setzen:
         setProperty("pictureId", 0);
-
         setProperty("size", Settings.CHARSIZE);
         setProperty("hitpoints", Settings.CHARHEALTH);
         setProperty("damage", 1);
@@ -60,34 +59,37 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Inkrementiert den Wert einer Eigenschaft
+     * Inkrementiert den Wert einer Eigenschaft.
      *
      * @param name der Name der Eigenschaft, der inkrementiert werden soll
      * @param value der Wert, um den die Eigenschaft inkrementiert werden soll
+     * @return der neue Wert der Eigenschaft
      */
-    final public void incrementProperty(String name, double value) {
+    final public double incrementProperty(String name, double value) {
         properties.incrementProperty(name, value);
+        return properties.getProperty(name);
     }
 
     /**
-     * Dekrementiert den Wert einer Eigenschaft
+     * Dekrementiert den Wert einer Eigenschaft.
      *
      * @param name der Name der Eigenschaft, der dekrementiert werden soll
      * @param value der Wert, um den die Eigenschaft dekrementiert werden soll
+     * @return der neue Wert der Eigenschaft
      */
-    final public void decrementProperty(String name, double value) {
+    final public double decrementProperty(String name, double value) {
         properties.decrementProperty(name, value);
+        return properties.getProperty(name);
     }
 
     /**
-     * Setzt den Wert einer Eigenschaft
+     * Setzt den Wert einer Eigenschaft.
      *
      * @param name der Name der Eigenschaft, der gesetzt werden soll
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setProperty(String name, double value) {
         properties.setProperty(name, value);
-
     }
 
     /**
