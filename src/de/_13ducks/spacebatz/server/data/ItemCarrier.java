@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.Weapon;
 import java.util.HashMap;
 
 /**
@@ -25,6 +26,10 @@ public class ItemCarrier extends AbilityUser {
      * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
      */
     private Item[][] equipslots = new Item[3][];
+    /**
+     * aktuell ausgewählte Waffe
+     */
+    private byte selectedweapon = 0;
 
     /**
      * Erzeugt einen neuen ItemCarrier
@@ -158,5 +163,27 @@ public class ItemCarrier extends AbilityUser {
             }
         }
         return item;
+    }
+
+    /**
+     * Wählt gerade aktive Waffe aus
+     * @param selectedweapon aktiver Waffenslot (0 bis 2)
+     * @return Wahr wenn gültiger Slot
+     */
+    public boolean setSelectedweapon(byte selectedweapon) {
+        if (selectedweapon >= 0 && selectedweapon <= 2) {
+            this.selectedweapon = selectedweapon;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Gibt die gerade ausgewählte Waffe zurück
+     * @return ein Weapon
+     */
+    public Weapon getAciveWeapon() {
+        return (Weapon) equipslots[1][selectedweapon];
     }
 }
