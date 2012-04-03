@@ -470,15 +470,19 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                int dir = c.getDir() * 2;
-                int tilex = dir;
+                int tilex = 0;
                 int tiley = 0;
                 if (enemy.getEnemytypeid() == 2) {
                     tiley = 2;
                 }
                 if (enemy.getEnemytypeid() == 0) {
                     glColor3f(1f, .5f, .5f);
-                }
+		}
+		glPushMatrix();
+		glTranslated(c.getX() + panX, c.getY() + panY, 0);
+		glRotated(c.getDir() / Math.PI * 180,0, 0, 1);
+		glTranslated(- (c.getX() + panX), - (c.getY() + panY), 0);
+                glBegin(GL_QUADS);
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
@@ -490,6 +494,7 @@ public class Engine {
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
                 glColor3f(1f, 1f, 1f);
+		glPopMatrix();
             }
         }
 
@@ -497,17 +502,21 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-                int dir = c.getDir() * 2;
+		glPushMatrix();
+		glTranslated(c.getX() + panX, c.getY() + panY, 0);
+		glRotated(c.getDir() / Math.PI * 180.0,0, 0, 1);
+		glTranslated(- (c.getX() + panX), - (c.getY() + panY), 0);
                 glBegin(GL_QUADS);
-                glTexCoord2f(0.0625f * dir, 0);
+                glTexCoord2f(0, 0);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + dir), 0);
+                glTexCoord2f(0.125f , 0);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
+                glTexCoord2f(0.125f, 0.0625f * 2);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-                glTexCoord2f(0.0625f * dir, 0.0625f * 2);
+                glTexCoord2f(0, 0.125f);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
+		glPopMatrix();
             }
         }
 
