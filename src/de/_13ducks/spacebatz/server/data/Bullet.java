@@ -10,7 +10,9 @@
  */
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.util.Bits;
+import java.util.ArrayList;
 
 /**
  * Ein Geschoss.
@@ -33,6 +35,10 @@ public class Bullet extends Entity {
      * Tick, zu dem die Bullet gelöscht wird
      */
     private int deletetick;
+    /**
+     * Die Effekte, die dieses Geschoss hat.
+     */
+    private ArrayList<Effect> effects;
 
     /**
      * Erzeugt ein neues Bullet
@@ -55,6 +61,7 @@ public class Bullet extends Entity {
         setSpeed(speed);
         this.owner = owner;
         this.deletetick = spawntick + lifetime;
+        effects = new ArrayList<>();
     }
 
     /**
@@ -73,6 +80,32 @@ public class Bullet extends Entity {
      */
     public Char getOwner() {
         return owner;
+    }
+
+    /**
+     * Fügt dem Bullet einen neuen Effekt hinzu.
+     *
+     * @param effect der neue Effekt
+     */
+    public void addEffect(Effect effect) {
+        effects.add(effect);
+    }
+
+    /**
+     * Akiviert alle AoE Effekte an einer Position.
+     *
+     * @param posX die X-Koordinate der Position an der der AoE-Effekt ausgelöst wird
+     * @param posY die Y-Koordinate der Position an der der AoE-Effekt ausgelöst wird
+     */
+    public void activateEffectsAtPosition(double posX, double posY) {
+    }
+
+    /**
+     * Wendet alle Effekte auf einen Char an.
+     *
+     * @param target der Char auf den die Effekte ngewandt werden
+     */
+    public void applyEffectsToChar(Char target) {
     }
 
     @Override
