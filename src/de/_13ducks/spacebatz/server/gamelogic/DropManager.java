@@ -24,7 +24,7 @@ import java.util.Random;
  * @author Jojo
  */
 public class DropManager {
-
+    
     private final static ItemTypes itemtypes = new ItemTypes();
     private final static ItemAttributeTypes itemattribute = new ItemAttributeTypes();
     private static ArrayList<ItemAttribute> itemtypelist = itemtypes.getItemtypelist();
@@ -53,16 +53,16 @@ public class DropManager {
             }
         }
         ItemAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
-        Item item = new Item(stats.getName(), x, y, stats, Server.game.newNetID());
-
+        Item item = new Item(stats.getName(), x, y, Server.game.newNetID());
+        item.addAttribute(stats);
         if ((int) stats.getProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);
         } else {
             item = addAmount(item, droplevel);
         }
-
+        
         Server.game.getItemMap().put(item.getNetID(), item);
-
+        
         byte[] serializedItem = null;
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         ObjectOutputStream os;
@@ -74,11 +74,11 @@ public class DropManager {
             bs.close();
             os.close();
             serializedItem = bs.toByteArray();
-
+            
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
+        
         Server.msgSender.sendItemDrop(serializedItem);
     }
 
@@ -92,10 +92,10 @@ public class DropManager {
         ArrayList<ItemAttribute> attributesofrightclass = new ArrayList<>();
         ArrayList<ItemAttribute> qualityallowedattributes = new ArrayList<>();
         ArrayList<ItemAttribute> addattributes = new ArrayList<>();
-
+        
         attributesofrightclass.addAll(itemattribute.getAttributelist());
-
-
+        
+        
         for (int i = 0; i < attributesofrightclass.size(); i++) {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
             double test = attributesofrightclass.get(i).getProperty("quality");
@@ -103,7 +103,7 @@ public class DropManager {
                 qualityallowedattributes.add(attributesofrightclass.get(i));
             }
         }
-
+        
         Random random = new Random();
         int rand = random.nextInt(21);
 
@@ -122,15 +122,15 @@ public class DropManager {
         } else {
             maxatt = 5;
         }
-
+        
         for (int i = 0; i < maxatt; i++) {
             ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
             if (!addattributes.contains(randomatt)) {
                 item.addAttribute(randomatt);
             }
         }
-
-
+        
+        
         return item;
     }
 

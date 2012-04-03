@@ -26,8 +26,8 @@ public class ItemTypes {
 
         // Hut
         ItemAttribute hat = new ItemAttribute("Hat");
-        hat.setProperty("pic", 0);
-        hat.setProperty("itemclass", 0);
+        hat.setProperty("pic", 1);
+        hat.setProperty("itemclass", 1);
         hat.setProperty("quality", 1);
         hat.setProperty("amount", 1);
         itemtypelist.add(hat);

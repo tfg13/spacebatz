@@ -22,10 +22,6 @@ public class Item extends Properties {
 
     private static final long serialVersionUID = 1L;
     /**
-     * Die Grundwerte für dieses Item.
-     */
-    private ItemAttribute baseAttribute;
-    /**
      * Die netID des Items.
      */
     private int netID;
@@ -60,11 +56,11 @@ public class Item extends Properties {
      * @param baseAttribute
      * @param netID
      */
-    public Item(String name, double posX, double posY, ItemAttribute baseAttribute, int netID) {
+    public Item(String name, double posX, double posY, int netID) {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
-        this.baseAttribute = baseAttribute;
+
         this.netID = netID;
         this.amount = 1;
         itemAttributes = new ArrayList<>();
