@@ -109,4 +109,13 @@ public abstract class Char extends Entity {
     final public void removeProperties(Properties otherProperties) {
         properties.removeProperties(otherProperties);
     }
+
+    /**
+     * Gibt die Properties dieses Chars zurück.
+     *
+     * @return die Propertie dieses Chars
+     */
+    protected Properties getProperties() {
+        return properties;
+    }
 }
