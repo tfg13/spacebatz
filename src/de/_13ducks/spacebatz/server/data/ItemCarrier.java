@@ -94,6 +94,7 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Item in leeren Slot anlegen
+     *
      * @param itemnetID NetID des Items
      * @param selectedslot ausgewählter Slot
      */
@@ -106,7 +107,8 @@ public class ItemCarrier extends AbilityUser {
             // Jetzt neues Item anlegen
             getEquipslots()[slottype][selectedslot] = item;
             getItems().remove(item.getNetID());
-            //sender.getPlayer().calcEquipStats();
+            // die Stats des Items übernehmen:
+            addProperties(item);
             // Item-Anleg-Befehl zum Client senden
             Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
             return true;
@@ -128,6 +130,7 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Entfernt Item aus gegebenem Itemslot, tut es ins Inventar
+     *
      * @param slottype Slotart (Waffe, Hut, ...)
      * @param selectedslot Nr. des Slots dieser Art
      */
@@ -136,9 +139,9 @@ public class ItemCarrier extends AbilityUser {
             if (getEquipslots()[slottype][selectedslot] != null) {
                 Item itemx = getEquipslots()[slottype][selectedslot];
                 getEquipslots()[slottype][selectedslot] = null;
-                //sender.getPlayer().calcEquipStats();
+                // die Stats wieder abziehen:
+                removeProperties(itemx);
                 // passt das Item ins Inventar?
-
                 getItems().put(itemx.getNetID(), itemx);
                 return true;
             } else {
@@ -151,6 +154,7 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Entfernt Item aus gegebenem Itemslot, gibt es zurück
+     *
      * @param slottype Slotart (Waffe, Hut, ...)
      * @param selectedslot Nr. des Slots dieser Art
      */
@@ -160,6 +164,7 @@ public class ItemCarrier extends AbilityUser {
             if (getEquipslots()[slottype][selectedslot] != null) {
                 item = getEquipslots()[slottype][selectedslot];
                 getEquipslots()[slottype][selectedslot] = null;
+                removeProperties(item);
             }
         }
         return item;
@@ -167,6 +172,7 @@ public class ItemCarrier extends AbilityUser {
 
     /**
      * Wählt gerade aktive Waffe aus
+     *
      * @param selectedweapon aktiver Waffenslot (0 bis 2)
      * @return Wahr wenn gültiger Slot
      */
@@ -178,9 +184,10 @@ public class ItemCarrier extends AbilityUser {
             return false;
         }
     }
-    
+
     /**
      * Gibt die gerade ausgewählte Waffe zurück
+     *
      * @return ein Weapon
      */
     public Weapon getAciveWeapon() {
