@@ -250,7 +250,10 @@ public final class Settings {
      */
     public static final int CHARHEALTH = 10;
     /**
-     * Client-NetGraph per default an?
+     * Default-Level des netGraphen.
+     * 0 - Aus
+     * 1 - + Netzwerkdebug
+     * 2 - + GameDebug
      */
-    public static final boolean CLIENT_NETGRAPH_ON = true;
+    public static final int CLIENT_NETGRAPH_LEVEL = 2;
 }
