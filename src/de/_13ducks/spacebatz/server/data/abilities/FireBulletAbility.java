@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Bullet;
 import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.shared.Properties;
+import java.util.Random;
 
 /**
  * Die Fähigkeit, Bullets zu schießen.
@@ -12,6 +13,25 @@ import de._13ducks.spacebatz.shared.Properties;
  * @author michael
  */
 public class FireBulletAbility extends Ability {
+    // damage, attackspeed, range, bulletpic, bulletspeed, spread, explotionradius
+
+    private double damage;
+    private double attackspeed;
+    private double range;
+    private int bulletpic;
+    private double bulletspeed;
+    private double spread;
+    private double explosionradius;
+
+    public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
+        this.damage = damage;
+        this.attackspeed = attackspeed;
+        this.range = range;
+        this.bulletpic = bulletpic;
+        this.bulletspeed = bulletspeed;
+        this.spread = spread;
+        this.explosionradius = explosionradius;
+    }
 
     @Override
     public void use() {
@@ -30,7 +50,11 @@ public class FireBulletAbility extends Ability {
 
     @Override
     public void useInAngle(double angle) {
-        Bullet bullet = new Bullet(Server.game.getTick(), 300, owner.getX(), owner.getY(), angle, 0.5, 1, Server.game.newNetID(), owner);
+        Random random = new Random();
+        angle += random.nextGaussian() * spread;
+        int lifetime = (int) (range / bulletspeed);
+        
+        Bullet bullet = new Bullet(Server.game.getTick(), lifetime, owner.getX(), owner.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), owner);
         Server.game.netIDMap.put(bullet.netID, bullet);
     }
 

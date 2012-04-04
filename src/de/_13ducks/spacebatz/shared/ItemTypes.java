@@ -51,15 +51,15 @@ public class ItemTypes {
         pistol.setProperty("itemclass", 1);
         pistol.setProperty("quality", 1);
         pistol.setProperty("amount", 0);
+        pistol.setAbility(new FireBulletAbility(5, 15.0, 10.0, 1, 0.35, 0.025, 0.0));
         itemtypelist.add(pistol);
 
         ItemBaseAttribute laser = new ItemBaseAttribute("Laser");
         laser.setProperty("pic", 2);
         laser.setProperty("itemclass", 1);
         laser.setProperty("quality", 1);
-        laser.setProperty("amount", 0);
-        
-        laser.setAbility(new FireBulletAbility());
+        laser.setProperty("amount", 0);        
+        laser.setAbility(new FireBulletAbility(4, 6.0, 9.0, 3, 0.35, 0.1, 0.0));
         itemtypelist.add(laser);
 
         ItemBaseAttribute superlaser = new ItemBaseAttribute("Super Laser");
@@ -67,6 +67,7 @@ public class ItemTypes {
         superlaser.setProperty("itemclass", 1);
         superlaser.setProperty("quality", 1);
         superlaser.setProperty("amount", 0);
+        superlaser.setAbility(new FireBulletAbility(25, 25.0, 12.0, 2, 0.5, 0.02, 0.0));
         itemtypelist.add(superlaser);
 
         ItemBaseAttribute rocketlauncher = new ItemBaseAttribute("Rocket Launcher");
@@ -74,9 +75,10 @@ public class ItemTypes {
         rocketlauncher.setProperty("itemclass", 1);
         rocketlauncher.setProperty("quality", 1);
         rocketlauncher.setProperty("amount", 0);
+        rocketlauncher.setAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
         itemtypelist.add(rocketlauncher);
 
-
+// damage, attackspeed, range, -, bulletpic, bulletspeed, spread, explotionradius
 
 // name, pic, itemclass, quality, amount, armor, Waffenstats
 
