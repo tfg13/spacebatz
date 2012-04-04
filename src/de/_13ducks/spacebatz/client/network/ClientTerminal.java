@@ -99,8 +99,8 @@ public class ClientTerminal {
                             if (words.length == 2) {
                                 try {
                                     int num = Integer.parseInt(words[1]);
-                                    if (num == 0 || num == 1) {
-                                        NetStats.netGraph = num == 1;
+                                    if (num >= 0 || num <= 2) {
+                                        NetStats.netGraph = num;
                                         break;
                                     }
                                 } catch (NumberFormatException ex) {

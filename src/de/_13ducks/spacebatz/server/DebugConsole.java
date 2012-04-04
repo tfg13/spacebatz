@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server;
 
-import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import java.io.*;
@@ -228,16 +227,6 @@ public class DebugConsole {
                     case "su":
                         loglevel = LOGLEVEL_NONE;
                         break;
-                    case "net_graph":
-                        if (words.length == 1) {
-                            outStream.println("Usage: \"net_graph N\", available modes: Off(0), On(1)");
-                        } else if (words.length == 2) {
-                            int mode = Integer.parseInt(words[1]);
-                            if (mode == 0 || mode == 1) {
-                                NetStats.netGraph = (mode == 1);
-                            }
-                        }
-                        break;
                     case "list":
                         outStream.println("connected clients:");
                         for (Client c : Server.game.clients.values()) {
@@ -326,7 +315,6 @@ public class DebugConsole {
                         outStream.println("help                 - prints this help");
                         outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
-                        outStream.println("net_graph N          - Enables or disables client_netgraphs. (Local only!)");
                         outStream.println("resync N             - Resync client with id N");
                         outStream.println("spawnitem            - Spawns an item on every player's position");
                         outStream.println("spawnenemy           - Spawns an enemy on every player's position");

@@ -67,7 +67,7 @@ public final class NetStats {
     /**
      * Ob der Net-Graph derzeit aktiv ist.
      */
-    public static boolean netGraph = Settings.CLIENT_NETGRAPH_ON;
+    public static int netGraph = Settings.CLIENT_NETGRAPH_LEVEL;
     /**
      * Wieviele Pakete ankommen.
      */
