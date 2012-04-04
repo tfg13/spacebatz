@@ -758,15 +758,20 @@ public class Engine {
         }
 
         // Net-Graph?
-        if (NetStats.netGraph) {
+        if (NetStats.netGraph > 0) {
             glDisable(GL_TEXTURE_2D);
             glColor4f(.9f, .9f, .9f, .7f);
-            glRectf(0, tilesY, 10, tilesY - 1.5f);
+            glRectf(0, tilesY, 10, NetStats.netGraph == 2 ? tilesY - 2f : tilesY - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             renderText("delay: spec " + (NET_TICKSYNC_MAXPING / Client.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
             renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
             renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
+            if (NetStats.netGraph == 2) {
+                // Einheitenposition:
+                renderText("playerpos: " + Client.getPlayer().getX(), 0, tilesY - 2f);
+                renderText(String.valueOf(Client.getPlayer().getY()), 6.5f, tilesY - 2f);
+            }
         }
 
         if (terminal) {
