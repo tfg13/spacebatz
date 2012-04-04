@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.client.InventorySlot;
+import de._13ducks.spacebatz.server.data.abilities.Ability;
 import java.util.ArrayList;
 
 /**
@@ -46,6 +47,10 @@ public class Item extends Properties {
      * Der Name ds Items
      */
     private String name;
+    /**
+     * Die Fähigkeit dieser Waffe
+     */
+    private Ability weaponAbility;
 
     /**
      * Erzeugt ein neues Item
@@ -60,10 +65,18 @@ public class Item extends Properties {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
-
         this.netID = netID;
         this.amount = 1;
         itemAttributes = new ArrayList<>();
+    }
+
+    /**
+     * Gibt die Fähigkeit dieser Waffe zurück.
+     *
+     * @return die Fähigkeit dieser Waffe
+     */
+    public Ability getAbility() {
+        return weaponAbility;
     }
 
     /**
