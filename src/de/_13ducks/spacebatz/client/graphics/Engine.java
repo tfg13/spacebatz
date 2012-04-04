@@ -100,6 +100,11 @@ public class Engine {
      * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche andere Eingaben.
      */
     private boolean terminal = false;
+    /**
+     * Der aktuelle Zoomfaktor.
+     * Wird benötigt, um Schriften immer gleich groß anzeigen zu können
+     */
+    private int zoomFactor = 2;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -477,11 +482,11 @@ public class Engine {
                 }
                 if (enemy.getEnemytypeid() == 0) {
                     glColor3f(1f, .5f, .5f);
-		}
-		glPushMatrix();
-		glTranslated(c.getX() + panX, c.getY() + panY, 0);
-		glRotated(c.getDir() / Math.PI * 180,0, 0, 1);
-		glTranslated(- (c.getX() + panX), - (c.getY() + panY), 0);
+                }
+                glPushMatrix();
+                glTranslated(c.getX() + panX, c.getY() + panY, 0);
+                glRotated(c.getDir() / Math.PI * 180, 0, 0, 1);
+                glTranslated(-(c.getX() + panX), -(c.getY() + panY), 0);
                 glBegin(GL_QUADS);
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
@@ -494,7 +499,7 @@ public class Engine {
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
                 glColor3f(1f, 1f, 1f);
-		glPopMatrix();
+                glPopMatrix();
             }
         }
 
@@ -502,21 +507,21 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-		glPushMatrix();
-		glTranslated(c.getX() + panX, c.getY() + panY, 0);
-		glRotated(c.getDir() / Math.PI * 180.0,0, 0, 1);
-		glTranslated(- (c.getX() + panX), - (c.getY() + panY), 0);
+                glPushMatrix();
+                glTranslated(c.getX() + panX, c.getY() + panY, 0);
+                glRotated(c.getDir() / Math.PI * 180.0, 0, 0, 1);
+                glTranslated(-(c.getX() + panX), -(c.getY() + panY), 0);
                 glBegin(GL_QUADS);
                 glTexCoord2f(0, 0);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.125f , 0);
+                glTexCoord2f(0.125f, 0);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
                 glTexCoord2f(0.125f, 0.0625f * 2);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
                 glTexCoord2f(0, 0.125f);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
-		glPopMatrix();
+                glPopMatrix();
             }
         }
 
@@ -761,7 +766,7 @@ public class Engine {
             glEnable(GL_TEXTURE_2D);
             renderText("delay: spec " + (NET_TICKSYNC_MAXPING / Client.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
             renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
-            renderText("fps: " + fps + " ping: "  + NetStats.ping, 0, tilesY - 1.5f);
+            renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
         }
 
         if (terminal) {
@@ -771,18 +776,19 @@ public class Engine {
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             renderText(Client.terminal.getCurrentLine(), tilesX / 3, 0, true);
-            int numberoflines = (int) (tilesY * 1.6);
+            int numberoflines = tilesY * zoomFactor;
             for (int i = 0; i < numberoflines - 1; i++) {
-                renderText(Client.terminal.getHistory(i), tilesX / 3, (i + 1) * .3125f, true);
+                renderText(Client.terminal.getHistory(i), tilesX / 3, (float) tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
         }
     }
 
     public void setZoomFact(int zoomFact) {
-	glLoadIdentity();
-	GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
-	tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact));
+        glLoadIdentity();
+        GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+        tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+        zoomFactor = zoomFact;
     }
 
     /**
@@ -793,28 +799,31 @@ public class Engine {
      * @param y PositionY (unten rechts)
      */
     private void renderText(String text, float x, float y) {
-	renderText(text, x, y, false);
+        renderText(text, x, y, false);
     }
 
     /**
      * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
      *
      * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
+     * @param x Relative X-Position (0-1)
+     * @param y Relative Y-Position (0-1)
      * @param mono Monospace-Font und (!) klein?
      */
     private void renderText(String text, float x, float y, boolean mono) {
         float next = 0;
         byte[] chars = text.getBytes(charset);
         font[mono ? 1 : 0].bind();
+        float size = .5f;
+        if (mono) {
+            size /= zoomFactor;
+        }
         for (int i = 0; i < chars.length; i++) {
             byte c = chars[i];
             int tileX = c % 16;
             int tileY = c / 16;
             float tx = tileX / 16f;
             float ty = tileY / 16f;
-	    float size = mono ? .25f : .5f;
             glBegin(GL_QUADS);
             glTexCoord2f(tx, ty);
             glVertex3f(x + next, y + size, 0.0f);
@@ -822,11 +831,11 @@ public class Engine {
             glVertex3f(x + next + size, y + size, 0.0f);
             glTexCoord2f(tx + .0625f, ty + .0625f);
             glVertex3f(x + next + size, y, 0.0f);
-            glTexCoord2f(tx, ty + .0635f);
+            glTexCoord2f(tx, ty + .0625f);
             glVertex3f(x + next, y, 0.0f);
             glEnd();
             // Spacing dieses chars weiter gehen:
-            next += mono ? 3 / 16f : spaceing[c] / 16f;
+            next += (mono ? 6 / 16f / zoomFactor : spaceing[c] / 16f);
         }
     }
 
@@ -853,7 +862,7 @@ public class Engine {
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
         font[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
-	font[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font_mono.png"), GL_NEAREST);
+        font[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font_mono.png"), GL_NEAREST);
     }
 
     /**
