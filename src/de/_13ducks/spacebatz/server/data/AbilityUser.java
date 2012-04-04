@@ -127,4 +127,13 @@ public class AbilityUser extends Char {
             return null;
         }
     }
+
+    /**
+     * Lädt die Stats des Besitzers neu, falls sich etwas geändert hat was die Fähigkeiten beeinflusst.
+     */
+    public void refreshAbilities() {
+        for (Ability ability : abilities.values()) {
+            ability.refreshProperties();
+        }
+    }
 }
