@@ -75,9 +75,8 @@ public class ServerMessageInterpreter {
                 sender.getPlayer().clientDequipItem(slottype, selslot);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH:
-//                byte selslot2 = message[0];
-//                sender.getPlayer().selectAttack(selslot2);
-//                Server.msgSender.sendWeaponswitch(sender, selslot2);
+                byte selslot2 = message[0];
+                sender.getPlayer().clientSelectWeapon(selslot2);
                 break;
             case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
                 Server.disconnectClient(sender);

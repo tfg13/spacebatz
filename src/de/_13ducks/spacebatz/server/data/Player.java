@@ -33,10 +33,6 @@ public class Player extends ItemCarrier {
      * Die möglichen Angriffe des Spielers (werden durch Waffen bestimmt)
      */
     private PlayerAttack[] attack = new PlayerAttack[3]; // # Waffenslots
-    /*
-     * Nummer des Angriffs, der zurzeit ausgewählt ist
-     */
-    private int selectedattack = 0;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -142,7 +138,7 @@ public class Player extends ItemCarrier {
         } else {
             // Item zu Poden werfen:
             Item item = dequipItemToGround(slottype, selectedslot);
-            
+
             if (item != null) {
                 Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 1, getClient().clientID);
                 item.setPosX(getX());
@@ -165,6 +161,16 @@ public class Player extends ItemCarrier {
                 Server.msgSender.sendItemDrop(serializedItem);
             }
 
+        }
+    }
+
+    /**
+     * Wählt gerade aktive Waffe aus
+     * @param selectedslot aktiver Waffenslot (0 bis 2)
+     */
+    public void clientSelectWeapon(byte selectedslot) {
+        if (setSelectedweapon(selectedslot)) {
+            Server.msgSender.sendWeaponswitch(this.getClient(), selectedslot);
         }
     }
 }

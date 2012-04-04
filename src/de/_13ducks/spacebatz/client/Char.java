@@ -35,9 +35,10 @@ public class Char {
      */
     private double x, y;
     /**
-     * Die Richtung, in die dieser Char schaut. (Tilemapsynchron) Automatisch bei setX/Y gesetzt.
+     * Die Richtung, in die dieser Char schaut.
+     * Die übliche PI-Einheitskreis-Zählweise
      */
-    private int dir = 0;
+    private double dir = 0;
     /**
      * Die Richtung der Bewegung.
      */
@@ -78,7 +79,7 @@ public class Char {
     /**
      * @return the dir
      */
-    public int getDir() {
+    public double getDir() {
         return dir;
     }
 
@@ -101,11 +102,7 @@ public class Char {
         this.speed = m.speed;
 	// Nicht drehen beim Stehenbleiben
 	if (startTick != -1) {
-	    double tempdir = Math.atan2(vY, vX);
-	    if (tempdir < 0) {
-		tempdir += 2 * Math.PI;
-	    }
-	    this.dir = (int) ((tempdir / (2 * Math.PI) * 8));
+	    this.dir = Math.atan2(vY, vX);
 	}
     }
 

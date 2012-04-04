@@ -60,7 +60,7 @@ public class Engine {
     private Texture bulletTiles;
     private Texture itemTiles;
     private Texture inventoryPic;
-    private Texture font;
+    private Texture font[] = new Texture[2];
     /**
      * Charset, zum Textoutput-Encoding
      */
@@ -470,15 +470,19 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                int dir = c.getDir() * 2;
-                int tilex = dir;
+                int tilex = 0;
                 int tiley = 0;
                 if (enemy.getEnemytypeid() == 2) {
                     tiley = 2;
                 }
                 if (enemy.getEnemytypeid() == 0) {
                     glColor3f(1f, .5f, .5f);
-                }
+		}
+		glPushMatrix();
+		glTranslated(c.getX() + panX, c.getY() + panY, 0);
+		glRotated(c.getDir() / Math.PI * 180,0, 0, 1);
+		glTranslated(- (c.getX() + panX), - (c.getY() + panY), 0);
+                glBegin(GL_QUADS);
                 glBegin(GL_QUADS);
                 glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
@@ -490,6 +494,7 @@ public class Engine {
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
                 glColor3f(1f, 1f, 1f);
+		glPopMatrix();
             }
         }
 
@@ -497,17 +502,21 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-                int dir = c.getDir() * 2;
+		glPushMatrix();
+		glTranslated(c.getX() + panX, c.getY() + panY, 0);
+		glRotated(c.getDir() / Math.PI * 180.0,0, 0, 1);
+		glTranslated(- (c.getX() + panX), - (c.getY() + panY), 0);
                 glBegin(GL_QUADS);
-                glTexCoord2f(0.0625f * dir, 0);
+                glTexCoord2f(0, 0);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + dir), 0);
+                glTexCoord2f(0.125f , 0);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + dir), 0.0625f * 2);
+                glTexCoord2f(0.125f, 0.0625f * 2);
                 glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-                glTexCoord2f(0.0625f * dir, 0.0625f * 2);
+                glTexCoord2f(0, 0.125f);
                 glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
                 glEnd();
+		glPopMatrix();
             }
         }
 
@@ -752,7 +761,7 @@ public class Engine {
             glEnable(GL_TEXTURE_2D);
             renderText("delay: spec " + (NET_TICKSYNC_MAXPING / Client.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
             renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
-            renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
+            renderText("fps: " + fps + " ping: "  + NetStats.ping, 0, tilesY - 1.5f);
         }
 
         if (terminal) {
@@ -761,10 +770,10 @@ public class Engine {
             glRectf(tilesX / 3, tilesY / 2, tilesX, 0);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText(Client.terminal.getCurrentLine(), tilesX / 3, 0);
-            int numberoflines = (int) (tilesY / 2 * 1.6);
+            renderText(Client.terminal.getCurrentLine(), tilesX / 3, 0, true);
+            int numberoflines = (int) (tilesY * 1.6);
             for (int i = 0; i < numberoflines - 1; i++) {
-                renderText(Client.terminal.getHistory(i), tilesX / 3, i * .625f + .75f);
+                renderText(Client.terminal.getHistory(i), tilesX / 3, (i + 1) * .3125f, true);
             }
         }
     }
@@ -784,27 +793,40 @@ public class Engine {
      * @param y PositionY (unten rechts)
      */
     private void renderText(String text, float x, float y) {
+	renderText(text, x, y, false);
+    }
+
+    /**
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     *
+     * @param text Der zu zeichnende Text
+     * @param x PositionX (unten links)
+     * @param y PositionY (unten rechts)
+     * @param mono Monospace-Font und (!) klein?
+     */
+    private void renderText(String text, float x, float y, boolean mono) {
         float next = 0;
         byte[] chars = text.getBytes(charset);
-        font.bind();
+        font[mono ? 1 : 0].bind();
         for (int i = 0; i < chars.length; i++) {
             byte c = chars[i];
             int tileX = c % 16;
             int tileY = c / 16;
             float tx = tileX / 16f;
             float ty = tileY / 16f;
+	    float size = mono ? .25f : .5f;
             glBegin(GL_QUADS);
             glTexCoord2f(tx, ty);
-            glVertex3f(x + next, y + .5f, 0.0f);
+            glVertex3f(x + next, y + size, 0.0f);
             glTexCoord2f(tx + .0625f, ty);
-            glVertex3f(x + next + .5f, y + .5f, 0.0f);
+            glVertex3f(x + next + size, y + size, 0.0f);
             glTexCoord2f(tx + .0625f, ty + .0625f);
-            glVertex3f(x + next + .5f, y, 0.0f);
+            glVertex3f(x + next + size, y, 0.0f);
             glTexCoord2f(tx, ty + .0635f);
             glVertex3f(x + next, y, 0.0f);
             glEnd();
             // Spacing dieses chars weiter gehen:
-            next += spaceing[c] / 16f;
+            next += mono ? 3 / 16f : spaceing[c] / 16f;
         }
     }
 
@@ -830,7 +852,8 @@ public class Engine {
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
-        font = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
+        font[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
+	font[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font_mono.png"), GL_NEAREST);
     }
 
     /**
