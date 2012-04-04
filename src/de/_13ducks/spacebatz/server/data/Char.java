@@ -67,7 +67,7 @@ public abstract class Char extends AbilityUser {
      */
     final public double incrementProperty(String name, double value) {
         properties.incrementProperty(name, value);
-        refreshAbilities();
+        refreshAbilities(getProperties());
         return properties.getProperty(name);
 
     }
@@ -81,7 +81,7 @@ public abstract class Char extends AbilityUser {
      */
     final public double decrementProperty(String name, double value) {
         properties.decrementProperty(name, value);
-        refreshAbilities();
+        refreshAbilities(getProperties());
         return properties.getProperty(name);
     }
 
@@ -94,7 +94,7 @@ public abstract class Char extends AbilityUser {
     final public void setProperty(String name, double value) {
 
         properties.setProperty(name, value);
-        refreshAbilities();
+        refreshAbilities(getProperties());
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class Char extends AbilityUser {
      */
     final public void addProperties(Properties otherProperties) {
         properties.addProperties(otherProperties);
-        refreshAbilities();
+        refreshAbilities(getProperties());
     }
 
     /**
@@ -114,7 +114,7 @@ public abstract class Char extends AbilityUser {
      */
     final public void removeProperties(Properties otherProperties) {
         properties.removeProperties(otherProperties);
-        refreshAbilities();
+        refreshAbilities(getProperties());
     }
 
     /**

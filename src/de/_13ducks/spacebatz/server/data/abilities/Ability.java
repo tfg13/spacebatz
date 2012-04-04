@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.data.Char;
 import de._13ducks.spacebatz.server.data.Entity;
+import de._13ducks.spacebatz.shared.Properties;
 
 /**
  * Superklasse für alle Fähigkeiten.
@@ -12,7 +13,8 @@ import de._13ducks.spacebatz.server.data.Entity;
 public abstract class Ability {
 
     /**
-     * Der Charakter, der diese Fähigkeit "besitzt"
+     * Der Charakter, der diese Fähigkeit "besitzt".
+     * @TODO Abilitys sollten keinen Verweis auf ihren besitzer haben müssen, das ist kein Schönes Design
      */
     protected Entity owner;
 
@@ -30,8 +32,10 @@ public abstract class Ability {
      * Liest die Eigenschaften des BesitzerChars neu ein.
      * Muss immer aufgerufen werden, wenn sich die Eigenschaften des BesitzerChars ändern oder die Fähigkeit einem
      * (anderen) Char zugewiesen wird.
+     *
+     * @param properties die Werte des Besitzers der Fähigkeit
      */
-    public abstract void refreshProperties();
+    public abstract void refreshProperties(Properties properties);
 
     /**
      * Benutzt die Fähigkeit.

@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.shared.Properties;
 import java.util.HashMap;
 
 /**
@@ -103,10 +104,12 @@ public class AbilityUser extends Entity {
 
     /**
      * Lädt die Stats des Besitzers neu, falls sich etwas geändert hat was die Fähigkeiten beeinflusst.
+     *
+     * @param properties die Properties des Besitzers
      */
-    public void refreshAbilities() {
+    public void refreshAbilities(Properties properties) {
         for (Ability ability : abilities.values()) {
-            ability.refreshProperties();
+            ability.refreshProperties(properties);
         }
     }
 }

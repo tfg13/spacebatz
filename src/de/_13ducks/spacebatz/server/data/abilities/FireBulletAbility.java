@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Bullet;
 import de._13ducks.spacebatz.server.data.Entity;
+import de._13ducks.spacebatz.shared.Properties;
 
 /**
  * Die Fähigkeit, Bullets zu schießen.
@@ -40,7 +41,7 @@ public class FireBulletAbility extends Ability {
     }
 
     @Override
-    public void refreshProperties() {
+    public void refreshProperties(Properties properties) {
         // Werte des Trägers werden ignoriert.
     }
 }
