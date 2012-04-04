@@ -46,8 +46,7 @@ public class Player extends ItemCarrier {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
-
-        addAbility(Ability.SHOOT, new FireBulletAbility());
+        setAbility(ACTIVEWEAPONABILITY, new FireBulletAbility());
     }
 
     /**
@@ -106,11 +105,12 @@ public class Player extends ItemCarrier {
      * @param angle der Winkel in dem der Player schießen soll
      */
     public void playerShoot(float angle) {
-        useAbilityInAngle(Ability.SHOOT, angle);
+        useAbilityInAngle(ACTIVEWEAPONABILITY, angle);
     }
 
     /**
      * Item in leeren Slot anlegen
+     *
      * @param itemnetID NetID des Items
      * @param selectedslot ausgewählter Slot
      */
@@ -126,6 +126,7 @@ public class Player extends ItemCarrier {
 
     /**
      * Item ablegen
+     *
      * @param slottype Slotart (Waffe, Hut, ...)
      * @param selectedslot Nr. des Slots dieser Art
      */
@@ -166,6 +167,7 @@ public class Player extends ItemCarrier {
 
     /**
      * Wählt gerade aktive Waffe aus
+     *
      * @param selectedslot aktiver Waffenslot (0 bis 2)
      */
     public void clientSelectWeapon(byte selectedslot) {

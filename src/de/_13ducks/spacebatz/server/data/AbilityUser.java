@@ -10,6 +10,7 @@ import java.util.HashMap;
  */
 public class AbilityUser extends Char {
 
+    public static final int ACTIVEWEAPONABILITY = 0;
     /**
      * Die Liste aller Fähigkeiten, die der Char hat.
      * Chars können höchstens eine Fähigkeit pro FähigkeitenTyp haben!
@@ -91,40 +92,12 @@ public class AbilityUser extends Char {
      * @param id der Typ der neuen Fähigkeit
      * @param ability die neue Fähigkeit
      */
-    public void addAbility(int id, Ability ability) {
+    public void setAbility(int id, Ability ability) {
         if (abilities.containsKey(id)) {
             throw new IllegalArgumentException("There is already a ability with that id!");
         } else {
             abilities.put(id, ability);
             ability.setOwner(this);
-        }
-    }
-
-    /**
-     * Entfernt die Fähigkeit eines Typs des Chars.
-     *
-     * @param id der Typ der Fähigkeit die entfernt werden soll
-     */
-    public void removeAbility(int id) {
-        if (!abilities.containsKey(id)) {
-            throw new IllegalArgumentException("Cant find Ability with id " + id + "!");
-        } else {
-            abilities.get(id).setOwner(null);
-            abilities.remove(id);
-        }
-    }
-
-    /**
-     * Gibt die Ability mit der angegebenen id zurück oder null wenn es keine gibt.
-     *
-     * @param id die id der gesuchten Ability
-     * @return die Ability mit dieser id oder null wenn es keine gibt
-     */
-    public Ability getAbility(int id) {
-        if (abilities.containsKey(id)) {
-            return abilities.get(id);
-        } else {
-            return null;
         }
     }
 

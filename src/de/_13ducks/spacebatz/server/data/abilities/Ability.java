@@ -12,10 +12,6 @@ import de._13ducks.spacebatz.server.data.Entity;
 public abstract class Ability {
 
     /**
-     * Die ID der Schießen-Fähigkeit
-     */
-    public static final int SHOOT = 1;
-    /**
      * Der Charakter, der diese Fähigkeit "besitzt"
      */
     protected Char owner;
