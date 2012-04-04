@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.shared.Properties;
  *
  * @author michael
  */
-public abstract class Char extends Entity {
+public abstract class Char extends AbilityUser {
 
     /**
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
@@ -67,7 +67,9 @@ public abstract class Char extends Entity {
      */
     final public double incrementProperty(String name, double value) {
         properties.incrementProperty(name, value);
+        refreshAbilities();
         return properties.getProperty(name);
+
     }
 
     /**
@@ -79,6 +81,7 @@ public abstract class Char extends Entity {
      */
     final public double decrementProperty(String name, double value) {
         properties.decrementProperty(name, value);
+        refreshAbilities();
         return properties.getProperty(name);
     }
 
@@ -89,7 +92,9 @@ public abstract class Char extends Entity {
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setProperty(String name, double value) {
+
         properties.setProperty(name, value);
+        refreshAbilities();
     }
 
     /**
@@ -99,6 +104,7 @@ public abstract class Char extends Entity {
      */
     final public void addProperties(Properties otherProperties) {
         properties.addProperties(otherProperties);
+        refreshAbilities();
     }
 
     /**
@@ -108,6 +114,7 @@ public abstract class Char extends Entity {
      */
     final public void removeProperties(Properties otherProperties) {
         properties.removeProperties(otherProperties);
+        refreshAbilities();
     }
 
     /**

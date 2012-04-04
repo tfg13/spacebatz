@@ -20,7 +20,7 @@ import de._13ducks.spacebatz.util.Bits;
  *
  * @author J
  */
-public class Enemy extends AbilityUser {
+public class Enemy extends Char {
 
     /**
      * ID des Gegnertyps

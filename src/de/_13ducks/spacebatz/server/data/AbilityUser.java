@@ -8,7 +8,7 @@ import java.util.HashMap;
  *
  * @author michael
  */
-public class AbilityUser extends Char {
+public class AbilityUser extends Entity {
 
     public static final int ACTIVEWEAPONABILITY = 0;
     /**

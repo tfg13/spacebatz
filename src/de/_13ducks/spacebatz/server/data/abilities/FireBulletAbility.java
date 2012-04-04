@@ -41,6 +41,6 @@ public class FireBulletAbility extends Ability {
 
     @Override
     public void refreshProperties() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Werte des Trägers werden ignoriert.
     }
 }

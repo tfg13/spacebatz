@@ -26,7 +26,7 @@ public class Bullet extends Entity {
     /**
      * Der Besitzer des Bullets, i.d.R. der Char der es erzeugt hat.
      */
-    private Char owner;
+    private Entity owner;
     /*
      * ID des BulletTypes
      */
@@ -53,7 +53,7 @@ public class Bullet extends Entity {
      * @param netID die netID des Bullets
      * @param owner der Besitzer, i.d.R. der Char der das Bullet erzeugt hat
      */
-    public Bullet(int spawntick, int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Char owner) {
+    public Bullet(int spawntick, int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
         super(spawnposx, spawnposy, netID, (byte) 4);
         moveStartTick = spawntick;
         this.bulletpic = pictureID;
@@ -78,7 +78,7 @@ public class Bullet extends Entity {
      *
      * @return the client
      */
-    public Char getOwner() {
+    public Entity getOwner() {
         return owner;
     }
 

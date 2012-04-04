@@ -12,7 +12,7 @@ import java.util.HashMap;
  *
  * @author michael
  */
-public class ItemCarrier extends AbilityUser {
+public class ItemCarrier extends Char {
 
     /**
      * Items im Inventar
@@ -179,6 +179,7 @@ public class ItemCarrier extends AbilityUser {
     public boolean setSelectedweapon(byte selectedweapon) {
         if (selectedweapon >= 0 && selectedweapon <= 2) {
             this.selectedweapon = selectedweapon;
+            setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility());
             return true;
         } else {
             return false;
@@ -190,7 +191,7 @@ public class ItemCarrier extends AbilityUser {
      *
      * @return ein Weapon
      */
-    public Weapon getAciveWeapon() {
+    public Weapon getActiveWeapon() {
         return (Weapon) equipslots[1][selectedweapon];
     }
 }

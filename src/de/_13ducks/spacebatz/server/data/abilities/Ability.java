@@ -14,7 +14,7 @@ public abstract class Ability {
     /**
      * Der Charakter, der diese Fähigkeit "besitzt"
      */
-    protected Char owner;
+    protected Entity owner;
 
     /**
      * Setzt den Besitzer dieser Fähigkeit.
@@ -22,7 +22,7 @@ public abstract class Ability {
      *
      * @param owner der Char, der die Fähigkeit besitzt
      */
-    public void setOwner(Char owner) {
+    public void setOwner(Entity owner) {
         this.owner = owner;
     }
 
