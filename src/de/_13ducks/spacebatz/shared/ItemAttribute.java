@@ -10,12 +10,14 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import java.io.Serializable;
+
 /**
  * Items können Attribute besitzen, die jeweils einen oder mehrere Itemwerte verändern.
  *
  * @author Jojo
  */
-public class ItemAttribute extends Properties {
+public class ItemAttribute extends Properties  implements Serializable{
 
     private static final long serialVersionUID = 1L;
     /**

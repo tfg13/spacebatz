@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * @author Jojo
  */
 public class Item extends Properties {
-
+    
     private static final long serialVersionUID = 1L;
     /**
      * Die netID des Items.
@@ -50,7 +50,7 @@ public class Item extends Properties {
     /**
      * Die Fähigkeit dieser Waffe
      */
-    private Ability weaponAbility;
+    transient private Ability weaponAbility;
 
     /**
      * Erzeugt ein neues Item
@@ -68,7 +68,7 @@ public class Item extends Properties {
         this.netID = netID;
         this.amount = 1;
         itemAttributes = new ArrayList<>();
-        itemAttributes.add(baseAttribute);
+        addAttribute(baseAttribute);
         weaponAbility = baseAttribute.getAbility();
     }
 

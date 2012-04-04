@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.server.data.abilities.Ability;
-import de._13ducks.spacebatz.shared.ItemAttribute;
 
 /**
  * Das Grundattribut eines Items
@@ -15,7 +14,7 @@ public class ItemBaseAttribute extends ItemAttribute {
      * Die Fähigkeit, die dieses Item gibt.
      * Kann null sein wenn dieses Item keine Fähigkeit gibt
      */
-    private Ability ability;
+    transient private Ability ability;
 
     public ItemBaseAttribute(String name) {
         super(name);

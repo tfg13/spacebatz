@@ -37,9 +37,7 @@ public class AbilityUser extends Entity {
      * @param ability die ID der Ability
      */
     public void useAbility(int ability) {
-        if (!abilities.containsKey(ability)) {
-            throw new IllegalArgumentException("No such Ability!");
-        } else {
+        if (abilities.get(ability) != null) {
             abilities.get(ability).use();
         }
     }
@@ -52,10 +50,8 @@ public class AbilityUser extends Entity {
      * @param y Y-Koordinate der Zielposition
      */
     public void useAbilityOnPosition(int ability, double x, double y) {
-        if (!abilities.containsKey(ability)) {
-            throw new IllegalArgumentException("No such Ability!");
-        } else {
-            abilities.get(ability).useOnPosition(x, y);
+        if (abilities.get(ability) != null) {
+            abilities.get(ability).useOnPosition(vecX, vecY);
         }
     }
 
@@ -66,9 +62,7 @@ public class AbilityUser extends Entity {
      * @param angle die Richtung in die die Fähigkeit benutzt werden soll
      */
     public void useAbilityInAngle(int ability, double angle) {
-        if (!abilities.containsKey(ability)) {
-            throw new IllegalArgumentException("No such Ability!");
-        } else {
+        if (abilities.get(ability) != null) {
             abilities.get(ability).useInAngle(angle);
         }
     }
@@ -80,22 +74,20 @@ public class AbilityUser extends Entity {
      * @param target das Ziel, auf das fie Fähigkeit benutzt werden soll
      */
     public void useAbilityOnTarget(int ability, Entity target) {
-        if (!abilities.containsKey(ability)) {
-            throw new IllegalArgumentException("No such Ability!");
-        } else {
+        if (abilities.get(ability) != null) {
             abilities.get(ability).useOnTarget(target);
         }
     }
 
     /**
-     * Gibt dem Char eine neue Fähigkeit.
+     * Setzt die Fähigkeit mit der angegebenen ID. Kann auch auf null gesetzt werden.
      *
      * @param id der Typ der neuen Fähigkeit
      * @param ability die neue Fähigkeit
      */
     public void setAbility(int id, Ability ability) {
-        if (abilities.containsKey(id)) {
-            throw new IllegalArgumentException("There is already a ability with that id!");
+        if (ability == null) {
+            abilities.put(id, null);
         } else {
             abilities.put(id, ability);
             ability.setOwner(this);
@@ -109,7 +101,9 @@ public class AbilityUser extends Entity {
      */
     public void refreshAbilities(Properties properties) {
         for (Ability ability : abilities.values()) {
-            ability.refreshProperties(properties);
+            if (ability != null) {
+                ability.refreshProperties(properties);
+            }
         }
     }
 }
