@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import java.util.ArrayList;
 
 /**
@@ -19,54 +20,56 @@ import java.util.ArrayList;
  */
 public class ItemTypes {
 
-    private ArrayList<ItemAttribute> itemtypelist;
+    private ArrayList<ItemBaseAttribute> itemtypelist;
 
     public ItemTypes() {
         itemtypelist = new ArrayList<>();
 
-        ItemAttribute money = new ItemAttribute("Money");
+        ItemBaseAttribute money = new ItemBaseAttribute("Money");
         money.setProperty("pic", 0);
         money.setProperty("itemclass", 0);
         money.setProperty("quality", 1);
         money.setProperty("amount", 1);
         itemtypelist.add(money);
 
-        ItemAttribute hat = new ItemAttribute("Hat");
+        ItemBaseAttribute hat = new ItemBaseAttribute("Hat");
         hat.setProperty("pic", 1);
         hat.setProperty("itemclass", 2);
         hat.setProperty("quality", 1);
         hat.setProperty("amount", 0);
         itemtypelist.add(hat);
 
-        ItemAttribute betterhat = new ItemAttribute("Better Hat");
+        ItemBaseAttribute betterhat = new ItemBaseAttribute("Better Hat");
         betterhat.setProperty("pic", 1);
         betterhat.setProperty("itemclass", 2);
         betterhat.setProperty("quality", 3);
         betterhat.setProperty("amount", 0);
         itemtypelist.add(betterhat);
 
-        ItemAttribute pistol = new ItemAttribute("Pistol");
+        ItemBaseAttribute pistol = new ItemBaseAttribute("Pistol");
         pistol.setProperty("pic", 4);
         pistol.setProperty("itemclass", 1);
         pistol.setProperty("quality", 1);
         pistol.setProperty("amount", 0);
         itemtypelist.add(pistol);
 
-        ItemAttribute laser = new ItemAttribute("Laser");
+        ItemBaseAttribute laser = new ItemBaseAttribute("Laser");
         laser.setProperty("pic", 2);
         laser.setProperty("itemclass", 1);
         laser.setProperty("quality", 1);
         laser.setProperty("amount", 0);
+        
+        laser.setAbility(new FireBulletAbility());
         itemtypelist.add(laser);
 
-        ItemAttribute superlaser = new ItemAttribute("Super Laser");
+        ItemBaseAttribute superlaser = new ItemBaseAttribute("Super Laser");
         superlaser.setProperty("pic", 3);
         superlaser.setProperty("itemclass", 1);
         superlaser.setProperty("quality", 1);
         superlaser.setProperty("amount", 0);
         itemtypelist.add(superlaser);
 
-        ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
+        ItemBaseAttribute rocketlauncher = new ItemBaseAttribute("Rocket Launcher");
         rocketlauncher.setProperty("pic", 5);
         rocketlauncher.setProperty("itemclass", 1);
         rocketlauncher.setProperty("quality", 1);
@@ -100,7 +103,7 @@ public class ItemTypes {
     /**
      * @return the itemtypelist
      */
-    public ArrayList<ItemAttribute> getItemtypelist() {
+    public ArrayList<ItemBaseAttribute> getItemtypelist() {
         return itemtypelist;
     }
 }

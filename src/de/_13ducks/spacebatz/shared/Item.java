@@ -61,13 +61,15 @@ public class Item extends Properties {
      * @param baseAttribute
      * @param netID
      */
-    public Item(String name, double posX, double posY, int netID) {
+    public Item(String name, ItemBaseAttribute baseAttribute, double posX, double posY, int netID) {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
         this.netID = netID;
         this.amount = 1;
         itemAttributes = new ArrayList<>();
+        itemAttributes.add(baseAttribute);
+        weaponAbility = baseAttribute.getAbility();
     }
 
     /**

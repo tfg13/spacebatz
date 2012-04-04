@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.gamelogic;
+package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.shared.ItemAttribute;

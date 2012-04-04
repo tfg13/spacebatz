@@ -27,7 +27,7 @@ public class DropManager {
     
     private final static ItemTypes itemtypes = new ItemTypes();
     private final static ItemAttributeTypes itemattribute = new ItemAttributeTypes();
-    private static ArrayList<ItemAttribute> itemtypelist = itemtypes.getItemtypelist();
+    private static ArrayList<ItemBaseAttribute> itemtypelist = itemtypes.getItemtypelist();
 
     /**
      * dropItem wÃ¤hlt Item aus, dass von diesem Gegner gedroppt wird
@@ -44,7 +44,7 @@ public class DropManager {
 //            return;
 //        }
 
-        ArrayList<ItemAttribute> dropableitems = new ArrayList<>();
+        ArrayList<ItemBaseAttribute> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
             int itemquality = (int) itemtypelist.get(i).getProperty("quality");
             //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
@@ -52,9 +52,9 @@ public class DropManager {
                 dropableitems.add(itemtypelist.get(i));
             }
         }
-        ItemAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
-        Item item = new Item(stats.getName(), x, y, Server.game.newNetID());
-        item.addAttribute(stats);
+        ItemBaseAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
+        Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
+
         if ((int) stats.getProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);
         } else {
