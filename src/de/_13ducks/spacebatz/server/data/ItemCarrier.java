@@ -108,6 +108,15 @@ public class ItemCarrier extends Char {
             getItems().remove(item.getNetID());
             // die Stats des Items übernehmen:
             addProperties(item);
+            
+            if (getActiveWeapon() != null) {
+                // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+            } else {
+                // Wenn nicht dann Aktive Fähigkeit auf null setzten:
+                setAbility(ACTIVEWEAPONABILITY, null, this);
+            }
+            
             // Item-Anleg-Befehl zum Client senden
             Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
             return true;
@@ -142,6 +151,15 @@ public class ItemCarrier extends Char {
                 removeProperties(itemx);
                 // passt das Item ins Inventar?
                 getItems().put(itemx.getNetID(), itemx);
+                
+                if (getActiveWeapon() != null) {
+                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+                } else {
+                    // Wenn nicht dann Aktive Fähigkeit auf null setzten:
+                    setAbility(ACTIVEWEAPONABILITY, null, this);
+                }
+                
                 return true;
             } else {
                 return false;
@@ -164,6 +182,14 @@ public class ItemCarrier extends Char {
                 item = getEquipslots()[slottype][selectedslot];
                 getEquipslots()[slottype][selectedslot] = null;
                 removeProperties(item);
+                
+                if (getActiveWeapon() != null) {
+                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+                } else {
+                    // Wenn nicht dann Aktive Fähigkeit auf null setzten:
+                    setAbility(ACTIVEWEAPONABILITY, null, this);
+                }
             }
         }
         return item;
