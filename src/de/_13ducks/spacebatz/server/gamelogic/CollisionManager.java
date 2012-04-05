@@ -13,8 +13,10 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
+import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.Vector;
 import java.math.BigDecimal;
 import java.util.Iterator;
 
@@ -308,6 +310,62 @@ public class CollisionManager {
                                 Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Berechnet Hitscankollision, ruft für die getroffenen Gegner den Hitmanager auf
+     * 
+     * @param x
+     * @param y
+     * @param angle
+     * @param range 
+     */
+    public static void computeHitscanCollision(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
+        double x = owner.getX();
+        double y = owner.getY();
+
+        double otherangle = angle - (Math.PI / 2);
+        if (otherangle < 0) {
+            otherangle += 2 * Math.PI;
+        }
+
+        Vector apos = new Vector(x, y);
+        Vector adir = new Vector(Math.cos(angle), Math.sin(angle));
+        Vector bdir = new Vector(Math.cos(otherangle), Math.sin(otherangle));
+
+        Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, range).iterator();
+        while (iter.hasNext()) {
+            Entity e = iter.next();
+            if (e instanceof Char) {
+                Char c = (Char) e;
+
+                if (c.equals(owner)) {
+                    continue;
+                }
+
+                Vector bpos = new Vector(c.getX(), c.getY());
+
+                // Schnittpunkt der 2 Geraden
+                Vector s = adir.intersectionWith(apos, bpos, bdir);
+
+                double distance = Math.sqrt((s.getX() - c.getX()) * (s.getX() - c.getX()) + (s.getY() - c.getY()) * (s.getY() - c.getY()));
+
+                // Hitscan-Gerade nah genug am Gegner?
+                if (distance < Settings.CHARSIZE / 2) {
+                    // Nicht hinter dem Abilityuser?
+                    double dx = s.getX() - x;
+                    double dy = s.getY() - y;
+                    double testangle = Math.atan2(dy, dx); // zwischen 0 und 2 pi
+                    if (testangle < 0) {
+                        testangle += 2 * Math.PI;
+                    }
+
+                    if (testangle < angle + Math.PI / 2 && testangle > angle - Math.PI / 2) {
+                        HitManager.hitscanHit(c, hitscanAbility);
                     }
                 }
             }

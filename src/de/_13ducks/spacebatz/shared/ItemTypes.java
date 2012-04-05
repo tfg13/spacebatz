@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import java.util.ArrayList;
 
 /**
@@ -77,6 +78,14 @@ public class ItemTypes {
         rocketlauncher.setProperty("amount", 0);
         rocketlauncher.setAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
         itemtypelist.add(rocketlauncher);
+        
+        ItemBaseAttribute drill = new ItemBaseAttribute("Drill");
+        drill.setProperty("pic", 6);
+        drill.setProperty("itemclass", 1);
+        drill.setProperty("quality", 1);
+        drill.setProperty("amount", 0);
+        drill.setAbility(new HitscanAbility(40, 10.0, 4.0));
+        itemtypelist.add(drill);
         
     }
 

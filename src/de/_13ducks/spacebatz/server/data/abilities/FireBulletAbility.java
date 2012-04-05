@@ -14,7 +14,6 @@ import java.util.Random;
  * @author michael
  */
 public class FireBulletAbility extends Ability {
-    // damage, attackspeed, range, bulletpic, bulletspeed, spread, explotionradius
 
     private double damage;
     private double attackspeed;
