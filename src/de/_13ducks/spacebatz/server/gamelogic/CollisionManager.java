@@ -15,7 +15,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
-import java.math.BigDecimal;
 import java.util.Iterator;
 
 /**
@@ -148,7 +147,7 @@ public class CollisionManager {
     }
 
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
-        // Der Vektor der bewegung:
+        // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
         // Anfangs- und Ziel-X des Gebiets das gescannt wird
@@ -164,68 +163,35 @@ public class CollisionManager {
         double d;
         // das kleinste gefundene d
         double smallestD = Double.MAX_VALUE;
-        // Gibt an ob wir in X- oder Y-Richtung kollidieren
-        boolean xCollision = false;
+        // Variablen, die wir in jedem Schleifendurchlauf brauchen:
+        double blockMidX, blockMidY, d1, d2;
         // Jetzt alle Blöcke im angegebenen Gebiet checken:
         for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
             for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
                 if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
 
-
                     // Der Mittelpunkt des Blocks
-                    double blockMidX = x + 0.5;
-                    double blockMidY = y + 0.5;
+                    blockMidX = x + 0.5;
+                    blockMidY = y + 0.5;
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    double d1 = ((blockMidX + (0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
-                    double d2 = ((blockMidX - (0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
+                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
 
-                    // ALTE BERECHNUNG, ERZEUGT RUNDUNGSFEHLER!!!
-                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
-                    //double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
-
-
-                    double yDistance = 0;
-                    try {
-                        yDistance = BigDecimal.valueOf(blockMidY).subtract(BigDecimal.valueOf(fromY + d * deltaY)).doubleValue();
-                    } catch (NumberFormatException ex) {
-                        // Ungültige zahl, also yDistance auf ungültigen wert setzen
-                        yDistance = Double.NaN;
+                    if (Double.isInfinite(d) || Double.isNaN(d)) {
+                        d = 0;
                     }
 
-                    if (yDistance != Double.NaN && 0 <= d && d <= 1 && yDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
+                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
+                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
+
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
                             smallestD = d;
-                            xCollision = true;
-                        }
-
-
-                    } else {
-                        // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
-                        // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                        d1 = ((blockMidY + (0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
-                        d2 = ((blockMidY - (0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
-                        // Das kleinere d wählen:
-                        d = Math.min(d1, d2);
-                        double xDistance = 0;
-                        try {
-                            xDistance = BigDecimal.valueOf(blockMidX).subtract(BigDecimal.valueOf(fromX + d * deltaX)).doubleValue();
-                        } catch (NumberFormatException ex) {
-                            // Ungültige zahl, also yDistance auf ungültigen wert setzen
-                            xDistance = Double.NaN;
-                        }
-
-                        if (xDistance != Double.NaN && 0 <= d && d <= 1 && xDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
-                            // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
-                            // Also wenn die Kollision näher ist als die anderen speichern:
-                            if (d < smallestD) {
-                                smallestD = d;
-                                xCollision = false;
-                            }
                         }
                     }
                 }
@@ -235,24 +201,48 @@ public class CollisionManager {
         if (smallestD < Double.MAX_VALUE) {
             // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
             double newX = fromX + smallestD * deltaX;
-            double newY = fromY + smallestD * deltaY;
+            mover.setStillX(newX);
+        }
+
+        // Werte zurücksetzen
+        smallestD = Double.MAX_VALUE;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
+            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
+                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
 
 
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = x + 0.5;
+                    blockMidY = y + 0.5;
+                    // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
+                    // Das kleinere d wählen:
+                    d = Math.min(d1, d2);
 
-            // Die Bewegung in die nicht blockierte Richtung fortsetzen:
-            if (xCollision) {
-                mover.setStillX(newX);
-                if (deltaY == 0) {
-                    return;
+                    if (Double.isInfinite(d) || Double.isNaN(d)) {
+                        d = 0;
+                    }
+
+                    double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
+
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                    }
                 }
-                computeCharCollision(newX, newY, newX, newY + ((1.0 - smallestD) * deltaY), mover);
-            } else {
-                mover.setStillY(newY);
-                if (deltaX == 0) {
-                    return;
-                }
-                computeCharCollision(newX, newY, newX + ((1.0 - smallestD) * deltaX), newY, mover);
             }
+        }
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
+            double newY = fromY + smallestD * deltaY;
+            mover.setStillY(newY);
         }
     }
 

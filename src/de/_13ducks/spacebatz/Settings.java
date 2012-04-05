@@ -256,4 +256,8 @@ public final class Settings {
      * 2 - + GameDebug
      */
     public static final int CLIENT_NETGRAPH_LEVEL = 2;
+    /**
+     * Abstand bei der double noch als "gleich" gilt.
+     */
+    public static final double DOUBLE_EQUALS_DIST = 0.0001;
 }
