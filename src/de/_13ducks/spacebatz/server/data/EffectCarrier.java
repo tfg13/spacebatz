@@ -46,7 +46,7 @@ public class EffectCarrier extends AbilityUser {
         Iterator<Effect> iter = effects.iterator();
         while (iter.hasNext()) {
             Effect effect = iter.next();
-            if (effect.tick()) {
+            if (!effect.tick()) {
                 effect.remove();
                 iter.remove();
             }
