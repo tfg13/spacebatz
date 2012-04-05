@@ -84,13 +84,14 @@ public class AbilityUser extends Entity {
      *
      * @param id der Typ der neuen Fähigkeit
      * @param ability die neue Fähigkeit
+     * @param owner der Char, dem die Fähigkeit zugewiesen werden sollX
      */
-    public void setAbility(int id, Ability ability) {
+    public void setAbility(int id, Ability ability, Char owner) {
         if (ability == null) {
             abilities.put(id, null);
         } else {
             abilities.put(id, ability);
-            ability.setOwner(this);
+            ability.setOwner(owner);
         }
     }
 

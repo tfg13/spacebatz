@@ -46,7 +46,7 @@ public class Player extends ItemCarrier {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
-        setAbility(ACTIVEWEAPONABILITY, new FireBulletAbility(2, 20.0, 10.0, 0, 0.35, 0.05, 0.0));
+        setAbility(ACTIVEWEAPONABILITY, new FireBulletAbility(2, 20.0, 10.0, 0, 0.35, 0.05, 0.0), this);
     }
 
     /**

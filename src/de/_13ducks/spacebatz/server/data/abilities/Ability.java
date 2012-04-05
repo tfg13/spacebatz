@@ -16,7 +16,7 @@ public abstract class Ability {
      * Der Charakter, der diese Fähigkeit "besitzt".
      * @TODO Abilitys sollten keinen Verweis auf ihren besitzer haben müssen, das ist kein Schönes Design
      */
-    protected Entity owner;
+    protected Char owner;
 
     /**
      * Setzt den Besitzer dieser Fähigkeit.
@@ -24,7 +24,7 @@ public abstract class Ability {
      *
      * @param owner der Char, der die Fähigkeit besitzt
      */
-    public void setOwner(Entity owner) {
+    public void setOwner(Char owner) {
         this.owner = owner;
     }
 

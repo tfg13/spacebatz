@@ -180,10 +180,10 @@ public class ItemCarrier extends Char {
             this.selectedweapon = selectedweapon;
             if (getActiveWeapon() != null) {
                 // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility());
+                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
             } else {
                 // Wenn nicht dann Aktive Fähigkeit auf null setzten:
-                setAbility(ACTIVEWEAPONABILITY, null);
+                setAbility(ACTIVEWEAPONABILITY, null, this);
             }
             return true;
         } else {
