@@ -34,7 +34,7 @@ public class HitscanAbility extends Ability {
 
     @Override
     public void refreshProperties(Properties properties) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Werte des Trägers werden ignoriert.
     }
 
     @Override

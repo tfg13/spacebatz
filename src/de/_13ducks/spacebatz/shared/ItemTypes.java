@@ -84,7 +84,7 @@ public class ItemTypes {
         drill.setProperty("itemclass", 1);
         drill.setProperty("quality", 1);
         drill.setProperty("amount", 0);
-        drill.setAbility(new HitscanAbility(50, 30.0, 4.0));
+        drill.setAbility(new HitscanAbility(50, 60.0, 4.0));
         itemtypelist.add(drill);
 
         ItemBaseAttribute saw = new ItemBaseAttribute("Saw");
@@ -92,7 +92,7 @@ public class ItemTypes {
         saw.setProperty("itemclass", 1);
         saw.setProperty("quality", 1);
         saw.setProperty("amount", 0);
-        saw.setAbility(new HitscanAbility(15, 15.0, 4.0));
+        saw.setAbility(new HitscanAbility(15, 12.0, 4.0));
         itemtypelist.add(saw);
 
     }
