@@ -17,7 +17,11 @@ public class AbilityUser extends Entity {
      * Chars können höchstens eine Fähigkeit pro FähigkeitenTyp haben!
      */
     private HashMap<Integer, Ability> abilities;
-
+    /**
+     * Der Tick, ab dem das nächste mal geschossen werden darf
+     */
+    private int attackCooldownTick;
+    
     /**
      * Erzeug einen neuen AbilityUser
      *
@@ -106,5 +110,19 @@ public class AbilityUser extends Entity {
                 ability.refreshProperties(properties);
             }
         }
+    }
+
+    /**
+     * @return the attackCooldownTick
+     */
+    public int getAttackCooldownTick() {
+        return attackCooldownTick;
+    }
+
+    /**
+     * @param attackCooldownTick the attackCooldownTick to set
+     */
+    public void setAttackCooldownTick(int attackCooldownTick) {
+        this.attackCooldownTick = attackCooldownTick;
     }
 }
