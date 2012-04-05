@@ -106,6 +106,9 @@ public class Bullet extends Entity {
      * @param target der Char auf den die Effekte ngewandt werden
      */
     public void applyEffectsToChar(Char target) {
+        for (Effect effect : effects) {
+            effect.applyToChar(target);
+        }
     }
 
     @Override

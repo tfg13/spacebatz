@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Bullet;
 import de._13ducks.spacebatz.server.data.Entity;
+import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.shared.Properties;
 import java.util.Random;
 
@@ -53,8 +54,9 @@ public class FireBulletAbility extends Ability {
         Random random = new Random();
         angle += random.nextGaussian() * spread;
         int lifetime = (int) (range / bulletspeed);
-        
+
         Bullet bullet = new Bullet(Server.game.getTick(), lifetime, owner.getX(), owner.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), owner);
+        bullet.addEffect(new TrueDamageEffect(1));
         Server.game.netIDMap.put(bullet.netID, bullet);
     }
 

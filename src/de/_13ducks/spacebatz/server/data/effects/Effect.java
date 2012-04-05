@@ -11,8 +11,10 @@ public abstract class Effect {
 
     /**
      * Wenn ein Char von diesem Effekt beeinflust wird, ruft er regelmäßig diese Funktion auf.
+     *
+     * @return true, wenn der Effekt noch aktiv ist, oder false wenn er entfernt werden soll
      */
-    public abstract void tick();
+    public abstract boolean tick();
 
     /**
      * Wird aufgerufen, wenn dieser Effekt auf einen Char angewandt wird
@@ -31,7 +33,7 @@ public abstract class Effect {
     public abstract void applyToPosition(double x, double y);
 
     /**
-     * Entfernt den Effekt wieder
+     * Entfernt den Effekt wieder.
      */
     public abstract void remove();
 }
