@@ -59,7 +59,7 @@ public class ItemTypes {
         laser.setProperty("pic", 2);
         laser.setProperty("itemclass", 1);
         laser.setProperty("quality", 1);
-        laser.setProperty("amount", 0);        
+        laser.setProperty("amount", 0);
         laser.setAbility(new FireBulletAbility(4, 6.0, 9.0, 3, 0.35, 0.1, 0.0));
         itemtypelist.add(laser);
 
@@ -78,15 +78,23 @@ public class ItemTypes {
         rocketlauncher.setProperty("amount", 0);
         rocketlauncher.setAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
         itemtypelist.add(rocketlauncher);
-        
+
         ItemBaseAttribute drill = new ItemBaseAttribute("Drill");
         drill.setProperty("pic", 6);
         drill.setProperty("itemclass", 1);
         drill.setProperty("quality", 1);
         drill.setProperty("amount", 0);
-        drill.setAbility(new HitscanAbility(40, 10.0, 4.0));
+        drill.setAbility(new HitscanAbility(50, 30.0, 4.0));
         itemtypelist.add(drill);
-        
+
+        ItemBaseAttribute saw = new ItemBaseAttribute("Saw");
+        saw.setProperty("pic", 7);
+        saw.setProperty("itemclass", 1);
+        saw.setProperty("quality", 1);
+        saw.setProperty("amount", 0);
+        saw.setAbility(new HitscanAbility(15, 15.0, 4.0));
+        itemtypelist.add(saw);
+
     }
 
     /**

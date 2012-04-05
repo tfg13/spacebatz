@@ -35,15 +35,6 @@ public class HitManager {
         Server.entityMap.removeEntity(bullet);
     }
 
-    public static void hitscanHit(Char character, HitscanAbility hitscanability) {
-        hitscanability.applyEffectsToChar(character);
-        if (character.getProperty("hitpoints") < 0) {
-            Server.game.netIDMap.remove(character.netID);
-            Server.entityMap.removeEntity(character);
-            DropManager.dropItem(character.getX(), character.getY(), 2);
-        }
-    }
-
     /**
      * Berechnet Kollision eines Bullets mit einer Wand.
      */

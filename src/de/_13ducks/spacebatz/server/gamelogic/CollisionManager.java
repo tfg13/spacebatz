@@ -18,6 +18,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Vector;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -324,7 +325,9 @@ public class CollisionManager {
      * @param angle
      * @param range 
      */
-    public static void computeHitscanCollision(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
+    public static ArrayList<Char> computeHitscanCollision(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
+        ArrayList<Char> charsHit = new ArrayList<>();
+        
         double x = owner.getX();
         double y = owner.getY();
 
@@ -365,10 +368,11 @@ public class CollisionManager {
                     }
 
                     if (testangle < angle + Math.PI / 2 && testangle > angle - Math.PI / 2) {
-                        HitManager.hitscanHit(c, hitscanAbility);
+                        charsHit.add(c);
                     }
                 }
             }
         }
+        return charsHit;
     }
 }

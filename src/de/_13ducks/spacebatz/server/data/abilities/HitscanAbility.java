@@ -6,6 +6,8 @@ import de._13ducks.spacebatz.server.data.Entity;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.gamelogic.HitManager;
 import de._13ducks.spacebatz.shared.Properties;
 import java.util.ArrayList;
 
@@ -55,18 +57,24 @@ public class HitscanAbility extends Ability {
         if (owner.getAttackCooldownTick() <= Server.game.getTick()) {
             owner.setAttackCooldownTick(Server.game.getTick() + (int) attackspeed);
 
-            CollisionManager.computeHitscanCollision(owner, angle, range, this);
+            ArrayList<Char> charsHit = CollisionManager.computeHitscanCollision(owner, angle, range, this);
+
+            for (Char character : charsHit) {
+                for (Effect effect : effects) {
+                    effect.applyToChar(character);
+                }
+
+                if (character.getProperty("hitpoints") < 0) {
+                    Server.game.netIDMap.remove(character.netID);
+                    Server.entityMap.removeEntity(character);
+                    DropManager.dropItem(character.getX(), character.getY(), 2);
+                }
+            }
         }
     }
 
     @Override
     public boolean isReady() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void applyEffectsToChar(Char target) {
-        for (Effect effect : effects) {
-            effect.applyToChar(target);
-        }
     }
 }
