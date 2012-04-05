@@ -51,7 +51,7 @@ public class ItemTypes {
         pistol.setProperty("itemclass", 1);
         pistol.setProperty("quality", 1);
         pistol.setProperty("amount", 0);
-        pistol.setAbility(new FireBulletAbility(5, 15.0, 10.0, 1, 0.35, 0.025, 0.0));
+        pistol.setAbility(new FireBulletAbility(7, 15.0, 10.0, 1, 0.35, 0.025, 0.0));
         itemtypelist.add(pistol);
 
         ItemBaseAttribute laser = new ItemBaseAttribute("Laser");
@@ -77,29 +77,7 @@ public class ItemTypes {
         rocketlauncher.setProperty("amount", 0);
         rocketlauncher.setAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
         itemtypelist.add(rocketlauncher);
-
-// damage, attackspeed, range, -, bulletpic, bulletspeed, spread, explotionradius
-
-// name, pic, itemclass, quality, amount, armor, Waffenstats
-
-//
-//        itemtypelist.add(new ItemTypeStats("Money", 0, 0, 1, 1, 0, null));
-//
-//        itemtypelist.add(new ItemTypeStats("Hat", 1, 2, 1, 0, 23, null));
-//
-//        itemtypelist.add(new ItemTypeStats("Better Hat", 1, 2, 4, 0, 42, null));
-//
-//        ItemTypeWeaponStats pistol = new ItemTypeWeaponStats(5, 15.0, 10.0, 0, 1, 0.35, 0.025, 0.0);
-//        itemtypelist.add(new ItemTypeStats("Pistol", 4, 1, 1, 0, 0, pistol));
-//
-//        ItemTypeWeaponStats laser = new ItemTypeWeaponStats(4, 6.0, 9.0, 0, 3, 0.35, 0.1, 0.0);
-//        itemtypelist.add(new ItemTypeStats("Laser", 2, 1, 2, 0, 0, laser));
-//
-//        ItemTypeWeaponStats superlaser = new ItemTypeWeaponStats(25, 25.0, 12.0, 0, 2, 0.5, 0.02, 0.0);
-//        itemtypelist.add(new ItemTypeStats("Super Laser", 3, 1, 3, 0, 0, superlaser));
-//
-//        ItemTypeWeaponStats rocketlauncher = new ItemTypeWeaponStats(20, 40.0, 15.0, 0, 4, 0.25, 0.0, 3.0);
-//        itemtypelist.add(new ItemTypeStats("Rocket Launcher", 5, 1, 1, 0, 0, rocketlauncher));
+        
     }
 
     /**

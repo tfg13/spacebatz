@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.shared.Properties;
  *
  * @author michael
  */
-public abstract class Char extends AbilityUser {
+public abstract class Char extends EffectCarrier {
 
     /**
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).

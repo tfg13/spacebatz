@@ -23,8 +23,8 @@ public class HitManager {
         if (bullet.getOwner().equals(character)) {
             return;
         }
-        
-        character.decrementProperty("hitpoints", 10);
+        // alle Effekte des Bullets auf den Char übertragen:
+        bullet.applyEffectsToChar(character);
         if (character.getProperty("hitpoints") < 0) {
             Server.game.netIDMap.remove(character.netID);
             Server.entityMap.removeEntity(character);
