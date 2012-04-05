@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Bullet;
 import de._13ducks.spacebatz.server.data.Char;
+import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 
 /**
  * Berechnet alles, was passiert wenn zwei Dinge kollidieren (zb Bullets mit Chars).
