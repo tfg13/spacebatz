@@ -247,6 +247,24 @@ public class CollisionManager {
             double newY = fromY + smallestD * deltaY;
             mover.setStillY(newY);
         }
+
+
+        for (int testX = (int) mover.getX() - 3; testX < (int) mover.getX() + 3; testX++) {
+            for (int testY = (int) mover.getY() - 3; testY < (int) mover.getY() + 3; testY++) {
+                if (Server.game.getLevel().getCollisionMap()[testX][testY] == true) {
+                    double testDX = Math.abs((testX + 0.5) - mover.getX());
+                    double testDY =  Math.abs((testY + 0.5) - mover.getY());
+                    double testD = (0.5) + mover.getProperty("size") / 2;
+                    if (testDX < testD && testDY < testD) {
+                        System.out.println("KOLLISION!!!!!!!");
+                    }
+                }
+            }
+        }
+
+
+
+
     }
 
     /**
@@ -309,15 +327,15 @@ public class CollisionManager {
 
     /**
      * Berechnet Hitscankollision, ruft für die getroffenen Gegner den Hitmanager auf
-     * 
+     *
      * @param x
      * @param y
      * @param angle
-     * @param range 
+     * @param range
      */
     public static ArrayList<Char> computeHitscanCollision(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
         ArrayList<Char> charsHit = new ArrayList<>();
-        
+
         double x = owner.getX();
         double y = owner.getY();
 
