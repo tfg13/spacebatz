@@ -180,7 +180,7 @@ public class CollisionManager {
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
 
-                    if (Double.isInfinite(d) || Double.isNaN(d)) {
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
 
@@ -222,7 +222,7 @@ public class CollisionManager {
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
 
-                    if (Double.isInfinite(d) || Double.isNaN(d)) {
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
 
@@ -240,9 +240,8 @@ public class CollisionManager {
         }
         // Hier haben wir mit smallestD und xCollision alle relevanten infos
         if (smallestD < Double.MAX_VALUE) {
-            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
-            double newY = fromY + smallestD * deltaY;
-            mover.setStillY(newY);
+            // Die Koordinaten der Position die noch erreicht werden kann
+            mover.setStillY(fromY + smallestD * deltaY);
         }
     }
 
