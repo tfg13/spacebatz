@@ -34,7 +34,7 @@ public class ItemCarrier extends Char {
     /**
      * Der Standardangriff ohne Waffe
      */
-    protected final static Ability defaultAttackAbility = new FireBulletAbility(2, 20.0, 10.0, 0, 0.35, 0.05, 0.0);
+    protected final static Ability defaultAttackAbility = new FireBulletAbility(4, 18.0, 9.5, 0, 0.35, 0.03, 0.0);
     
     /**
      * Erzeugt einen neuen ItemCarrier
