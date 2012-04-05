@@ -50,12 +50,15 @@ public class FireBulletAbility extends Ability {
 
     @Override
     public void useInAngle(double angle) {
-        Random random = new Random();
-        angle += random.nextGaussian() * spread;
-        int lifetime = (int) (range / bulletspeed);
-        
-        Bullet bullet = new Bullet(Server.game.getTick(), lifetime, owner.getX(), owner.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), owner);
-        Server.game.netIDMap.put(bullet.netID, bullet);
+        if (owner.getAttackCooldownTick() <= Server.game.getTick()) {
+            owner.setAttackCooldownTick(Server.game.getTick() + (int) attackspeed);
+            Random random = new Random();
+            angle += random.nextGaussian() * spread;
+            int lifetime = (int) (range / bulletspeed);
+
+            Bullet bullet = new Bullet(Server.game.getTick(), lifetime, owner.getX(), owner.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), owner);
+            Server.game.netIDMap.put(bullet.netID, bullet);
+        }
     }
 
     @Override
