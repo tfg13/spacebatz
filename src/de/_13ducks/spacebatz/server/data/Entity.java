@@ -74,12 +74,12 @@ public class Entity {
      * @param netID die netId der Entity
      */
     public Entity(double x, double y, int netID, byte entityTypeID) {
-	this.entityTypeID = entityTypeID;
-	this.posX = x;
-	this.posY = y;
-	entityMapPos = new int[2];
-	Server.entityMap.insertEntity(this);
-	this.netID = netID;
+        this.entityTypeID = entityTypeID;
+        this.posX = x;
+        this.posY = y;
+        entityMapPos = new int[2];
+        Server.entityMap.insertEntity(this);
+        this.netID = netID;
     }
 
     /**
@@ -88,7 +88,7 @@ public class Entity {
      * @return true, wenn die Einheit sich gerade bewegt
      */
     public boolean isMoving() {
-	return getMoveStartTick() != -1;
+        return getMoveStartTick() != -1;
     }
 
     /**
@@ -97,9 +97,9 @@ public class Entity {
      * @param x die neue X-Position.
      */
     public void setStillX(double x) {
-	stopMovementX();
-	posX = x;
-	movementDirty = true;
+        stopMovementX();
+        posX = x;
+        movementDirty = true;
     }
 
     /**
@@ -108,9 +108,9 @@ public class Entity {
      * @param x die neue X-Position.
      */
     public void setStillY(double y) {
-	stopMovementY();
-	posY = y;
-	movementDirty = true;
+        stopMovementY();
+        posY = y;
+        movementDirty = true;
     }
 
     /**
@@ -118,38 +118,38 @@ public class Entity {
      * schon steht.
      */
     public void stopMovement() {
-	posX = getX();
-	posY = getY();
-	moveStartTick = -1;
-	movementDirty = true;
+        posX = getX();
+        posY = getY();
+        moveStartTick = -1;
+        movementDirty = true;
     }
 
     /**
      * Stoppt die Bewegung in X-Richtung. Beeinflusst eine Bewegung in Y-Richtung nicht. Wenn die Einheit (in X-Richtung) schon steht passiert nichts.
      */
     public void stopMovementX() {
-	// Bewegen wir uns überhaupt (in X-Richtung)
-	if (moveStartTick != -1 && vecX != 0) {
-	    if (vecY != 0) {
-		setVector(0, vecY);
-	    } else {
-		stopMovement();
-	    }
-	}
+        // Bewegen wir uns überhaupt (in X-Richtung)
+        if (moveStartTick != -1 && vecX != 0) {
+            if (vecY != 0) {
+                setVector(0, vecY);
+            } else {
+                stopMovement();
+            }
+        }
     }
 
     /**
      * Stoppt die Bewegung in Y-Richtung. Beeinflusst eine Bewegung in X-Richtung nicht. Wenn die Einheit (in Y-Richtung) schon steht passiert nichts.
      */
     public void stopMovementY() {
-	// Bewegen wir uns überhaupt (in Y-Richtung)
-	if (moveStartTick != -1 && vecY != 0) {
-	    if (vecX != 0) {
-		setVector(vecX, 0);
-	    } else {
-		stopMovement();
-	    }
-	}
+        // Bewegen wir uns überhaupt (in Y-Richtung)
+        if (moveStartTick != -1 && vecY != 0) {
+            if (vecX != 0) {
+                setVector(vecX, 0);
+            } else {
+                stopMovement();
+            }
+        }
     }
 
     /**
@@ -158,10 +158,10 @@ public class Entity {
      * @return Die echte Position X dieses Chars.
      */
     public double getX() {
-	if (isMoving()) {
-	    return posX + ((Server.game.getTick() - getMoveStartTick()) * getSpeed() * vecX);
-	}
-	return posX;
+        if (isMoving()) {
+            return posX + ((Server.game.getTick() - getMoveStartTick()) * getSpeed() * vecX);
+        }
+        return posX;
     }
 
     /**
@@ -170,10 +170,10 @@ public class Entity {
      * @return Die echte Position X dieses Chars.
      */
     public double getY() {
-	if (isMoving()) {
-	    return posY + ((Server.game.getTick() - getMoveStartTick()) * getSpeed() * vecY);
-	}
-	return posY;
+        if (isMoving()) {
+            return posY + ((Server.game.getTick() - getMoveStartTick()) * getSpeed() * vecY);
+        }
+        return posY;
     }
 
     /**
@@ -181,15 +181,15 @@ public class Entity {
      * neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
-	if (x == 0 && y == 0) {
-	    throw new IllegalArgumentException("Cannot set moveVector, x = y = 0 is not allowed!");
-	}
-	if (isMoving()) {
-	    stopMovement();
-	}
-	normalizeAndSetVector(x, y);
-	moveStartTick = Server.game.getTick();
-	movementDirty = true;
+        if (x == 0 && y == 0) {
+            throw new IllegalArgumentException("Cannot set moveVector, x = y = 0 is not allowed!");
+        }
+        if (isMoving()) {
+            stopMovement();
+        }
+        normalizeAndSetVector(x, y);
+        moveStartTick = Server.game.getTick();
+        movementDirty = true;
     }
 
     /**
@@ -198,7 +198,7 @@ public class Entity {
      * @return die Geschwindigkeit dieser Einheit
      */
     public double getSpeed() {
-	return speed;
+        return speed;
     }
 
     /**
@@ -208,17 +208,17 @@ public class Entity {
      * @param speed die neue Geschwindigkeit > 0
      */
     public void setSpeed(double speed) {
-	if (speed <= 0) {
-	    throw new IllegalArgumentException("Cannot set speed: Must be greater than zero");
-	}
-	if (isMoving()) {
-	    stopMovement();
-	    this.speed = speed;
-	    setVector(vecX, vecY);
-	    movementDirty = true;
-	} else {
-	    this.speed = speed;
-	}
+        if (speed <= 0) {
+            throw new IllegalArgumentException("Cannot set speed: Must be greater than zero");
+        }
+        if (isMoving()) {
+            stopMovement();
+            this.speed = speed;
+            setVector(vecX, vecY);
+            movementDirty = true;
+        } else {
+            this.speed = speed;
+        }
     }
 
     /**
@@ -228,26 +228,26 @@ public class Entity {
      * @param y Y-Richtung
      */
     private void normalizeAndSetVector(double x, double y) {
-	// Länge berechnen (Pythagoras)
-	double length = Math.sqrt((x * x) + (y * y));
-	// Normalisieren und setzen
-	vecX = x / length;
-	vecY = y / length;
+        // Länge berechnen (Pythagoras)
+        double length = Math.sqrt((x * x) + (y * y));
+        // Normalisieren und setzen
+        vecX = x / length;
+        vecY = y / length;
     }
 
     public Movement getMovement() {
-	if (movementDirty) {
-	    computeMovement();
-	}
-	return movement;
+        if (movementDirty) {
+            computeMovement();
+        }
+        return movement;
     }
 
     private void computeMovement() {
-	if (isMoving()) {
-	    movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed());
-	} else {
-	    movement = new Movement(posX, posY, 0, 0, -1, 0);
-	}
+        if (isMoving()) {
+            movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed());
+        } else {
+            movement = new Movement(posX, posY, 0, 0, -1, 0);
+        }
     }
 
     /**
@@ -256,7 +256,7 @@ public class Entity {
      * @return die X-Koordinate des Chars nach der angegebenen Zahl Ticks
      */
     public double extrapolateX(int ticks) {
-	return this.posX + vecX * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
+        return this.posX + vecX * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
     }
 
     /**
@@ -265,7 +265,7 @@ public class Entity {
      * @return die Y-Koordinate des Chars nach der angegebenen Zahl Ticks
      */
     public double extrapolateY(int ticks) {
-	return this.posY + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
+        return this.posY + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
     }
 
     /**
@@ -274,7 +274,7 @@ public class Entity {
      * @return der gametick in dem die Bewegung gestartet wurde
      */
     public int getMoveStartTick() {
-	return moveStartTick;
+        return moveStartTick;
     }
 
     /**
@@ -284,7 +284,7 @@ public class Entity {
      * @return die größe des byte[]'s, das netPack() braucht.
      */
     public int byteArraySize() {
-	return 5;
+        return 5;
     }
 
     /**
@@ -295,8 +295,8 @@ public class Entity {
      * @param b der Puffer, in den geschrieben ist.
      */
     public void netPack(byte[] b, int offset) {
-	b[offset] = entityTypeID;
-	Bits.putInt(b, offset + 1, netID);
+        b[offset] = entityTypeID;
+        Bits.putInt(b, offset + 1, netID);
     }
 
     /**
@@ -307,10 +307,10 @@ public class Entity {
      * @return die Richtung in die sich diese Einheit gerade bewegt
      */
     public double getDirection() {
-	double dir = Math.atan2(vecY, vecX);
-	if (dir < 0) {
-	    dir += 2 * Math.PI;
-	}
-	return dir;
+        double dir = Math.atan2(vecY, vecX);
+        if (dir < 0) {
+            dir += 2 * Math.PI;
+        }
+        return dir;
     }
 }
