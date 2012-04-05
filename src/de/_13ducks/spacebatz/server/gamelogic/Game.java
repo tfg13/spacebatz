@@ -194,6 +194,8 @@ public class Game {
         Server.entityMap.calculateEntityPositions();
         // Gegner Spawnen:
         EnemySpawner.tick();
+        // Effekte berechnen:
+        EffectManager.computeEffects();
     }
 
     /**
