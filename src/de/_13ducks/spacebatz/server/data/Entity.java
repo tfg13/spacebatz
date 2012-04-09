@@ -92,64 +92,55 @@ public class Entity {
     }
 
     /**
-     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht, wird die Bewegung abgebrochen.
-     *
-     * @param x die neue X-Position.
+     * Setzt die Position dieser Einheit auf den angegebenen Wert.
+     * Wenn entweder x oder y (nicht beide!) NaN sind, wird die Bewegung nur in eine Richtung angehalten.
+     * Darf nicht aufgerufen werden, wenn sich die Einheit gar nicht bewegt.
+     * @param x die X-Stop-Koordinate oder NaN
+     * @param y die Y-Stop-Koordinate oder NaN
      */
-    public void setStillX(double x) {
-        stopMovementX();
-        posX = x;
-        movementDirty = true;
-    }
-
-    /**
-     * Setzt die Stand-Position dieser Einheit. Falls die Einheit gerade steht, wird die Bewegung abgebrochen.
-     *
-     * @param x die neue X-Position.
-     */
-    public void setStillY(double y) {
-        stopMovementY();
-        posY = y;
+    public void setStopXY(double x, double y) {
+        /*
+         * Diese Methode ist nicht (!) das gleiche wie das alte setStillX und danach setStillY.
+         * Das konnte böse Wechselwirkungsfehler erzeugen, die dazu führen, dass Einheiten in der Wand stecken bleiben.
+         */
+        boolean xCont = Double.isNaN(x);
+        boolean yCont = Double.isNaN(y);
+        if (xCont && yCont) {
+            throw new IllegalArgumentException("Cannot setStop without stopping at all! (x=y=NaN)");
+        }
+        if (moveStartTick == -1) {
+            throw new IllegalArgumentException("Cannot setStop, Entity is not moving at all!");
+        }
+        if (xCont) {
+            posY = y;
+            vecY = 0;
+            if (vecX == 0) {
+                moveStartTick = -1;
+            }
+        } else if (yCont) {
+            posX = x;
+            vecX = 0;
+            if (vecY == 0) {
+                moveStartTick = -1;
+            }
+        } else {
+            stopMovement();
+            posX = x;
+            posY = y;
+        }
         movementDirty = true;
     }
 
     /**
      * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn die Einheit
      * schon steht.
+     * Nicht zur Kollisionsberechnung geeignet, da die Einheit die Bewegung dieses Ticks noch vollständig ausführt. Besser setStop verwenden.
      */
     public void stopMovement() {
         posX = getX();
         posY = getY();
         moveStartTick = -1;
         movementDirty = true;
-    }
-
-    /**
-     * Stoppt die Bewegung in X-Richtung. Beeinflusst eine Bewegung in Y-Richtung nicht. Wenn die Einheit (in X-Richtung) schon steht passiert nichts.
-     */
-    public void stopMovementX() {
-        // Bewegen wir uns überhaupt (in X-Richtung)
-        if (moveStartTick != -1 && vecX != 0) {
-            if (vecY != 0) {
-                setVector(0, vecY);
-            } else {
-                stopMovement();
-            }
-        }
-    }
-
-    /**
-     * Stoppt die Bewegung in Y-Richtung. Beeinflusst eine Bewegung in X-Richtung nicht. Wenn die Einheit (in Y-Richtung) schon steht passiert nichts.
-     */
-    public void stopMovementY() {
-        // Bewegen wir uns überhaupt (in Y-Richtung)
-        if (moveStartTick != -1 && vecY != 0) {
-            if (vecX != 0) {
-                setVector(vecX, 0);
-            } else {
-                stopMovement();
-            }
-        }
     }
 
     /**

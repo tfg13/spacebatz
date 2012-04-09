@@ -200,11 +200,11 @@ public class CollisionManager {
                 }
             }
         }
+        double sx = Double.NaN;
         // Hier haben wir mit smallestD und xCollision alle relevanten infos
         if (smallestD < Double.MAX_VALUE) {
             // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
-            double newX = fromX + smallestD * deltaX;
-            mover.setStillX(newX);
+            sx = fromX + smallestD * deltaX;
         }
 
         // Werte zurücksetzen
@@ -241,29 +241,17 @@ public class CollisionManager {
                 }
             }
         }
+        double sy = Double.NaN;
         // Hier haben wir mit smallestD und xCollision alle relevanten infos
         if (smallestD < Double.MAX_VALUE) {
             // Die Koordinaten der Position die noch erreicht werden kann
-            mover.setStillY(fromY + smallestD * deltaY);
+            sy = fromY + smallestD * deltaY;
         }
 
-
-        for (int testX = (int) mover.getX() - 3; testX < (int) mover.getX() + 3; testX++) {
-            for (int testY = (int) mover.getY() - 3; testY < (int) mover.getY() + 3; testY++) {
-                if (Server.game.getLevel().getCollisionMap()[testX][testY] == true) {
-                    double testDX = Math.abs((testX + 0.5) - mover.getX());
-                    double testDY =  Math.abs((testY + 0.5) - mover.getY());
-                    double testD = (0.5) + mover.getProperty("size") / 2;
-                    if (testDX < testD && testDY < testD) {
-                        System.out.println("KOLLISION!!!!!!!");
-                    }
-                }
-            }
+        // Bewegung koorigieren?
+        if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
+            mover.setStopXY(sx, sy);
         }
-
-
-
-
     }
 
     /**
