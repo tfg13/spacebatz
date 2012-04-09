@@ -150,15 +150,17 @@ public class CollisionManager {
     }
 
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
+        // Wert cachen:
+        double size = mover.getProperty("size");
         // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
         // Anfangs- und Ziel-X des Gebiets das gescannt wird
-        int moveAreaStartX = (int) (Math.min(fromX, toX) - mover.getProperty("size") / 2);
-        int moveAreaEndX = (int) (Math.max(fromX, toX) + mover.getProperty("size") / 2) + 1;
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - size / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + size / 2) + 1;
         // Anfangs- und Ziel-Y des Gebiets das gescannt wird
-        int moveAreaStartY = (int) (Math.min(fromY, toY) - mover.getProperty("size") / 2);
-        int moveAreaEndY = (int) (Math.max(fromY, toY) + mover.getProperty("size") / 2) + 1;
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - size / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + size / 2) + 1;
 
 
         // Gesucht ist der Block, mit dem wir als erstes kollidieren
@@ -177,8 +179,8 @@ public class CollisionManager {
                     blockMidX = x + 0.5;
                     blockMidY = y + 0.5;
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
-                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromX) / deltaX;
+                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromX) / deltaX;
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
@@ -220,8 +222,8 @@ public class CollisionManager {
                     blockMidY = y + 0.5;
                     // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
-                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + mover.getProperty("size") / 2.0)) - fromY) / deltaY;
+                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
 
