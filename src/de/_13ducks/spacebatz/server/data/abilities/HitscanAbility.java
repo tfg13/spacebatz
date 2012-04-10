@@ -7,7 +7,6 @@ import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.server.gamelogic.HitManager;
 import de._13ducks.spacebatz.shared.Properties;
 import java.util.ArrayList;
 
