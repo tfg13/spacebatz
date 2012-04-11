@@ -15,22 +15,26 @@ import java.util.Random;
  */
 public class FireBulletAbility extends Ability {
 
-    private double damage;
-    private double attackspeed;
-    private double range;
-    private int bulletpic;
-    private double bulletspeed;
-    private double spread;
-    private double explosionradius;
-
+    /**
+     * Erzeugt eine neue FireBulletAbility mit den angegebenen Grundwerten.
+     *
+     * @param damage der angerichtete Schaden
+     * @param attackspeed der Cooldown in Ticks
+     * @param range die Reichweite der Bullets
+     * @param bulletpic das Bild der Bullets
+     * @param bulletspeed die Geschwindigkeit der Bullets
+     * @param spread die Streuung der Bullets
+     * @param explosionradius der Explosionsradius der Bullets
+     */
     public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
-        this.damage = damage;
-        this.attackspeed = attackspeed;
-        this.range = range;
-        this.bulletpic = bulletpic;
-        this.bulletspeed = bulletspeed;
-        this.spread = spread;
-        this.explosionradius = explosionradius;
+        addBaseProperty("damage", damage);
+        addBaseProperty("attackspeed", attackspeed);
+        addBaseProperty("range", range);
+        addBaseProperty("bulletpic", bulletpic);
+        addBaseProperty("bulletspeed", bulletspeed);
+        addBaseProperty("spread", spread);
+        addBaseProperty("explosionradius", explosionradius);
+
     }
 
     @Override
@@ -50,7 +54,18 @@ public class FireBulletAbility extends Ability {
 
     @Override
     public void useInAngle(double angle) {
-        if (owner.getAttackCooldownTick() <= Server.game.getTick()) {
+
+
+        double damage = getBaseProperty("damage");
+        double attackspeed = getBaseProperty("attackspeed");
+        double range = getBaseProperty("range");
+        int bulletpic = (int) getBaseProperty("bulletpic");
+        double bulletspeed = getBaseProperty("bulletspeed");
+        double spread = getBaseProperty("spread");
+        double explosionradius = getBaseProperty("explosionradius");
+
+        if (owner.getAttackCooldownTick()
+                <= Server.game.getTick()) {
             owner.setAttackCooldownTick(Server.game.getTick() + (int) attackspeed);
             Random random = new Random();
             angle += random.nextGaussian() * spread;

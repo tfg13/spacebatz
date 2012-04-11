@@ -12,13 +12,11 @@ import java.util.ArrayList;
 
 /**
  * Eine Fähigkeit, die in eine Richtung angreift und sofort Schaden macht
- * 
+ *
  * @author Jojo
  */
 public class HitscanAbility extends Ability {
 
-    private double attackspeed;
-    private double range;
     /**
      * Die Effekte, die dieses Geschoss hat.
      */
@@ -27,8 +25,8 @@ public class HitscanAbility extends Ability {
     public HitscanAbility(double damage, double attackspeed, double range) {
         TrueDamageEffect damageeff = new TrueDamageEffect((int) damage);
         effects.add(damageeff);
-        this.attackspeed = attackspeed;
-        this.range = range;
+        addBaseProperty("attackspeed", attackspeed);
+        addBaseProperty("range", range);
     }
 
     @Override
@@ -54,9 +52,9 @@ public class HitscanAbility extends Ability {
     @Override
     public void useInAngle(double angle) {
         if (owner.getAttackCooldownTick() <= Server.game.getTick()) {
-            owner.setAttackCooldownTick(Server.game.getTick() + (int) attackspeed);
+            owner.setAttackCooldownTick(Server.game.getTick() + (int) getBaseProperty("attackspeed"));
 
-            ArrayList<Char> charsHit = CollisionManager.computeHitscanCollision(owner, angle, range, this);
+            ArrayList<Char> charsHit = CollisionManager.computeHitscanCollision(owner, angle, getBaseProperty("range"), this);
 
             for (Char character : charsHit) {
                 for (Effect effect : effects) {
