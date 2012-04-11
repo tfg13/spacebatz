@@ -26,61 +26,61 @@ public class ItemAttributeTypes {
         // name, quality, damage, attackspeed, range, armor, movespeed
 
 
-        Properties moreDamage = new Properties();
-        moreDamage.setProperty("quality", 1.0);
-        moreDamage.setProperty("damage", 0.1);
-        attributelist.add(new ItemAttribute("More Damage", moreDamage));
+        ItemAttribute moreDamage = new ItemAttribute("More Damage");
+        moreDamage.setWeaponProperty("quality", 1.0);
+        moreDamage.setWeaponProperty("damage", 0.1);
+        attributelist.add(moreDamage);
 
-        Properties evenMoreDamage = new Properties();
-        evenMoreDamage.setProperty("quality", 2.0);
-        evenMoreDamage.setProperty("damage", 0.3);
-        attributelist.add(new ItemAttribute("Even More Damage", evenMoreDamage));
+        ItemAttribute evenMoreDamage = new ItemAttribute("Even More Damage");
+        evenMoreDamage.setWeaponProperty("quality", 2.0);
+        evenMoreDamage.setWeaponProperty("damage", 0.3);
+        attributelist.add(evenMoreDamage);
 
-        Properties moreAttackSpeed = new Properties();
-        moreAttackSpeed.setProperty("quality", 1.0);
-        moreAttackSpeed.setProperty("attackspeed", 0.1);
-        attributelist.add(new ItemAttribute("More Attackspeed", moreAttackSpeed));
+        ItemAttribute moreAttackSpeed = new ItemAttribute("More Attackspeed");
+        moreAttackSpeed.setWeaponProperty("quality", 1.0);
+        moreAttackSpeed.setWeaponProperty("attackspeed", 0.1);
+        attributelist.add(moreAttackSpeed);
 
-        Properties evenMoreAttackSpeed = new Properties();
-        evenMoreAttackSpeed.setProperty("quality", 2.0);
-        evenMoreAttackSpeed.setProperty("attackspeed", 0.3);
-        attributelist.add(new ItemAttribute("Even More Attackspeed", evenMoreAttackSpeed));
+        ItemAttribute evenMoreAttackSpeed = new ItemAttribute("Even More Attackspeed");
+        evenMoreAttackSpeed.setWeaponProperty("quality", 2.0);
+        evenMoreAttackSpeed.setWeaponProperty("attackspeed", 0.3);
+        attributelist.add(evenMoreAttackSpeed);
 
-        Properties moreRange = new Properties();
-        moreRange.setProperty("quality", 2.0);
-        moreRange.setProperty("range", 0.2);
-        attributelist.add(new ItemAttribute("More Range", moreRange));
+        ItemAttribute moreRange = new ItemAttribute("More Range");
+        moreRange.setWeaponProperty("quality", 2.0);
+        moreRange.setWeaponProperty("range", 0.2);
+        attributelist.add(moreRange);
 
-        Properties moreEverything = new Properties();
-        moreEverything.setProperty("quality", 3.0);
-        moreEverything.setProperty("damage", 0.1);
-        moreEverything.setProperty("attackspeed", 0.1);
-        moreEverything.setProperty("range", 0.1);
-        attributelist.add(new ItemAttribute("More Everything", moreEverything));
+        ItemAttribute moreEverything = new ItemAttribute("More Everything");
+        moreEverything.setWeaponProperty("quality", 3.0);
+        moreEverything.setWeaponProperty("damage", 0.1);
+        moreEverything.setWeaponProperty("attackspeed", 0.1);
+        moreEverything.setWeaponProperty("range", 0.1);
+        attributelist.add(moreEverything);
 
-        Properties moreArmor = new Properties();
-        moreArmor.setProperty("quality", 1.0);
-        moreArmor.setProperty("armor", 0.1);
-        attributelist.add(new ItemAttribute("More Armor", moreArmor));
+        ItemAttribute moreArmor = new ItemAttribute("More Armor");
+        moreArmor.setWeaponProperty("quality", 1.0);
+        moreArmor.setBonusProperty("armor", 0.1);
+        attributelist.add(moreArmor);
 
-        Properties evenMoreArmor = new Properties();
-        evenMoreArmor.setProperty("quality", 2.0);
-        evenMoreArmor.setProperty("armor", 0.3);
-        attributelist.add(new ItemAttribute("Even More Armor", evenMoreArmor));
+        ItemAttribute evenMoreArmor = new ItemAttribute("Even More Armor");
+        evenMoreArmor.setWeaponProperty("quality", 2.0);
+        evenMoreArmor.setBonusProperty("armor", 0.3);
+        attributelist.add(evenMoreArmor);
 
-        Properties moreHP = new Properties();
-        moreHP.setProperty("quality", 1.0);
-        moreHP.setProperty("healthpoints", 5.0);
-        attributelist.add(new ItemAttribute("More Healthpoints", moreHP));
+        ItemAttribute moreHP = new ItemAttribute("More Healthpoints");
+        moreHP.setWeaponProperty("quality", 1.0);
+        moreHP.setBonusProperty("healthpoints", 5.0);
+        attributelist.add(moreHP);
 
-        Properties moreMovespeed = new Properties();
-        moreMovespeed.setProperty("quality", 2.0);
-        moreMovespeed.setProperty("movespeed", 0.2);
-        attributelist.add(new ItemAttribute("More Movespeed", moreMovespeed));
+        ItemAttribute moreMovespeed = new ItemAttribute("More Movespeed");
+        moreMovespeed.setWeaponProperty("quality", 2.0);
+        moreMovespeed.setBonusProperty("movespeed", 0.2);
+        attributelist.add(moreMovespeed);
 
-        Properties unusual = new Properties();
-        unusual.setProperty("quality", 2.0);
-        attributelist.add(new ItemAttribute("Unusual", unusual));
+        ItemAttribute unusual = new ItemAttribute("Unusual");
+        unusual.setWeaponProperty("quality", 2.0);
+        attributelist.add(unusual);
     }
 
     /**

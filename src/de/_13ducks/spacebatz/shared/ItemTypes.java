@@ -27,71 +27,71 @@ public class ItemTypes {
         itemtypelist = new ArrayList<>();
 
         ItemBaseAttribute money = new ItemBaseAttribute("Money");
-        money.setProperty("pic", 0);
-        money.setProperty("itemclass", 0);
-        money.setProperty("quality", 1);
-        money.setProperty("amount", 1);
+        money.setBonusProperty("pic", 0);
+        money.setBonusProperty("itemclass", 0);
+        money.setBonusProperty("quality", 1);
+        money.setBonusProperty("amount", 1);
         itemtypelist.add(money);
 
         ItemBaseAttribute hat = new ItemBaseAttribute("Hat");
-        hat.setProperty("pic", 1);
-        hat.setProperty("itemclass", 2);
-        hat.setProperty("quality", 1);
-        hat.setProperty("amount", 0);
+        hat.setBonusProperty("pic", 1);
+        hat.setBonusProperty("itemclass", 2);
+        hat.setBonusProperty("quality", 1);
+        hat.setBonusProperty("amount", 0);
         itemtypelist.add(hat);
 
         ItemBaseAttribute betterhat = new ItemBaseAttribute("Better Hat");
-        betterhat.setProperty("pic", 1);
-        betterhat.setProperty("itemclass", 2);
-        betterhat.setProperty("quality", 3);
-        betterhat.setProperty("amount", 0);
+        betterhat.setBonusProperty("pic", 1);
+        betterhat.setBonusProperty("itemclass", 2);
+        betterhat.setBonusProperty("quality", 3);
+        betterhat.setBonusProperty("amount", 0);
         itemtypelist.add(betterhat);
 
         ItemBaseAttribute pistol = new ItemBaseAttribute("Pistol");
-        pistol.setProperty("pic", 4);
-        pistol.setProperty("itemclass", 1);
-        pistol.setProperty("quality", 1);
-        pistol.setProperty("amount", 0);
+        pistol.setBonusProperty("pic", 4);
+        pistol.setBonusProperty("itemclass", 1);
+        pistol.setBonusProperty("quality", 1);
+        pistol.setBonusProperty("amount", 0);
         pistol.setAbility(new FireBulletAbility(7, 15.0, 10.0, 1, 0.35, 0.025, 0.0));
         itemtypelist.add(pistol);
 
         ItemBaseAttribute laser = new ItemBaseAttribute("Laser");
-        laser.setProperty("pic", 2);
-        laser.setProperty("itemclass", 1);
-        laser.setProperty("quality", 1);
-        laser.setProperty("amount", 0);
+        laser.setBonusProperty("pic", 2);
+        laser.setBonusProperty("itemclass", 1);
+        laser.setBonusProperty("quality", 1);
+        laser.setBonusProperty("amount", 0);
         laser.setAbility(new FireBulletAbility(4, 6.0, 9.0, 3, 0.35, 0.1, 0.0));
         itemtypelist.add(laser);
 
         ItemBaseAttribute superlaser = new ItemBaseAttribute("Super Laser");
-        superlaser.setProperty("pic", 3);
-        superlaser.setProperty("itemclass", 1);
-        superlaser.setProperty("quality", 1);
-        superlaser.setProperty("amount", 0);
+        superlaser.setBonusProperty("pic", 3);
+        superlaser.setBonusProperty("itemclass", 1);
+        superlaser.setBonusProperty("quality", 1);
+        superlaser.setBonusProperty("amount", 0);
         superlaser.setAbility(new FireBulletAbility(25, 25.0, 12.0, 2, 0.5, 0.02, 0.0));
         itemtypelist.add(superlaser);
 
         ItemBaseAttribute rocketlauncher = new ItemBaseAttribute("Rocket Launcher");
-        rocketlauncher.setProperty("pic", 5);
-        rocketlauncher.setProperty("itemclass", 1);
-        rocketlauncher.setProperty("quality", 1);
-        rocketlauncher.setProperty("amount", 0);
+        rocketlauncher.setBonusProperty("pic", 5);
+        rocketlauncher.setBonusProperty("itemclass", 1);
+        rocketlauncher.setBonusProperty("quality", 1);
+        rocketlauncher.setBonusProperty("amount", 0);
         rocketlauncher.setAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
         itemtypelist.add(rocketlauncher);
 
         ItemBaseAttribute drill = new ItemBaseAttribute("Drill");
-        drill.setProperty("pic", 6);
-        drill.setProperty("itemclass", 1);
-        drill.setProperty("quality", 1);
-        drill.setProperty("amount", 0);
+        drill.setBonusProperty("pic", 6);
+        drill.setBonusProperty("itemclass", 1);
+        drill.setBonusProperty("quality", 1);
+        drill.setBonusProperty("amount", 0);
         drill.setAbility(new HitscanAbility(50, 60.0, 4.0));
         itemtypelist.add(drill);
 
         ItemBaseAttribute saw = new ItemBaseAttribute("Saw");
-        saw.setProperty("pic", 7);
-        saw.setProperty("itemclass", 1);
-        saw.setProperty("quality", 1);
-        saw.setProperty("amount", 0);
+        saw.setBonusProperty("pic", 7);
+        saw.setBonusProperty("itemclass", 1);
+        saw.setBonusProperty("quality", 1);
+        saw.setBonusProperty("amount", 0);
         saw.setAbility(new HitscanAbility(15, 12.0, 4.0));
         itemtypelist.add(saw);
 
