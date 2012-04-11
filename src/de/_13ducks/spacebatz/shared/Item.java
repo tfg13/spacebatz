@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * @author Jojo
  */
 public class Item extends Properties {
-    
+
     private static final long serialVersionUID = 1L;
     /**
      * Die netID des Items.
@@ -90,7 +90,11 @@ public class Item extends Properties {
         // Das Attribut in die Liste aufnehmen:
         itemAttributes.add(itemAttribute);
         // Die Bonus-Werte des Attributs zu den ItemProperties addieren:
-        addProperties(itemAttribute);
+        addProperties(itemAttribute.getBonusStats());
+        // Falls das Item eine Fähigkeit gibt die weaponstats des Attributs der Fähigkeit hinzufügen:
+        if (weaponAbility != null) {
+            weaponAbility.addBaseProperties(itemAttribute.getWeaposStats());
+        }
     }
 
     /**
@@ -103,7 +107,11 @@ public class Item extends Properties {
             // Das Attribut von der Liste entfernen:
             itemAttributes.remove(itemAttribute);
             // Die Bonus-Werte des Attributs wieder entfernen:
-            removeProperties(itemAttribute);
+            removeProperties(itemAttribute.getBonusStats());
+            // Falls das Item eine Fähigkeit gibt die weaponstats des Attributs der Fähigkeit wieder entfernen:
+            if (weaponAbility != null) {
+                weaponAbility.removeBaseProperties(itemAttribute.getWeaposStats());
+            }
         } else {
             throw new IllegalArgumentException("Dieses Item hat kein \"" + itemAttribute.getName() + "\"-Attribut!");
         }
