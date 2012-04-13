@@ -149,4 +149,33 @@ public class DropManager {
         item.setAmount(amount);
         return item;
     }
+
+    public static void dropMaterial(String name, double x, double y) {
+        for (int i = 0; i < itemtypelist.size(); i++) {
+            if (itemtypelist.get(i).getName().equals(name)) {
+                ItemBaseAttribute stats = itemtypelist.get(i);
+                
+                Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
+                Server.game.getItemMap().put(item.getNetID(), item);
+
+                byte[] serializedItem = null;
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                ObjectOutputStream os;
+                try {
+                    os = new ObjectOutputStream(bs);
+                    os.writeObject(item);
+                    os.flush();
+                    bs.flush();
+                    bs.close();
+                    os.close();
+                    serializedItem = bs.toByteArray();
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                Server.msgSender.sendItemDrop(serializedItem);
+            }
+        }
+    }
 }
