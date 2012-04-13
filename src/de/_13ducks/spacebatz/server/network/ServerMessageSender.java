@@ -109,11 +109,16 @@ public class ServerMessageSender {
     /**
      * Item wird von Spieler aufgesammelt
      */
-    public void sendItemGrab(int itemnetID, int clientID) {
+    public void sendItemGrab(int itemnetID, int clientID, boolean stacks) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[8];
+            byte[] b = new byte[9];
             Bits.putInt(b, 0, itemnetID);
             Bits.putInt(b, 4, clientID);
+            if (stacks) {
+                b[8] = 1;
+            } else {
+                b[8] = 0;
+            }
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
         }
     }

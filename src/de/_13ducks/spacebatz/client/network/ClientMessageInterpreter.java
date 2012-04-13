@@ -128,7 +128,7 @@ public class ClientMessageInterpreter {
                     @Override
                     public void run() {
                         Client.setEngine(new Engine());
-			Client.getEngine().start();
+                        Client.getEngine().start();
                     }
                 });
                 t.setName("CLIENT_ENGINE");
@@ -190,14 +190,22 @@ public class ClientMessageInterpreter {
                 // Item wird aufgesammelt
                 int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
                 int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+                boolean stacks = false;
+                if (message[8] == 1) {
+                    stacks = true;
+                }
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
                 if (clientID == Client.getClientID()) {
                     Item item = Client.getItemMap().get(netIDItem2);
-                    // Geld oder normales Item?
-                    if (item.getName().equals("Money")) {
-                        Client.addMoney(item.getAmount());
-                    } else {
+
+                    if (!stacks) {
+                        // Item wird nicht gestackt
                         Client.addToInventory(item);
+                    } else {
+                        // Item soll gestackt werden
+                        if (item.getName().equals("Money")) {
+                            Client.addMoney(item.getAmount());
+                        }
                     }
                 }
                 Client.getItemMap().remove(netIDItem2);
