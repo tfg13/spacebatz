@@ -93,10 +93,10 @@ public abstract class Ability {
     /**
      * Addiert Werte zu den Grundwerten der Fähigkeit.
      *
-     * @param weaposStats die Werte, die addiert werden
+     * @param weaponStats die Werte, die addiert werden
      */
-    public void addBaseProperties(Properties weaposStats) {
-        baseProperties.addProperties(baseProperties);
+    public void addBaseProperties(Properties weaponStats) {
+        baseProperties.addProperties(weaponStats);
     }
 
     /**
