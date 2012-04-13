@@ -536,7 +536,7 @@ public class LevelGenerator {
 
         // Textur drauf:
         for (int i = 0; i < resall.size(); i++) {
-            ground[resall.get(i).getX()][resall.get(i).getY()] = TEXore;
+            ground[resall.get(i).getX()][resall.get(i).getY()] = TEXore + random.nextInt(2); // Testcode für 2 verschiedene Ore
         }
     }
 

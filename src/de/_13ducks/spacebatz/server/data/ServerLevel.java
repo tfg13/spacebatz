@@ -44,8 +44,8 @@ public class ServerLevel extends Level {
         areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
         destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, null));
-        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, "Ore"));
-
+        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, "Iron Ore"));
+        destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, "Gold Ore"));
     }
 
     /**

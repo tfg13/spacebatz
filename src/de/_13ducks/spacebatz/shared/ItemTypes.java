@@ -33,12 +33,19 @@ public class ItemTypes {
         money.setBonusProperty("amount", 1);
         itemtypelist.add(money);
 
-        ItemBaseAttribute ore = new ItemBaseAttribute("Ore");
+        ItemBaseAttribute ore = new ItemBaseAttribute("Iron Ore");
         ore.setBonusProperty("pic", 8);
         ore.setBonusProperty("itemclass", 0);
         ore.setBonusProperty("quality", 0); // nicht zufällig dropbar
         ore.setBonusProperty("amount", 1);
         itemtypelist.add(ore);
+
+        ItemBaseAttribute ore2 = new ItemBaseAttribute("Gold Ore");
+        ore2.setBonusProperty("pic", 9);
+        ore2.setBonusProperty("itemclass", 0);
+        ore2.setBonusProperty("quality", 0); // nicht zufällig dropbar
+        ore2.setBonusProperty("amount", 1);
+        itemtypelist.add(ore2);
 
         ItemBaseAttribute hat = new ItemBaseAttribute("Hat");
         hat.setBonusProperty("pic", 1);
