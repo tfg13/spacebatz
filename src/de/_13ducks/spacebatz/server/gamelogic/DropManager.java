@@ -58,7 +58,9 @@ public class DropManager {
         if ((int) stats.getBonusProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);
         } else {
-            item = addAmount(item, droplevel);
+            if (stats.getName().equals("Money")) {
+                item = addAmount(item, droplevel);
+            }
         }
 
         Server.game.getItemMap().put(item.getNetID(), item);

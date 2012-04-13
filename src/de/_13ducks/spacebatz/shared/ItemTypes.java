@@ -36,7 +36,7 @@ public class ItemTypes {
         ItemBaseAttribute ore = new ItemBaseAttribute("Ore");
         ore.setBonusProperty("pic", 0);
         ore.setBonusProperty("itemclass", 0);
-        ore.setBonusProperty("quality", 1); // nicht zufällig dropbar
+        ore.setBonusProperty("quality", 0); // nicht zufällig dropbar
         ore.setBonusProperty("amount", 1);
         itemtypelist.add(ore);
 

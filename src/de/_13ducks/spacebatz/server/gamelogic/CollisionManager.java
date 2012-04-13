@@ -304,17 +304,18 @@ public class CollisionManager {
                                 if (item.getName().equals("Money")) {
                                     collector.setMoney(collector.getMoney() + item.getAmount());
                                     iterator.remove();
-                                    Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID, true);
+                                    Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, -616);
                                 } else {
-                                    if (collector.tryItemStack(item)) {
+                                    Item itemStack = collector.tryItemStack(item);
+                                    if (itemStack != null) {
                                         // es gibt schon einen Stack von diesem Item
                                         iterator.remove();
-                                        Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID, true);
+                                        Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, itemStack.getNetID());
                                     } else if (collector.freeInventorySlot()) {
                                         // neuen Stack anlegen, wenn Platz
                                         collector.putItem(item.getNetID(), item);
                                         iterator.remove();
-                                        Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID, false);
+                                        Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                                     }
                                 }
                                 
@@ -322,7 +323,7 @@ public class CollisionManager {
                                 // nicht-stackbares Item
                                 collector.putItem(item.getNetID(), item);
                                 iterator.remove();
-                                Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID, false);
+                                Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                             }
 
                         }

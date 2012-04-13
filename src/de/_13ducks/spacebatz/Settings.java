@@ -216,6 +216,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_ANSWER_RCON = 46;
     /**
+     * Die cmdID für Item-Aufsammeln und auf ein anderes draufstacken
+     */
+    public static final byte NET_TCP_CMD_GRAB_ITEM_TO_STACK = 47;
+    /**
      * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die
      * eigene Spielfigur sich auch bei den anderen verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen,
      * kommt es zu lags.

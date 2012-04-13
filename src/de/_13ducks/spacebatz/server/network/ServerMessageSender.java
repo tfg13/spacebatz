@@ -107,19 +107,29 @@ public class ServerMessageSender {
     }
 
     /**
-     * Item wird von Spieler aufgesammelt
+     * Item wird von Spieler aufgesammelt und kriegt eigenen Itemslot
      */
-    public void sendItemGrab(int itemnetID, int clientID, boolean stacks) {
+    public void sendItemGrab(int itemnetID, int clientID) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[9];
+            byte[] b = new byte[8];
             Bits.putInt(b, 0, itemnetID);
             Bits.putInt(b, 4, clientID);
-            if (stacks) {
-                b[8] = 1;
-            } else {
-                b[8] = 0;
-            }
+
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
+        }
+    }
+    
+    /**
+     * Item wird von Spieler aufgesammelt und auf ein anderes draufgestackt
+     */
+    public void sendItemGrabToStack(int newitemnetID, int clientID, int stackitemID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[12];
+            Bits.putInt(b, 0, newitemnetID);
+            Bits.putInt(b, 4, clientID);
+            Bits.putInt(b, 8, stackitemID);
+
+            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b, c);
         }
     }
 

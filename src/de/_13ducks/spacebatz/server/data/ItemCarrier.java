@@ -234,18 +234,18 @@ public class ItemCarrier extends Char {
     
     /**
      * Stackt das Item auf eins das schon im Inventar ist
-     * @param itemname Name des zu stackenden Items
-     * @return true wenn gestackt werden kann
+     * @param newitem das zu stackende Items
+     * @return das Item auf das gestackt wird oder null
      */
-    public boolean tryItemStack(Item newitem) {
-        boolean returnboolean = false;
+    public Item tryItemStack(Item newitem) {
+        Item returnItem = null;
         for (Item bla : items.values()) {
             if (bla.getName().equals(newitem.getName())) {
                 bla.setAmount(bla.getAmount() + newitem.getAmount());
-                returnboolean = true;
+                returnItem = bla;
                 break;
             }
         }
-        return returnboolean;
+        return returnItem;
     }
 }
