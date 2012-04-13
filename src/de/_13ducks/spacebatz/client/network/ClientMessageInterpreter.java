@@ -128,7 +128,7 @@ public class ClientMessageInterpreter {
                     @Override
                     public void run() {
                         Client.setEngine(new Engine());
-			Client.getEngine().start();
+                        Client.getEngine().start();
                     }
                 });
                 t.setName("CLIENT_ENGINE");
@@ -147,7 +147,6 @@ public class ClientMessageInterpreter {
                 int damage = Bits.getInt(message, 8);
 
                 byte victimdies = message[12];
-
 
                 // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
@@ -190,17 +189,35 @@ public class ClientMessageInterpreter {
                 // Item wird aufgesammelt
                 int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
                 int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+
                 // Item ins Client-Inventar verschieben, wenn eigene clientID
                 if (clientID == Client.getClientID()) {
                     Item item = Client.getItemMap().get(netIDItem2);
-                    // Geld oder normales Item?
+
+                    Client.addToInventory(item);
+                }
+                Client.getItemMap().remove(netIDItem2);
+                break;
+            case Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK:
+                // Item wird aufgesammelt
+                int newnetIDItem3 = Bits.getInt(message, 0); // netID des aufgesammelten Items
+                int clientID3 = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+                int stacknetID = Bits.getInt(message, 8); // die netID des Items, auf das gestackt werden soll
+
+                // Item ins Client-Inventar verschieben, wenn eigene clientID
+                if (clientID3 == Client.getClientID()) {
+                    Item item = Client.getItemMap().get(newnetIDItem3);
+
+                    // Item soll gestackt werden
                     if (item.getName().equals("Money")) {
                         Client.addMoney(item.getAmount());
                     } else {
-                        Client.addToInventory(item);
+                        Item itemStack = Client.getInventoryItems().get(stacknetID);
+                        itemStack.setAmount(itemStack.getAmount() + item.getAmount());
                     }
+
                 }
-                Client.getItemMap().remove(netIDItem2);
+                Client.getItemMap().remove(newnetIDItem3);
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
                 // alle aktuell herumliegenden Items an neuen Client geschickt
@@ -216,8 +233,8 @@ public class ClientMessageInterpreter {
                 // Ein Client will ein bestimmtes Item anlegen
                 int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
                 byte selslot = message[4];
-                int clientID3 = Bits.getInt(message, 5); // clientID des Spielers
-                if (clientID3 == Client.getClientID()) {
+                int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
+                if (clientID4 == Client.getClientID()) {
                     Item item = Client.getInventoryItems().get(netIDItem3);
                     Client.getEquippedItems().getEquipslots()[(int) item.getProperty("itemclass")][selslot] = item;
                     for (int i = 0; i < Client.getInventorySlots().length; i++) {

@@ -615,6 +615,11 @@ public class Engine {
                 glTexCoord2f(v, w);
                 glVertex3f(x, y + height, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
+                
+                if (item.getAmount() > 1) {
+                    // Amount hinschreiben
+                    renderText(String.valueOf(item.getAmount()), x, y);
+                }
             }
         }
 

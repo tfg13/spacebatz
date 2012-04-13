@@ -58,7 +58,9 @@ public class DropManager {
         if ((int) stats.getBonusProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);
         } else {
-            item = addAmount(item, droplevel);
+            if (stats.getName().equals("Money")) {
+                item = addAmount(item, droplevel);
+            }
         }
 
         Server.game.getItemMap().put(item.getNetID(), item);
@@ -146,5 +148,34 @@ public class DropManager {
         int amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
         item.setAmount(amount);
         return item;
+    }
+
+    public static void dropMaterial(String name, double x, double y) {
+        for (int i = 0; i < itemtypelist.size(); i++) {
+            if (itemtypelist.get(i).getName().equals(name)) {
+                ItemBaseAttribute stats = itemtypelist.get(i);
+                
+                Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
+                Server.game.getItemMap().put(item.getNetID(), item);
+
+                byte[] serializedItem = null;
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                ObjectOutputStream os;
+                try {
+                    os = new ObjectOutputStream(bs);
+                    os.writeObject(item);
+                    os.flush();
+                    bs.flush();
+                    bs.close();
+                    os.close();
+                    serializedItem = bs.toByteArray();
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                Server.msgSender.sendItemDrop(serializedItem);
+            }
+        }
     }
 }

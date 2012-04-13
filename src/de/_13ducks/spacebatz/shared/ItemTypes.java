@@ -33,6 +33,13 @@ public class ItemTypes {
         money.setBonusProperty("amount", 1);
         itemtypelist.add(money);
 
+        ItemBaseAttribute ore = new ItemBaseAttribute("Ore");
+        ore.setBonusProperty("pic", 8);
+        ore.setBonusProperty("itemclass", 0);
+        ore.setBonusProperty("quality", 0); // nicht zufällig dropbar
+        ore.setBonusProperty("amount", 1);
+        itemtypelist.add(ore);
+
         ItemBaseAttribute hat = new ItemBaseAttribute("Hat");
         hat.setBonusProperty("pic", 1);
         hat.setBonusProperty("itemclass", 2);

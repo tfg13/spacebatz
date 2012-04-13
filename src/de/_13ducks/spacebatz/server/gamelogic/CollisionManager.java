@@ -298,15 +298,34 @@ public class CollisionManager {
                     double distance = Distance.getDistance(collector.getX(), collector.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                            if (item.getName().equals("Money")) {
-                                collector.setMoney(collector.getMoney() + item.getAmount());
-                                iterator.remove();
-                                Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
-                            } else if (collector.getItems().size() < Settings.INVENTORY_SIZE) {
+
+                            if (item.getProperty("itemclass") == 0) {
+                                // stackbares Item
+                                if (item.getName().equals("Money")) {
+                                    collector.setMoney(collector.getMoney() + item.getAmount());
+                                    iterator.remove();
+                                    Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, -616);
+                                } else {
+                                    Item itemStack = collector.tryItemStack(item);
+                                    if (itemStack != null) {
+                                        // es gibt schon einen Stack von diesem Item
+                                        iterator.remove();
+                                        Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, itemStack.getNetID());
+                                    } else if (collector.freeInventorySlot()) {
+                                        // neuen Stack anlegen, wenn Platz
+                                        collector.putItem(item.getNetID(), item);
+                                        iterator.remove();
+                                        Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
+                                    }
+                                }
+                                
+                            } else if (collector.freeInventorySlot()) {
+                                // nicht-stackbares Item
                                 collector.putItem(item.getNetID(), item);
                                 iterator.remove();
                                 Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                             }
+
                         }
                     }
                 }

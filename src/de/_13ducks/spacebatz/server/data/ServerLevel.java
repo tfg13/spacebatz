@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +43,8 @@ public class ServerLevel extends Level {
         super(xSize, ySize);
         areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
-        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3));
-        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3));
+        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, null));
+        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, "Ore"));
 
     }
 
@@ -54,6 +55,13 @@ public class ServerLevel extends Level {
      * @param y Y-Koordinate des Blocks
      */
     public void destroyBlock(int x, int y) {
+        // Material droppen
+        String material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
+        if (material != null) {
+            // Material mit angepasster Position (int -> double) droppen
+            DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, (double) x + 0.5, (double) y + 0.5);
+        }
+
         Server.msgSender.broadcastCollisionChange(x, y, false);
         Server.msgSender.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
         getGround()[x][y] = destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture;
