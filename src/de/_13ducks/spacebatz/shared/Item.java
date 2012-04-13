@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import java.util.ArrayList;
@@ -69,7 +70,11 @@ public class Item extends Properties {
         this.amount = 1;
         itemAttributes = new ArrayList<>();
         addAttribute(baseAttribute);
-        weaponAbility = baseAttribute.getAbility();
+        if (baseAttribute.getAbility() != null) {
+            Cloner cloner = new Cloner();
+            weaponAbility = cloner.deepClone(baseAttribute.getAbility());
+        }
+
     }
 
     /**
