@@ -27,6 +27,7 @@ public class FireBulletAbility extends Ability {
      * @param explosionradius der Explosionsradius der Bullets
      */
     public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
+        // Grundwerte:
         addBaseProperty("damage", damage);
         addBaseProperty("attackspeed", attackspeed);
         addBaseProperty("range", range);
@@ -35,6 +36,14 @@ public class FireBulletAbility extends Ability {
         addBaseProperty("spread", spread);
         addBaseProperty("explosionradius", explosionradius);
 
+        // Wirkliche Werte (im moment die Grundwerte, da das Item noch nicht ausgerüstet ist.):
+        setProperty("damage", damage);
+        setProperty("attackspeed", attackspeed);
+        setProperty("range", range);
+        setProperty("bulletpic", bulletpic);
+        setProperty("bulletspeed", bulletspeed);
+        setProperty("spread", spread);
+        setProperty("explosionradius", explosionradius);
     }
 
     @Override
@@ -56,13 +65,13 @@ public class FireBulletAbility extends Ability {
     public void useInAngle(double angle) {
 
 
-        double damage = getBaseProperty("damage");
-        double attackspeed = getBaseProperty("attackspeed");
-        double range = getBaseProperty("range");
-        int bulletpic = (int) getBaseProperty("bulletpic");
-        double bulletspeed = getBaseProperty("bulletspeed");
-        double spread = getBaseProperty("spread");
-        double explosionradius = getBaseProperty("explosionradius");
+        double damage = getProperty("damage");
+        double attackspeed = getProperty("attackspeed");
+        double range = getProperty("range");
+        int bulletpic = (int) getProperty("bulletpic");
+        double bulletspeed = getProperty("bulletspeed");
+        double spread = getProperty("spread");
+        double explosionradius = getProperty("explosionradius");
 
         if (owner.getAttackCooldownTick()
                 <= Server.game.getTick()) {
@@ -85,6 +94,12 @@ public class FireBulletAbility extends Ability {
 
     @Override
     public void refreshProperties(Properties properties) {
-        // Werte des Trägers werden ignoriert.
+        // Die basestats mal 1 + multiplikator ergeben die wirklichen werte:
+        setProperty("damage", getBaseProperty("damage") * (1 + properties.getProperty("damagemultiplicator")));
+        setProperty("range", getBaseProperty("range") * (1 + properties.getProperty("rangemultiplicator")));
+        setProperty("bulletspeed", getBaseProperty("bulletspeed") * (1 + properties.getProperty("bulletspeedmultiplicator")));
+        setProperty("attackspeed", getBaseProperty("attackspeed") * (1 + properties.getProperty("attackspeedmultiplicator")));
+        setProperty("spread", getBaseProperty("spread") * (1 + properties.getProperty("spreadmultiplicator")));
+        setProperty("explosionradius", getBaseProperty("explosionradius") * (1 + properties.getProperty("explosionradiusmultiplicator")));
     }
 }
