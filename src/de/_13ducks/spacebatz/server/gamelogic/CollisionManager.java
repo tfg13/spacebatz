@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.Position;
 import de._13ducks.spacebatz.util.Vector;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -318,7 +319,7 @@ public class CollisionManager {
                                         Server.msgSender.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                                     }
                                 }
-                                
+
                             } else if (collector.freeInventorySlot()) {
                                 // nicht-stackbares Item
                                 collector.putItem(item.getNetID(), item);
@@ -334,14 +335,13 @@ public class CollisionManager {
     }
 
     /**
-     * Berechnet Hitscankollision, ruft für die getroffenen Gegner den Hitmanager auf
+     * Berechnet Hitscankollision, gibt alle getroffenen Chars zurück
      *
-     * @param x
-     * @param y
-     * @param angle
-     * @param range
+     * @param owner Char, der die Ability ausführt
+     * @param angle Richtung
+     * @param range Reichweite des Angriffs
      */
-    public static ArrayList<Char> computeHitscanCollision(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
+    public static ArrayList<Char> computeHitscanOnChars(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
         ArrayList<Char> charsHit = new ArrayList<>();
 
         double x = owner.getX();
@@ -390,5 +390,70 @@ public class CollisionManager {
             }
         }
         return charsHit;
+    }
+
+    /**
+     * Gibt die Position des nächsten Felds mit Kollision zurück, der getroffen wird, oder null
+     * 
+     * @param owner Char, der die Ability ausführt
+     * @param angle Richtung
+     * @param range Reichweite der Ability
+     * @return 
+     */
+    public static Position computeHitscanOnBlocks(Char owner, double angle, double range) {
+        Position returnpos = null;
+        ArrayList<Position> positionsInHitscan = new ArrayList<>();
+
+        double betaX = owner.getX() + range * Math.cos(angle);
+        double betaY = owner.getY() + range * Math.sin(angle);
+
+        double vX = betaX - owner.getX();
+        double vY = betaY - owner.getY();
+        if (Math.abs(vX) >= Math.abs(vY)) {
+            if (vX > 0) {
+                for (int i = 0; i < vX; i++) {
+                    Position argh = new Position((int) owner.getX() + i, (int) (owner.getY() + (i * vY / vX)));
+                    positionsInHitscan.add(argh);
+                }
+            } else {
+                for (int i = 0; i > vX; i--) {
+                    Position argh = new Position((int) owner.getX() + i, (int) (owner.getY() + (i * vY / vX)));
+                    positionsInHitscan.add(argh);
+                }
+            }
+        } else {
+            if (vY > 0) {
+                for (int i = 0; i < vY; i++) {
+                    Position argh = new Position((int) (owner.getX() + (i * vX / vY)), (int) owner.getY() + i);
+                    positionsInHitscan.add(argh);
+                }
+            } else {
+                for (int i = 0; i > vY; i--) {
+                    Position argh = new Position((int) (owner.getX() + (i * vX / vY)), (int) owner.getY() + i);
+                    positionsInHitscan.add(argh);
+                }
+            }
+        }
+        
+        double mindistance = Double.MAX_VALUE;
+        int nearestblock = -1;
+        for (int i = 0; i < positionsInHitscan.size(); i++) {
+            
+            int bx = positionsInHitscan.get(i).getX();
+            int by = positionsInHitscan.get(i).getY();
+            if (Server.game.getLevel().getCollisionMap()[bx][by]) {
+                double distance = Math.sqrt((owner.getX() - bx) * (owner.getX() - bx) + (owner.getY() - by) * (owner.getY() - by));
+                if (distance < mindistance) {
+                    mindistance = distance;
+                    nearestblock = i;
+                }
+            }
+        }
+        
+        if (nearestblock > -1) {
+            return positionsInHitscan.get(nearestblock);
+        } else {
+            return null;
+        }
     }
 }

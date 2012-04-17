@@ -8,6 +8,7 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Properties;
+import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 
 /**
@@ -54,7 +55,8 @@ public class HitscanAbility extends Ability {
         if (owner.getAttackCooldownTick() <= Server.game.getTick()) {
             owner.setAttackCooldownTick(Server.game.getTick() + (int) getBaseProperty("attackspeed"));
 
-            ArrayList<Char> charsHit = CollisionManager.computeHitscanCollision(owner, angle, getBaseProperty("range"), this);
+            // Schaden an Gegnern
+            ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(owner, angle, getBaseProperty("range"), this);
 
             for (Char character : charsHit) {
                 for (Effect effect : effects) {
@@ -65,6 +67,14 @@ public class HitscanAbility extends Ability {
                     Server.game.netIDMap.remove(character.netID);
                     Server.entityMap.removeEntity(character);
                     DropManager.dropItem(character.getX(), character.getY(), 2);
+                }
+            }
+
+            // Block abbauem
+            Position test = CollisionManager.computeHitscanOnBlocks(owner, angle, getBaseProperty("range"));
+            if (test != null) {
+                if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
+                    Server.game.getLevel().destroyBlock(test.getX(), test.getY());
                 }
             }
         }
