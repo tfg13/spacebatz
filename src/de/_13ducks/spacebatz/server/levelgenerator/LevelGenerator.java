@@ -479,7 +479,7 @@ public class LevelGenerator {
     }
 
     /**
-     * Setzt Rohstoffe in Berge
+     * Setzt Rohstoffefelder in Berge
      */
     public static void createOre(int hillfields) {
         Position[] hill = new Position[hillfields];
@@ -495,16 +495,25 @@ public class LevelGenerator {
             }
         }
 
-        ArrayList<Position> resall = new ArrayList<>(); // Die Bergfelder, die zu Ressourcenblöcken werden sollen
+        ArrayList<ArrayList<Position>> resall = new ArrayList<>(); // Alle Ressourcenfelder werden sollen
 
         // 200 Ressourcen-Häufen setzen
+        
         for (int a = 0; a < 200; a++) {
-            ArrayList<Position> resnow = new ArrayList<>(); // Ressourcenblöcke, die in diesem for-Durchlauf gefunden werden
+            ArrayList<Position> resnow = new ArrayList<>(); // Ressourcenblöcke in dem Ressourcenfeld, das in diesem for-Durchlauf gefunden wird
 
             // zufälliges Bergfeld, das kein Ressourcenfeld ist:
             Position firstpos = hill[random.nextInt(counter)];
-            for (int x = 0; x < 100; x++) {
-                if (resall.contains(firstpos)) {
+            for (int x = 0; x < 1000; x++) {
+
+                boolean contains = false;
+                for (int b = 0; b < resall.size(); b++) {
+                    if (resall.get(b).contains(firstpos)) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (contains) {
                     firstpos = hill[random.nextInt(counter)];
                 } else {
                     break;
@@ -512,31 +521,37 @@ public class LevelGenerator {
             }
             resnow.add(firstpos);
 
+            // Anzahl Durchläufe
             int blub = random.nextInt(8) + 3;
 
             for (int b = 0; b < blub; b++) {
-                Position bla = resnow.get(random.nextInt(resnow.size()));
+                Position rndmResPos = resnow.get(random.nextInt(resnow.size())); // eine der Positionen des Ressourcenfeldes
                 // direkte Nachbarn
-                if (bla.getX() > 0 && (ground[bla.getX() - 1][bla.getY()] < -80 || ground[bla.getX() - 1][bla.getY()] == TEXhill)) {
-                    resnow.add(new Position(bla.getX() - 1, bla.getY()));
+                if (rndmResPos.getX() > 0 && (ground[rndmResPos.getX() - 1][rndmResPos.getY()] < -80 || ground[rndmResPos.getX() - 1][rndmResPos.getY()] == TEXhill)) {
+                    resnow.add(new Position(rndmResPos.getX() - 1, rndmResPos.getY()));
                 }
-                if (bla.getX() < xSize - 1 && (ground[bla.getX() + 1][bla.getY()] < -80 || ground[bla.getX() + 1][bla.getY()] == TEXhill)) {
-                    resnow.add(new Position(bla.getX() + 1, bla.getY()));
+                if (rndmResPos.getX() < xSize - 1 && (ground[rndmResPos.getX() + 1][rndmResPos.getY()] < -80 || ground[rndmResPos.getX() + 1][rndmResPos.getY()] == TEXhill)) {
+                    resnow.add(new Position(rndmResPos.getX() + 1, rndmResPos.getY()));
                 }
-                if (bla.getY() > 0 && (ground[bla.getX()][bla.getY() - 1] < -80 || ground[bla.getX()][bla.getY() - 1] == TEXhill)) {
-                    resnow.add(new Position(bla.getX(), bla.getY() - 1));
+                if (rndmResPos.getY() > 0 && (ground[rndmResPos.getX()][rndmResPos.getY() - 1] < -80 || ground[rndmResPos.getX()][rndmResPos.getY() - 1] == TEXhill)) {
+                    resnow.add(new Position(rndmResPos.getX(), rndmResPos.getY() - 1));
                 }
-                if (bla.getY() < ySize - 1 && (ground[bla.getX()][bla.getY() + 1] < -80 || ground[bla.getX()][bla.getY() + 1] == TEXhill)) {
-                    resnow.add(new Position(bla.getX(), bla.getY() + 1));
+                if (rndmResPos.getY() < ySize - 1 && (ground[rndmResPos.getX()][rndmResPos.getY() + 1] < -80 || ground[rndmResPos.getX()][rndmResPos.getY() + 1] == TEXhill)) {
+                    resnow.add(new Position(rndmResPos.getX(), rndmResPos.getY() + 1));
                 }
             }
 
-            resall.addAll(resnow);
+            resall.add(resnow);
         }
 
         // Textur drauf:
+        
         for (int i = 0; i < resall.size(); i++) {
-            ground[resall.get(i).getX()][resall.get(i).getY()] = TEXore + random.nextInt(2); // Testcode für 2 verschiedene Ore
+            // Für jedes Ressourcenfeld:
+            int tex = TEXore + random.nextInt(2); // Testcode für 2 verschiedene Ore
+            for (int j = 0; j < resall.get(i).size(); j++) {
+                ground[resall.get(i).get(j).getX()][resall.get(i).get(j).getY()] = tex;
+            }
         }
     }
 
