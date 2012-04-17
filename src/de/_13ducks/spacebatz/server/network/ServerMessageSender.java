@@ -13,7 +13,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.HashMap;

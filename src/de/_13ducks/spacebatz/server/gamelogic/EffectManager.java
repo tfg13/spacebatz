@@ -1,9 +1,9 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.Char;
-import de._13ducks.spacebatz.server.data.EffectCarrier;
-import de._13ducks.spacebatz.server.data.Entity;
+import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
+import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.Iterator;
 
 /**
@@ -20,7 +20,7 @@ public class EffectManager {
         Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
-            if (e instanceof Char) {
+            if (e instanceof EffectCarrier) {
                 ((Char) e).tick();
                 // Wenn der Char tot ist, entfernen:
                 if (((Char) e).getProperty("hitpoints") <= 0) {

@@ -10,6 +10,9 @@
  */
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import java.io.*;

@@ -8,7 +8,7 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
@@ -64,7 +64,7 @@ public class Entity {
     /**
      * Die aktuelle Positon auf der EntityMap.
      */
-    int[] entityMapPos;
+    private int[] entityMapPos;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -95,6 +95,7 @@ public class Entity {
      * Setzt die Position dieser Einheit auf den angegebenen Wert.
      * Wenn entweder x oder y (nicht beide!) NaN sind, wird die Bewegung nur in eine Richtung angehalten.
      * Darf nicht aufgerufen werden, wenn sich die Einheit gar nicht bewegt.
+     *
      * @param x die X-Stop-Koordinate oder NaN
      * @param y die Y-Stop-Koordinate oder NaN
      */
@@ -303,5 +304,23 @@ public class Entity {
             dir += 2 * Math.PI;
         }
         return dir;
+    }
+
+    /**
+     * Die aktuelle Positon auf der EntityMap.
+     *
+     * @return the entityMapPos
+     */
+    public int[] getEntityMapPos() {
+        return entityMapPos;
+    }
+
+    /**
+     * Die aktuelle Positon auf der EntityMap.
+     *
+     * @param entityMapPos the entityMapPos to set
+     */
+    public void setEntityMapPos(int[] entityMapPos) {
+        this.entityMapPos = entityMapPos;
     }
 }

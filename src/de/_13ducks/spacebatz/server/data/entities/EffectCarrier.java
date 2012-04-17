@@ -1,12 +1,12 @@
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Eine Entity mit Fähigkeiten, die Effekte haben kann.
- * Effekte sind z.B. Heilung, Giftschaden, etc...
+ * Eine Entity, die von Effekten beeinflusst werden kann.
+ * Verwaltet und berechnet Effekte regelmäßig.
  *
  * @author michael
  */

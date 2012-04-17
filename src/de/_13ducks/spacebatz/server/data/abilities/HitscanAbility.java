@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.Char;
-import de._13ducks.spacebatz.server.data.Entity;
+import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
