@@ -10,15 +10,10 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.server.data.entities.Bullet;
-import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.server.data.entities.Char;
-import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.*;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
+import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Vector;

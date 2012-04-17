@@ -12,7 +12,6 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
-import de._13ducks.spacebatz.shared.EquippedItems;
 
 /**
  * Diese Klasse stellt einen Client dar
