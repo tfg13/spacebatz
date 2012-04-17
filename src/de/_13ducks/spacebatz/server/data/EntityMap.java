@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.util.Distance;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -110,8 +111,8 @@ public class EntityMap {
     public void insertEntity(Entity entity) {
         if (0 < entity.getX() && entity.getX() < entityMapWidth && 0 < entity.getY() && entity.getY() < entityMapHeight) {
             getSector(entity.getX(), entity.getY()).add(entity);
-	    entity.entityMapPos[0] = (int) (entity.getX() / SECTORSIZE);
-	    entity.entityMapPos[1] = (int) (entity.getY() / SECTORSIZE);
+	    entity.getEntityMapPos()[0] = (int) (entity.getX() / SECTORSIZE);
+	    entity.getEntityMapPos()[1] = (int) (entity.getY() / SECTORSIZE);
         } else {
             throw new RuntimeException("Cannot add Entity " + entity.netID + " to EntityMap, it has left the map (Position: " + entity.getX() + "/" + entity.getY() + ")!");
         }
@@ -124,7 +125,7 @@ public class EntityMap {
      * @param entity die Entity die entfernt werden soll
      */
     public void removeEntity(Entity entity) {
-        sectors[entity.entityMapPos[0]][entity.entityMapPos[1]].remove(entity);
+        sectors[entity.getEntityMapPos()[0]][entity.getEntityMapPos()[1]].remove(entity);
     }
 
     /**

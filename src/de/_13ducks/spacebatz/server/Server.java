@@ -12,7 +12,7 @@ package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.EntityMap;
-import de._13ducks.spacebatz.server.data.Player;
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;

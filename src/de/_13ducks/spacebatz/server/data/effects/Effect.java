@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server.data.effects;
 
-import de._13ducks.spacebatz.server.data.Char;
+import de._13ducks.spacebatz.server.data.entities.Char;
 
 /**
  * Superklasse für Effekte.

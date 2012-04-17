@@ -8,7 +8,7 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.server.data;
+package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.util.Bits;

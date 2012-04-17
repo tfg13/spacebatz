@@ -10,8 +10,8 @@
  */
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.network.ServerNetworkConnection;
-import de._13ducks.spacebatz.shared.EquippedItems;
 
 /**
  * Diese Klasse stellt einen Client dar
@@ -32,7 +32,6 @@ public class Client {
      * Die ID, mit der der Server den Client identifiziert
      */
     public final int clientID;
-    
     /**
      * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
      * verarbeitet wurde.
@@ -52,7 +51,7 @@ public class Client {
         this.connection = connection;
         this.clientID = clientID;
         context = new ClientContext();
-        
+
     }
 
     /**
@@ -76,12 +75,11 @@ public class Client {
      *
      * @param player Der neue Player
      */
-    void setPlayer(Player player) {
+    public void setPlayer(Player player) {
         this.player = player;
     }
 
     public ClientContext getContext() {
         return context;
     }
-
 }
