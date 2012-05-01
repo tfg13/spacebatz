@@ -90,7 +90,7 @@ public class Engine {
      */
     private float panX, panY;
     /**
-     * Sagt, ob Inventar gerade geöffnet ist (Taste i)
+     * Sagt, ob Inventar gerade geÃ¶ffnet ist (Taste i)
      */
     private boolean showinventory; // wird Inventar gerade gerendert
     private boolean lmbpressed; // linke maustaste gedrückt
@@ -102,7 +102,7 @@ public class Engine {
     private boolean terminal = false;
     /**
      * Der aktuelle Zoomfaktor.
-     * Wird benötigt, um Schriften immer gleich groß anzeigen zu können
+     * Wird benÃ¶tigt, um Schriften immer gleich groÃŸ anzeigen zu kÃ¶nnen
      */
     private int zoomFactor = 2;
 
@@ -443,7 +443,7 @@ public class Engine {
             }
         }
 
-        // Items auf der Map
+        // Items auf der Map zeichnen
         itemTiles.bind();
         Iterator<Item> iterator = Client.getItemMap().values().iterator();
 
@@ -470,7 +470,7 @@ public class Engine {
 
         }
 
-        // Gegner:
+        // Gegner zeichnen:
         enemyTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
@@ -503,7 +503,7 @@ public class Engine {
             }
         }
 
-        // Players:
+        // Players zeichnen:
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
@@ -525,7 +525,7 @@ public class Engine {
             }
         }
 
-        // Bullets
+        // Bullets zeichnen
         bulletTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Bullet) {
@@ -547,7 +547,7 @@ public class Engine {
             }
         }
 
-        // Lebensenergie-Balken
+        // Lebensenergie-Balken im HUD zeichnen
         int maxhp = Math.max(1, Client.getPlayer().getHealthpointsmax());
         int hp = Math.min(Client.getPlayer().getHealthpoints(), maxhp);
         hp = Math.max(hp, 0);
@@ -577,7 +577,7 @@ public class Engine {
             glEnd();
         }
 
-        // Items im Inventory
+        // Items im Inventory zeichnen
         if (showinventory) {
             renderText(String.valueOf(Client.getMoney()), 0.12f * tilesX, 0.44f * tilesY);
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
@@ -623,7 +623,7 @@ public class Engine {
             }
         }
 
-        // ausgewählten Waffenslot markieren:
+        // ausgewählten Waffenslot im Inventar markieren:
         if (showinventory) {
             glDisable(GL_TEXTURE_2D);
             float wx = 0.227f + 0.172f * Client.getPlayer().getSelectedattack();
@@ -695,7 +695,7 @@ public class Engine {
             glEnd(); // Zeichnen des QUADs fertig } }
         }
 
-        // Mousehover über Item?
+        // Mousehover über Item zeichnen
         if (showinventory) {
             float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
@@ -746,19 +746,18 @@ public class Engine {
             }
 
             if (item != null) {
-                // Mousehovern rendern, zuerst Rechteck
+                // Item gefunden, jetzt Mousehover rendern
                 glDisable(GL_TEXTURE_2D);
                 glColor3f(0.9f, 0.9f, 0.9f);
-                glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y + 0.05f * (0.7f + item.getItemAttributes().size())) * tilesY);
+                glRectf((x - 0.01f) * tilesX, (y - 0.01f) * tilesY, (x + 0.3f) * tilesX, (y - 0.015f + 0.05f * item.getItemAttributes().size()) * tilesY);
                 glColor3f(1f, 1f, 1f);
                 glEnable(GL_TEXTURE_2D);
-                // Namen der Itemattribute
-                for (int i = 0; i < item.getItemAttributes().size(); i++) {
-                    renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * tilesX, y * tilesY);
-                    y += 0.05f;
+                // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
+                float yadd = 0.0f;
+                for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
+                    renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * tilesX, (y + yadd) * tilesY);
+                    yadd += 0.05f;
                 }
-                // Itemname
-                renderText(item.getName(), x * tilesX, y * tilesY);
             }
         }
 
@@ -858,12 +857,12 @@ public class Engine {
     }
 
     /**
-     * Läd alle benötigten Texturen.
+     * Läd alle benÃ¶tigten Texturen.
      *
      * @throws IOException Wenn was schief geht
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃ¶ÃŸern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
@@ -876,7 +875,7 @@ public class Engine {
     }
 
     /**
-     * Läd alle benötigten Binärdateien, die keine Bilder sind.
+     * Läd alle benÃ¶tigten Binärdateien, die keine Bilder sind.
      *
      * @throws IOException Wenn was schief geht
      */
