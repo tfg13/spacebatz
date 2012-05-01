@@ -33,7 +33,7 @@ public class TrueDamageEffect extends Effect {
     }
 
     @Override
-    public void applyToPosition(double x, double y) {
+    public void applyToPosition(double x, double y, Char hitChar) {
     }
 
     @Override

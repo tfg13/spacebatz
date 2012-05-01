@@ -25,6 +25,7 @@ public class HitManager {
         }
         // alle Effekte des Bullets auf den Char übertragen:
         bullet.applyEffectsToChar(character);
+        bullet.activateEffectsAtPosition(character.getX(), character.getY(), character);
         if (character.getProperty("hitpoints") <= 0) {
             Server.game.netIDMap.remove(character.netID);
             Server.entityMap.removeEntity(character);

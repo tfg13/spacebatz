@@ -29,8 +29,9 @@ public abstract class Effect {
      *
      * @param x X-Koordinate der Position
      * @param y Y-Koordinate der Position
+     * @param hitChar der Char, der direkt getroffen wurde, oder null fals kein Char direkt getroffen wurde
      */
-    public abstract void applyToPosition(double x, double y);
+    public abstract void applyToPosition(double x, double y, Char hitChar);
 
     /**
      * Entfernt den Effekt wieder.
