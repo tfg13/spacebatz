@@ -127,7 +127,7 @@ public class DropManager {
 
         for (int i = 0; i < maxatt; i++) {
             ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
-            if (!addattributes.contains(randomatt)) {
+            if (!item.getItemAttributes().contains(randomatt)) {
                 item.addAttribute(randomatt);
             }
         }
@@ -154,7 +154,7 @@ public class DropManager {
         for (int i = 0; i < itemtypelist.size(); i++) {
             if (itemtypelist.get(i).getName().equals(name)) {
                 ItemBaseAttribute stats = itemtypelist.get(i);
-                
+
                 Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
                 Server.game.getItemMap().put(item.getNetID(), item);
 
