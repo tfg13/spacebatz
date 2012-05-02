@@ -92,7 +92,7 @@ public class Bullet extends Entity {
     }
 
     /**
-     * Akiviert alle AoE Effekte an einer Position.
+     * Aktiviert alle AoE Effekte an einer Position.
      *
      *
      * @param posX die X-Koordinate der Position an der der AoE-Effekt ausgelöst wird
@@ -100,6 +100,9 @@ public class Bullet extends Entity {
      * @param hitCharacter der Char, der vom Bullet direkt getroffen wurde, oder null falls das Bullet eine Wand getroffen hat.
      */
     public void activateEffectsAtPosition(double posX, double posY, Char hitCharacter) {
+        for (Effect effect : effects) {
+            effect.applyToPosition(posX, posY, hitCharacter);
+        }
     }
 
     /**

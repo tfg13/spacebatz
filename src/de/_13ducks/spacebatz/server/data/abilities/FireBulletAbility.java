@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Entity;
@@ -81,7 +82,12 @@ public class FireBulletAbility extends Ability {
             int lifetime = (int) (range / bulletspeed);
 
             Bullet bullet = new Bullet(Server.game.getTick(), lifetime, owner.getX(), owner.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), owner);
-            bullet.addEffect(new TrueDamageEffect((int) damage));
+            if (explosionradius > 0) {
+                bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+            } else {
+                bullet.addEffect(new TrueDamageEffect((int) damage));
+            }
+
             Server.game.netIDMap.put(bullet.netID, bullet);
         }
     }

@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data.effects;
 
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.gamelogic.HitManager;
 
 /**
  * Explosionsschaden-Effekt
@@ -8,6 +9,20 @@ import de._13ducks.spacebatz.server.data.entities.Char;
  * @author michael
  */
 public class ExplosionDamageEffect extends Effect {
+
+    /**
+     * Der angerichtetete Schaden
+     */
+    private int damage;
+    /**
+     * Der Umkreis, in dem Schaden gemacht wird
+     */
+    private double radius;
+    
+    public ExplosionDamageEffect(int damage, double radius) {
+        this.damage = damage;
+        this.radius = radius;
+    }
 
     @Override
     public boolean tick() {
@@ -26,6 +41,8 @@ public class ExplosionDamageEffect extends Effect {
          * Hier wird der Flächenschaden berechnet und ausgeteilt.
          * hitChar ist der Char der direkt getroffen wurde.
          */
+        hitChar.decrementProperty("hitpoints", damage);
+        HitManager.computeBulletExplosionCollision(damage, x, y, hitChar, radius);
     }
 
     @Override
