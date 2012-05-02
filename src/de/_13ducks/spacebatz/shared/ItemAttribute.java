@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.shared;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Items können Attribute besitzen, die jeweils einen oder mehrere Itemwerte verändern.
@@ -133,5 +134,21 @@ public class ItemAttribute implements Serializable {
      */
     public Properties getItemStats() {
         return itemStats;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ItemAttribute) {
+            ItemAttribute i = (ItemAttribute) o;
+            return i.name.equals(this.name);
+        }
+        return false;
     }
 }
