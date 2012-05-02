@@ -15,6 +15,9 @@ import java.io.Serializable;
 /**
  * Items können Attribute besitzen, die jeweils einen oder mehrere Itemwerte verändern.
  *
+ * Attribute bestehen aus Itemwerten, die nur das Item angehen (z.B. auch Waffenstats) und Bonuswerten, die den
+ * Träger betreffen.
+ *
  * @author Jojo
  */
 public class ItemAttribute implements Serializable {
@@ -30,10 +33,10 @@ public class ItemAttribute implements Serializable {
      */
     private Properties bonusStats;
     /**
-     * Die Waffenwerte, die dieses Attribut gibt.
-     * z.B. +10 Schaden
+     * Die Itemwerte, die dieses Attribut gibt.
+     * z.B. +10 Schaden für eine Waffe oder Qualität 1
      */
-    private Properties weaponStats;
+    private Properties itemStats;
 
     /**
      * Erstellt ein neues Attribut mit Bonuswerten.
@@ -45,7 +48,7 @@ public class ItemAttribute implements Serializable {
         super();
         this.name = name;
         bonusStats = new Properties();
-        weaponStats = new Properties();
+        itemStats = new Properties();
     }
 
     /**
@@ -57,7 +60,7 @@ public class ItemAttribute implements Serializable {
         super();
         this.name = name;
         bonusStats = new Properties();
-        weaponStats = new Properties();
+        itemStats = new Properties();
     }
 
     /**
@@ -92,25 +95,26 @@ public class ItemAttribute implements Serializable {
     }
 
     /**
-     * Gibt den Wert einer Waffen-Eigenschaft zurück.
+     * Gibt den Wert einer Item-Eigenschaft zurück.
      *
      * @param name der Name der gesuchten Eigenschaft
      * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
      */
-    final public double getWeaponProperty(String name) {
-        return weaponStats.getProperty(name);
+    final public double getItemProperty(String name) {
+        return itemStats.getProperty(name);
     }
 
     /**
-     * Setzt den Wert einer Waffen-Eigenschaft
+     * Setzt den Wert einer Item-Eigenschaft
      *
-     * Beispiel: setWaffenProperty("damage",10) sorgt dafür dass die Waffe mit dem Attribut 10 schaden mehr anrichtet
+     * Beispiel: setItemProperty("damage",10) sorgt dafür dass das Item mit dem Attribut 10 schaden mehr anrichtet
+     * (Wenn es eine Waffe ist)
      *
      * @param name der Name der Eigenschaft, der gesetzt werden soll
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
-    final public void setWeaponProperty(String name, double value) {
-        weaponStats.setProperty(name, value);
+    final public void setItemProperty(String name, double value) {
+        itemStats.setProperty(name, value);
     }
 
     /**
@@ -127,7 +131,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die Waffen-Stats dieses Attributs
      */
-    public Properties getWeaposStats() {
-        return weaponStats;
+    public Properties getItemStats() {
+        return itemStats;
     }
 }

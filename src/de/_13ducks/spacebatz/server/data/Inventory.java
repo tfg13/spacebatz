@@ -52,8 +52,8 @@ public class Inventory {
      */
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
-        if (item.getProperty("itemclass") == 0) {
-            setMoney(getMoney() + (int) item.getProperty("amount"));
+        if (item.getItemProperty("itemclass") == 0) {
+            setMoney(getMoney() + (int) item.getItemProperty("amount"));
         }
     }
 

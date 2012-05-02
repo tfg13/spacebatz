@@ -35,7 +35,7 @@ public class ItemCarrier extends Char {
      * Der Standardangriff ohne Waffe
      */
     protected final static Ability defaultAttackAbility = new FireBulletAbility(4, 18.0, 9.5, 0, 0.35, 0.03, 0.0);
-    
+
     /**
      * Erzeugt einen neuen ItemCarrier
      *
@@ -79,7 +79,7 @@ public class ItemCarrier extends Char {
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
         if (item.getName().equals("Money")) {
-            setMoney(getMoney() + (int) item.getProperty("amount"));
+            setMoney(getMoney() + (int) item.getItemProperty("amount"));
         }
     }
 
@@ -106,15 +106,15 @@ public class ItemCarrier extends Char {
     public boolean equipItem(int itemnetID, byte selectedslot) {
         Item item = getItems().get(itemnetID);
         // richtiger Itemtyp für diesen Slot?
-        int slottype = (int) item.getProperty("itemclass");
+        int slottype = (int) item.getItemProperty("itemclass");
 
         if (getEquipslots()[slottype] != null && getEquipslots()[slottype][selectedslot] == null && item != null) {
             // Jetzt neues Item anlegen
             getEquipslots()[slottype][selectedslot] = item;
             getItems().remove(item.getNetID());
             // die Stats des Items übernehmen:
-            addProperties(item);
-            
+            addProperties(item.getBonusProperties());
+
             if (getActiveWeapon() != null) {
                 // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
                 setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
@@ -122,7 +122,7 @@ public class ItemCarrier extends Char {
                 // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
                 setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
             }
-            
+
             // Item-Anleg-Befehl zum Client senden
             Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
             return true;
@@ -154,18 +154,18 @@ public class ItemCarrier extends Char {
                 Item itemx = getEquipslots()[slottype][selectedslot];
                 getEquipslots()[slottype][selectedslot] = null;
                 // die Stats wieder abziehen:
-                removeProperties(itemx);
+                removeProperties(itemx.getBonusProperties());
                 // passt das Item ins Inventar?
                 getItems().put(itemx.getNetID(), itemx);
-                
+
                 if (getActiveWeapon() != null) {
                     // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
                     setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
                 } else {
-                // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
                     setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
                 }
-                
+
                 return true;
             } else {
                 return false;
@@ -187,13 +187,13 @@ public class ItemCarrier extends Char {
             if (getEquipslots()[slottype][selectedslot] != null) {
                 item = getEquipslots()[slottype][selectedslot];
                 getEquipslots()[slottype][selectedslot] = null;
-                removeProperties(item);
-                
+                removeProperties(item.getBonusProperties());
+
                 if (getActiveWeapon() != null) {
                     // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
                     setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
                 } else {
-                // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
                     setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
                 }
             }
@@ -231,9 +231,10 @@ public class ItemCarrier extends Char {
     public Item getActiveWeapon() {
         return equipslots[1][selectedweapon];
     }
-    
+
     /**
      * Stackt das Item auf eins das schon im Inventar ist
+     *
      * @param newitem das zu stackende Items
      * @return das Item auf das gestackt wird oder null
      */

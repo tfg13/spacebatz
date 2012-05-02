@@ -37,13 +37,13 @@ public class FireBulletAbility extends Ability {
         addBaseProperty("explosionradius", explosionradius);
 
         // Wirkliche Werte (im moment die Grundwerte, da das Item noch nicht ausgerüstet ist.):
-        setProperty("damage", damage);
-        setProperty("attackspeed", attackspeed);
-        setProperty("range", range);
-        setProperty("bulletpic", bulletpic);
-        setProperty("bulletspeed", bulletspeed);
-        setProperty("spread", spread);
-        setProperty("explosionradius", explosionradius);
+        setActualProperty("damage", damage);
+        setActualProperty("attackspeed", attackspeed);
+        setActualProperty("range", range);
+        setActualProperty("bulletpic", bulletpic);
+        setActualProperty("bulletspeed", bulletspeed);
+        setActualProperty("spread", spread);
+        setActualProperty("explosionradius", explosionradius);
     }
 
     @Override
@@ -64,6 +64,7 @@ public class FireBulletAbility extends Ability {
     @Override
     public void useInAngle(double angle) {
 
+        
 
         double damage = getProperty("damage");
         double attackspeed = getProperty("attackspeed");
@@ -95,11 +96,13 @@ public class FireBulletAbility extends Ability {
     @Override
     public void refreshProperties(Properties properties) {
         // Die basestats mal 1 + multiplikator ergeben die wirklichen werte:
-        setProperty("damage", getBaseProperty("damage") * (1 + properties.getProperty("damagemultiplicator")));
-        setProperty("range", getBaseProperty("range") * (1 + properties.getProperty("rangemultiplicator")));
-        setProperty("bulletspeed", getBaseProperty("bulletspeed") * (1 + properties.getProperty("bulletspeedmultiplicator")));
-        setProperty("attackspeed", getBaseProperty("attackspeed") * (1 + properties.getProperty("attackspeedmultiplicator")));
-        setProperty("spread", getBaseProperty("spread") * (1 + properties.getProperty("spreadmultiplicator")));
-        setProperty("explosionradius", getBaseProperty("explosionradius") * (1 + properties.getProperty("explosionradiusmultiplicator")));
+        setActualProperty("damage", getBaseProperty("damage") * (1 + properties.getProperty("damagemultiplicator")));
+        setActualProperty("range", getBaseProperty("range") * (1 + properties.getProperty("rangemultiplicator")));
+        setActualProperty("bulletspeed", getBaseProperty("bulletspeed") * (1 + properties.getProperty("bulletspeedmultiplicator")));
+        setActualProperty("attackspeed", getBaseProperty("attackspeed") * (1 + properties.getProperty("attackspeedmultiplicator")));
+        setActualProperty("spread", getBaseProperty("spread") * (1 + properties.getProperty("spreadmultiplicator")));
+        setActualProperty("explosionradius", getBaseProperty("explosionradius") * (1 + properties.getProperty("explosionradiusmultiplicator")));
     }
+    
+    
 }

@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.shared;
 import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class Item extends Properties {
+public class Item implements Serializable{
 
     private static final long serialVersionUID = 1L;
     /**
@@ -52,6 +53,14 @@ public class Item extends Properties {
      * Die Fähigkeit dieser Waffe
      */
     transient private Ability weaponAbility;
+    /**
+     * Die Eigenschaften dieses Items
+     */
+    private Properties itemProperties;
+    /**
+     * Die Boni, die das Item dem Träger gibt
+     */
+    private Properties bonusProperties;
 
     /**
      * Erzeugt ein neues Item
@@ -68,11 +77,18 @@ public class Item extends Properties {
         this.posY = posY;
         this.netID = netID;
         this.amount = 1;
+        itemProperties = new Properties();
+        bonusProperties = new Properties();
         itemAttributes = new ArrayList<>();
+
+        // die boni des Grundattributs addieren:
         addAttribute(baseAttribute);
+
+        // wenn das Grundattribut eine Fähigkeit gibt, diese Klonen (damit nicht alle die muster-ability verwenden):
         if (baseAttribute.getAbility() != null) {
             Cloner cloner = new Cloner();
             weaponAbility = cloner.deepClone(baseAttribute.getAbility());
+            weaponAbility.setBaseProperties(itemProperties);
         }
 
     }
@@ -87,7 +103,7 @@ public class Item extends Properties {
     }
 
     /**
-     * Gibt dem Item ein Attribut.
+     * Gibt dem Item ein Attribut dazu.
      *
      * @param itemAttribute das Attribut, das das Item bekommen soll
      */
@@ -95,11 +111,9 @@ public class Item extends Properties {
         // Das Attribut in die Liste aufnehmen:
         itemAttributes.add(itemAttribute);
         // Die Bonus-Werte des Attributs zu den ItemProperties addieren:
-        addProperties(itemAttribute.getBonusStats());
-        // Falls das Item eine Fähigkeit gibt die weaponstats des Attributs der Fähigkeit hinzufügen:
-        if (weaponAbility != null) {
-            weaponAbility.addBaseProperties(itemAttribute.getWeaposStats());
-        }
+        bonusProperties.addProperties(itemAttribute.getBonusStats());
+        // Die Item-Werte des Attributs hinzufügen:
+        itemProperties.addProperties(itemAttribute.getItemStats());
     }
 
     /**
@@ -112,11 +126,9 @@ public class Item extends Properties {
             // Das Attribut von der Liste entfernen:
             itemAttributes.remove(itemAttribute);
             // Die Bonus-Werte des Attributs wieder entfernen:
-            removeProperties(itemAttribute.getBonusStats());
+            bonusProperties.removeProperties(itemAttribute.getBonusStats());
             // Falls das Item eine Fähigkeit gibt die weaponstats des Attributs der Fähigkeit wieder entfernen:
-            if (weaponAbility != null) {
-                weaponAbility.removeBaseProperties(itemAttribute.getWeaposStats());
-            }
+            itemProperties.removeProperties(itemAttribute.getItemStats());
         } else {
             throw new IllegalArgumentException("Dieses Item hat kein \"" + itemAttribute.getName() + "\"-Attribut!");
         }
@@ -210,5 +222,25 @@ public class Item extends Properties {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Gibt den Wert einer Item-Eigenschaft zurück.
+     * Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
+     *
+     * @param name der Name der gesuchten Eigenschaft
+     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
+     */
+    public double getItemProperty(String name) {
+        return itemProperties.getProperty(name);
+    }
+
+    /**
+     * Gibt die Boni des Items zurück
+     *
+     * @return die Boni des Items zurück
+     */
+    public Properties getBonusProperties() {
+        return bonusProperties;
     }
 }

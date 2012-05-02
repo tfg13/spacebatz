@@ -46,16 +46,16 @@ public class DropManager {
 
         ArrayList<ItemBaseAttribute> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
-            int itemquality = (int) itemtypelist.get(i).getBonusProperty("quality");
+            int itemquality = (int) itemtypelist.get(i).getItemProperty("quality");
             //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
             if (itemquality <= droplevel && itemquality != 0) {
                 dropableitems.add(itemtypelist.get(i));
             }
         }
         ItemBaseAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
-        Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
+                                 Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
 
-        if ((int) stats.getBonusProperty("itemclass") != 0) {
+        if ((int) stats.getItemProperty("itemclass") != 0) {
             item = addAttributes(item, droplevel);
         } else {
             if (stats.getName().equals("Money")) {
@@ -100,7 +100,7 @@ public class DropManager {
 
         for (int i = 0; i < attributesofrightclass.size(); i++) {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
-            double test = attributesofrightclass.get(i).getBonusProperty("quality");
+            double test = attributesofrightclass.get(i).getItemProperty("quality");
             if (test <= droplevel) {
                 qualityallowedattributes.add(attributesofrightclass.get(i));
             }
@@ -154,7 +154,7 @@ public class DropManager {
         for (int i = 0; i < itemtypelist.size(); i++) {
             if (itemtypelist.get(i).getName().equals(name)) {
                 ItemBaseAttribute stats = itemtypelist.get(i);
-                
+
                 Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
                 Server.game.getItemMap().put(item.getNetID(), item);
 

@@ -102,4 +102,23 @@ public class Properties implements Serializable {
     private Iterator<Entry<String, Double>> getIterator() {
         return properties.entrySet().iterator();
     }
+
+    /**
+     * Gibt eine Liste mit Werten, die in diesen Properties gesetzt sind, zurück.
+     *
+     * @return eine Liste mit Werten, die in diesen Properties gesetzt sind
+     */
+    @Override
+    public String toString() {
+        String text = "";
+        Iterator<Entry<String, Double>> iter = properties.entrySet().iterator();
+        while (iter.hasNext()) {
+            Entry<String, Double> entry = iter.next();
+            text += entry.getKey();
+            text += " = ";
+            text += entry.getValue();
+            text += "\n";
+        }
+        return text;
+    }
 }

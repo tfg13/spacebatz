@@ -300,7 +300,7 @@ public class CollisionManager {
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
 
-                            if (item.getProperty("itemclass") == 0) {
+                            if (item.getItemProperty("itemclass") == 0) {
                                 // stackbares Item
                                 if (item.getName().equals("Money")) {
                                     collector.setMoney(collector.getMoney() + item.getAmount());
@@ -394,11 +394,11 @@ public class CollisionManager {
 
     /**
      * Gibt die Position des nächsten Felds mit Kollision zurück, der getroffen wird, oder null
-     * 
+     *
      * @param owner Char, der die Ability ausführt
      * @param angle Richtung
      * @param range Reichweite der Ability
-     * @return 
+     * @return
      */
     public static Position computeHitscanOnBlocks(Char owner, double angle, double range) {
         Position returnpos = null;
@@ -434,11 +434,11 @@ public class CollisionManager {
                 }
             }
         }
-        
+
         double mindistance = Double.MAX_VALUE;
         int nearestblock = -1;
         for (int i = 0; i < positionsInHitscan.size(); i++) {
-            
+
             int bx = positionsInHitscan.get(i).getX();
             int by = positionsInHitscan.get(i).getY();
             if (Server.game.getLevel().getCollisionMap()[bx][by]) {
@@ -449,7 +449,7 @@ public class CollisionManager {
                 }
             }
         }
-        
+
         if (nearestblock > -1) {
             return positionsInHitscan.get(nearestblock);
         } else {

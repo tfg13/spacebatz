@@ -37,6 +37,15 @@ public abstract class Ability {
     }
 
     /**
+     * Verwendet die angegebenen Properties als baseProperties.
+     *
+     * @param baseProperties die Properties, die als BaseProperties verwendet werden sollen
+     */
+    public void setBaseProperties(Properties baseProperties) {
+        this.baseProperties = baseProperties;
+    }
+
+    /**
      * Setzt den Besitzer dieser Fähigkeit.
      * Der Besitzer muss gesetzt werden, bevor die Fähigkeit eingesetzt werden kann!
      *
@@ -91,24 +100,6 @@ public abstract class Ability {
     public abstract boolean isReady();
 
     /**
-     * Addiert Werte zu den Grundwerten der Fähigkeit.
-     *
-     * @param weaponStats die Werte, die addiert werden
-     */
-    public void addBaseProperties(Properties weaponStats) {
-        baseProperties.addProperties(weaponStats);
-    }
-
-    /**
-     * Subtrahiert Werte von den Grundwerten der Fähigkeit.
-     *
-     * @param weaposStats die Werte, die subtrahiert werden
-     */
-    public void removeBaseProperties(Properties weaposStats) {
-        baseProperties.removeProperties(baseProperties);
-    }
-
-    /**
      * Gibt den Grundwert mit dem nagegebenen Namen zurück.
      *
      * @param name der Name des Gesuchten Grundwertes
@@ -143,9 +134,9 @@ public abstract class Ability {
      * Setzt den aktuellen (also Grundwert + Boni) Wert mit dem agegebenen Namen.
      *
      * @param name der Name des zu setzenden Wertes
-     * @return der Wert des zu setzenden Wertes
+     * @param value
      */
-    protected void setProperty(String name, double value) {
+    protected void setActualProperty(String name, double value) {
         actualProperties.setProperty(name, value);
     }
 }
