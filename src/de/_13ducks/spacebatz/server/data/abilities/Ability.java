@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.shared.Properties;
+import de._13ducks.spacebatz.shared.PropertyList;
 
 /**
  * Superklasse für alle Fähigkeiten.
@@ -16,12 +16,12 @@ public abstract class Ability {
      * Die Grundeigenschaften der Fähigkeit.
      * z.B. Schaden und Reichweite bei einer Schießen-Fähigkeit.
      */
-    private Properties baseProperties;
+    private PropertyList baseProperties;
     /**
      * Die Eigenschaften der Fähigkeit *plus* die Boni des Trägers.
      * Muss neu berechnet werden, wenn refreshProperties aufgerufen wird.
      */
-    private Properties actualProperties;
+    private PropertyList actualProperties;
     /**
      * Der Charakter, der diese Fähigkeit "besitzt".
      * @TODO Abilitys sollten keinen Verweis auf ihren besitzer haben müssen, das ist kein Schönes Design
@@ -32,8 +32,8 @@ public abstract class Ability {
      * Erzeugt eine neue Fähigkeit.
      */
     public Ability() {
-        baseProperties = new Properties();
-        actualProperties = new Properties();
+        baseProperties = new PropertyList();
+        actualProperties = new PropertyList();
     }
 
     /**
@@ -41,7 +41,7 @@ public abstract class Ability {
      *
      * @param baseProperties die Properties, die als BaseProperties verwendet werden sollen
      */
-    public void setBaseProperties(Properties baseProperties) {
+    public void setBaseProperties(PropertyList baseProperties) {
         this.baseProperties = baseProperties;
     }
 
@@ -62,7 +62,7 @@ public abstract class Ability {
      *
      * @param properties die Werte des Besitzers der Fähigkeit
      */
-    public abstract void refreshProperties(Properties properties);
+    public abstract void refreshProperties(PropertyList properties);
 
     /**
      * Benutzt die Fähigkeit.

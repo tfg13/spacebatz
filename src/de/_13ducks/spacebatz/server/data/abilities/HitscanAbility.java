@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.shared.Properties;
+import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class HitscanAbility extends Ability {
     }
 
     @Override
-    public void refreshProperties(Properties properties) {
+    public void refreshProperties(PropertyList properties) {
         // Werte des Trägers werden ignoriert.
     }
 

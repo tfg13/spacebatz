@@ -32,12 +32,12 @@ public class ItemAttribute implements Serializable {
      * Die Bonuswerte, die dieses Attribut gibt.
      * z.B. +10 Hitpoints
      */
-    private Properties bonusStats;
+    private PropertyList bonusStats;
     /**
      * Die Itemwerte, die dieses Attribut gibt.
      * z.B. +10 Schaden für eine Waffe oder Qualität 1
      */
-    private Properties itemStats;
+    private PropertyList itemStats;
 
     /**
      * Erstellt ein neues Attribut mit Bonuswerten.
@@ -45,11 +45,11 @@ public class ItemAttribute implements Serializable {
      * @param name der Name des Attributs
      * @param stats die initalisierungs-stats
      */
-    public ItemAttribute(String name, Properties stats) {
+    public ItemAttribute(String name, PropertyList stats) {
         super();
         this.name = name;
-        bonusStats = new Properties();
-        itemStats = new Properties();
+        bonusStats = new PropertyList();
+        itemStats = new PropertyList();
     }
 
     /**
@@ -60,8 +60,8 @@ public class ItemAttribute implements Serializable {
     public ItemAttribute(String name) {
         super();
         this.name = name;
-        bonusStats = new Properties();
-        itemStats = new Properties();
+        bonusStats = new PropertyList();
+        itemStats = new PropertyList();
     }
 
     /**
@@ -123,7 +123,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die BonusStats, die dieses Attrbut gibt
      */
-    public Properties getBonusStats() {
+    public PropertyList getBonusStats() {
         return bonusStats;
     }
 
@@ -132,7 +132,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die Waffen-Stats dieses Attributs
      */
-    public Properties getItemStats() {
+    public PropertyList getItemStats() {
         return itemStats;
     }
 

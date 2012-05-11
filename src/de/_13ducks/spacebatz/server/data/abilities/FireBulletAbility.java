@@ -5,7 +5,7 @@ import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.shared.Properties;
+import de._13ducks.spacebatz.shared.PropertyList;
 import java.util.Random;
 
 /**
@@ -100,7 +100,7 @@ public class FireBulletAbility extends Ability {
     }
 
     @Override
-    public void refreshProperties(Properties properties) {
+    public void refreshProperties(PropertyList properties) {
         // Die basestats mal 1 + multiplikator ergeben die wirklichen werte:
         setActualProperty("damage", getBaseProperty("damage") * (1 + properties.getProperty("damagemultiplicator")));
         setActualProperty("range", getBaseProperty("range") * (1 + properties.getProperty("rangemultiplicator")));

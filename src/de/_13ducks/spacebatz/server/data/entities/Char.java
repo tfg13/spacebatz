@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.shared.Properties;
+import de._13ducks.spacebatz.shared.PropertyList;
 
 /**
  * Chars sind Entities, die eine dynamische Liste von Eigenschaften wie Hitpoints, Rüstung etc haben.
@@ -23,7 +23,7 @@ public abstract class Char extends EffectCarrier {
     /**
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
      */
-    private Properties properties;
+    private PropertyList properties;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -35,7 +35,7 @@ public abstract class Char extends EffectCarrier {
      */
     public Char(double x, double y, int netID, byte entityTypeID) {
         super(x, y, netID, entityTypeID);
-        properties = new Properties();
+        properties = new PropertyList();
 
         // PictureID setzen:
         setProperty("pictureId", 0);
@@ -102,7 +102,7 @@ public abstract class Char extends EffectCarrier {
      *
      * @param otherProperties die Properties, die addiert werden sollen
      */
-    final public void addProperties(Properties otherProperties) {
+    final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
         refreshAbilities(getProperties());
     }
@@ -112,7 +112,7 @@ public abstract class Char extends EffectCarrier {
      *
      * @param otherProperties die Properties, die subtrahiert werden sollen
      */
-    final public void removeProperties(Properties otherProperties) {
+    final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
         refreshAbilities(getProperties());
     }
@@ -122,7 +122,7 @@ public abstract class Char extends EffectCarrier {
      *
      * @return die Propertie dieses Chars
      */
-    protected Properties getProperties() {
+    protected PropertyList getProperties() {
         return properties;
     }
 }

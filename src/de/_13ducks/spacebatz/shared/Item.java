@@ -56,11 +56,11 @@ public class Item implements Serializable{
     /**
      * Die Eigenschaften dieses Items
      */
-    private Properties itemProperties;
+    private PropertyList itemProperties;
     /**
      * Die Boni, die das Item dem Träger gibt
      */
-    private Properties bonusProperties;
+    private PropertyList bonusProperties;
 
     /**
      * Erzeugt ein neues Item
@@ -77,8 +77,8 @@ public class Item implements Serializable{
         this.posY = posY;
         this.netID = netID;
         this.amount = 1;
-        itemProperties = new Properties();
-        bonusProperties = new Properties();
+        itemProperties = new PropertyList();
+        bonusProperties = new PropertyList();
         itemAttributes = new ArrayList<>();
 
         // die boni des Grundattributs addieren:
@@ -240,7 +240,7 @@ public class Item implements Serializable{
      *
      * @return die Boni des Items zurück
      */
-    public Properties getBonusProperties() {
+    public PropertyList getBonusProperties() {
         return bonusProperties;
     }
 }

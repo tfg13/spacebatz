@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.data.abilities.Ability;
-import de._13ducks.spacebatz.shared.Properties;
+import de._13ducks.spacebatz.shared.PropertyList;
 import java.util.HashMap;
 
 /**
@@ -104,7 +104,7 @@ public class AbilityUser extends Entity {
      *
      * @param properties die Properties des Besitzers
      */
-    public void refreshAbilities(Properties properties) {
+    public void refreshAbilities(PropertyList properties) {
         for (Ability ability : abilities.values()) {
             if (ability != null) {
                 ability.refreshProperties(properties);
