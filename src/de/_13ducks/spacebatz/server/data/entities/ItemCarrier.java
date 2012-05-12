@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.HashMap;
 

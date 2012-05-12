@@ -10,12 +10,12 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.shared.item.ItemTypes;
-import de._13ducks.spacebatz.shared.item.Item;
-import de._13ducks.spacebatz.shared.item.ItemAttribute;
-import de._13ducks.spacebatz.shared.item.ItemAttributeTypes;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.shared.*;
+import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.ItemAttribute;
+import de._13ducks.spacebatz.shared.ItemAttributeTypes;
+import de._13ducks.spacebatz.shared.ItemTypes;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;

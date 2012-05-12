@@ -8,7 +8,7 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.shared.item;
+package de._13ducks.spacebatz.shared;
 
 import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;

@@ -13,8 +13,9 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.gamelogic.Game;
-import de._13ducks.spacebatz.shared.item.Item;
-import de._13ducks.spacebatz.shared.item.ItemAttribute;
+import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.ItemAttribute;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -59,6 +60,7 @@ public class Player extends ItemCarrier {
 
         Item startWeapon = new Item("Newbies Gun", pistol, 0, 0, Server.game.newNetID());
         Server.game.getItemMap().put(startWeapon.getNetID(), startWeapon);
+        putItem(startWeapon.getNetID(), startWeapon);
         this.clientEquipItem(startWeapon.getNetID(), (byte) 1);
     }
 
