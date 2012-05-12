@@ -8,11 +8,11 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.shared;
+package de._13ducks.spacebatz.shared.item;
 
 import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
-import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.shared.PropertyList;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class Item implements Serializable{
+public class Item implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -50,10 +50,6 @@ public class Item implements Serializable{
      */
     private String name;
     /**
-     * Die Fähigkeit dieser Waffe
-     */
-    transient private Ability weaponAbility;
-    /**
      * Die Eigenschaften dieses Items
      */
     private PropertyList itemProperties;
@@ -71,7 +67,7 @@ public class Item implements Serializable{
      * @param baseAttribute
      * @param netID
      */
-    public Item(String name, ItemBaseAttribute baseAttribute, double posX, double posY, int netID) {
+    public Item(String name, ItemAttribute baseAttribute, double posX, double posY, int netID) {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
@@ -84,22 +80,7 @@ public class Item implements Serializable{
         // die boni des Grundattributs addieren:
         addAttribute(baseAttribute);
 
-        // wenn das Grundattribut eine Fähigkeit gibt, diese Klonen (damit nicht alle die muster-ability verwenden):
-        if (baseAttribute.getAbility() != null) {
-            Cloner cloner = new Cloner();
-            weaponAbility = cloner.deepClone(baseAttribute.getAbility());
-            weaponAbility.setBaseProperties(itemProperties);
-        }
 
-    }
-
-    /**
-     * Gibt die Fähigkeit dieser Waffe zurück.
-     *
-     * @return die Fähigkeit dieser Waffe
-     */
-    public Ability getAbility() {
-        return weaponAbility;
     }
 
     /**
