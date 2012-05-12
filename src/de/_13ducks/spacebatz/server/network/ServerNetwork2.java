@@ -8,19 +8,7 @@ import java.net.SocketException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Das neue, großartige Netzwerksystem.
- * Features:
- * - Alle Übertragungen performant über UDP
- * - Versendet genau 1 Packet pro Tick, verhindert Overhead (dynamische Packetgrößen)
- * - Sorgt automatisch dafür, dass Informationen ankommen.
- * - Komplett verbindungslos, kein langwieriges Aufbauen/Verbinden von Sockets
- * - Automatische Timeout-Erkennung und Behandlung
- * - Automatische Minimierung des Client-Lerps für jeden Client seperat
- * - Automatische Neusynchronisierung bei Verbindungsproblemen
- * - Serverdienste registrierbar, die alle X Ticks Informationen senden
- * - Alle nicht-internen Netzkommandos als Plugins, die auch zur Laufzeit registriert werden können
- * - Automatisches Loadbalancing durch Nachrichten-Prioritätensystem mit Aging
- * - System erkennt Verbindungsprobleme und kann Spiel ggf. zum Speichern auffordern, Clients benachrichtigen etc.
+ * Server-Seite des Netzwerksystems
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
