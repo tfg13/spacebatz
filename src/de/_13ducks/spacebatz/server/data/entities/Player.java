@@ -12,16 +12,14 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.shared.ItemAttribute;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /**
- * Der Spielercharakter
+ * Der Spielercharakter.
+ * Verwaltet die Interaktion des Clients mit der Spielwelt.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -45,23 +43,13 @@ public class Player extends ItemCarrier {
         client.setPlayer(this);
         this.client = client;
 
-        // Startwaffe geben:
-        ItemAttribute pistol = new ItemAttribute("Pistol");
-        pistol.setItemProperty("pic", 4);
-        pistol.setItemProperty("itemclass", 1);
-        pistol.setItemProperty("quality", 1);
-        pistol.setItemProperty("amount", 0);
-        pistol.setBonusProperty("canShoot", 1);
-        pistol.setBonusProperty("shootDamage", 10);
-        pistol.setBonusProperty("shootBulletSpeed", 0.1);
-        pistol.setBonusProperty("shootRange", 15);
-        pistol.setBonusProperty("shootSpread", 0.025);
-        pistol.setBonusProperty("shootExplosionRadius", 1.0);
-
-        Item startWeapon = new Item("Newbies Gun", pistol, 0, 0, Server.game.newNetID());
-        Server.game.getItemMap().put(startWeapon.getNetID(), startWeapon);
-        putItem(startWeapon.getNetID(), startWeapon);
-        this.clientEquipItem(startWeapon.getNetID(), (byte) 1);
+        setProperty("canShoot", 1);
+        setProperty("shootDamage", 10);
+        setProperty("shootRange", 10);
+        setProperty("shootSpread", 0.25);
+        setProperty("shootBulletSpeed", 0.1);
+        setProperty("shootBulletPic", 1);
+        setProperty("shootExplosionRadius", 1);
     }
 
     /**
