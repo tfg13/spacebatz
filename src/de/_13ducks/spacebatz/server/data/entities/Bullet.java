@@ -101,7 +101,7 @@ public class Bullet extends Entity {
      */
     public void activateEffectsAtPosition(double posX, double posY, Char hitCharacter) {
         for (Effect effect : effects) {
-            effect.applyToPosition(posX, posY, hitCharacter);
+            effect.applyToPosition(posX, posY, (EffectCarrier)hitCharacter);
         }
     }
 
@@ -112,7 +112,7 @@ public class Bullet extends Entity {
      */
     public void applyEffectsToChar(Char target) {
         for (Effect effect : effects) {
-            effect.applyToChar(target);
+            effect.applyToChar((EffectCarrier)target);
         }
     }
 

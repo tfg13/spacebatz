@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data.effects;
 
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 
 /**
  * Richtet Truedamage an, dh der Schaden wird ohne berücksichtigung von Rüstung angewandt.
@@ -28,12 +29,12 @@ public class TrueDamageEffect extends Effect {
     }
 
     @Override
-    public void applyToChar(Char affectedChar) {
+    public void applyToChar(EffectCarrier affectedChar) {
         affectedChar.decrementProperty("hitpoints", damage);
     }
 
     @Override
-    public void applyToPosition(double x, double y, Char hitChar) {
+    public void applyToPosition(double x, double y, EffectCarrier hitChar) {
     }
 
     @Override

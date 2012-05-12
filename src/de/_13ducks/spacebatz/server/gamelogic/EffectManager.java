@@ -21,7 +21,7 @@ public class EffectManager {
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof EffectCarrier) {
-                ((Char) e).tick();
+                ((EffectCarrier) e).tick();
                 // Wenn der Char tot ist, entfernen:
                 if (((Char) e).getProperty("hitpoints") <= 0) {
                     iter.remove();

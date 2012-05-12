@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.shared.PropertyList;
  *
  * @author michael
  */
-public abstract class Char extends EffectCarrier {
+public abstract class Char extends Entity {
 
     /**
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
@@ -67,7 +67,7 @@ public abstract class Char extends EffectCarrier {
      */
     final public double incrementProperty(String name, double value) {
         properties.incrementProperty(name, value);
-        refreshAbilities(getProperties());
+
         return properties.getProperty(name);
 
     }
@@ -81,7 +81,6 @@ public abstract class Char extends EffectCarrier {
      */
     final public double decrementProperty(String name, double value) {
         properties.decrementProperty(name, value);
-        refreshAbilities(getProperties());
         return properties.getProperty(name);
     }
 
@@ -92,9 +91,7 @@ public abstract class Char extends EffectCarrier {
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setProperty(String name, double value) {
-
         properties.setProperty(name, value);
-        refreshAbilities(getProperties());
     }
 
     /**
@@ -104,7 +101,6 @@ public abstract class Char extends EffectCarrier {
      */
     final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
-        refreshAbilities(getProperties());
     }
 
     /**
@@ -114,7 +110,6 @@ public abstract class Char extends EffectCarrier {
      */
     final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
-        refreshAbilities(getProperties());
     }
 
     /**

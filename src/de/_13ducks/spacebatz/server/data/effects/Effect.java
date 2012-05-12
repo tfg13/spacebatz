@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server.data.effects;
 
-import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 
 /**
  * Superklasse für Effekte.
@@ -21,7 +21,7 @@ public abstract class Effect {
      *
      * @param affectedChar der Char, auf den der Effekt angewandt wird
      */
-    public abstract void applyToChar(Char affectedChar);
+    public abstract void applyToChar(EffectCarrier affectedChar);
 
     /**
      * Löst diesen Effekt an einer Position aus.
@@ -31,7 +31,7 @@ public abstract class Effect {
      * @param y Y-Koordinate der Position
      * @param hitChar der Char, der direkt getroffen wurde, oder null fals kein Char direkt getroffen wurde
      */
-    public abstract void applyToPosition(double x, double y, Char hitChar);
+    public abstract void applyToPosition(double x, double y, EffectCarrier hitChar);
 
     /**
      * Entfernt den Effekt wieder.

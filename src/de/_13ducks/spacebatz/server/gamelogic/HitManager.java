@@ -1,9 +1,9 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.Iterator;
 

@@ -4,10 +4,8 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
-import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 
@@ -16,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class HitscanAbility extends Ability {
+public class HitscanAbility {
 
     /**
      * Die Effekte, die dieses Geschoss hat.
@@ -26,62 +24,42 @@ public class HitscanAbility extends Ability {
     public HitscanAbility(double damage, double attackspeed, double range) {
         TrueDamageEffect damageeff = new TrueDamageEffect((int) damage);
         effects.add(damageeff);
-        addBaseProperty("attackspeed", attackspeed);
-        addBaseProperty("range", range);
+
     }
 
-    @Override
-    public void refreshProperties(PropertyList properties) {
-        // Werte des Trägers werden ignoriert.
-    }
+    public void useInAngle(Char user, double targetX, double targetY) {
+        double dx = targetX - user.getX();
+        double dy = targetY - user.getY();
+        double angle = Math.atan2(dy, dx);
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
 
-    @Override
-    public void use() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+//        if (user.getAttackCooldownTick() <= Server.game.getTick()) {
+//            user.setAttackCooldownTick(Server.game.getTick() + (int) user.getProperty("attackspeed"));
 
-    @Override
-    public void useOnPosition(double targetX, double targetY) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        // Schaden an Gegnern
+        ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, user.getProperty("range"), this);
 
-    @Override
-    public void useOnTarget(Entity target) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        for (Char character : charsHit) {
+//                for (Effect effect : effects) {
+//                    effect.applyToChar(character);
+//                }
 
-    @Override
-    public void useInAngle(double angle) {
-        if (owner.getAttackCooldownTick() <= Server.game.getTick()) {
-            owner.setAttackCooldownTick(Server.game.getTick() + (int) getBaseProperty("attackspeed"));
-
-            // Schaden an Gegnern
-            ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(owner, angle, getBaseProperty("range"), this);
-
-            for (Char character : charsHit) {
-                for (Effect effect : effects) {
-                    effect.applyToChar(character);
-                }
-
-                if (character.getProperty("hitpoints") <= 0) {
-                    Server.game.netIDMap.remove(character.netID);
-                    Server.entityMap.removeEntity(character);
-                    DropManager.dropItem(character.getX(), character.getY(), 2);
-                }
-            }
-
-            // Block abbauem
-            Position test = CollisionManager.computeHitscanOnBlocks(owner, angle, getBaseProperty("range"));
-            if (test != null) {
-                if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
-                    Server.game.getLevel().destroyBlock(test.getX(), test.getY());
-                }
+            if (character.getProperty("hitpoints") <= 0) {
+                Server.game.netIDMap.remove(character.netID);
+                Server.entityMap.removeEntity(character);
+                DropManager.dropItem(character.getX(), character.getY(), 2);
             }
         }
-    }
 
-    @Override
-    public boolean isReady() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Block abbauem
+        Position test = CollisionManager.computeHitscanOnBlocks(user, angle, user.getProperty("range"));
+        if (test != null) {
+            if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
+                Server.game.getLevel().destroyBlock(test.getX(), test.getY());
+            }
+        }
+//        }
     }
 }

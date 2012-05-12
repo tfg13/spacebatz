@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.HashMap;
  *
  * @author michael
  */
-public class ItemCarrier extends Char {
+public class ItemCarrier extends EffectCarrier {
 
     /**
      * Items im Inventar
@@ -31,10 +30,10 @@ public class ItemCarrier extends Char {
      * aktuell ausgewählte Waffe
      */
     private byte selectedweapon = 0;
-    /**
-     * Der Standardangriff ohne Waffe
-     */
-    protected final static Ability defaultAttackAbility = new FireBulletAbility(4, 18.0, 9.5, 0, 0.35, 0.03, 0.0);
+//    /**
+//     * Der Standardangriff ohne Waffe
+//     */
+//    protected final static Ability defaultAttackAbility = new FireBulletAbility(4, 18.0, 9.5, 0, 0.35, 0.03, 0.0);
 
     /**
      * Erzeugt einen neuen ItemCarrier
@@ -115,13 +114,13 @@ public class ItemCarrier extends Char {
             // die Stats des Items übernehmen:
             addProperties(item.getBonusProperties());
 
-            if (getActiveWeapon() != null) {
-                // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
-            } else {
-                // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
-                setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
-            }
+//            if (getActiveWeapon() != null) {
+//                // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+//                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+//            } else {
+//                // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+//                setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+//            }
 
             // Item-Anleg-Befehl zum Client senden
             Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
@@ -158,13 +157,13 @@ public class ItemCarrier extends Char {
                 // passt das Item ins Inventar?
                 getItems().put(itemx.getNetID(), itemx);
 
-                if (getActiveWeapon() != null) {
-                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
-                } else {
-                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
-                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
-                }
+//                if (getActiveWeapon() != null) {
+//                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+//                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+//                } else {
+//                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+//                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+//                }
 
                 return true;
             } else {
@@ -188,14 +187,14 @@ public class ItemCarrier extends Char {
                 item = getEquipslots()[slottype][selectedslot];
                 getEquipslots()[slottype][selectedslot] = null;
                 removeProperties(item.getBonusProperties());
-
-                if (getActiveWeapon() != null) {
-                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
-                } else {
-                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
-                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
-                }
+//
+//                if (getActiveWeapon() != null) {
+//                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+//                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+//                } else {
+//                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+//                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+//                }
             }
         }
         return item;
@@ -210,13 +209,13 @@ public class ItemCarrier extends Char {
     public boolean setSelectedweapon(byte selectedweapon) {
         if (selectedweapon >= 0 && selectedweapon <= 2) {
             this.selectedweapon = selectedweapon;
-            if (getActiveWeapon() != null) {
-                // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
-            } else {
-                // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
-                setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
-            }
+//            if (getActiveWeapon() != null) {
+//                // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+//                setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+//            } else {
+//                // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+//                setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+//            }
             return true;
         } else {
             return false;
