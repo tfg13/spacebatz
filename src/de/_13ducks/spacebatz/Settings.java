@@ -63,6 +63,11 @@ public final class Settings {
      */
     public static final int SERVER_UDPPORT = 13947;
     /**
+     * Der primäre UDP-Port des neuen Server-Netzwerksystems.
+     * Das neue System benötigt keine festen Ports beim Client mehr.
+     */
+    public static final int SERVER_UDPPORT2 = 13949;
+    /**
      * Auf diesem Port ist der Client per UDP zu erreichen. Darf nicht der gleiche sein, wie SERVER_UDPPORT
      */
     public static final int CLIENT_UDPPORT = 13948;
