@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * Items können Attribute besitzen, die jeweils einen oder mehrere Itemwerte verändern.
  *
- * Attribute bestehen aus Itemwerten, die nur das Item angehen (z.B. auch Waffenstats) und Bonuswerten, die den
+ * Attribute bestehen aus Itemwerten, die nur das Item angehen (z.B. auch Qualität) und Bonuswerten, die den
  * Träger betreffen.
  *
  * @author Jojo
@@ -32,12 +32,11 @@ public class ItemAttribute implements Serializable {
      * Die Bonuswerte, die dieses Attribut gibt.
      * z.B. +10 Hitpoints
      */
-    private Properties bonusStats;
+    private PropertyList bonusStats;
     /**
-     * Die Itemwerte, die dieses Attribut gibt.
-     * z.B. +10 Schaden für eine Waffe oder Qualität 1
+     * Die Eigenschaften des Items, z.B. Qualität
      */
-    private Properties itemStats;
+    private PropertyList itemStats;
 
     /**
      * Erstellt ein neues Attribut mit Bonuswerten.
@@ -45,11 +44,11 @@ public class ItemAttribute implements Serializable {
      * @param name der Name des Attributs
      * @param stats die initalisierungs-stats
      */
-    public ItemAttribute(String name, Properties stats) {
+    public ItemAttribute(String name, PropertyList stats) {
         super();
         this.name = name;
-        bonusStats = new Properties();
-        itemStats = new Properties();
+        bonusStats = new PropertyList();
+        itemStats = new PropertyList();
     }
 
     /**
@@ -60,27 +59,17 @@ public class ItemAttribute implements Serializable {
     public ItemAttribute(String name) {
         super();
         this.name = name;
-        bonusStats = new Properties();
-        itemStats = new Properties();
+        bonusStats = new PropertyList();
+        itemStats = new PropertyList();
     }
 
     /**
      * Gibt den Namen dieses Attributs zurück.
      *
-     * @return the name
+     * @return der Name des Attributs
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Gibt den Wert einer Bonus-Eigenschaft zurück.
-     *
-     * @param name der Name der gesuchten Eigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
-     */
-    final public double getBonusProperty(String name) {
-        return bonusStats.getProperty(name);
     }
 
     /**
@@ -106,10 +95,7 @@ public class ItemAttribute implements Serializable {
     }
 
     /**
-     * Setzt den Wert einer Item-Eigenschaft
-     *
-     * Beispiel: setItemProperty("damage",10) sorgt dafür dass das Item mit dem Attribut 10 schaden mehr anrichtet
-     * (Wenn es eine Waffe ist)
+     * Setzt den Wert einer Item-Eigenschaft.
      *
      * @param name der Name der Eigenschaft, der gesetzt werden soll
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
@@ -123,7 +109,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die BonusStats, die dieses Attrbut gibt
      */
-    public Properties getBonusStats() {
+    public PropertyList getBonusStats() {
         return bonusStats;
     }
 
@@ -132,7 +118,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die Waffen-Stats dieses Attributs
      */
-    public Properties getItemStats() {
+    public PropertyList getItemStats() {
         return itemStats;
     }
 
@@ -142,7 +128,7 @@ public class ItemAttribute implements Serializable {
         hash = 79 * hash + Objects.hashCode(this.name);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof ItemAttribute) {

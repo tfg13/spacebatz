@@ -11,7 +11,11 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.shared.*;
+import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.ItemAttribute;
+import de._13ducks.spacebatz.shared.ItemAttributeTypes;
+import de._13ducks.spacebatz.shared.ItemTypes;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -27,7 +31,7 @@ public class DropManager {
 
     private final static ItemTypes itemtypes = new ItemTypes();
     private final static ItemAttributeTypes itemattribute = new ItemAttributeTypes();
-    private static ArrayList<ItemBaseAttribute> itemtypelist = itemtypes.getItemtypelist();
+    private static ArrayList<ItemAttribute> itemtypelist = itemtypes.getItemtypelist();
 
     /**
      * dropItem wÃ¤hlt Item aus, dass von diesem Gegner gedroppt wird
@@ -44,7 +48,7 @@ public class DropManager {
 //            return;
 //        }
 
-        ArrayList<ItemBaseAttribute> dropableitems = new ArrayList<>();
+        ArrayList<ItemAttribute> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
             int itemquality = (int) itemtypelist.get(i).getItemProperty("quality");
             //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
@@ -52,7 +56,7 @@ public class DropManager {
                 dropableitems.add(itemtypelist.get(i));
             }
         }
-        ItemBaseAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
+        ItemAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
                                  Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
 
         if ((int) stats.getItemProperty("itemclass") != 0) {
@@ -153,7 +157,7 @@ public class DropManager {
     public static void dropMaterial(String name, double x, double y) {
         for (int i = 0; i < itemtypelist.size(); i++) {
             if (itemtypelist.get(i).getName().equals(name)) {
-                ItemBaseAttribute stats = itemtypelist.get(i);
+                ItemAttribute stats = itemtypelist.get(i);
 
                 Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
                 Server.game.getItemMap().put(item.getNetID(), item);

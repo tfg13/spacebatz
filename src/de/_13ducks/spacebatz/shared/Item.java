@@ -12,7 +12,7 @@ package de._13ducks.spacebatz.shared;
 
 import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
-import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.shared.PropertyList;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class Item implements Serializable{
+public class Item implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -50,17 +50,13 @@ public class Item implements Serializable{
      */
     private String name;
     /**
-     * Die Fähigkeit dieser Waffe
-     */
-    transient private Ability weaponAbility;
-    /**
      * Die Eigenschaften dieses Items
      */
-    private Properties itemProperties;
+    private PropertyList itemProperties;
     /**
      * Die Boni, die das Item dem Träger gibt
      */
-    private Properties bonusProperties;
+    private PropertyList bonusProperties;
 
     /**
      * Erzeugt ein neues Item
@@ -71,35 +67,20 @@ public class Item implements Serializable{
      * @param baseAttribute
      * @param netID
      */
-    public Item(String name, ItemBaseAttribute baseAttribute, double posX, double posY, int netID) {
+    public Item(String name, ItemAttribute baseAttribute, double posX, double posY, int netID) {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
         this.netID = netID;
         this.amount = 1;
-        itemProperties = new Properties();
-        bonusProperties = new Properties();
+        itemProperties = new PropertyList();
+        bonusProperties = new PropertyList();
         itemAttributes = new ArrayList<>();
 
         // die boni des Grundattributs addieren:
         addAttribute(baseAttribute);
 
-        // wenn das Grundattribut eine Fähigkeit gibt, diese Klonen (damit nicht alle die muster-ability verwenden):
-        if (baseAttribute.getAbility() != null) {
-            Cloner cloner = new Cloner();
-            weaponAbility = cloner.deepClone(baseAttribute.getAbility());
-            weaponAbility.setBaseProperties(itemProperties);
-        }
 
-    }
-
-    /**
-     * Gibt die Fähigkeit dieser Waffe zurück.
-     *
-     * @return die Fähigkeit dieser Waffe
-     */
-    public Ability getAbility() {
-        return weaponAbility;
     }
 
     /**
@@ -240,7 +221,7 @@ public class Item implements Serializable{
      *
      * @return die Boni des Items zurück
      */
-    public Properties getBonusProperties() {
+    public PropertyList getBonusProperties() {
         return bonusProperties;
     }
 }

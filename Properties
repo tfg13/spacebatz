@@ -1,0 +1,11 @@
+Das ist die Liste aller Properties:
+
+hitpoints               die aktuelen Hitpoints
+maxHitpoints            die maximalen Hitpoints
+
+canShoot                kann der Char schießen?
+shootDamage             Geschossschaden
+shootBulletSpeed        Geschossgeschwindigkeit
+shootRange              Reichweite  
+shootSpread             Streuung
+shootExplosionRadius    Explosionsradius für AoE-Schaden

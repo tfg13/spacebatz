@@ -12,7 +12,10 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.ItemAttribute;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -41,7 +44,24 @@ public class Player extends ItemCarrier {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
-        setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+
+        // Startwaffe geben:
+        ItemAttribute pistol = new ItemAttribute("Pistol");
+        pistol.setItemProperty("pic", 4);
+        pistol.setItemProperty("itemclass", 1);
+        pistol.setItemProperty("quality", 1);
+        pistol.setItemProperty("amount", 0);
+        pistol.setBonusProperty("canShoot", 1);
+        pistol.setBonusProperty("shootDamage", 10);
+        pistol.setBonusProperty("shootBulletSpeed", 0.1);
+        pistol.setBonusProperty("shootRange", 15);
+        pistol.setBonusProperty("shootSpread", 0.025);
+        pistol.setBonusProperty("shootExplosionRadius", 1.0);
+
+        Item startWeapon = new Item("Newbies Gun", pistol, 0, 0, Server.game.newNetID());
+        Server.game.getItemMap().put(startWeapon.getNetID(), startWeapon);
+        putItem(startWeapon.getNetID(), startWeapon);
+        this.clientEquipItem(startWeapon.getNetID(), (byte) 1);
     }
 
     /**
@@ -95,12 +115,13 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Lässt den Player seine "Shoot"-Fähigkeit einsetzen
+     * Lässt den Player seine "Shoot"-Fähigkeit auf ein Ziel einsetzen
      *
-     * @param angle der Winkel in dem der Player schießen soll
+     * @param angle der Winkel in dem die Fähigkeit benutzt wird
+     *
      */
-    public void playerShoot(float angle) {
-        useAbilityInAngle(ACTIVEWEAPONABILITY, angle);
+    public void playerShoot(double angle) {
+        useAbilityInAngle(0, angle);
     }
 
     /**
