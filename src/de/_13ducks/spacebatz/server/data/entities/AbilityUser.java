@@ -37,7 +37,7 @@ public class AbilityUser extends Char {
     public void useAbilityOnPosition(int ability, double x, double y) {
         switch (ability) {
             case FireBulletAbility.FIREBULLETABILITY:
-                if (getProperty("canShoot") == 1.0) {
+                if (getProperty("canShoot") != 0) {
                     FireBulletAbility.fireBullet(this, x, y);
                 }
                 break;
@@ -52,7 +52,7 @@ public class AbilityUser extends Char {
     public void useAbilityInAngle(int ability, double angle) {
         switch (ability) {
             case FireBulletAbility.FIREBULLETABILITY:
-                if (getProperty("canShoot") == 1.0) {
+                if (getProperty("canShoot") != 0) {
                     FireBulletAbility.fireBulletInAngle(this, angle);
                 }
                 break;
