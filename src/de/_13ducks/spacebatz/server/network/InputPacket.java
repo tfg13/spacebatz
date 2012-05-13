@@ -58,4 +58,11 @@ class InputPacket implements Comparable<InputPacket> {
 	hash = 97 * hash + this.index;
 	return hash;
     }
+
+    /**
+     * Verarbeitet das Datenpaket.
+     */
+    void compute() {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
 }

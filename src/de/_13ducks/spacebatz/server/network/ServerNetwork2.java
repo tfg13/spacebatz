@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Server-Seite des Netzwerksystems
@@ -76,7 +75,11 @@ public class ServerNetwork2 {
      * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Input der Clients.
      */
     public void inTick() {
-	
+	Iterator<Client> iter = Server.game.clients.values().iterator();
+	while (iter.hasNext()) {
+	    Client client = iter.next();
+	    client.getNetworkConnection().computePackets();
+	}
     }
     
     /**

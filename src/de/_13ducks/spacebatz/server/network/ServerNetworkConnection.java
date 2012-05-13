@@ -78,7 +78,7 @@ public class ServerNetworkConnection {
     /**
      * Die Nummer des letzten von diesem Client empfangenen Netzwerkpakets.
      */
-    private int lastPkgIndex;
+    private short lastPkgIndex;
     /**
      * Die Queue der ankommenden Pakete.
      */
@@ -185,9 +185,10 @@ public class ServerNetworkConnection {
     void setClient(Client client) {
 	this.myClient = client;
     }
-    
+
     /**
      * Queued ein angekommendes Paket, falls relevant und nicht bereits vorhanden.
+     *
      * @param packet das neue Paket.
      */
     void enqueuePacket(InputPacket packet) {
@@ -195,6 +196,26 @@ public class ServerNetworkConnection {
 	if (Math.abs(packet.getIndex() - lastPkgIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastPkgIndex) {
 	    if (!inputQueue.contains(packet)) {
 		inputQueue.add(packet);
+	    }
+	}
+    }
+
+    /**
+     * Verarbeitet alle Packete, die derzeit verarbeitet werden können.
+     */
+    void computePackets() {
+	// Schauen, ob der Index des nächsten Pakets stimmt:
+	while (true) {
+	    short next = (short) (lastPkgIndex + 1);
+	    if (next < 0) {
+		next = 0;
+	    }
+	    if (inputQueue.peek().getIndex() == next) {
+		InputPacket packet = inputQueue.poll();
+		packet.compute();
+		lastPkgIndex = packet.getIndex();
+	    } else {
+		break;
 	    }
 	}
     }
