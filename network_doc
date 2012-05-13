@@ -19,7 +19,8 @@ FEATURES:
     - stable:      automatically detects timeouts/lags via heartbeat-signals
     -              automatic (full) resync on catastrophic packet loss / connection interrupt
     - flexible:    user-commands in seperate classes/objects, (de)registerable at runtime
-    - hack-safe:   built-in support for MAC (message authentication code)   - reliable:    message delivery is guaranteed
+    - secure:      built-in support for MAC (message authentication code)
+    - reliable:    message delivery is guaranteed
     - misc:        no connection required --> no time required for setting up and connecting sockets etc
 
 
