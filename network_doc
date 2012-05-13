@@ -28,14 +28,14 @@ SPECIFICATIONS:
 
 UDP_CTS: (udp packets from client to server)
 	maximum length: tba
-	minimum length: 4 bytes
+	minimum length: 5 bytes
 	header:
 		byte 1:
 			2 bit netmode: 00 normal (following), rest reserved
 			6 bit unsigned clientID
-		byte 2:
-			8 bit signed individual client_packcounter
-		byte 3:
+		byte 2 - 3:
+			16 bit signed individual client_packcounter
+		byte 4:
 			MAC (to be specified)
 	data:
 		consists of N concatenated commands. The length of each command is derived from the commandID
@@ -47,12 +47,13 @@ UDP_CTS: (udp packets from client to server)
 
 UDP_STC: (udp packets from server to clients)
 	maximum length: tba
-	minumum length: 3 bytes
+	minumum length: 4 bytes
 	header:
 		byte 1:
 			2 bit netmode: 00 normal (following), rest reserved
-			6 bit unsigned server_packcounter
-		byte 2:
+			6 bit unsigned server_packcounter (concatenated with following)
+		byte 2: +8 bit unsigned server_packcounter, results in 14 bit unsigned server_packcounter
+		byte 3:
 			MAC (to be specified)
 	data:
 		consists of N concatenated commands. The length of each command is derived from the commandID

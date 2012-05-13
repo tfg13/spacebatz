@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Eine Verbindung mit einem Client. Verwaltet den Socket und das Senden/Empfangen von Daten mit diesem Client.
@@ -74,6 +75,14 @@ public class ServerNetworkConnection {
      * Status: PacketDaten empfangen
      */
     final static int RECEIVE_PACKET = 2;
+    /**
+     * Die Nummer des letzten von diesem Client empfangenen Netzwerkpakets.
+     */
+    private int lastPkgIndex;
+    /**
+     * Die Queue der ankommenden Pakete.
+     */
+    private PriorityBlockingQueue<InputPacket> inputQueue;
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
@@ -81,14 +90,15 @@ public class ServerNetworkConnection {
      * @param socket der Socket, der mit dem Client verbunden ist
      */
     public ServerNetworkConnection(Socket socket) {
-        mySocket = socket;
-        tcpReceiverStatus = RECEIVE_CMDID;
-        try {
-            sendStream = new ObjectOutputStream(socket.getOutputStream());
-            receiveStream = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+	inputQueue = new PriorityBlockingQueue<>();
+	mySocket = socket;
+	tcpReceiverStatus = RECEIVE_CMDID;
+	try {
+	    sendStream = new ObjectOutputStream(socket.getOutputStream());
+	    receiveStream = new ObjectInputStream(socket.getInputStream());
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
     }
 
     /**
@@ -98,46 +108,46 @@ public class ServerNetworkConnection {
      */
     public void receiveData() {
 
-        try {
-            while (receiveStream.available() > 0) {
-                switch (tcpReceiverStatus) {
-                    case RECEIVE_CMDID:
-                        if (receiveStream.available() > 0) {
-                            cmdId = receiveStream.readByte();
-                            tcpReceiverStatus = RECEIVE_PACKETSIZE;
-                        } else {
-                            return;
-                        }
-                        break;
-                    case RECEIVE_PACKETSIZE:
-                        if (receiveStream.available() > 1) {
-                            messageSize = receiveStream.readShort();
-                            buffer = new byte[messageSize];
-                            tcpReceiverStatus = RECEIVE_PACKET;
-                        } else {
-                            return;
-                        }
-                        break;
-                    case RECEIVE_PACKET:
-                        if (receiveStream.available() > 0) {
-                            index += receiveStream.read(buffer, index, messageSize - index);
-                            if (index == messageSize) {
-                                tcpReceiverStatus = RECEIVE_CMDID;
-                                Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
-                                buffer = null;
-                                cmdId = 0;
-                                index = 0;
-                            }
+	try {
+	    while (receiveStream.available() > 0) {
+		switch (tcpReceiverStatus) {
+		    case RECEIVE_CMDID:
+			if (receiveStream.available() > 0) {
+			    cmdId = receiveStream.readByte();
+			    tcpReceiverStatus = RECEIVE_PACKETSIZE;
+			} else {
+			    return;
+			}
+			break;
+		    case RECEIVE_PACKETSIZE:
+			if (receiveStream.available() > 1) {
+			    messageSize = receiveStream.readShort();
+			    buffer = new byte[messageSize];
+			    tcpReceiverStatus = RECEIVE_PACKET;
+			} else {
+			    return;
+			}
+			break;
+		    case RECEIVE_PACKET:
+			if (receiveStream.available() > 0) {
+			    index += receiveStream.read(buffer, index, messageSize - index);
+			    if (index == messageSize) {
+				tcpReceiverStatus = RECEIVE_CMDID;
+				Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
+				buffer = null;
+				cmdId = 0;
+				index = 0;
+			    }
 
-                        } else {
-                            return;
-                        }
-                        break;
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+			} else {
+			    return;
+			}
+			break;
+		}
+	    }
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
     }
 
     /**
@@ -146,7 +156,7 @@ public class ServerNetworkConnection {
      * @return der Socket
      */
     public Socket getSocket() {
-        return mySocket;
+	return mySocket;
     }
 
     /**
@@ -155,7 +165,7 @@ public class ServerNetworkConnection {
      * @return der Client
      */
     public Client getClient() {
-        return myClient;
+	return myClient;
     }
 
     /**
@@ -164,7 +174,7 @@ public class ServerNetworkConnection {
      * @return the sendStream
      */
     public ObjectOutputStream getSendStream() {
-        return sendStream;
+	return sendStream;
     }
 
     /**
@@ -173,6 +183,19 @@ public class ServerNetworkConnection {
      * @param client
      */
     void setClient(Client client) {
-        this.myClient = client;
+	this.myClient = client;
+    }
+    
+    /**
+     * Queued ein angekommendes Paket, falls relevant und nicht bereits vorhanden.
+     * @param packet das neue Paket.
+     */
+    void enqueuePacket(InputPacket packet) {
+	// Nicht aufnehmen, wenn zu alt (wrap-around)
+	if (Math.abs(packet.getIndex() - lastPkgIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastPkgIndex) {
+	    if (!inputQueue.contains(packet)) {
+		inputQueue.add(packet);
+	    }
+	}
     }
 }

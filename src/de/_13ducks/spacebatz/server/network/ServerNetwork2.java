@@ -1,10 +1,13 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -22,16 +25,11 @@ public class ServerNetwork2 {
      * Der primäre Thread, der auf UDP-Pakete lauscht.
      */
     private Thread thread;
-    /**
-     * Die Inputqueue für ankommende Pakete
-     */
-    private ConcurrentLinkedQueue<DatagramPacket> inputQueue;
     
     /**
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
-	inputQueue = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -51,8 +49,19 @@ public class ServerNetwork2 {
 			DatagramPacket inputPacket = new DatagramPacket(new byte[512], 512);
 			// Blocken, bis Paket empfangen
 			socket.receive(inputPacket);
-			// In die Queue stopfen
-			inputQueue.add(inputPacket);
+			byte mode = inputPacket.getData()[0];
+			// NETMODE auswerten:
+			switch (mode >>> 6) {
+			    case 0:
+				// Normales Datenpaket
+				Client client = Server.game.clients.get((int) mode);
+				if (client == null) {
+				    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
+				    continue;
+				}
+				client.getNetworkConnection().enqueuePacket(new InputPacket(inputPacket.getData()));
+				break;
+			}
 		    }
 		} catch (IOException ex) {
 		    ex.printStackTrace();
