@@ -68,6 +68,8 @@ public class ServerNetwork2 {
 		}
 	    }
 	}, "serv_net");
+	thread.setDaemon(true);
+	thread.start();
     }
     
     /**
