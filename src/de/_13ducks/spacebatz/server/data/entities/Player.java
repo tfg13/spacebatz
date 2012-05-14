@@ -49,7 +49,7 @@ public class Player extends ItemCarrier {
         setProperty("shootSpread", 0.25);
         setProperty("shootBulletSpeed", 0.1);
         setProperty("shootBulletPic", 1);
-        setProperty("shootExplosionRadius", 1);
+        setProperty("shootExplosionRadius", 0.0);
     }
 
     /**

@@ -1,7 +1,9 @@
 package de._13ducks.spacebatz.server.data.effects;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
+import de._13ducks.spacebatz.server.network.ServerMessageSender;
 
 /**
  * Richtet Truedamage an, dh der Schaden wird ohne berücksichtigung von Rüstung angewandt.
@@ -31,6 +33,7 @@ public class TrueDamageEffect extends Effect {
     @Override
     public void applyToChar(EffectCarrier affectedChar) {
         affectedChar.decrementProperty("hitpoints", damage);
+        Server.msgSender.sendCharHit(affectedChar.netID, damage, false);
     }
 
     @Override

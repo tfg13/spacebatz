@@ -12,7 +12,9 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
@@ -141,15 +143,15 @@ public class ClientMessageInterpreter {
                 Client.setClientID(message[0]);
                 break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
+                
                 // Char wird von Bullet / angriff getroffen
                 int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
-                int netIDAttacker = Bits.getInt(message, 4);
-                int damage = Bits.getInt(message, 8);
+                int damage = Bits.getInt(message, 4);
 
-                byte victimdies = message[12];
+                byte victimdies = message[8];
 
-                // HP abziehen, wenn eigener Spieler
                 if (Client.netIDMap.get(netIDVictim) instanceof Player) {
+                    // HP abziehen, wenn eigener Spieler
                     Player p = (Player) Client.netIDMap.get(netIDVictim);
                     if (p == Client.getPlayer()) {
 
@@ -161,6 +163,10 @@ public class ClientMessageInterpreter {
                             p.setHealthpoints(p.getHealthpoints() - damage);
                         }
                     }
+                } else if (Client.netIDMap.get(netIDVictim) instanceof Enemy) {
+                    Enemy e = (Enemy) Client.netIDMap.get(netIDVictim);
+                    // Schadenszahl rendern:
+                    Engine.createDamageNumber(damage, e.getX(), e.getY());
                 }
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:

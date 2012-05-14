@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.LinkedList;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -90,7 +91,7 @@ public class Engine {
      */
     private float panX, panY;
     /**
-     * Sagt, ob Inventar gerade geÃ¶ffnet ist (Taste i)
+     * Sagt, ob Inventar gerade geöffnet ist (Taste i)
      */
     private boolean showinventory; // wird Inventar gerade gerendert
     private boolean lmbpressed; // linke maustaste gedrückt
@@ -102,9 +103,13 @@ public class Engine {
     private boolean terminal = false;
     /**
      * Der aktuelle Zoomfaktor.
-     * Wird benÃ¶tigt, um Schriften immer gleich groÃŸ anzeigen zu kÃ¶nnen
+     * Wird benötigt, um Schriften immer gleich groß anzeigen zu können
      */
     private int zoomFactor = 2;
+    /**
+     * Schadenszahlen über getroffenen Gegnern
+     */
+    private static LinkedList<DamageNumber> damageNumbers = new LinkedList<>();
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -547,6 +552,20 @@ public class Engine {
             }
         }
 
+        // Schadenszahlen zeichnen
+        Iterator<DamageNumber> iter = damageNumbers.iterator();
+        while (iter.hasNext()) {
+            DamageNumber d = iter.next();
+            if (getTime() > d.getSpawntime() + 1000) {
+                // alt - > löschen
+                iter.remove();
+            } else {
+                //rendern:
+                float height = (getTime() - d.getSpawntime()) / 250.0f;
+                renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height);
+            }
+        }
+
         // Lebensenergie-Balken im HUD zeichnen
         int maxhp = Math.max(1, Client.getPlayer().getHealthpointsmax());
         int hp = Math.min(Client.getPlayer().getHealthpoints(), maxhp);
@@ -857,12 +876,12 @@ public class Engine {
     }
 
     /**
-     * Läd alle benÃ¶tigten Texturen.
+     * Läd alle benötigten Texturen.
      *
      * @throws IOException Wenn was schief geht
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrÃ¶ÃŸern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
@@ -875,7 +894,7 @@ public class Engine {
     }
 
     /**
-     * Läd alle benÃ¶tigten Binärdateien, die keine Bilder sind.
+     * Läd alle benötigten Binärdateien, die keine Bilder sind.
      *
      * @throws IOException Wenn was schief geht
      */
@@ -905,5 +924,16 @@ public class Engine {
         }
         Bits.putFloat(udp2, 6, (float) (dir));
         Client.udpOut(udp2);
+    }
+    
+    /**
+     * Legt eine Schadenszahl an, die in der nächsten Sekunde gerendert wird
+     * @param damage Schaden der angezeigt wird
+     * @param x x-Position
+     * @param y y-Position
+     */
+    public static void createDamageNumber(int damage, double x, double y) {
+        DamageNumber d = new DamageNumber(damage, x, y, getTime());
+        damageNumbers.add(d);
     }
 }

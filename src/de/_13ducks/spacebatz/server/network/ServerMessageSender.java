@@ -82,16 +82,15 @@ public class ServerMessageSender {
      * @param netIDAttacker netID des Bullets / Enemy
      * @param killed Ob Char getötet wird
      */
-    public void sendCharHit(int netIDVictim, int netIDAttacker, int damage, boolean killed) {
+    public void sendCharHit(int netIDVictim, int damage, boolean killed) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[13];
+            byte[] b = new byte[9];
             Bits.putInt(b, 0, netIDVictim);
-            Bits.putInt(b, 4, netIDAttacker);
-            Bits.putInt(b, 8, damage);
+            Bits.putInt(b, 4, damage);
             if (killed) {
-                b[12] = 1;
+                b[8] = 1;
             } else {
-                b[12] = 0;
+                b[8] = 0;
             }
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHAR_HIT, b, c);
         }
