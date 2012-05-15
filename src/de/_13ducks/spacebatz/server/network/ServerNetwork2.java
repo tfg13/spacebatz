@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -24,7 +25,12 @@ public class ServerNetwork2 {
      * Der primäre Thread, der auf UDP-Pakete lauscht.
      */
     private Thread thread;
-    
+    /**
+     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
+     * Enthält sowohl interne, als auch externe Kommandos.
+     */
+    static HashMap<Integer, ServerNetCmd> cmdMap = new HashMap<>();
+
     /**
      * Erstellt ein neues Server-Netzwerksystem
      */
@@ -58,7 +64,7 @@ public class ServerNetwork2 {
 				    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
 				    continue;
 				}
-				client.getNetworkConnection().enqueuePacket(new InputPacket(inputPacket.getData()));
+				client.getNetworkConnection().enqueuePacket(new InputPacket(inputPacket.getData(), client));
 				break;
 			}
 		    }
@@ -70,7 +76,7 @@ public class ServerNetwork2 {
 	thread.setDaemon(true);
 	thread.start();
     }
-    
+
     /**
      * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Input der Clients.
      */
@@ -81,11 +87,10 @@ public class ServerNetwork2 {
 	    client.getNetworkConnection().computePackets();
 	}
     }
-    
+
     /**
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
-	
     }
 }
