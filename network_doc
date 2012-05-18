@@ -62,3 +62,18 @@ UDP_STC: (udp packets from server to clients)
 			cmdID: (0x00: noop, 0x01-0x7F: custom/user cmds, 0x80-0xFF: reserved/net_internal
 		additional data bytes: (if any)
 			structure depends on cmdID
+
+
+Connecting to server:
+	Client requests connection by sending a special packet to the server. Specs:
+		byte 1:
+			NETMODE = 01 (noClient)
+			NOCLIENT_CMD = 0 (connect)
+		byte 2-4:
+			unsigned int port. (the port the clients listens for an answer)
+	Server answers the request by sending a special packet to the client. Specs:
+		byte 1:
+			first bit: 1 yes (connection accepted), 0 no (refused)
+			rest: index of next udp-packet if accepted, otherwise reason for refusal
+		byte 2: signed int clientID if accepted, not specified otherwise
+
