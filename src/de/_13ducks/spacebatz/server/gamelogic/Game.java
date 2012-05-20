@@ -36,7 +36,7 @@ public class Game {
     /**
      * Liste der verbundenen Clients
      */
-    public HashMap<Integer, Client> clients;
+    public HashMap<Byte, Client> clients;
     /**
      * Alle dynamischen Objekte
      */
@@ -214,9 +214,9 @@ public class Game {
         return nextNetID++;
     }
 
-    public final int newClientID() {
-        Set<Integer> ids = clients.keySet();
-        for (int i = 0; i < Settings.SERVER_MAXPLAYERS; i++) {
+    public final byte newClientID() {
+        Set<Byte> ids = clients.keySet();
+        for (byte i = 0; i < Settings.SERVER_MAXPLAYERS; i++) {
             if (!ids.contains(i)) {
                 return i;
             }
