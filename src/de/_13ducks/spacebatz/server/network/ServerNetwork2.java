@@ -125,6 +125,12 @@ public class ServerNetwork2 {
      */
     private void clientRequest(byte[] packetData, InetAddress origin) throws IOException {
 	//TODO: Check maximum capacity
+	// Erstmal auf das alte Netzwerksystem warten
+	try {
+	    Thread.sleep(1000);
+	} catch (InterruptedException ex) {
+	    ex.printStackTrace();
+	}
 	// get port
 	int port = Bits.getInt(packetData, 1);
 	// Craft answer:
@@ -137,7 +143,7 @@ public class ServerNetwork2 {
 	for (Client client : Server.game.clients.values()) {
 	    if (client.getNetworkConnection().getSocket().getInetAddress().equals(origin)) {
 		// Gefunden, diese ID nehmen
-		connectAnswer[2] = (byte) client.clientID;
+		connectAnswer[2] = client.clientID;
 		found = true;
 		break;
 	    }

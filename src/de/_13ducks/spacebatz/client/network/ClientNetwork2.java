@@ -41,48 +41,58 @@ public class ClientNetwork2 {
      * @param port der Ziel-Port
      * @return true, wenn erfolgreich, sonst false
      */
-    public synchronized boolean connect(InetAddress targetAddress, int port) {
-	try {
-	    socket = new DatagramSocket();
-	} catch (SocketException ex) {
-	    return false;
-	}
-	try {
-	    // Initialize-Paket an den Server schicken:
-	    byte[] data = new byte[4];
-	    Bits.putInt(data, 0, socket.getLocalPort());
-	    data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
-	    DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
-	    // Antwort-Packet
-	    byte[] ansData = new byte[2];
-	    DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
-	    socket.setSoTimeout(50000);
-	    socket.send(packet);
-	    try {
-		socket.receive(ansPacket);
-		socket.setSoTimeout(-1);
-	    } catch (SocketTimeoutException timeoutEx) {
-		// Timeout, ging nicht, Ende.
-		socket.close();
-		return false;
+    public synchronized void connect(final InetAddress targetAddress,final int port) {
+	// Vorerst mal einen neuen Thread starten, sollte später nichtmehr möglich sein
+	Thread t = new Thread(new Runnable() {
+
+	    @Override
+	    public void run() {
+		try {
+		    socket = new DatagramSocket();
+		} catch (SocketException ex) {
+		    return;// false;
+		}
+		try {
+		    // Initialize-Paket an den Server schicken:
+		    byte[] data = new byte[5];
+		    Bits.putInt(data, 1, socket.getLocalPort());
+		    data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
+		    DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
+		    // Antwort-Packet
+		    byte[] ansData = new byte[2];
+		    DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
+		    socket.setSoTimeout(50000);
+		    socket.send(packet);
+		    try {
+			socket.receive(ansPacket);
+			socket.setSoTimeout(0);
+		    } catch (SocketTimeoutException timeoutEx) {
+			// Timeout, ging nicht, Ende.
+			socket.close();
+			return;// false;
+		    }
+		    // Antwort auswerten (erstes Bit):
+		    if ((ansData[0] & 0x80) != 0) {
+			// Verbindung ok, Parameter auslesen.
+			int nextTick = ansData[0] & 0x7F;
+			int clientID = ansData[1];
+			System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextTick " + nextTick);
+			initializeReceiver();
+			return;// true;
+		    } else {
+			System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x7F));
+			socket.close();
+			return;// false;
+		    }
+		} catch (IOException ex) {
+		    socket.close();
+		    return;// false;
+		}
 	    }
-	    // Antwort auswerten (erstes Bit):
-	    if ((ansData[0] & 0x80) != 0) {
-		// Verbindung ok, Parameter auslesen.
-		int nextTick = ansData[0] & 0x7F;
-		int clientID = ansData[1];
-		System.out.println("INFO: NET: Connection establised. ClientID " + clientID + ", nextTick " + nextTick);
-		initializeReceiver();
-		return true;
-	    } else {
-		System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x7F));
-		socket.close();
-		return false;
-	    }
-	} catch (IOException ex) {
-	    socket.close();
-	    return false;
-	}
+	});
+	t.setName("NETNET_CONNECT_HELP");
+	t.setDaemon(true);
+	t.start();
     }
 
     private void initializeReceiver() {
