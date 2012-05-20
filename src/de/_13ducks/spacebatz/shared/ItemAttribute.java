@@ -81,7 +81,7 @@ public class ItemAttribute implements Serializable {
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setBonusProperty(String name, double value) {
-        bonusStats.setProperty(name, value);
+        bonusStats.setBaseProperty(name, value);
     }
 
     /**
@@ -101,7 +101,7 @@ public class ItemAttribute implements Serializable {
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setItemProperty(String name, double value) {
-        itemStats.setProperty(name, value);
+        itemStats.setBaseProperty(name, value);
     }
 
     /**

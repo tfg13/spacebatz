@@ -66,7 +66,7 @@ public abstract class Char extends Entity {
      * @return der neue Wert der Eigenschaft
      */
     final public double incrementProperty(String name, double value) {
-        properties.incrementProperty(name, value);
+        properties.incrementBaseProperty(name, value);
 
         return properties.getProperty(name);
 
@@ -80,7 +80,7 @@ public abstract class Char extends Entity {
      * @return der neue Wert der Eigenschaft
      */
     final public double decrementProperty(String name, double value) {
-        properties.decrementProperty(name, value);
+        properties.decrementBaseProperty(name, value);
         return properties.getProperty(name);
     }
 
@@ -91,7 +91,7 @@ public abstract class Char extends Entity {
      * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
      */
     final public void setProperty(String name, double value) {
-        properties.setProperty(name, value);
+        properties.setBaseProperty(name, value);
     }
 
     /**

@@ -6,13 +6,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * Verwaltet eine Liste von Eigenschaften.
- * Jede Eigenschaft hat einen string-Namen, einen Grundwert und einen Multiplikator.
- * Der Wert einer Eigenschaft ergibt sich aus dem Grundwert mal dem Multiplikator.
- * Nicht gesetzte Eigenschaften werden als 0 interpretiert, nicht gesetzte Multiplikatoren asl 1.0 .
+ * Verwaltet eine Liste von Eigenschaften. Jede Eigenschaft hat einen string-Namen, einen Grundwert und einen
+ * Multiplikator. Der Wert einer Eigenschaft ergibt sich aus dem Grundwert mal dem Multiplikator. Nicht gesetzte
+ * Eigenschaften werden als 0 interpretiert, nicht gesetzte Multiplikatoren asl 1.0 .
  *
- * Beim Addieren/subtrahieren anderer PropertyLists zu/von dieser PropertyList werden Grundwerte zu Grundwerten und Multiplikatoren zu
- * Multiplikatoren addiert/subtrahiert.
+ * Beim Addieren/subtrahieren anderer PropertyLists zu/von dieser PropertyList werden Grundwerte zu Grundwerten und
+ * Multiplikatoren zu Multiplikatoren addiert/subtrahiert.
  *
  * @author michael
  */
@@ -34,8 +33,7 @@ public class PropertyList implements Serializable {
     }
 
     /**
-     * Gibt den Wert einer Eigenschaft zurück.
-     * Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
+     * Gibt den Wert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
      *
      * @param name der Name der gesuchten Eigenschaft
      * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
@@ -49,17 +47,28 @@ public class PropertyList implements Serializable {
     }
 
     /**
-     * Gibt den Wert eines Multiplikators zurück.
-     * Wenn der Multiplikator nicht initialisiert wurde, wird 0 zurückgegeben.
+     * Setzt den Grundwert einer Eigenschaft. Falls der Multiplikator dieser Eigenschaft noch nicht gesetzt ist, wird er
+     * auf 1.0 gesetzt.
      *
-     * @param name der Name des gesuchten Multiplikators
-     * @return der Wert des Multiplikators oder 1.0 wenn er nicht gesetzt wurde.
+     * @param name der Name der Eigenschaft, deren Grundwert gesetzt werden soll
+     * @param value der Wert, auf den der Grundwert der Eigenschaft gesetzt werden soll
      */
-    private double getMultiplicator(String name) {
-        if (multiplicators.containsKey(name)) {
-            return multiplicators.get(name);
+    final public void setBaseProperty(String name, double value) {
+        baseValues.put(name, value);
+    }
+
+    /**
+     * Gibt den Grundwert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0
+     * zurückgegeben.
+     *
+     * @param name der Name der gesuchten Grundeigenschaft
+     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
+     */
+    final public double getBaseProperty(String name) {
+        if (baseValues.containsKey(name)) {
+            return baseValues.get(name);
         } else {
-            return 1.0;
+            return 0;
         }
     }
 
@@ -69,8 +78,8 @@ public class PropertyList implements Serializable {
      * @param name der Name der Eigenschaft, der inkrementiert werden soll
      * @param value der Wert, um den die Eigenschaft inkrementiert werden soll
      */
-    final public void incrementProperty(String name, double value) {
-        baseValues.put(name, getProperty(name) + value);
+    final public void incrementBaseProperty(String name, double value) {
+        baseValues.put(name, getBaseProperty(name) + value);
     }
 
     /**
@@ -79,8 +88,8 @@ public class PropertyList implements Serializable {
      * @param name der Name der Eigenschaft, der dekrementiert werden soll
      * @param value der Wert, um den die Eigenschaft dekrementiert werden soll
      */
-    final public void decrementProperty(String name, double value) {
-        baseValues.put(name, getProperty(name) - value);
+    final public void decrementBaseProperty(String name, double value) {
+        baseValues.put(name, getBaseProperty(name) - value);
     }
 
     /**
@@ -90,7 +99,7 @@ public class PropertyList implements Serializable {
      * @param value der Wert, um den der Multiplikator der Eigenschaft inkrementiert werden soll
      */
     final public void incrementMutliplicator(String name, double value) {
-        multiplicators.put(name, getProperty(name) + value);
+        multiplicators.put(name, getMultiplicator(name) + value);
     }
 
     /**
@@ -104,14 +113,18 @@ public class PropertyList implements Serializable {
     }
 
     /**
-     * Setzt den Grundwert einer Eigenschaft.
-     * Falls der Multiplikator dieser Eigenschaft noch nicht gesetzt ist, wird er auf 1.0 gesetzt.
+     * Gibt den Wert eines Multiplikators zurück. Wenn der Multiplikator nicht initialisiert wurde, wird 0
+     * zurückgegeben.
      *
-     * @param name der Name der Eigenschaft, deren Grundwert gesetzt werden soll
-     * @param value der Wert, auf den der Grundwert der Eigenschaft gesetzt werden soll
+     * @param name der Name des gesuchten Multiplikators
+     * @return der Wert des Multiplikators oder 1.0 wenn er nicht gesetzt wurde.
      */
-    final public void setProperty(String name, double value) {
-        baseValues.put(name, value);
+    private double getMultiplicator(String name) {
+        if (multiplicators.containsKey(name)) {
+            return multiplicators.get(name);
+        } else {
+            return 1.0;
+        }
     }
 
     /**
@@ -125,8 +138,8 @@ public class PropertyList implements Serializable {
     }
 
     /**
-     * Addiert alle Grundwete eines anderen Properties-Objekts zu den Grundewerten dieser Properties hinzu.
-     * Addiert die Multiplikatoren des anderen Properties-Objekts zu den Multiplikatoren dieser Properties hinzu.
+     * Addiert alle Grundwete eines anderen Properties-Objekts zu den Grundewerten dieser Properties hinzu. Addiert die
+     * Multiplikatoren des anderen Properties-Objekts zu den Multiplikatoren dieser Properties hinzu.
      *
      * @param otherProperties die Properties die subtrahiert werden
      */
@@ -135,7 +148,7 @@ public class PropertyList implements Serializable {
         Iterator<Entry<String, Double>> iter = otherProperties.getBaseValueIterator();
         while (iter.hasNext()) {
             Entry<String, Double> next = iter.next();
-            incrementProperty(next.getKey(), next.getValue());
+            incrementBaseProperty(next.getKey(), next.getValue());
         }
         // Multiplikatoren:
         iter = otherProperties.getMulitplicatorIterator();
@@ -146,8 +159,8 @@ public class PropertyList implements Serializable {
     }
 
     /**
-     * Subtrahiert alle Grundwete eines anderen Properties-Objekts von den Grundewerten dieser Properties.
-     * Subtrahiert die Multiplikatoren des anderen Properties-Objekts von den Multiplikatoren dieser Properties.
+     * Subtrahiert alle Grundwete eines anderen Properties-Objekts von den Grundewerten dieser Properties. Subtrahiert
+     * die Multiplikatoren des anderen Properties-Objekts von den Multiplikatoren dieser Properties.
      *
      * @param otherProperties die Properties, die subtrahiert werden
      */
@@ -156,7 +169,7 @@ public class PropertyList implements Serializable {
         Iterator<Entry<String, Double>> iter = otherProperties.getBaseValueIterator();
         while (iter.hasNext()) {
             Entry<String, Double> next = iter.next();
-            decrementProperty(next.getKey(), next.getValue());
+            decrementBaseProperty(next.getKey(), next.getValue());
         }
         // Multiplikatoren:
         iter = otherProperties.getMulitplicatorIterator();
