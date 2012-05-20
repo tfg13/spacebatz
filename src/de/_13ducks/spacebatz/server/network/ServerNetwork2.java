@@ -47,9 +47,14 @@ public class ServerNetwork2 {
      * Startet das Netzwerksystem.
      * Spawnt einen neuen Thread
      */
-    public void start() throws SocketException {
+    public void start() {
 	// Socket eröffnen
-	socket = new DatagramSocket(Settings.SERVER_UDPPORT2);
+	try {
+	    socket = new DatagramSocket(Settings.SERVER_UDPPORT2);
+	} catch (SocketException ex) {
+	    System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
+	    ex.printStackTrace();
+	}
 	// Listener-Thread starten
 	thread = new Thread(new Runnable() {
 
@@ -113,6 +118,7 @@ public class ServerNetwork2 {
 
     /**
      * Verarbeitet die Anfrage eines Clients, dem Server zu joinen.
+     *
      * @param packetData die empfangenen Daten der Anfrage
      * @param origin der Absender der Anfrage
      * @throws IOException falls das Antwort-Senden nicht klappt
@@ -128,7 +134,7 @@ public class ServerNetwork2 {
 	// Vorläufig: ClientID aus altem Netzwerksystem holen:
 	//connectAnswer[2] = Server.game.newClientID();
 	boolean found = false;
-	for (Client client: Server.game.clients.values()) {
+	for (Client client : Server.game.clients.values()) {
 	    if (client.getNetworkConnection().getSocket().getInetAddress().equals(origin)) {
 		// Gefunden, diese ID nehmen
 		connectAnswer[2] = (byte) client.clientID;

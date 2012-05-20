@@ -75,6 +75,8 @@ public class ClientNetwork {
             sendStream = new ObjectOutputStream(mySocket.getOutputStream());
             udpSocket = new DatagramSocket(Settings.CLIENT_UDPPORT);
             serverAdr = serverAddress.getAddress();
+	    
+	    Client.getNetwork2().connect(serverAdr, Settings.SERVER_UDPPORT2);
 
             receiveData();
         } catch (IOException ex) {
