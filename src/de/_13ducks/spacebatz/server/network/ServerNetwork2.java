@@ -125,7 +125,20 @@ public class ServerNetwork2 {
 	byte[] connectAnswer = new byte[3];
 	connectAnswer[0] = (byte) (0x8F | (nextOutIndex >> 8));
 	connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
-	connectAnswer[2] = Server.game.newClientID();
+	// Vorläufig: ClientID aus altem Netzwerksystem holen:
+	//connectAnswer[2] = Server.game.newClientID();
+	boolean found = false;
+	for (Client client: Server.game.clients.values()) {
+	    if (client.getNetworkConnection().getSocket().getInetAddress().equals(origin)) {
+		// Gefunden, diese ID nehmen
+		connectAnswer[2] = (byte) client.clientID;
+		found = true;
+		break;
+	    }
+	}
+	if (!found) {
+	    System.out.println("ERROR: NET: Cannot find ClientID for request from " + origin + ", connect via old system first!");
+	}
 	// Senden
 	DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
 	socket.send(pack);
