@@ -10,7 +10,7 @@ import java.util.Iterator;
  *
  * @author michael
  */
-public class EffectCarrier extends AbilityUser {
+public class EffectCarrier extends Char {
 
     /**
      * Liste aller Effekte, die der EffectCarrier gerade hat

@@ -10,14 +10,15 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import de._13ducks.spacebatz.server.data.abilities.Ability;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Items können Attribute besitzen, die jeweils einen oder mehrere Itemwerte verändern.
  *
- * Attribute bestehen aus Itemwerten, die nur das Item angehen (z.B. auch Qualität) und Bonuswerten, die den
- * Träger betreffen.
+ * Attribute bestehen aus Itemwerten, die nur das Item angehen (z.B. auch Qualität) und Bonuswerten, die den Träger
+ * betreffen.
  *
  * @author Jojo
  */
@@ -29,26 +30,31 @@ public class ItemAttribute implements Serializable {
      */
     private String name;
     /**
-     * Die Bonuswerte, die dieses Attribut gibt.
-     * z.B. +10 Hitpoints
+     * Die Bonuswerte, die dieses Attribut gibt. z.B. +10 Hitpoints
      */
     private PropertyList bonusStats;
     /**
      * Die Eigenschaften des Items, z.B. Qualität
      */
     private PropertyList itemStats;
+    /**
+     * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
+     */
+    private transient Ability weaponAbility;
 
     /**
      * Erstellt ein neues Attribut mit Bonuswerten.
      *
      * @param name der Name des Attributs
      * @param stats die initalisierungs-stats
+     *
      */
     public ItemAttribute(String name, PropertyList stats) {
         super();
         this.name = name;
         bonusStats = new PropertyList();
         itemStats = new PropertyList();
+
     }
 
     /**
@@ -136,5 +142,23 @@ public class ItemAttribute implements Serializable {
             return i.name.equals(this.name);
         }
         return false;
+    }
+
+    /**
+     * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
+     *
+     * @return die Fähigkeit, die dieses ItemAttribut gibt
+     */
+    public Ability getWeaponAbility() {
+        return weaponAbility;
+    }
+
+    /**
+     * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
+     *
+     * @param weaponAbility the weaponAbility to set
+     */
+    public void setWeaponAbility(Ability weaponAbility) {
+        this.weaponAbility = weaponAbility;
     }
 }

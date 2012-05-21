@@ -24,6 +24,7 @@ public abstract class Char extends Entity {
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
      */
     private PropertyList properties;
+    public int attackCooldownTick;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -48,8 +49,7 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Gibt den Wert einer Eigenschaft zurück.
-     * Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
+     * Gibt den Wert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
      *
      * @param name der Name der gesuchten Eigenschaft
      * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.

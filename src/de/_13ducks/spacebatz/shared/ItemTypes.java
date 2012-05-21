@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import java.util.ArrayList;
 
 /**
@@ -74,81 +76,44 @@ public class ItemTypes {
         // TODO: COOLDOWN/ATTACKSPEED setzen
         itemtypelist.add(pistol);
 
-        ItemAttribute laser = new ItemAttribute("laser");
-        // Itemspezifische Eigenschaften:
+        ItemAttribute laser = new ItemAttribute("Laser");
         laser.setItemProperty("pic", 2);
         laser.setItemProperty("itemclass", 1);
         laser.setItemProperty("quality", 1);
         laser.setItemProperty("amount", 0);
-        // Boni für Träger:
-        laser.setBonusProperty("canShoot", 1);
-        laser.setBonusProperty("shootDamage", 6);
-        laser.setBonusProperty("shootBulletSpeed", 0.35);
-        laser.setBonusProperty("shootRange", 9.0);
-        laser.setBonusProperty("shootSpread", 0.1);
-        // TODO: COOLDOWN/ATTACKSPEED setzen
+        laser.setWeaponAbility(new FireBulletAbility(4, 6.0, 9.0, 3, 0.35, 0.1, 0.0));
         itemtypelist.add(laser);
 
-
-
-        ItemAttribute superlaser = new ItemAttribute("superlaser");
-        // Itemspezifische Eigenschaften:
+        ItemAttribute superlaser = new ItemAttribute("Super Laser");
         superlaser.setItemProperty("pic", 3);
         superlaser.setItemProperty("itemclass", 1);
         superlaser.setItemProperty("quality", 1);
         superlaser.setItemProperty("amount", 0);
-        // Boni für Träger:
-        superlaser.setBonusProperty("canShoot", 1);
-        superlaser.setBonusProperty("shootDamage", 25);
-        superlaser.setBonusProperty("shootBulletSpeed", 0.5);
-        superlaser.setBonusProperty("shootRange", 12.0);
-        superlaser.setBonusProperty("shootSpread", 0.02);
-        // TODO: COOLDOWN/ATTACKSPEED setzen
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 25.0, 12.0, 2, 0.5, 0.02, 0.0));
         itemtypelist.add(superlaser);
 
-
-
-        ItemAttribute rocketlauncher = new ItemAttribute("rocketlauncher");
-        // Itemspezifische Eigenschaften:
+        ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
         rocketlauncher.setItemProperty("pic", 5);
         rocketlauncher.setItemProperty("itemclass", 1);
         rocketlauncher.setItemProperty("quality", 1);
         rocketlauncher.setItemProperty("amount", 0);
-        // Boni für Träger:
-        rocketlauncher.setBonusProperty("canShoot", 1);
-        rocketlauncher.setBonusProperty("shootDamage", 20);
-        rocketlauncher.setBonusProperty("shootBulletSpeed", 0.25);
-        rocketlauncher.setBonusProperty("shootRange", 15.0);
-        rocketlauncher.setBonusProperty("shootSpread", 0.0);
-        rocketlauncher.setBonusProperty("shootExplosionRadius", 3.0);
-        // TODO: COOLDOWN/ATTACKSPEED setzen
+        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
         itemtypelist.add(rocketlauncher);
 
-
-        ItemAttribute drill = new ItemAttribute("drill");
-        // Itemspezifische Eigenschaften:
+        ItemAttribute drill = new ItemAttribute("Drill");
         drill.setItemProperty("pic", 6);
         drill.setItemProperty("itemclass", 1);
         drill.setItemProperty("quality", 1);
         drill.setItemProperty("amount", 0);
-        // Boni für Träger:
-        drill.setBonusProperty("canHitscan", 1);
-        drill.setBonusProperty("hitscanDamage", 50);
-        drill.setBonusProperty("hitscanRange", 4.0);
-        // TODO: COOLDOWN/ATTACKSPEED setzen
+        drill.setWeaponAbility(new HitscanAbility(50, 60.0, 4.0));
         itemtypelist.add(drill);
 
-        ItemAttribute saw = new ItemAttribute("saw");
-        // Itemspezifische Eigenschaften:
+        ItemAttribute saw = new ItemAttribute("Saw");
         saw.setItemProperty("pic", 7);
         saw.setItemProperty("itemclass", 1);
         saw.setItemProperty("quality", 1);
         saw.setItemProperty("amount", 0);
-        // Boni für Träger:
-        saw.setBonusProperty("canHitscan", 1);
-        saw.setBonusProperty("hitscanDamage", 15);
-        saw.setBonusProperty("hitscanRange", 4.0);
-        // TODO: COOLDOWN/ATTACKSPEED setzen
+        saw.setWeaponAbility(new HitscanAbility(15, 12.0, 4.0));
         itemtypelist.add(saw);
 
 

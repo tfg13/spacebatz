@@ -12,6 +12,8 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +30,7 @@ public class Player extends ItemCarrier {
      * Der, Client, dem der Player gehört
      */
     private Client client;
+    private Ability standardAttack = new FireBulletAbility(1, 10, 10, 1, 0.1, 0.025, 0.0);
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann
@@ -43,13 +46,6 @@ public class Player extends ItemCarrier {
         client.setPlayer(this);
         this.client = client;
 
-        setProperty("canShoot", 1);
-        setProperty("shootDamage", 10);
-        setProperty("shootRange", 10);
-        setProperty("shootSpread", 0.25);
-        setProperty("shootBulletSpeed", 0.1);
-        setProperty("shootBulletPic", 1);
-        setProperty("shootExplosionRadius", 0.0);
     }
 
     /**
@@ -109,8 +105,13 @@ public class Player extends ItemCarrier {
      *
      */
     public void playerShoot(double angle) {
-        getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
-        //useAbilityInAngle(0, angle);
+        if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+            standardAttack.useInAngle(this, angle);
+        } else {
+            getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+            //useAbilityInAngle(0, angle);
+        }
+
     }
 
     /**
@@ -121,7 +122,7 @@ public class Player extends ItemCarrier {
      */
     public void clientEquipItem(int itemnetID, byte selectedslot) {
         Item item = getItems().get(itemnetID);
-
+        standardAttack.useInAngle(this, speed);
         // Item anlegen
         if (equipItem(itemnetID, selectedslot)) {
             // Wenn erfolgreich, an Client senden

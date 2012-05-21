@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.shared;
 
 import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
+import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.shared.PropertyList;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,6 +58,10 @@ public class Item implements Serializable {
      * Die Boni, die das Item dem Träger gibt
      */
     private PropertyList bonusProperties;
+    /**
+     * Die Fähigkeit, falls das Item eine Waffe ist
+     */
+    private transient Ability weaponAbility;
 
     /**
      * Erzeugt ein neues Item
@@ -76,6 +81,7 @@ public class Item implements Serializable {
         itemProperties = new PropertyList();
         bonusProperties = new PropertyList();
         itemAttributes = new ArrayList<>();
+        weaponAbility = baseAttribute.getWeaponAbility();
 
         // die boni des Grundattributs addieren:
         addAttribute(baseAttribute);
@@ -206,8 +212,8 @@ public class Item implements Serializable {
     }
 
     /**
-     * Gibt den Wert einer Item-Eigenschaft zurück.
-     * Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
+     * Gibt den Wert einer Item-Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0
+     * zurückgegeben.
      *
      * @param name der Name der gesuchten Eigenschaft
      * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
@@ -223,5 +229,14 @@ public class Item implements Serializable {
      */
     public PropertyList getBonusProperties() {
         return bonusProperties;
+    }
+
+    /**
+     * Die Fähigkeit, falls das Item eine Waffe ist
+     *
+     * @return the weaponAbility
+     */
+    public Ability getWeaponAbility() {
+        return weaponAbility;
     }
 }
