@@ -3,11 +3,11 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.Weapon;
 import java.util.HashMap;
 
 /**
- * Ein Itemträger, kann Items tragen und ausrüsten.
- * Kann im moment beliebig viele Items aufnehmen und ausrüsten.
+ * Ein Itemträger, kann Items tragen und ausrüsten. Kann im moment beliebig viele Items aufnehmen und ausrüsten.
  *
  * @author michael
  */
@@ -226,8 +226,8 @@ public class ItemCarrier extends EffectCarrier {
      *
      * @return ein Weapon
      */
-    public Item getActiveWeapon() {
-        return equipslots[1][selectedweapon];
+    public Weapon getActiveWeapon() {
+        return (Weapon) equipslots[1][selectedweapon];
     }
 
     /**

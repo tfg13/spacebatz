@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class HitscanAbility {
+public class HitscanAbility implements Ability {
 
     /**
      * Die Effekte, die dieses Geschoss hat.
@@ -27,13 +27,14 @@ public class HitscanAbility {
 
     }
 
-    public void useInAngle(Char user, double targetX, double targetY) {
-        double dx = targetX - user.getX();
-        double dy = targetY - user.getY();
-        double angle = Math.atan2(dy, dx);
-        if (angle < 0) {
-            angle += 2 * Math.PI;
-        }
+    /**
+     * Benutzt die Fähigkeit in einem bestimmten Winkel.
+     *
+     * @param user der Benutzerchar
+     */
+    @Override
+    public void useInAngle(Char user, double angle) {
+
 
 //        if (user.getAttackCooldownTick() <= Server.game.getTick()) {
 //            user.setAttackCooldownTick(Server.game.getTick() + (int) user.getProperty("attackspeed"));
@@ -61,5 +62,10 @@ public class HitscanAbility {
             }
         }
 //        }
+    }
+
+    @Override
+    public void useOnPosition(Char user, double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

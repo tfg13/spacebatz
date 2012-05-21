@@ -8,12 +8,11 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import java.util.Random;
 
 /**
- * Die Fähigkeit, Bullets zu schießen.
- * Erzeugt neue Bullets und regisriert sie beim Server.
+ * Die Fähigkeit, Bullets zu schießen. Erzeugt neue Bullets und regisriert sie beim Server.
  *
  * @author michael
  */
-public class FireBulletAbility {
+public class FireBulletAbility implements Ability {
 
     public static final int FIREBULLETABILITY = 0;
 
@@ -23,6 +22,7 @@ public class FireBulletAbility {
      * @param user der Char, der diese Fähigkeit verwendet
      * @param targetX X-Koordinate des Ziels
      * @param targetY Y-Koordinate des Ziels
+     * @deprecated useOnPosition stattdessen verwenden!
      */
     public static void fireBullet(Char user, double targetX, double targetY) {
         double dx = targetX - user.getX();
@@ -92,5 +92,15 @@ public class FireBulletAbility {
 
         Server.game.netIDMap.put(bullet.netID, bullet);
 //        }
+    }
+
+    @Override
+    public void useOnPosition(Char user, double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void useInAngle(Char user, double angle) {
+        fireBulletInAngle(user, angle);
     }
 }

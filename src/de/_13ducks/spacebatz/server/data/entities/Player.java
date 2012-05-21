@@ -18,8 +18,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /**
- * Der Spielercharakter.
- * Verwaltet die Interaktion des Clients mit der Spielwelt.
+ * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -31,7 +30,8 @@ public class Player extends ItemCarrier {
     private Client client;
 
     /**
-     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
+     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann
+     * nur einen Player pro Client geben.
      *
      * @param x Startkoordinate X
      * @param y Startkoordinate Y
@@ -109,7 +109,8 @@ public class Player extends ItemCarrier {
      *
      */
     public void playerShoot(double angle) {
-        useAbilityInAngle(0, angle);
+        getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+        //useAbilityInAngle(0, angle);
     }
 
     /**
