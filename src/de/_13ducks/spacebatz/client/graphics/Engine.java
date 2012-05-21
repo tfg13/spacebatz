@@ -562,7 +562,7 @@ public class Engine {
             } else {
                 //rendern:
                 float height = (getTime() - d.getSpawntime()) / 250.0f;
-                renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height);
+                renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f);
             }
         }
 
@@ -827,7 +827,33 @@ public class Engine {
      * @param y PositionY (unten rechts)
      */
     private void renderText(String text, float x, float y) {
-        renderText(text, x, y, false);
+        renderText(text, x, y, false, 0f, 0f, 0f);
+    }
+
+    /**
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     *
+     * @param text Der zu zeichnende Text
+     * @param x PositionX (unten links)
+     * @param y PositionY (unten rechts)
+     * @param mono Monospace-Font und (!) klein?
+     */
+    private void renderText(String text, float x, float y, boolean mono) {
+        renderText(text, x, y, mono, 0f, 0f, 0f);
+    }
+
+    /**
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     *
+     * @param text Der zu zeichnende Text
+     * @param x PositionX (unten links)
+     * @param y PositionY (unten rechts)
+     * @param red_color Textfarbe Rotanteil
+     * @param blue_color Textfarbe Blauanteil
+     * @param green_color Textfarbe Grünanteil
+     */
+    private void renderText(String text, float x, float y, float red_color, float blue_color, float green_color) {
+        renderText(text, x, y, false, red_color, blue_color, green_color);
     }
 
     /**
@@ -837,8 +863,12 @@ public class Engine {
      * @param x Relative X-Position (0-1)
      * @param y Relative Y-Position (0-1)
      * @param mono Monospace-Font und (!) klein?
+     * @param red_color Textfarbe Rotanteil
+     * @param blue_color Textfarbe Blauanteil
+     * @param green_color Textfarbe Grünanteil
      */
-    private void renderText(String text, float x, float y, boolean mono) {
+    private void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color) {
+        glColor3f(red_color, blue_color, green_color);
         float next = 0;
         byte[] chars = text.getBytes(charset);
         font[mono ? 1 : 0].bind();
@@ -865,6 +895,7 @@ public class Engine {
             // Spacing dieses chars weiter gehen:
             next += (mono ? 6 / 16f / zoomFactor : spaceing[c] / 16f);
         }
+        glColor3f(1f, 1f, 1f);
     }
 
     private int texAt(int[][] layer, int x, int y) {
@@ -925,7 +956,7 @@ public class Engine {
         Bits.putFloat(udp2, 6, (float) (dir));
         Client.udpOut(udp2);
     }
-    
+
     /**
      * Legt eine Schadenszahl an, die in der nächsten Sekunde gerendert wird
      * @param damage Schaden der angezeigt wird
