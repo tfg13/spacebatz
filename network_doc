@@ -74,6 +74,7 @@ Connecting to server:
 	Server answers the request by sending a special packet to the client. Specs:
 		byte 1:
 			first bit: 1 yes (connection accepted), 0 no (refused)
-			rest: index of next udp-packet if accepted, otherwise reason for refusal
-		byte 2: signed int clientID if accepted, not specified otherwise
+			rest: index of next udp-packet if accepted, otherwise reason for refusal (7 bit unsigned (part1))
+		byte 2: 8 bit unsigned (concatenated with part from byte 1): next udp-pack index
+		byte 3: signed int clientID if accepted, not specified otherwise
 

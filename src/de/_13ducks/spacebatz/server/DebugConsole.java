@@ -69,7 +69,7 @@ public class DebugConsole {
     /**
      * Die verbundenen rcons.
      */
-    private ConcurrentHashMap<Integer, Object[]> rcons;
+    private ConcurrentHashMap<Byte, Object[]> rcons;
 
     /**
      * Konstruktor Erzeugt einen neuen Thread der alle Eingaben zwischenspeichert
@@ -239,7 +239,7 @@ public class DebugConsole {
                         break;
                     case "resync":
                         if (words.length == 2) {
-                            int i = Integer.parseInt(words[1]);
+                            byte i = Byte.parseByte(words[1]);
                             Server.serverNetwork.udp.resyncClient(Server.game.clients.get(i));
                             outStream.println("Resyncing client " + i);
                         } else {

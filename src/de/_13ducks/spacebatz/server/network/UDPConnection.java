@@ -174,7 +174,7 @@ public class UDPConnection {
             // Falls er zum erstem Mal synchronisiert wurde jetzt einfügen:
             if (!clientMap.containsKey(clientID)) {
                 clientMap.put(clientID, c);
-                Server.game.clients.put(new Integer(clientID), c);
+                Server.game.clients.put(new Byte(clientID), c);
                 Server.msgSender.sendStartGame(c);
             }
         }

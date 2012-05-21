@@ -12,10 +12,7 @@ package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.graphics.Engine;
-import de._13ducks.spacebatz.client.network.ClientMessageInterpreter;
-import de._13ducks.spacebatz.client.network.ClientMessageSender;
-import de._13ducks.spacebatz.client.network.ClientNetwork;
-import de._13ducks.spacebatz.client.network.ClientTerminal;
+import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
@@ -38,6 +35,10 @@ public class Client {
      * Das Netzwerksystem.
      */
     private static ClientNetwork network;
+    /**
+     * Das neue Netzwerksystem.
+     */
+    private static ClientNetwork2 network2;
     /**
      * Der Nachrichteninterpreter.
      */
@@ -122,6 +123,7 @@ public class Client {
 	msgInterpreter = new ClientMessageInterpreter();
 	netIDMap = new HashMap<>();
 	network = new ClientNetwork();
+	network2 = new ClientNetwork2();
 	equippedItems = new EquippedItems();
 	if (getNetwork().tryConnect(ip)) {
 	    // StartRequest per TCP an Server schicken
@@ -202,6 +204,14 @@ public class Client {
      */
     public static ClientNetwork getNetwork() {
 	return network;
+    }
+    
+    /**
+     * Gibt das neue Netzwerkmodul zurück.
+     * @return das neue Netzwerkmodul
+     */
+    public static ClientNetwork2 getNetwork2() {
+	return network2;
     }
 
     public static void updateGametick() {

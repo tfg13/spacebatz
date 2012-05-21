@@ -31,7 +31,7 @@ public class Client {
     /**
      * Die ID, mit der der Server den Client identifiziert
      */
-    public final int clientID;
+    public final byte clientID;
     /**
      * Auf welchem Servertick die letzen Clientupdates beruhen. Also die größte Ticknummer, die jemals von diesem Client in einem Paket empfangen und
      * verarbeitet wurde.
@@ -47,7 +47,7 @@ public class Client {
      *
      * @param socket der Socket, mit dem der Client verbunden ist
      */
-    public Client(ServerNetworkConnection connection, int clientID) {
+    public Client(ServerNetworkConnection connection, byte clientID) {
         this.connection = connection;
         this.clientID = clientID;
         context = new ClientContext();

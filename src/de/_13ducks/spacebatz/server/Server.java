@@ -18,6 +18,7 @@ import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
 import de._13ducks.spacebatz.server.network.ServerMessageSender;
 import de._13ducks.spacebatz.server.network.ServerNetwork;
+import de._13ducks.spacebatz.server.network.ServerNetwork2;
 
 /**
  * Diese Klasse enthält statische Referenzen auf die wichtigsten Module
@@ -43,6 +44,10 @@ public final class Server {
      */
     public static ServerNetwork serverNetwork = new ServerNetwork();
     /**
+     * Das neue Netzwerkmodul
+     */
+    public static ServerNetwork2 serverNetwork2 = new ServerNetwork2();
+    /**
      * Die Sendekomponente des Netzwerkmoduls
      */
     public static ServerMessageSender msgSender = new ServerMessageSender();
@@ -60,6 +65,7 @@ public final class Server {
         game = new Game();
         entityMap = new EntityMap(game.getLevel().getSizeX(), game.getLevel().getSizeY());
         serverNetwork.startServer();
+	serverNetwork2.start();
 
         MainLoop mainLoop = new MainLoop();
 
@@ -76,6 +82,6 @@ public final class Server {
         Player pl = client.getPlayer();
         game.netIDMap.remove(pl.netID);
         game.clients.remove(client.clientID);
-        serverNetwork.udp.removeClient((byte) client.clientID);
+        serverNetwork.udp.removeClient(client.clientID);
     }
 }
