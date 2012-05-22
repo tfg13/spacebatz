@@ -110,6 +110,10 @@ public class Engine {
      * Schadenszahlen über getroffenen Gegnern
      */
     private static LinkedList<DamageNumber> damageNumbers = new LinkedList<>();
+    /**
+     * Konstante, die angibt wie lange Schadenszahlen sichtbar sind
+     */
+    private final int damagenumber_lifetime = 1000;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
@@ -556,13 +560,15 @@ public class Engine {
         Iterator<DamageNumber> iter = damageNumbers.iterator();
         while (iter.hasNext()) {
             DamageNumber d = iter.next();
-            if (getTime() > d.getSpawntime() + 1000) {
+            if (getTime() > d.getSpawntime() + damagenumber_lifetime) {
                 // alt - > löschen
                 iter.remove();
             } else {
                 //rendern:
                 float height = (getTime() - d.getSpawntime()) / 250.0f;
-                renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f);
+                float visibility = 1 - ((float) (getTime() - d.getSpawntime())) / damagenumber_lifetime; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
+                visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
+                renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f, visibility);
             }
         }
 
@@ -827,7 +833,7 @@ public class Engine {
      * @param y PositionY (unten rechts)
      */
     private void renderText(String text, float x, float y) {
-        renderText(text, x, y, false, 0f, 0f, 0f);
+        renderText(text, x, y, false, 0f, 0f, 0f, 1f);
     }
 
     /**
@@ -839,7 +845,7 @@ public class Engine {
      * @param mono Monospace-Font und (!) klein?
      */
     private void renderText(String text, float x, float y, boolean mono) {
-        renderText(text, x, y, mono, 0f, 0f, 0f);
+        renderText(text, x, y, mono, 0f, 0f, 0f, 1f);
     }
 
     /**
@@ -851,9 +857,10 @@ public class Engine {
      * @param red_color Textfarbe Rotanteil
      * @param blue_color Textfarbe Blauanteil
      * @param green_color Textfarbe Grünanteil
+     * @param green_color Textfarbe Alpha-anteil
      */
-    private void renderText(String text, float x, float y, float red_color, float blue_color, float green_color) {
-        renderText(text, x, y, false, red_color, blue_color, green_color);
+    private void renderText(String text, float x, float y, float red_color, float blue_color, float green_color, float alpha_color) {
+        renderText(text, x, y, false, red_color, blue_color, green_color, alpha_color);
     }
 
     /**
@@ -866,9 +873,10 @@ public class Engine {
      * @param red_color Textfarbe Rotanteil
      * @param blue_color Textfarbe Blauanteil
      * @param green_color Textfarbe Grünanteil
+     * @param green_color Textfarbe Alpha-anteil
      */
-    private void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color) {
-        glColor3f(red_color, blue_color, green_color);
+    private void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color, float alpha_color) {
+        glColor4f(red_color, blue_color, green_color, alpha_color);
         float next = 0;
         byte[] chars = text.getBytes(charset);
         font[mono ? 1 : 0].bind();
