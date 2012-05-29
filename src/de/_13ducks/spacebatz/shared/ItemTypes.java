@@ -62,18 +62,11 @@ public class ItemTypes {
         itemtypelist.add(betterhat);
 
         ItemAttribute pistol = new ItemAttribute("Pistol");
-        // Itemspezifische Eigenschaften:
         pistol.setItemProperty("pic", 4);
         pistol.setItemProperty("itemclass", 1);
         pistol.setItemProperty("quality", 1);
         pistol.setItemProperty("amount", 0);
-        // Boni für Träger:
-        pistol.setBonusProperty("canShoot", 1);
-        pistol.setBonusProperty("shootDamage", 7);
-        pistol.setBonusProperty("shootBulletSpeed", 0.35);
-        pistol.setBonusProperty("shootRange", 10.0);
-        pistol.setBonusProperty("shootSpread", 0.025);
-        // TODO: COOLDOWN/ATTACKSPEED setzen
+        pistol.setWeaponAbility(new FireBulletAbility(7, 15.0, 10.0, 1, 0.35, 0.05, 0.0));
         itemtypelist.add(pistol);
 
         ItemAttribute laser = new ItemAttribute("Laser");

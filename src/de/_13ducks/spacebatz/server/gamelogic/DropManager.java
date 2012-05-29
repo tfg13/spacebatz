@@ -97,7 +97,6 @@ public class DropManager {
     private static Item addAttributes(Item item, int droplevel) {
         ArrayList<ItemAttribute> attributesofrightclass = new ArrayList<>();
         ArrayList<ItemAttribute> qualityallowedattributes = new ArrayList<>();
-        ArrayList<ItemAttribute> addattributes = new ArrayList<>();
 
         attributesofrightclass.addAll(itemattribute.getAttributelist());
 

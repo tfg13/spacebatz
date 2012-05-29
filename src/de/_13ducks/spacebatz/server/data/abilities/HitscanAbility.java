@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Position;
@@ -15,6 +16,9 @@ import java.util.ArrayList;
  * @author Jojo
  */
 public class HitscanAbility implements Ability {
+    
+    private double range; 
+    private double attackspeed;
 
     /**
      * Die Effekte, die dieses Geschoss hat.
@@ -24,7 +28,8 @@ public class HitscanAbility implements Ability {
     public HitscanAbility(double damage, double attackspeed, double range) {
         TrueDamageEffect damageeff = new TrueDamageEffect((int) damage);
         effects.add(damageeff);
-
+        this.range = range;
+        this.attackspeed = attackspeed;
     }
 
     /**
@@ -35,37 +40,38 @@ public class HitscanAbility implements Ability {
     @Override
     public void useInAngle(Char user, double angle) {
 
+        if (user.attackCooldownTick <= Server.game.getTick()) {
+            user.attackCooldownTick = Server.game.getTick() + (int) attackspeed;
 
-//        if (user.getAttackCooldownTick() <= Server.game.getTick()) {
-//            user.setAttackCooldownTick(Server.game.getTick() + (int) user.getProperty("attackspeed"));
+            // Schaden an Gegnern
+            ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
 
-        // Schaden an Gegnern
-        ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, user.getProperty("range"), this);
+            for (Char character : charsHit) {
+                for (Effect effect : effects) {
+                    effect.applyToChar((EffectCarrier) character);
+                }
 
-        for (Char character : charsHit) {
-//                for (Effect effect : effects) {
-//                    effect.applyToChar(character);
-//                }
+                if (character.getProperty("hitpoints") <= 0) {
+                    Server.game.netIDMap.remove(character.netID);
+                    Server.entityMap.removeEntity(character);
+                    DropManager.dropItem(character.getX(), character.getY(), 2);
+                }
+            }
 
-            if (character.getProperty("hitpoints") <= 0) {
-                Server.game.netIDMap.remove(character.netID);
-                Server.entityMap.removeEntity(character);
-                DropManager.dropItem(character.getX(), character.getY(), 2);
+            // Block abbauem
+            Position test = CollisionManager.computeHitscanOnBlocks(user, angle, user.getProperty("range"));
+            if (test != null) {
+                if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
+                    Server.game.getLevel().destroyBlock(test.getX(), test.getY());
+                }
             }
         }
-
-        // Block abbauem
-        Position test = CollisionManager.computeHitscanOnBlocks(user, angle, user.getProperty("range"));
-        if (test != null) {
-            if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
-                Server.game.getLevel().destroyBlock(test.getX(), test.getY());
-            }
-        }
-//        }
     }
 
     @Override
-    public void useOnPosition(Char user, double x, double y) {
+    public void useOnPosition(Char user,
+            double x,
+            double y) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
