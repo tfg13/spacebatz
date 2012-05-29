@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data.effects;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 import de._13ducks.spacebatz.server.gamelogic.HitManager;
@@ -43,6 +44,7 @@ public class ExplosionDamageEffect extends Effect {
          * hitChar ist der Char der direkt getroffen wurde.
          */
         hitChar.decrementProperty("hitpoints", damage);
+        Server.msgSender.sendCharHit(hitChar.netID, damage, false);
         HitManager.computeBulletExplosionCollision(damage, x, y, hitChar, radius);
     }
 

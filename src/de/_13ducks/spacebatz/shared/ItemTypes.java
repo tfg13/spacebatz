@@ -90,7 +90,7 @@ public class ItemTypes {
         rocketlauncher.setItemProperty("itemclass", 1);
         rocketlauncher.setItemProperty("quality", 1);
         rocketlauncher.setItemProperty("amount", 0);
-        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 3.0));
+        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 6.0));
         itemtypelist.add(rocketlauncher);
 
         ItemAttribute drill = new ItemAttribute("Drill");

@@ -60,7 +60,9 @@ public class HitManager {
                     if (distance < radius) {
                         // Zurzeit nur Gegnern Schaden machen
                         if (c instanceof Enemy) {
-                            c.decrementProperty("hitpoints", damage * (1.0 - distance / radius * 0.66));
+                            int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66));
+                            c.decrementProperty("hitpoints", damagereduced);
+                            Server.msgSender.sendCharHit(c.netID, damagereduced, false);
                         }
                     }
                 }
