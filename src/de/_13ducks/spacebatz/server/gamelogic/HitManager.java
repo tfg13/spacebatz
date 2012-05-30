@@ -8,7 +8,7 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.Iterator;
 
 /**
- * Berechnet alles, was passiert wenn zwei Dinge kollidieren (zb Bullets mit Chars).
+ * Berechnet Schaden.
  * Kümmert sich zB um das löschen von Bullets, Schaden, Effekte, etc...
  *
  * @author michael
@@ -16,12 +16,12 @@ import java.util.Iterator;
 public class HitManager {
 
     /**
-     * Berechnet Kollisionen zwischen Bullets und Chars.
+     * Berechnet Schaden, wenn Bullet etwas trifft.
      *
-     * @param character der Char der mit dem Bullet kollidiert
-     * @param bullet das Bullet das mit dem Char kollidiert
+     * @param character der Char der Schaden nehmen soll
+     * @param bullet das Bullet das Schaden austeilt
      */
-    public static void charBulletCollision(Char character, Bullet bullet) {
+    public static void charBulletHit(Char character, Bullet bullet) {
         // abbrechen, wenn der Char das Bullet selber erzeugt hat:
         if (bullet.getOwner().equals(character)) {
             return;
@@ -40,6 +40,7 @@ public class HitManager {
 
     /**
      * Berechnet Kollision eines Bullets mit einer Wand.
+     * Leider ist das hier nicht der Collisionmanager.
      */
     public static void bulletWallCollision() {
     }
@@ -47,8 +48,14 @@ public class HitManager {
     /**
      * Berechnet Flächenschaden von Bullet-Explosionen
      * Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden kriegt
+     * 
+     * @param damage Schaden, den die Explosion macht (wird evtl durch Distanz abgeschwächt)
+     * @param x Position
+     * @param y Position
+     * @param charhit Gegner, der direkt getroffen wird (oder null)
+     * @param radius der Explosionsradius
      */
-    public static void computeBulletExplosionCollision(int damage, double x, double y, Char charhit, double radius) {
+    public static void computeBulletExplosion(int damage, double x, double y, Char charhit, double radius) {
         Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
@@ -60,7 +67,7 @@ public class HitManager {
                     if (distance < radius) {
                         // Zurzeit nur Gegnern Schaden machen
                         if (c instanceof Enemy) {
-                            int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66));
+                            int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
                             c.decrementProperty("hitpoints", damagereduced);
                             Server.msgSender.sendCharHit(c.netID, damagereduced, false);
                         }

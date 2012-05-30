@@ -30,7 +30,7 @@ public class Player extends ItemCarrier {
      * Der, Client, dem der Player gehört
      */
     private Client client;
-    private Ability standardAttack = new FireBulletAbility(1, 10, 10, 1, 0.1, 0.025, 0.0);
+    private Ability standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0);
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann

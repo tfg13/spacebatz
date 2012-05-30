@@ -45,7 +45,7 @@ public class ExplosionDamageEffect extends Effect {
          */
         hitChar.decrementProperty("hitpoints", damage);
         Server.msgSender.sendCharHit(hitChar.netID, damage, false);
-        HitManager.computeBulletExplosionCollision(damage, x, y, hitChar, radius);
+        HitManager.computeBulletExplosion(damage, x, y, hitChar, radius);
     }
 
     @Override

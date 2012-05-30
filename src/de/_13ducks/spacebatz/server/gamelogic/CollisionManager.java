@@ -77,6 +77,9 @@ public class CollisionManager {
             // Provisorische Kollision von Bullets mit zerstörbaren Blöcken:
             if (Server.game.getLevel().isBlockDestroyable((int) x, (int) y)) {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
+
+                Server.game.netIDMap.remove(bullet.netID);
+                Server.entityMap.removeEntity(bullet);
             }
 
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
@@ -85,47 +88,13 @@ public class CollisionManager {
                 if (e instanceof Char) {
                     Char c = (Char) e;
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
-                        HitManager.charBulletCollision(c, bullet);
+                        HitManager.charBulletHit(c, bullet);
                     }
                 }
             }
         }
     }
 
-//    /**
-//     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden
-//     * kriegt
-//     */
-//    private static void computeBulletExplosionCollision(Bullet bullet, Char charhit) {
-//        double x = bullet.getX();
-//        double y = bullet.getY();
-//
-//        Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, bullet.getExplosionradius()).iterator();
-//        while (iter.hasNext()) {
-//            Entity e = iter.next();
-//            if (e instanceof Char) {
-//                Char c = (Char) e;
-//                if (c == charhit) {
-//                    continue;
-//                }
-//                double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
-//
-//                if (!c.equals(bullet.getOwner())) {
-//                    if (c instanceof Enemy) {
-//                        Enemy en = (Enemy) c;
-//                        // Schaden von HP abziehen, wird von Distanz verringert
-//                        if (en.decreaseHealthpoints(bullet, 1.0 - distance / bullet.getExplosionradius() * 2 / 3)) {
-//                        } else {
-//                            if (en.getMyTarget() == null) {
-//                                en.setMyTarget(bullet.getOwner());
-//                            }
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }
-//    }
     /**
      * Berechnet Kollisionen zwischen Wänden und Chars
      */
@@ -394,7 +363,7 @@ public class CollisionManager {
     }
 
     /**
-     * Gibt die Position des nächsten Felds mit Kollision zurück, der getroffen wird, oder null
+     * Gibt die Position des nächsten Felds mit Kollision zurück, das getroffen wird, oder null
      *
      * @param owner Char, der die Ability ausführt
      * @param angle Richtung
@@ -402,7 +371,6 @@ public class CollisionManager {
      * @return
      */
     public static Position computeHitscanOnBlocks(Char owner, double angle, double range) {
-        Position returnpos = null;
         ArrayList<Position> positionsInHitscan = new ArrayList<>();
 
         double betaX = owner.getX() + range * Math.cos(angle);
