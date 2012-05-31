@@ -10,10 +10,8 @@
  */
 package de._13ducks.spacebatz.shared;
 
-import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
-import de._13ducks.spacebatz.shared.PropertyList;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -81,7 +79,7 @@ public class Item implements Serializable {
         itemProperties = new PropertyList();
         bonusProperties = new PropertyList();
         itemAttributes = new ArrayList<>();
-        weaponAbility = baseAttribute.getWeaponAbility();
+        weaponAbility = baseAttribute.getNewWeaponAbilityInstance();
 
         // die boni des Grundattributs addieren:
         addAttribute(baseAttribute);
@@ -101,24 +99,12 @@ public class Item implements Serializable {
         bonusProperties.addProperties(itemAttribute.getBonusStats());
         // Die Item-Werte des Attributs hinzufügen:
         itemProperties.addProperties(itemAttribute.getItemStats());
-    }
+        if (weaponAbility != null) {
+            // Die Waffenstats der Waffenfähigkeit geben, wenn dies eine Waffe ist:
+            weaponAbility.addProperties(itemAttribute.getWeaponStats());
 
-    /**
-     * Entfernt ein Attribut vom Item.
-     *
-     * @param itemAttribute das Attribut, entfernt werden soll
-     */
-    public void removeAttribute(ItemAttribute itemAttribute) {
-        if (itemAttributes.contains(itemAttribute)) {
-            // Das Attribut von der Liste entfernen:
-            itemAttributes.remove(itemAttribute);
-            // Die Bonus-Werte des Attributs wieder entfernen:
-            bonusProperties.removeProperties(itemAttribute.getBonusStats());
-            // Falls das Item eine Fähigkeit gibt die weaponstats des Attributs der Fähigkeit wieder entfernen:
-            itemProperties.removeProperties(itemAttribute.getItemStats());
-        } else {
-            throw new IllegalArgumentException("Dieses Item hat kein \"" + itemAttribute.getName() + "\"-Attribut!");
         }
+
     }
 
     /**

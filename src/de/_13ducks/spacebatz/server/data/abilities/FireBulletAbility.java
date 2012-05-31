@@ -12,7 +12,7 @@ import java.util.Random;
  *
  * @author michael
  */
-public class FireBulletAbility implements Ability {
+public class FireBulletAbility extends Ability {
 
     private double damage;
     private double attackspeed;

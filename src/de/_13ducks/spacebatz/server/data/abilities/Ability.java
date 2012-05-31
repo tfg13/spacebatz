@@ -1,13 +1,14 @@
 package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.shared.PropertyList;
 
 /**
  * Eine Fähigkeit, die auf eine Position gewirkt werden kann.
  *
  * @author michael
  */
-public interface Ability {
+public abstract class Ability extends PropertyList {
 
     /**
      * Benutzt die Fähigkeit auf eine Position.
@@ -16,7 +17,7 @@ public interface Ability {
      * @param x die X-Koordinate der Zielposition
      * @param y die Y-Koordinate der Zielposition
      */
-    public void useOnPosition(Char user, double x, double y);
+    public abstract void useOnPosition(Char user, double x, double y);
 
     /**
      * Benutzt die Fähigkeit in einem Winkel
@@ -24,5 +25,5 @@ public interface Ability {
      * @param user der Benutzer
      * @param angle der Zielwinkel
      */
-    public void useInAngle(Char user, double angle);
+    public abstract void useInAngle(Char user, double angle);
 }

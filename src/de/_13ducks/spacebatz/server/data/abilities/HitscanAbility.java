@@ -15,11 +15,10 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class HitscanAbility implements Ability {
-    
-    private double range; 
-    private double attackspeed;
+public class HitscanAbility extends Ability {
 
+    private double range;
+    private double attackspeed;
     /**
      * Die Effekte, die dieses Geschoss hat.
      */

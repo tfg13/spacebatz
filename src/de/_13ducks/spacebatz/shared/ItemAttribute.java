@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.shared;
 
+import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import java.io.Serializable;
 import java.util.Objects;
@@ -32,11 +33,15 @@ public class ItemAttribute implements Serializable {
     /**
      * Die Bonuswerte, die dieses Attribut gibt. z.B. +10 Hitpoints
      */
-    private PropertyList bonusStats;
+    PropertyList bonusStats;
     /**
      * Die Eigenschaften des Items, z.B. Qualität
      */
-    private PropertyList itemStats;
+    PropertyList itemStats;
+    /**
+     * Die Eigenschaften der Waffe, z.B. Schaden
+     */
+    PropertyList weaponStats;
     /**
      * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
      */
@@ -54,7 +59,7 @@ public class ItemAttribute implements Serializable {
         this.name = name;
         bonusStats = new PropertyList();
         itemStats = new PropertyList();
-
+        weaponStats = new PropertyList();
     }
 
     /**
@@ -67,6 +72,7 @@ public class ItemAttribute implements Serializable {
         this.name = name;
         bonusStats = new PropertyList();
         itemStats = new PropertyList();
+        weaponStats = new PropertyList();
     }
 
     /**
@@ -88,6 +94,18 @@ public class ItemAttribute implements Serializable {
      */
     final public void setBonusProperty(String name, double value) {
         bonusStats.setBaseProperty(name, value);
+    }
+
+    /**
+     * Setzt den Wert einer Weapon-Eigenschaft
+     *
+     * Beispiel: setWeaponProperty("damage",10) sorgt dafür dass das Attribut einer Waffe 10 Schaden dazugibt.
+     *
+     * @param name der Name der Eigenschaft, der gesetzt werden soll
+     * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
+     */
+    final public void setWeaponProperty(String name, double value) {
+        weaponStats.setBaseProperty(name, value);
     }
 
     /**
@@ -120,6 +138,15 @@ public class ItemAttribute implements Serializable {
     }
 
     /**
+     * Gibt die Waffen-Stats dieses Attributs zurück.
+     *
+     * @return die WaffenStats, die dieses Attrbut der Waffe gibt
+     */
+    public PropertyList getWeaponStats() {
+        return weaponStats;
+    }
+
+    /**
      * Gibt die Weapos-Stats, die dieses Attribut gibt, zurück.
      *
      * @return die Waffen-Stats dieses Attributs
@@ -145,12 +172,14 @@ public class ItemAttribute implements Serializable {
     }
 
     /**
-     * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
+     * Gibt eine neue Instanz der Fähigkeit, die dieses Attribut gewährt zurück, oder null wenn dieses Attribut keine
+     * Fähigkeit gewährt.
      *
-     * @return die Fähigkeit, die dieses ItemAttribut gibt
+     * @return die Fähigkeit, die dieses ItemAttribut gibt oder null
      */
-    public Ability getWeaponAbility() {
-        return weaponAbility;
+    public Ability getNewWeaponAbilityInstance() {
+        Cloner cloner = new Cloner();
+        return cloner.deepClone(weaponAbility);
     }
 
     /**
