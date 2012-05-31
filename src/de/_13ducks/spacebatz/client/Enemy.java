@@ -10,6 +10,9 @@
  */
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.RenderObject;
+
 /**
  * Ein Gegner.
  * @author Joj
@@ -21,7 +24,7 @@ public class Enemy extends Char {
     private int enemytypeid = 1;
 
     public Enemy(int netID, int enemytypeid) {
-        super(netID);
+        super(netID, new RenderObject(new Animation((enemytypeid == 2) ? 4 : 0, 2, 2, 1)));
         this.enemytypeid = enemytypeid;
     }
 

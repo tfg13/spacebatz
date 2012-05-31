@@ -240,7 +240,7 @@ public class EnemySpawner {
                 } else if (randomenemy == 2) {
                     enemytype = 2;
                 }
-
+                
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                 Server.game.netIDMap.put(enem.netID, enem);
                 enem.setMyTarget(player);

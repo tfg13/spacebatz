@@ -10,10 +10,9 @@
  */
 package de._13ducks.spacebatz.shared;
 
-import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.client.InventorySlot;
+import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
-import de._13ducks.spacebatz.shared.PropertyList;
 import java.io.Serializable;
 import java.util.ArrayList;
 

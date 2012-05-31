@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.shared.Movement;
 
 /**
@@ -18,6 +20,10 @@ import de._13ducks.spacebatz.shared.Movement;
  */
 public class Char {
 
+    /**
+     * Hier sind die Renderinformationen des Chars für die Grafik-Engine
+     */
+    protected RenderObject renderObject;
     /**
      * Die Lebenspunkte des Chars
      */
@@ -52,8 +58,13 @@ public class Char {
      */
     private int startTick;
 
-    public Char(int netID) {
+    public Char(int netID, RenderObject renderObject) {
         this.netID = netID;
+        if (renderObject != null) {
+            this.renderObject = renderObject;
+        } else {
+            this.renderObject = new RenderObject(new Animation(0, 1, 1, 1));
+        }
         this.x = 0;
         this.y = 0;
     }
@@ -100,10 +111,10 @@ public class Char {
         this.vY = m.vecY;
         this.startTick = m.startTick;
         this.speed = m.speed;
-	// Nicht drehen beim Stehenbleiben
-	if (startTick != -1) {
-	    this.dir = Math.atan2(vY, vX);
-	}
+        // Nicht drehen beim Stehenbleiben
+        if (startTick != -1) {
+            this.dir = Math.atan2(vY, vX);
+        }
     }
 
     @Override
@@ -141,5 +152,12 @@ public class Char {
      */
     public int getHealthpointsmax() {
         return healthpointsmax;
+    }
+
+    /**
+     * @return the renderObject
+     */
+    public RenderObject getRenderObject() {
+        return renderObject;
     }
 }

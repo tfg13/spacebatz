@@ -11,6 +11,8 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.RenderObject;
 
 /**
  * Der eigene Spieler
@@ -25,7 +27,7 @@ public class Player extends Char {
     private int selectedattack;
     
     public Player(int netID) {
-        super(netID);
+        super(netID, new RenderObject(new Animation(0, 2, 2, 1)));
         selectedattack = 0;
         healthpoints = Settings.CHARHEALTH;
         healthpointsmax = Settings.CHARHEALTH;

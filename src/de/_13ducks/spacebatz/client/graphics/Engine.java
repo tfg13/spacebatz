@@ -113,12 +113,17 @@ public class Engine {
     /**
      * Konstante, die angibt wie lange Schadenszahlen sichtbar sind
      */
-    private final int damagenumber_lifetime = 1000;
+    private final int DAMAGENUMBER_LIFETIME = 1000;
+    /**
+     * Array mit allen Tilemaps
+     */
+    private Texture[] tilemaps;
 
     public Engine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         charset = Charset.forName("cp437");
+        tilemaps = new Texture[10];
         selecteditemslot = -1;
     }
 
@@ -462,53 +467,35 @@ public class Engine {
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
 
-            float v = 0.25f * (int) item.getItemProperty("pic");
-            float w = 0.25f * ((int) item.getItemProperty("pic") / 4);
+            float v = 0.0625f * (int) item.getItemProperty("pic");
+            float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(v, w + 0.25f);
+            glTexCoord2f(v, w + 0.0625f);
             glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
-            glTexCoord2f(v + 0.25f, w + 0.25f);
+            glTexCoord2f(v + 0.0625f, w + 0.0625f);
             glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
-            glTexCoord2f(v + 0.25f, w);
+            glTexCoord2f(v + 0.0625f, w);
             glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
             glTexCoord2f(v, w);
             glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
             glEnd(); // Zeichnen des QUADs fertig } }
-
-
         }
 
-        // Gegner zeichnen:
+        // Enemies zeichnen:
         enemyTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                int tilex = 0;
-                int tiley = 0;
-                if (enemy.getEnemytypeid() == 2) {
-                    tiley = 2;
-                }
                 if (enemy.getEnemytypeid() == 0) {
+                    // roten Gegner einfärben
                     glColor3f(1f, .5f, .5f);
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
+                    glColor3f(1f, 1f, 1f);
+                } else {
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
                 }
-                glPushMatrix();
-                glTranslated(c.getX() + panX, c.getY() + panY, 0);
-                glRotated(c.getDir() / Math.PI * 180, 0, 0, 1);
-                glTranslated(-(c.getX() + panX), -(c.getY() + panY), 0);
-                glBegin(GL_QUADS);
-                glBegin(GL_QUADS);
-                glTexCoord2f(0.0625f * tilex, 0.0625f * tiley);
-                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * tiley);
-                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.0625f * (2 + tilex), 0.0625f * (tiley + 2));
-                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-                glTexCoord2f(0.0625f * tilex, 0.0625f * (tiley + 2));
-                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
-                glEnd();
-                glColor3f(1f, 1f, 1f);
-                glPopMatrix();
+                
             }
         }
 
@@ -516,21 +503,7 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-                glPushMatrix();
-                glTranslated(c.getX() + panX, c.getY() + panY, 0);
-                glRotated(c.getDir() / Math.PI * 180.0, 0, 0, 1);
-                glTranslated(-(c.getX() + panX), -(c.getY() + panY), 0);
-                glBegin(GL_QUADS);
-                glTexCoord2f(0, 0);
-                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.125f, 0);
-                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-                glTexCoord2f(0.125f, 0.0625f * 2);
-                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-                glTexCoord2f(0, 0.125f);
-                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
-                glEnd();
-                glPopMatrix();
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
             }
         }
 
@@ -538,21 +511,7 @@ public class Engine {
         bulletTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Bullet) {
-                Bullet bullet = (Bullet) c;
-
-                float v = bullet.bulletpic * 0.25f;
-                float w = bullet.bulletpic / 4 * 0.25f;
-
-                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                glTexCoord2f(v, w + 0.25f);
-                glVertex3f((float) c.getX() + panX - 0.75f, (float) c.getY() + panY - 0.75f, 0.0f);
-                glTexCoord2f(v + 0.25f, w + 0.25f);
-                glVertex3f((float) c.getX() + panX + 0.75f, (float) c.getY() + panY - 0.75f, 0.0f);
-                glTexCoord2f(v + 0.25f, w);
-                glVertex3f((float) c.getX() + panX + 0.75f, (float) c.getY() + panY + 0.75f, 0.0f);
-                glTexCoord2f(v, w);
-                glVertex3f((float) c.getX() + panX - 0.75f, (float) c.getY() + panY + 0.75f, 0.0f);
-                glEnd(); // Zeichnen des QUADs fertig } }
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
             }
         }
 
@@ -560,13 +519,13 @@ public class Engine {
         Iterator<DamageNumber> iter = damageNumbers.iterator();
         while (iter.hasNext()) {
             DamageNumber d = iter.next();
-            if (getTime() > d.getSpawntime() + damagenumber_lifetime) {
+            if (getTime() > d.getSpawntime() + DAMAGENUMBER_LIFETIME) {
                 // alt - > löschen
                 iter.remove();
             } else {
                 //rendern:
                 float height = (getTime() - d.getSpawntime()) / 250.0f;
-                float visibility = 1 - ((float) (getTime() - d.getSpawntime())) / damagenumber_lifetime; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
+                float visibility = 1 - ((float) (getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
                 visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
                 renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f, visibility);
             }
@@ -627,15 +586,15 @@ public class Engine {
                 float width = 0.11f * tilesX;
                 float height = 0.11f * tilesY;
 
-                float v = 0.25f * (int) item.getItemProperty("pic");
-                float w = 0.25f * ((int) item.getItemProperty("pic") / 4);
+                float v = 0.0625f * (int) item.getItemProperty("pic");
+                float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                glTexCoord2f(v, w + 0.25f);
+                glTexCoord2f(v, w + 0.0625f);
                 glVertex3f(x, y, 0.0f);
-                glTexCoord2f(v + 0.25f, w + 0.25f);
+                glTexCoord2f(v + 0.0625f, w + 0.0625f);
                 glVertex3f(x + width, y, 0.0f);
-                glTexCoord2f(v + 0.25f, w);
+                glTexCoord2f(v + 0.0625f, w);
                 glVertex3f(x + width, y + height, 0.0f);
                 glTexCoord2f(v, w);
                 glVertex3f(x, y + height, 0.0f);
@@ -678,15 +637,15 @@ public class Engine {
                         float width = 0.11f * tilesX;
                         float height = 0.11f * tilesY;
 
-                        float v = 0.25f * (int) item.getItemProperty("pic");
-                        float w = 0.25f * ((int) item.getItemProperty("pic") / 4);
+                        float v = 0.0625f * (int) item.getItemProperty("pic");
+                        float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
 
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                        glTexCoord2f(v, w + 0.25f);
+                        glTexCoord2f(v, w + 0.0625f);
                         glVertex3f(x, y, 0.0f);
-                        glTexCoord2f(v + 0.25f, w + 0.25f);
+                        glTexCoord2f(v + 0.0625f, w + 0.0625f);
                         glVertex3f(x + width, y, 0.0f);
-                        glTexCoord2f(v + 0.25f, w);
+                        glTexCoord2f(v + 0.0625f, w);
                         glVertex3f(x + width, y + height, 0.0f);
                         glTexCoord2f(v, w);
                         glVertex3f(x, y + height, 0.0f);
@@ -705,15 +664,15 @@ public class Engine {
 
             float size = 0.08f;
 
-            float v = 0.25f * (int) item.getItemProperty("pic");
-            float w = 0.25f * ((int) item.getItemProperty("pic") / 4);
+            float v = 0.0625f * (int) item.getItemProperty("pic");
+            float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(v, w + 0.25f);
+            glTexCoord2f(v, w + 0.0625f);
             glVertex3f(x - tilesX * size / 2, y - tilesX * size / 2, 0.0f);
-            glTexCoord2f(v + 0.25f, w + 0.25f);
+            glTexCoord2f(v + 0.0625f, w + 0.0625f);
             glVertex3f(x + tilesX * size / 2, y - tilesX * size / 2, 0.0f);
-            glTexCoord2f(v + 0.25f, w);
+            glTexCoord2f(v + 0.0625f, w);
             glVertex3f(x + tilesX * size / 2, y + tilesX * size / 2, 0.0f);
             glTexCoord2f(v, w);
             glVertex3f(x - tilesX * size / 2, y + tilesX * size / 2, 0.0f);
@@ -923,11 +882,18 @@ public class Engine {
         // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
+        tilemaps[0] = groundTiles;
         playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
+        tilemaps[1] = playerTiles;
         enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/enemy.png"), GL_NEAREST);
+        tilemaps[2] = enemyTiles;
         bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
+        tilemaps[3] = bulletTiles;
         itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
+        tilemaps[4] = itemTiles;
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
+        tilemaps[5] = inventoryPic;
+
         font[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
         font[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font_mono.png"), GL_NEAREST);
     }
@@ -974,5 +940,57 @@ public class Engine {
     public static void createDamageNumber(int damage, double x, double y) {
         DamageNumber d = new DamageNumber(damage, x, y, getTime());
         damageNumbers.add(d);
+    }
+
+    private void renderAnim(Animation animation, double x, double y, double dir) {
+        float picsizex = 0.0625f * animation.getPicsizex();
+        float picsizey = 0.0625f *  animation.getPicsizey();
+
+        float v = (animation.getStartpic() % 16) * picsizex;
+        float w = (animation.getStartpic() / 16) * picsizey;
+
+        glPushMatrix();
+        glTranslated(x + panX, y + panY, 0);
+        glRotated(dir / Math.PI * 180.0, 0, 0, 1);
+        glTranslated(-(x + panX), -(y + panY), 0);
+        glBegin(GL_QUADS);
+        glTexCoord2f(v, w + picsizey);
+        glVertex3f((float) x + panX - 1, (float) y + panY + 1, 0);
+        glTexCoord2f(v + picsizex, w + picsizey);
+        glVertex3f((float) x + panX + 1, (float) y + panY + 1, 0);
+        glTexCoord2f(v + picsizex, w);
+        glVertex3f((float) x + panX + 1, (float) y + panY - 1, 0);
+        glTexCoord2f(v, w);
+        glVertex3f((float) x + panX - 1, (float) y + panY - 1, 0);
+        glEnd();
+        glPopMatrix();
+
+//        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+//        glTexCoord2f(v, w + 0.25f);
+//        glVertex3f((float) x + panX - 0.75f, (float) y + panY - 0.75f, 0.0f);
+//        glTexCoord2f(v + 0.25f, w + 0.25f);
+//        glVertex3f((float) x + panX + 0.75f, (float) y + panY - 0.75f, 0.0f);
+//        glTexCoord2f(v + 0.25f, w);
+//        glVertex3f((float) x + panX + 0.75f, (float) y + panY + 0.75f, 0.0f);
+//        glTexCoord2f(v, w);
+//        glVertex3f((float) x + panX - 0.75f, (float) y + panY + 0.75f, 0.0f);
+//        glEnd(); // Zeichnen des QUADs fertig } }
+
+//                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY());
+//                glPushMatrix();
+//                glTranslated(c.getX() + panX, c.getY() + panY, 0);
+//                glRotated(c.getDir() / Math.PI * 180.0, 0, 0, 1);
+//                glTranslated(-(c.getX() + panX), -(c.getY() + panY), 0);
+//                glBegin(GL_QUADS);
+//                glTexCoord2f(0, 0);
+//                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
+//                glTexCoord2f(0.125f, 0);
+//                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
+//                glTexCoord2f(0.125f, 0.0625f * 2);
+//                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
+//                glTexCoord2f(0, 0.125f);
+//                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
+//                glEnd();
+//                glPopMatrix();
     }
 }
