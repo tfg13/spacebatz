@@ -63,7 +63,7 @@ public class Char {
         if (renderObject != null) {
             this.renderObject = renderObject;
         } else {
-            this.renderObject = new RenderObject(new Animation(0, 1, 1, 1));
+            this.renderObject = new RenderObject(new Animation(0, 1, 1, 1, 1));
         }
         this.x = 0;
         this.y = 0;

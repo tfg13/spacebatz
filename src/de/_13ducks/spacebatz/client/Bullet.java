@@ -25,7 +25,7 @@ public class Bullet extends Char {
     public final int bulletpic;
 
     public Bullet(int netID, int bulletpic) {
-        super(netID, new RenderObject(new Animation(bulletpic, 1, 1, 1)));
+        super(netID, new RenderObject(new Animation(bulletpic, 1, 1, 1, 1)));
         this.bulletpic = bulletpic;
     }
 }

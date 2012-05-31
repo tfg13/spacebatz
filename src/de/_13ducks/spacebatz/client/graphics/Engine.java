@@ -61,6 +61,7 @@ public class Engine {
     private Texture bulletTiles;
     private Texture itemTiles;
     private Texture inventoryPic;
+    private Texture fxTiles;
     private Texture font[] = new Texture[2];
     /**
      * Charset, zum Textoutput-Encoding
@@ -110,6 +111,10 @@ public class Engine {
      * Schadenszahlen über getroffenen Gegnern
      */
     private static LinkedList<DamageNumber> damageNumbers = new LinkedList<>();
+    /**
+     * FX-Effekte
+     */
+    private static LinkedList<Fx> fx = new LinkedList<>();
     /**
      * Konstante, die angibt wie lange Schadenszahlen sichtbar sind
      */
@@ -490,12 +495,12 @@ public class Engine {
                 if (enemy.getEnemytypeid() == 0) {
                     // roten Gegner einfärben
                     glColor3f(1f, .5f, .5f);
-                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
                     glColor3f(1f, 1f, 1f);
                 } else {
-                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
                 }
-                
+
             }
         }
 
@@ -503,7 +508,7 @@ public class Engine {
         playerTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Player) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
             }
         }
 
@@ -511,7 +516,19 @@ public class Engine {
         bulletTiles.bind();
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Bullet) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir());
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
+            }
+        }
+
+        // Fx-Effekte rendern
+        fxTiles.bind();
+        Iterator<Fx> itera = fx.iterator();
+        while (itera.hasNext()) {
+            Fx f = itera.next();
+            if (Client.frozenGametick > f.getStarttick() + f.getLifetime()) {
+                itera.remove();
+            } else {
+                renderAnim(f.getAnim(), f.getX(), f.getY(), 0.0, f.getStarttick());
             }
         }
 
@@ -893,6 +910,8 @@ public class Engine {
         tilemaps[4] = itemTiles;
         inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
         tilemaps[5] = inventoryPic;
+        fxTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/fx.png"), GL_NEAREST);
+        tilemaps[6] = fxTiles;
 
         font[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
         font[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font_mono.png"), GL_NEAREST);
@@ -942,12 +961,31 @@ public class Engine {
         damageNumbers.add(d);
     }
 
-    private void renderAnim(Animation animation, double x, double y, double dir) {
-        float picsizex = 0.0625f * animation.getPicsizex();
-        float picsizey = 0.0625f *  animation.getPicsizey();
+    /**
+     * Nimmt einen Fx-Effekt in die FX-Liste auf, so das er gerendert wird
+     * @param newfx der Fx-Effekt
+     */
+    public static void addFx(Fx newfx) {
+        fx.add(newfx);
+    }
 
-        float v = (animation.getStartpic() % 16) * picsizex;
-        float w = (animation.getStartpic() / 16) * picsizey;
+    /**
+     * Rendert eine Animation
+     * @param animation die Animation, die gerendert werden soll
+     * @param x Position
+     * @param y Position
+     * @param dir Richtung
+     * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig, wenn sie beim ersten Bild anfangen soll. Bei Einzelbild egal.
+     */
+    private void renderAnim(Animation animation, double x, double y, double dir, int starttick) {
+        float picsizex = 0.0625f * animation.getPicsizex();
+        float picsizey = 0.0625f * animation.getPicsizey();
+        
+        int currentpic = ((Client.frozenGametick - starttick) / animation.getPicduration()) % animation.getNumberofpics();
+        currentpic += animation.getStartpic();
+        
+        float v = (currentpic % (16 / animation.getPicsizex())) * picsizex;
+        float w = (currentpic / (16 / animation.getPicsizey())) * picsizey;
 
         glPushMatrix();
         glTranslated(x + panX, y + panY, 0);
@@ -964,33 +1002,5 @@ public class Engine {
         glVertex3f((float) x + panX - 1, (float) y + panY - 1, 0);
         glEnd();
         glPopMatrix();
-
-//        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-//        glTexCoord2f(v, w + 0.25f);
-//        glVertex3f((float) x + panX - 0.75f, (float) y + panY - 0.75f, 0.0f);
-//        glTexCoord2f(v + 0.25f, w + 0.25f);
-//        glVertex3f((float) x + panX + 0.75f, (float) y + panY - 0.75f, 0.0f);
-//        glTexCoord2f(v + 0.25f, w);
-//        glVertex3f((float) x + panX + 0.75f, (float) y + panY + 0.75f, 0.0f);
-//        glTexCoord2f(v, w);
-//        glVertex3f((float) x + panX - 0.75f, (float) y + panY + 0.75f, 0.0f);
-//        glEnd(); // Zeichnen des QUADs fertig } }
-
-//                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY());
-//                glPushMatrix();
-//                glTranslated(c.getX() + panX, c.getY() + panY, 0);
-//                glRotated(c.getDir() / Math.PI * 180.0, 0, 0, 1);
-//                glTranslated(-(c.getX() + panX), -(c.getY() + panY), 0);
-//                glBegin(GL_QUADS);
-//                glTexCoord2f(0, 0);
-//                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY + 1, 0);
-//                glTexCoord2f(0.125f, 0);
-//                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY + 1, 0);
-//                glTexCoord2f(0.125f, 0.0625f * 2);
-//                glVertex3f((float) c.getX() + panX + 1, (float) c.getY() + panY - 1, 0);
-//                glTexCoord2f(0, 0.125f);
-//                glVertex3f((float) c.getX() + panX - 1, (float) c.getY() + panY - 1, 0);
-//                glEnd();
-//                glPopMatrix();
     }
 }

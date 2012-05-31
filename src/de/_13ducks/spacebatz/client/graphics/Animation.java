@@ -24,6 +24,10 @@ public class Animation {
      * Anzahl der Einzelbilder der Animation
      */
     private int numberofpics;
+    /**
+     * Dauer der Einzelbilder der Animation in Ticks, egal bei Einzelbildern
+     */
+    private int picduration;
 
     /**
      * Konstruktor.
@@ -32,11 +36,12 @@ public class Animation {
      * @param picsizey Die Größe der einzelnen Animationsbilder (in Tilemap-Stücken)
      * @param numberofpics Anzahl der Einzelbilder der Animation
      */
-    public Animation(int startpic, int picsizex, int picsizey, int numberofpics) {
+    public Animation(int startpic, int picsizex, int picsizey, int numberofpics, int picduration) {
         this.startpic = startpic;
         this.picsizex = picsizex;
         this.picsizey = picsizey;
         this.numberofpics = numberofpics;
+        this.picduration = picduration;
     }
 
     /**
@@ -65,5 +70,12 @@ public class Animation {
      */
     public int getNumberofpics() {
         return numberofpics;
+    }
+
+    /**
+     * @return the picduration
+     */
+    public int getPicduration() {
+        return picduration;
     }
 }

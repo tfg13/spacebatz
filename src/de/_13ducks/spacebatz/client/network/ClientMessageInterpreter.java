@@ -14,8 +14,10 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Engine;
+import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
@@ -167,6 +169,9 @@ public class ClientMessageInterpreter {
                     Enemy e = (Enemy) Client.netIDMap.get(netIDVictim);
                     // Schadenszahl rendern:
                     Engine.createDamageNumber(damage, e.getX(), e.getY());
+                    // Test-Explosion:
+                    Animation anim = new Animation(0, 2, 2, 3, 4);
+                    Engine.addFx(new Fx(anim, e.getX(), e.getY(), 12));
                 }
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:
