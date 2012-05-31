@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
-import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import java.util.Random;
@@ -14,22 +13,16 @@ import java.util.Random;
  */
 public class FireBulletAbility extends Ability {
 
-    private double damage;
-    private double attackspeed;
-    private double range;
-    private int bulletpic;
-    private double bulletspeed;
-    private double spread;
-    private double explosionradius;
+    private static final long serialVersionUID = 1L;
 
     public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
-        this.damage = damage;
-        this.attackspeed = attackspeed;
-        this.range = range;
-        this.bulletpic = bulletpic;
-        this.bulletspeed = bulletspeed;
-        this.spread = spread;
-        this.explosionradius = explosionradius;
+        setBaseProperty("damage", damage);
+        setBaseProperty("attackspeed", attackspeed);
+        setBaseProperty("range", range);
+        setBaseProperty("bulletpic", bulletpic);
+        setBaseProperty("bulletspeed", bulletspeed);
+        setBaseProperty("spread", spread);
+        setBaseProperty("explosionradius", explosionradius);
     }
 
     @Override
@@ -39,6 +32,17 @@ public class FireBulletAbility extends Ability {
 
     @Override
     public void useInAngle(Char user, double angle) {
+
+        double damage = getProperty("damage");
+        double attackspeed = getProperty("attackspeed");
+        double range = getProperty("range");
+        int bulletpic = (int) getProperty("bulletpic");
+        double bulletspeed = getProperty("bulletspeed");
+        double spread = getProperty("spread");
+        double explosionradius = getProperty("explosionradius");
+
+
+
         if (user.attackCooldownTick <= Server.game.getTick()) {
             user.attackCooldownTick = (Server.game.getTick() + (int) attackspeed);
             Random random = new Random();

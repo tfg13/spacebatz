@@ -17,18 +17,18 @@ import java.util.ArrayList;
  */
 public class HitscanAbility extends Ability {
 
-    private double range;
-    private double attackspeed;
+    private static final long serialVersionUID = 1L;
     /**
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects = new ArrayList<>();
-
+    
     public HitscanAbility(double damage, double attackspeed, double range) {
         TrueDamageEffect damageeff = new TrueDamageEffect((int) damage);
         effects.add(damageeff);
-        this.range = range;
-        this.attackspeed = attackspeed;
+        setBaseProperty("range", range);
+        setBaseProperty("attackspeed", attackspeed);
+        
     }
 
     /**
@@ -38,18 +38,20 @@ public class HitscanAbility extends Ability {
      */
     @Override
     public void useInAngle(Char user, double angle) {
-
+        
+        double range = getProperty("range");
+        double attackspeed = getProperty("attackspeed");
         if (user.attackCooldownTick <= Server.game.getTick()) {
             user.attackCooldownTick = Server.game.getTick() + (int) attackspeed;
 
             // Schaden an Gegnern
             ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
-
+            
             for (Char character : charsHit) {
                 for (Effect effect : effects) {
                     effect.applyToChar((EffectCarrier) character);
                 }
-
+                
                 if (character.getProperty("hitpoints") <= 0) {
                     Server.game.netIDMap.remove(character.netID);
                     Server.entityMap.removeEntity(character);
@@ -66,7 +68,7 @@ public class HitscanAbility extends Ability {
             }
         }
     }
-
+    
     @Override
     public void useOnPosition(Char user,
             double x,
