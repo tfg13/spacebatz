@@ -33,15 +33,15 @@ public class ItemAttribute implements Serializable {
     /**
      * Die Bonuswerte, die dieses Attribut gibt. z.B. +10 Hitpoints
      */
-    PropertyList bonusStats;
+    public PropertyList bonusStats;
     /**
      * Die Eigenschaften des Items, z.B. Qualität
      */
-    PropertyList itemStats;
+    public PropertyList itemStats;
     /**
      * Die Eigenschaften der Waffe, z.B. Schaden
      */
-    PropertyList weaponStats;
+    public PropertyList weaponStats;
     /**
      * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
      */
@@ -82,50 +82,6 @@ public class ItemAttribute implements Serializable {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Setzt den Wert einer Bonus-Eigenschaft
-     *
-     * Beispiel: setBonusProperty("hitpoints",10) sorgt dafür dass das Attribut 10 hp dazugibt.
-     *
-     * @param name der Name der Eigenschaft, der gesetzt werden soll
-     * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
-     */
-    final public void setBonusProperty(String name, double value) {
-        bonusStats.setBaseProperty(name, value);
-    }
-
-    /**
-     * Setzt den Wert einer Weapon-Eigenschaft
-     *
-     * Beispiel: setWeaponProperty("damage",10) sorgt dafür dass das Attribut einer Waffe 10 Schaden dazugibt.
-     *
-     * @param name der Name der Eigenschaft, der gesetzt werden soll
-     * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
-     */
-    final public void setWeaponProperty(String name, double value) {
-        weaponStats.setBaseProperty(name, value);
-    }
-
-    /**
-     * Gibt den Wert einer Item-Eigenschaft zurück.
-     *
-     * @param name der Name der gesuchten Eigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
-     */
-    final public double getItemProperty(String name) {
-        return itemStats.getProperty(name);
-    }
-
-    /**
-     * Setzt den Wert einer Item-Eigenschaft.
-     *
-     * @param name der Name der Eigenschaft, der gesetzt werden soll
-     * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
-     */
-    final public void setItemProperty(String name, double value) {
-        itemStats.setBaseProperty(name, value);
     }
 
     /**
