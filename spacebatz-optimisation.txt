@@ -1,6 +1,0 @@
-UDP-Data receiving
-potential optimisation
-
-to determine which client sent a udp packet the address of the sender must be checked
-ALTERNATIVE:
-the server listens on several ports, each client gets its own udp port on the server
