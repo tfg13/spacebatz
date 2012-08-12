@@ -1,15 +1,16 @@
-- Gameplay
+- Gameplay:
   - Verhältnis ganz grob: Kampf(40%)/Bergbau(40%)/Bauen(20%)
-  - Tageszeiten? BloodMoon?
-  - Spawnverhalten/Häufigkeit?
-  - können Gebitete gesäubert werden, d.h. das Spawnen verhindern?
+  - Wieviel Zeit verbringt man mit Quests?
+  - Tageszeiten? 
+  - Gameplay abhängig von Tageszeit?
+  - können Gebitete gesichert werden, d.h. das Spawnen verhindern?
   - In der Basis kann man Waffen aus Materialien craften
 - Fortschritt:
-  - Serverweite Erfahrung für alle Spieler gleich
-  - Alle Spieler haben den selben Fortschritt , können ihre Fortschrittspunkte aber individuell verteilen
+  - Kampagne mit Quests
+  - Kampagne ist loose an Materialfortschritt gebunden, auf neue Materialien wird hingewiesen
+  - Alle Spieler auf einem Server haben den selben Fortschritt, können ihre Fortschrittspunkte aber individuell verteilen
   - Jeder hat sein eigenes Inventar, es gibt aber Truhen zum Teilen
-  - Materialfortschritt ist (lose) an die Kampagne gebunden
-- Spielercharakter?
+- Spielercharakter:
   - Umskillen und Umrüsten nur in der Basis und Außenposten möglich
   - Slots für LEER, SHIFT, STRG und Rechtsklickfähigkeiten
   - 3-6 Slots für Waffen und 3-6 Slots für Werkzeuge
@@ -19,53 +20,50 @@
   - Hitpoints, Schadensreduzierung, Energie für Fähigkeiten, Geschwindigkeit, 
   - Was für Items kann er verwenden?
   - Fähigkeiten: Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
-  - Passive Items?
-- Gegner?
+  - Was für Items gibt es ausser Waffen?
+- Kampfsytem/Gegner:
+  - Spawnverhalten/Häufigkeit?
   - was für Typen von Gegnern?
   - wie Verhalten sich Gegner?
   - was für Eigenschaften und Fähigkeiten haben Gegner?
   - Welche Belohnung gibt es für das besiegen? loot?
-- Planeten?
-  - Die Gruppe ist immer zusammen auf einem Planeten 
-  - Die Gruppe kann zusammen von Planet zu Planet fliegen
-  - Verschiedene Planeten bieten Verschiedene Ressourcen
-  - Auf einem Planeten kann es mehrere Etagen geben
-- Items?
-  - Was für Items, Rüstungen, Waffen?
-  - Was beeinflussen die Items?
-  - ZufallsItems?
-  - craften?
-  - Balancing?
-  - Munition?
-- Kampfsystem?
-  - Strafen, Dodgen?
+  - Welche Rolle spielt Strafen und Dodgen?
   - Wie laufen Kämpfe ab?
   - Wie können mehrere Spieler kooperativ zusammen kämpfen?
   - was für Taktiken sind gut/schlecht?
   - Warum kämpft man?
   - Muss man kämpfen?
-- Mapdesign + Umwelt?
+  - Wie oft gibt es Kämpfe?
+-  Items:
+  - Was für Items gibt es ausser Waffen?
+  - Was beeinflussen die Items?
+  - Gibt es Zufällige Items?
+  - Wie kommt man an Items? Craften, finden oder beides?
+  - Balancing bei ZufallsItems?
+  - Brauchen Waffen Munition?
+- Mapdesign + Umwelt:
+  - Die Gruppe ist immer zusammen auf einem Planeten 
+  - Die Gruppe kann zusammen von Planet zu Planet fliegen
+  - Verschiedene Planeten bieten Verschiedene Ressourcen
+  - Auf einem Planeten kann es mehrere Etagen geben
+  - Die Maps werden zufällig erzeugt
   - Gefahren? (Lava, Kakteen, ...)
   - Leitern/Türen/Aufzüge In andere Ebenen?
   - Abbaubare Sachen?
   - Hindernisse, unbegehbares Gelände?
-  - Wieviel Interaktion mit Umwelt?
-  - Ressourcen anpflanzen?
   - Creeps, neutrale Mobs?
-  - verändert sich die Umgebung von alleine? 
-- Story?
-  - Kampagne mit Quests
-  - Kampagne ist loose an Materialfortschritt gebunden, auf neue Materialien wird hingewiesen
-- NPCs?
+  - verändert sich die Umgebung von alleine (z.B. wachsende Pflanzen, Vulkane)? 
+- NPCs:
   - Händler
   - Guide?
-- Hüte?
+- Hüte/Individuelle Charaktergestaltung:
+  - Möglichkeit eigene Skins zu erstellen a la Minecraft?
 - Achievments?
-- Lernkurve?
+- Lernkurve:
   - "Easy to learn, difficult to master"?
   - Tutorial?
   - Integriertes wiki? (das was man in Terraria gebraucht hätte)
- Schwierigkeit?
+ Schwierigkeit:
   - Was motiviert den Spieler?
   - Todeskonsequenz?
   - Hardcore-Modus?
@@ -73,8 +71,8 @@
   - mehrere Schwierigkeitsgrade?
   - frei wählbar?
   - einzeln oder für party?
-- Steuerung?
-  - ist die Bewegung relativ zum Mauszeiger oder global (also 8 richtungen)? Auf keinen Fall beide!
+- Steuerung:
+  - ist die Bewegung relativ zum Mauszeiger oder global (also 8 richtungen)? Auf keinen Fall beides!
   - Kampf- und Baumodus, Taste zum wechseln
   - Mausrad wechselt Werkzeuge/Waffen
   - Klick = Waffe/Werkzeug einsetzen
@@ -83,19 +81,24 @@
   - STRG und LEER für Defensivfähigkeit
   - Maus zielt
   - 3-6 Waffen
-  - Sichtweite?
-  - Spieler immer zentriert?
+  - Wie weit kann man sehen?
+  - Spieler immer zentriert oder teilweise zentriert?
   - Was wird im HUD gezeigt?
-  - was für menüs gibt es?
- - Ansicht?
+  - Was für menüs gibt es (z.B. Crafting-Menü)?
+ - Grafik:
+  - verschiedene Auflösungen?
   - Animationen? FPS? Detailgrad, wieviele Richtungen?
-  - Filter?
-- Setting?
+- Setting:
   - futuristisch?
+  - evtl. Shader/Filter verwenden?
   - Roboter?
-- Tools und Workflow?
+- Tools und Workflow:
+  - Was kann der Debugmodus alles?
+  - Wieviel investiert man in den Debugmodus?
   - Ingame-Charakter/Item-Editor?
   - Ingame-On-the-fly-Animationstesten?
-- Workflow Management?
+- Workflow Management:
   - Arbeitsteilung?
   - Kommunikation?
+  - Agile Development?
+  - Meilensteine?
