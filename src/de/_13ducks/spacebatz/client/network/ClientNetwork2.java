@@ -69,6 +69,7 @@ public class ClientNetwork2 {
 		    } catch (SocketTimeoutException timeoutEx) {
 			// Timeout, ging nicht, Ende.
 			socket.close();
+			System.out.println("Connecting failed. Request timed out.");
 			return;// false;
 		    }
 		    // Antwort auswerten (erstes Bit):
@@ -85,6 +86,7 @@ public class ClientNetwork2 {
 			return;// false;
 		    }
 		} catch (IOException ex) {
+		    System.out.println("Connecting failed. IOException: " + ex.getLocalizedMessage() + " reason: " + ex.getCause());
 		    socket.close();
 		    return;// false;
 		}
