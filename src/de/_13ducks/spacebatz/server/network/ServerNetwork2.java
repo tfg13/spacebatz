@@ -54,6 +54,7 @@ public class ServerNetwork2 {
 	} catch (SocketException ex) {
 	    System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
 	    ex.printStackTrace();
+	    return;
 	}
 	// Listener-Thread starten
 	thread = new Thread(new Runnable() {
