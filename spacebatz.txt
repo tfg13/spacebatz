@@ -1,9 +1,8 @@
 - Gameplay:
   - Verhältnis ganz grob: Kampf(40%)/Bergbau(40%)/Bauen(20%)
-  - Wieviel Zeit verbringt man mit Quests?
-  - Tageszeiten? 
-  - Gameplay abhängig von Tageszeit?
-  - können Gebitete gesichert werden, d.h. das Spawnen verhindern?
+  - Der Spieler entscheidet, wieviel Zeit er mit Quests verbringt.
+  - Es gibt Tageszeiten, die das Gameplay beeinflussen (z.B. mehr Mobs in der Nacht).
+  - Gebiete können (eingeschränkt) gegen das Spawnen von Monstern abgesichert werden, z.B. um einen Ausenposten, nicht aber um ein Quest herum.
   - In der Basis kann man Waffen aus Materialien craften
 - Fortschritt:
   - Kampagne mit Quests
@@ -18,13 +17,29 @@
   - Skilltree gibt aktive und passive Fähigkeiten
   - Welche Eigenschaften hat der Spielercharakter?
   - Hitpoints, Schadensreduzierung, Energie für Fähigkeiten, Geschwindigkeit, 
-  - Was für Items kann er verwenden?
-  - Fähigkeiten: Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
-  - Was für Items gibt es ausser Waffen?
+  - Es gibt Slots für spezielle Items (Hüte, Rüstung) und welche für Allgemeines (Ringe, Amulette, ...) 
+  - Fähigkeiten(aktiv): Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
+  - Fähigkeiten(passiv): schneller laufen, graben, mehr Schaden, mehr Hitpoints, ...
 - Kampfsytem/Gegner:
-  - Spawnverhalten/Häufigkeit?
-  - was für Typen von Gegnern?
-  - wie Verhalten sich Gegner?
+  - Kleiner nerviger nah/fernkampfgegner, der sich immer wegportet wenn er getroffen wird. kommt nur an einer Stelle der Kampagne vor.
+  - ACHTUNG diese Stichpunkte müssen teilweie noch überarbeitet werden!
+  - In bestimmten Zonen der Map spawnen Gegner, wenn die Zone nicht gesichert ist. Frequenz und Typ wird für jede Zone festgelegt.
+  - Eine Zone muss sich, nachdem sie viele Mobs gespawnt hat, wieder erholen. Der Spieler wird nicht andauernd bestürmt.
+  - Gegner spawnen ausserhalb der Sichtweite oder kriechen aus der Erde/Höhlen/Löchern.
+  - Durch Sichern kann das Spawnen eingeschränkt oder sogar verhindert werden.
+  - Die Tageszeit kann die Spawnrate beeinflussen.
+  - Es gibt bis zu 42 verschiedene Gegnertypen, die unterschiedlich aussehen /sich verhalten / stark sind
+  - In bestimmten Zonen spawnen bestimmte Gegnertypen, es spawnt nicht auf allen Planeten das gleiche
+  - Gegnerverhalten: 1. Der Kamikaze: rennt rücksichtslos Luftlinie zum Spieler
+  - Gegnerverhalten: 2. Der Fernkämpfer: schießt auf den Spieler, wechselt zu Nahkampf wenn der Spieler zu nahe kommt
+  - Gegnerverhalten: 3. Der Kiter: Schießt auf den Spieler, rennt weg wenn der Spieler ihm zu nahe kommt
+  - Gegnerverhalten: 4. Nahkämpfer: rennt mit Wegfindung zum Spieler und greift diesen an. Flieht, wenn er verletzt ist.
+  - Gegnerverhalten: 5. Artillerie: langsam/unbeweglich, vernichtender, ausweichbarer Angriff
+  - Gegnerverhalten: 6. Beschwörer: beschwöhrt andere Mobs, rennt weg wenn er getroffen wird
+  - Gegnerverhalten: 7. Laurer: Lauert schwer sichtbar im Boden für einen Überraschungsangriff
+  - Gegnerverhalten: 8. Flieger: fliegt, keine Kollision, erst angrefibar wenn er landet
+  - Gegnerverhalten: 9. Tank: steckt viel ein, regeneriert sich, kann sich vor Schaden schützen. Kämpft bevorzugt mit anderen Mobs zusammen.
+  - Gegnerverhaltet: 10. BOSS: Mächtigere Version eines Gegners. Greift den spieler direktan, kein Rückzug. Wird mächtiger wenn er Energie verliert.
   - was für Eigenschaften und Fähigkeiten haben Gegner?
   - Welche Belohnung gibt es für das besiegen? loot?
   - Welche Rolle spielt Strafen und Dodgen?
@@ -32,31 +47,33 @@
   - Wie können mehrere Spieler kooperativ zusammen kämpfen?
   - was für Taktiken sind gut/schlecht?
   - Warum kämpft man?
-  - Muss man kämpfen?
+  - Muss man kämpfen? Wie kann man Kämpfe vermeiden?
   - Wie oft gibt es Kämpfe?
 -  Items:
-  - Was für Items gibt es ausser Waffen?
-  - Was beeinflussen die Items?
+  - Die Items geben kosmetische und (nervtötende, nicht abschaltbare) akustische Effekte
+  - Die Items geben kleinere Boni auf Stats und Fähigkeiten
   - Gibt es Zufällige Items?
   - Wie kommt man an Items? Craften, finden oder beides?
   - Balancing bei ZufallsItems?
   - Brauchen Waffen Munition?
 - Mapdesign + Umwelt:
-  - Die Gruppe ist immer zusammen auf einem Planeten 
-  - Die Gruppe kann zusammen von Planet zu Planet fliegen
+  - Die Gruppe ist immer zusammen auf einem Planeten des aktuellen Sonnensystems
+  - Die Gruppe kann innerhalb eines Systems zusammen von Planet zu Planet fliegen
+  - Mit der entsprechenden Tech/Kampagnen-Stufe kann die Gruppe ins nächste Sonnensystem.
   - Verschiedene Planeten bieten Verschiedene Ressourcen
   - Auf einem Planeten kann es mehrere Etagen geben
-  - Die Maps werden zufällig erzeugt
+  - Die Maps/Planeten werden zufällig erzeugt
   - Gefahren? (Lava, Kakteen, ...)
-  - Leitern/Türen/Aufzüge In andere Ebenen?
+  - Leitern/Türen/Aufzüge führen in andere Ebenen / In Gebäudeinnenlevel.
   - Abbaubare Sachen?
   - Hindernisse, unbegehbares Gelände?
-  - Creeps, neutrale Mobs?
+  - Neutrale Mobs?
   - verändert sich die Umgebung von alleine (z.B. wachsende Pflanzen, Vulkane)? 
 - NPCs:
   - Händler
   - Guide?
 - Hüte/Individuelle Charaktergestaltung:
+  - Items können das Charakteraussehen verändern.
   - Möglichkeit eigene Skins zu erstellen a la Minecraft?
 - Achievments?
 - Lernkurve:
@@ -84,7 +101,7 @@
   - Wie weit kann man sehen?
   - Spieler immer zentriert oder teilweise zentriert?
   - Was wird im HUD gezeigt?
-  - Was für menüs gibt es (z.B. Crafting-Menü)?
+  - Was für menüs gibt es (z.B. Crafting-Menü, Skiltree-Menü)?
  - Grafik:
   - verschiedene Auflösungen?
   - Animationen? FPS? Detailgrad, wieviele Richtungen?
@@ -93,6 +110,7 @@
   - evtl. Shader/Filter verwenden?
   - Roboter?
 - Tools und Workflow:
+  - Was brauchen wir für Tools?
   - Was kann der Debugmodus alles?
   - Wieviel investiert man in den Debugmodus?
   - Ingame-Charakter/Item-Editor?
