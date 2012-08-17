@@ -77,7 +77,7 @@ class InputPacket implements Comparable<InputPacket> {
 	int nextCmdIndex = 5;
 	while (nextCmdIndex < rawData.length) {
 	    int cmdID = rawData[nextCmdIndex];
-	    ServerNetCmd cmd = ServerNetwork2.cmdMap.get(cmdID);
+	    CTSCommand cmd = ServerNetwork2.cmdMap[cmdID];
 	    if (cmd == null) {
 		System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
 		continue;

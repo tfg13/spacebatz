@@ -9,7 +9,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -31,7 +30,7 @@ public class ServerNetwork2 {
      * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
      * Enthält sowohl interne, als auch externe Kommandos.
      */
-    static HashMap<Integer, ServerNetCmd> cmdMap = new HashMap<>();
+    static CTSCommand[] cmdMap = new CTSCommand[256];
     /**
      * Der Index des Datenpakets, dass der Server als nächstes versendet.
      */
@@ -58,7 +57,6 @@ public class ServerNetwork2 {
 	}
 	// Listener-Thread starten
 	thread = new Thread(new Runnable() {
-
 	    @Override
 	    public void run() {
 		try {
@@ -115,6 +113,30 @@ public class ServerNetwork2 {
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
+    }
+
+    /**
+     * Registriert einen neuen Befehl beim Netzwerksystem.
+     * Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet.
+     * Die gewählte ID muss im erlaubten Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
+     *
+     * @param cmdID die BefehlsID
+     * @param cmd der Befehl selber
+     */
+    public void registerServerNetCmd(byte cmdID, CTSCommand cmd) {
+	if (cmd == null) {
+	    throw new IllegalArgumentException("ServerNetCmd must not be null!");
+	}
+	// cmdID: Range prüfen:
+	if (cmdID <= 0 || cmdID > 127) {
+	    throw new IllegalArgumentException("Illegal cmdID!");
+	}
+	// Override?
+	if (cmdMap[cmdID] != null) {
+	    System.out.println("INFO: NET: Overriding cmd " + cmdID);
+	}
+	cmdMap[cmdID] = cmd;
+	System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
     }
 
     /**

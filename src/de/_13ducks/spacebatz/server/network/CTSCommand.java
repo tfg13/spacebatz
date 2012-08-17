@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.server.data.Client;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public abstract class ServerNetCmd {
+public abstract class CTSCommand {
 
     /**
      * Führt diesen Serverbefehl aus.
