@@ -2,8 +2,11 @@
   - Verhältnis ganz grob: Kampf(40%)/Bergbau(40%)/Bauen(20%)
   - Der Spieler entscheidet, wieviel Zeit er mit Quests verbringt.
   - Es gibt Tageszeiten, die das Gameplay beeinflussen (z.B. mehr Mobs in der Nacht).
-  - Gebiete können (eingeschränkt) gegen das Spawnen von Monstern abgesichert werden, z.B. um einen Ausenposten, nicht aber um ein Quest herum.
-  - In der Basis kann man Waffen aus Materialien craften
+  - In der Basis kann man Items aus Materialien und Zutaten craften.
+  - In der Basis kann man Handeln.
+  - Materialien gewinnt man durch Bergbau.
+  - Für beessere Materialien braucht man besseres Werkzeug. 
+  - Wie erreichen wir verschiedene Spielstile, die alle Spaß machen?
 - Fortschritt:
   - Kampagne mit Quests
   - Kampagne ist loose an Materialfortschritt gebunden, auf neue Materialien wird hingewiesen
@@ -13,22 +16,24 @@
   - Umskillen und Umrüsten nur in der Basis und Außenposten möglich
   - Slots für LEER, SHIFT, STRG und Rechtsklickfähigkeiten
   - 3-6 Slots für Waffen und 3-6 Slots für Werkzeuge
-  - Skilltree in den die Erfahrungspunkte verteilt werden
+  - Skilltree in den die Fortschrittspunkte verteilt werden
   - Skilltree gibt aktive und passive Fähigkeiten
   - Welche Eigenschaften hat der Spielercharakter?
   - Hitpoints, Schadensreduzierung, Energie für Fähigkeiten, Geschwindigkeit, 
   - Es gibt Slots für spezielle Items (Hüte, Rüstung) und welche für Allgemeines (Ringe, Amulette, ...) 
-  - Fähigkeiten(aktiv): Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
-  - Fähigkeiten(passiv): schneller laufen, graben, mehr Schaden, mehr Hitpoints, ...
+  - Beispielfähigkeiten(aktiv): Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
+  - Beispielfähigkeiten(passiv): schneller laufen, graben, mehr Schaden, mehr Hitpoints, ...
 - Kampfsytem/Gegner:
   - Kleiner nerviger nah/fernkampfgegner, der sich immer wegportet wenn er getroffen wird. kommt nur an einer Stelle der Kampagne vor.
   - ACHTUNG diese Stichpunkte müssen teilweie noch überarbeitet werden!
   - In bestimmten Zonen der Map spawnen Gegner, wenn die Zone nicht gesichert ist. Frequenz und Typ wird für jede Zone festgelegt.
+  - Gegner spawnen Einzeln oder in Gruppen
   - Eine Zone muss sich, nachdem sie viele Mobs gespawnt hat, wieder erholen. Der Spieler wird nicht andauernd bestürmt.
   - Gegner spawnen ausserhalb der Sichtweite oder kriechen aus der Erde/Höhlen/Löchern.
   - Durch Sichern kann das Spawnen eingeschränkt oder sogar verhindert werden.
   - Die Tageszeit kann die Spawnrate beeinflussen.
   - Es gibt bis zu 42 verschiedene Gegnertypen, die unterschiedlich aussehen /sich verhalten / stark sind
+  - Es gibt normale Mobs, Minibosse und Bosse.
   - In bestimmten Zonen spawnen bestimmte Gegnertypen, es spawnt nicht auf allen Planeten das gleiche
   - Gegnerverhalten: 1. Der Kamikaze: rennt rücksichtslos Luftlinie zum Spieler
   - Gegnerverhalten: 2. Der Fernkämpfer: schießt auf den Spieler, wechselt zu Nahkampf wenn der Spieler zu nahe kommt
@@ -39,19 +44,17 @@
   - Gegnerverhalten: 7. Laurer: Lauert schwer sichtbar im Boden für einen Überraschungsangriff
   - Gegnerverhalten: 8. Flieger: fliegt, keine Kollision, erst angrefibar wenn er landet
   - Gegnerverhalten: 9. Tank: steckt viel ein, regeneriert sich, kann sich vor Schaden schützen. Kämpft bevorzugt mit anderen Mobs zusammen.
-  - Gegnerverhaltet: 10. BOSS: Mächtigere Version eines Gegners. Greift den spieler direktan, kein Rückzug. Wird mächtiger wenn er Energie verliert.
-  - was für Eigenschaften und Fähigkeiten haben Gegner?
-  - Welche Belohnung gibt es für das besiegen? loot?
-  - Welche Rolle spielt Strafen und Dodgen?
+  - Gegnerverhaltet: 10. BOSS: Mächtigere Version eines Gegners. Greift den spieler direkt an, kein Rückzug. Wird mächtiger wenn er Energie verliert.
+  - Gegner haben die selben Stats wie Spieler.
+  - Crafting-Zutaten werden von Gegnern gedroppt oder in Kisten gefunden.
+  - Bosse droppen Zufallsitems.
+  - Loot wird unter allen auf dem Schlöachtfeld anwesenden Spielern gleichmässig und fair verteilt.
   - Wie laufen Kämpfe ab?
   - Wie können mehrere Spieler kooperativ zusammen kämpfen?
-  - was für Taktiken sind gut/schlecht?
-  - Warum kämpft man?
   - Muss man kämpfen? Wie kann man Kämpfe vermeiden?
-  - Wie oft gibt es Kämpfe?
 -  Items:
-  - Die Items geben kosmetische und (nervtötende, nicht abschaltbare) akustische Effekte
-  - Die Items geben kleinere Boni auf Stats und Fähigkeiten
+  - Die Items geben kosmetische und (nervtötende, nicht abschaltbare) akustische Effekte.
+  - Die Items geben kleinere Boni auf Stats und Fähigkeiten, die aber nicht Spielentscheidend sind.
   - Gibt es Zufällige Items?
   - Wie kommt man an Items? Craften, finden oder beides?
   - Balancing bei ZufallsItems?
@@ -71,17 +74,15 @@
   - verändert sich die Umgebung von alleine (z.B. wachsende Pflanzen, Vulkane)? 
 - NPCs:
   - Händler
-  - Guide?
 - Hüte/Individuelle Charaktergestaltung:
   - Items können das Charakteraussehen verändern.
   - Möglichkeit eigene Skins zu erstellen a la Minecraft?
 - Achievments?
 - Lernkurve:
-  - "Easy to learn, difficult to master"?
+  - Selbsterklärendes Gameplay!
   - Tutorial?
   - Integriertes wiki? (das was man in Terraria gebraucht hätte)
  Schwierigkeit:
-  - Was motiviert den Spieler?
   - Todeskonsequenz?
   - Hardcore-Modus?
   - Items verlieren?
