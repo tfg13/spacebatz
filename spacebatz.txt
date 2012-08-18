@@ -1,10 +1,12 @@
 - Gameplay:
   - Verhältnis ganz grob: Kampf(40%)/Bergbau(40%)/Bauen(20%)
-  - Wieviel Zeit verbringt man mit Quests?
-  - Tageszeiten? 
-  - Gameplay abhängig von Tageszeit?
-  - können Gebitete gesichert werden, d.h. das Spawnen verhindern?
-  - In der Basis kann man Waffen aus Materialien craften
+  - Der Spieler entscheidet, wieviel Zeit er mit Quests verbringt.
+  - Es gibt Tageszeiten, die das Gameplay beeinflussen (z.B. mehr Mobs in der Nacht).
+  - In der Basis kann man Items aus Materialien und Zutaten craften. (Items haben Zuffalseffekte)
+  - In der Basis kann man Handeln.
+  - Materialien gewinnt man durch Bergbau.
+  - Für beessere Materialien braucht man besseres Werkzeug. 
+  - Wie erreichen wir verschiedene Spielstile, die alle Spaß machen?
 - Fortschritt:
   - Kampagne mit Quests
   - Kampagne ist loose an Materialfortschritt gebunden, auf neue Materialien wird hingewiesen
@@ -14,63 +16,69 @@
   - Umskillen und Umrüsten nur in der Basis und Außenposten möglich
   - Slots für LEER, SHIFT, STRG und Rechtsklickfähigkeiten
   - 3-6 Slots für Waffen und 3-6 Slots für Werkzeuge
-  - Skilltree in den die Erfahrungspunkte verteilt werden
+  - Skilltree in den die Fortschrittspunkte verteilt werden
   - Skilltree gibt aktive und passive Fähigkeiten
-  - Welche Eigenschaften hat der Spielercharakter?
   - Hitpoints, Schadensreduzierung, Energie für Fähigkeiten, Geschwindigkeit, 
-  - Was für Items kann er verwenden?
-  - Fähigkeiten: Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
-  - Was für Items gibt es ausser Waffen?
+  - Es gibt Slots für spezielle Items (Hüte, Rüstung) und welche für Allgemeines (Ringe, Amulette, ...) 
+  - Beispielfähigkeiten(aktiv): Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
+  - Beispielfähigkeiten(passiv): schneller laufen, graben, mehr Schaden, mehr Hitpoints, ...
+  - Wie stark unterscheiden sich die Klassen? Ist der Supporter alleine schwächer als der DamageDealer?
 - Kampfsytem/Gegner:
-  - Spawnverhalten/Häufigkeit?
-  - was für Typen von Gegnern?
-  - wie Verhalten sich Gegner?
-  - was für Eigenschaften und Fähigkeiten haben Gegner?
-  - Welche Belohnung gibt es für das besiegen? loot?
-  - Welche Rolle spielt Strafen und Dodgen?
-  - Wie laufen Kämpfe ab?
-  - Wie können mehrere Spieler kooperativ zusammen kämpfen?
-  - was für Taktiken sind gut/schlecht?
-  - Warum kämpft man?
-  - Muss man kämpfen?
-  - Wie oft gibt es Kämpfe?
+  - Gegner werden beim Maperzeugen gespawnt.
+  - Gegner werden nachgespawnt abhängig von Spielernähe, Gegnerzahl, Gebietseinstellungen, Sicherungsmassnahmen (Fackeln). 
+  - Kleiner nerviger nah/fernkampfgegner, der sich immer wegportet wenn er getroffen wird. kommt nur an einer Stelle der Kampagne vor.
+  - In bestimmten Zonen der Map spawnen Gegner, wenn die Zone nicht gesichert ist. Frequenz und Typ wird für jede Zone festgelegt.
+  - Gegner spawnen Einzeln oder in Gruppen
+  - Eine Zone muss sich, nachdem sie viele Mobs gespawnt hat, wieder erholen. Der Spieler wird nicht andauernd bestürmt.
+  - Durch Sichern kann das Spawnen eingeschränkt oder sogar verhindert werden.
+  - Die Tageszeit kann die Spawnrate beeinflussen.
+  - Es gibt bis zu 42 verschiedene Gegnertypen, die unterschiedlich aussehen /sich verhalten / stark sind
+  - Es gibt normale Mobs, Minibosse und Bosse.
+  - In bestimmten Zonen spawnen bestimmte Gegnertypen, es spawnt nicht auf allen Planeten das gleiche
+  - Gegnerverhalten: 1. Der Kamikaze: rennt rücksichtslos Luftlinie zum Spieler
+  - Gegnerverhalten: 2. Der Fernkämpfer: schießt auf den Spieler, wechselt zu Nahkampf wenn der Spieler zu nahe kommt
+  - Gegnerverhalten: 3. Der Kiter: Schießt auf den Spieler, rennt weg wenn der Spieler ihm zu nahe kommt
+  - Gegnerverhalten: 4. Nahkämpfer: rennt mit Wegfindung zum Spieler und greift diesen an. Flieht, wenn er verletzt ist.
+  - Gegnerverhalten: 5. Artillerie: langsam/unbeweglich, vernichtender, ausweichbarer Angriff
+  - Gegnerverhalten: 6. Beschwörer: beschwöhrt andere Mobs, rennt weg wenn er getroffen wird
+  - Gegnerverhalten: 7. Laurer: Lauert schwer sichtbar im Boden für einen Überraschungsangriff
+  - Gegnerverhalten: 8. Flieger: fliegt, keine Kollision, erst angrefibar wenn er landet
+  - Gegnerverhalten: 9. Tank: steckt viel ein, regeneriert sich, kann sich vor Schaden schützen. Kämpft bevorzugt mit anderen Mobs zusammen.
+  - Gegnerverhaltet: 10. BOSS: Mächtigere Version eines Gegners. Greift den spieler direkt an, kein Rückzug. Wird mächtiger wenn er Energie verliert.
+  - Gegner haben die selben Stats wie Spieler.
+  - Crafting-Zutaten werden von Gegnern gedroppt oder in Kisten gefunden.
+  - Bosse droppen Zufallsitems (randomized Attribute).
+  - Alle Spieler bekommen gleichzeitig das gleiche Loot.
+  - Neue Spieler fangen mit Startitems an, die anderen Spieler sollen ihm Sachen geben.
+  - Gegner kommen von ausser/innerhalb der Sichtweite und greifen an, Gegner greifen an wenn sie den Spieler sehen.   
 -  Items:
-  - Was für Items gibt es ausser Waffen?
-  - Was beeinflussen die Items?
-  - Gibt es Zufällige Items?
-  - Wie kommt man an Items? Craften, finden oder beides?
-  - Balancing bei ZufallsItems?
-  - Brauchen Waffen Munition?
+  - Die Items geben kosmetische und (nervtötende, nicht abschaltbare) akustische Effekte.
+  - Die Items geben kleinere Boni auf Stats und Fähigkeiten, die aber nicht Spielentscheidend sind.
+  - Gibt es Zufällige Items.
 - Mapdesign + Umwelt:
-  - Die Gruppe ist immer zusammen auf einem Planeten 
-  - Die Gruppe kann zusammen von Planet zu Planet fliegen
+  - Die Gruppe ist immer zusammen auf einem Planeten des aktuellen Sonnensystems
+  - Die Gruppe kann innerhalb eines Systems zusammen von Planet zu Planet fliegen
+  - Mit der entsprechenden Tech/Kampagnen-Stufe kann die Gruppe ins nächste Sonnensystem.
   - Verschiedene Planeten bieten Verschiedene Ressourcen
   - Auf einem Planeten kann es mehrere Etagen geben
-  - Die Maps werden zufällig erzeugt
+  - Die Maps/Planeten werden zufällig erzeugt
   - Gefahren? (Lava, Kakteen, ...)
-  - Leitern/Türen/Aufzüge In andere Ebenen?
-  - Abbaubare Sachen?
-  - Hindernisse, unbegehbares Gelände?
-  - Creeps, neutrale Mobs?
+  - Leitern/Türen/Aufzüge führen in andere Ebenen / In Gebäudeinnenlevel.
+  - Abbaubare Mineralien. 
+  - Pro abgebauten Block gibt es eine Einheit pro Spieler.
   - verändert sich die Umgebung von alleine (z.B. wachsende Pflanzen, Vulkane)? 
-- NPCs:
-  - Händler
-  - Guide?
+  - Handel in der Basis
 - Hüte/Individuelle Charaktergestaltung:
-  - Möglichkeit eigene Skins zu erstellen a la Minecraft?
-- Achievments?
+  - Unterschiedliches Aussehen nach Klasse und Skillung
+  - Einfärben möglich
+  - Items können das Charakteraussehen verändern.
 - Lernkurve:
-  - "Easy to learn, difficult to master"?
-  - Tutorial?
-  - Integriertes wiki? (das was man in Terraria gebraucht hätte)
+  - Selbsterklärendes Gameplay!
  Schwierigkeit:
-  - Was motiviert den Spieler?
   - Todeskonsequenz?
-  - Hardcore-Modus?
-  - Items verlieren?
-  - mehrere Schwierigkeitsgrade?
-  - frei wählbar?
-  - einzeln oder für party?
+  - Man kann sich innerhalb eines kleinen Zeitraums von anderen Reparieren lassen (limitiert)
+  - Respawn in der Basis kostet Geld.
+  - Hardcore-Modus.
 - Steuerung:
   - ist die Bewegung relativ zum Mauszeiger oder global (also 8 richtungen)? Auf keinen Fall beides!
   - Kampf- und Baumodus, Taste zum wechseln
@@ -81,24 +89,20 @@
   - STRG und LEER für Defensivfähigkeit
   - Maus zielt
   - 3-6 Waffen
-  - Wie weit kann man sehen?
-  - Spieler immer zentriert oder teilweise zentriert?
-  - Was wird im HUD gezeigt?
-  - Was für menüs gibt es (z.B. Crafting-Menü)?
+  - Sichtweite: 8 Roverlängen nach oben, 14 zur Seite
+  - geteilte Minimap für alle Spieler, anfanges verdeckt.
+  - Rover-Texturgröße 64*64
+  - Spieler immer zentriert, beim Anfahren wird die Kamera leicht nachgezogen.
+  - HUD? Minimap? Lebensenergie?
+  - Was für menüs gibt es (z.B. Crafting-Menü, Skiltree-Menü)?
  - Grafik:
-  - verschiedene Auflösungen?
-  - Animationen? FPS? Detailgrad, wieviele Richtungen?
+  - 4:3 Auflösungen werden am Rand abgeschnitten oder gestreckt.
+  - 30 FPS für Animationen.
+  - Spuren hinter beweglichen Fahrzeugen
 - Setting:
-  - futuristisch?
-  - evtl. Shader/Filter verwenden?
-  - Roboter?
-- Tools und Workflow:
-  - Was kann der Debugmodus alles?
-  - Wieviel investiert man in den Debugmodus?
-  - Ingame-Charakter/Item-Editor?
-  - Ingame-On-the-fly-Animationstesten?
+  - futuristisch.
+  - Roboter, aliens
 - Workflow Management:
-  - Arbeitsteilung?
-  - Kommunikation?
-  - Agile Development?
-  - Meilensteine?
+  - Sprints mit jeweils 10-20 abschätzbar Unteraufgaben
+  - Besprechung: was wurde gemacht, was nicht, warum? Was wird als nächstes gemacht?
+  - github-Bugverwaltung
