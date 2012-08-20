@@ -15,12 +15,14 @@
 - Spielercharakter:
   - Umskillen und Umrüsten nur in der Basis und Außenposten möglich
   - Slots für LEER, SHIFT, STRG und Rechtsklickfähigkeiten
-  - 3-6 Slots für Waffen und 3-6 Slots für Werkzeuge
+  - 3-6 Slots für Waffen und 3-6 Slots für Werkzeuge(Bohrer, TNT, Hammer zum Bauen: Dispenser, Kiste, Mauer, Tür, Boden, Sentry die kämpft und einen antispawnradius hat.)
+  - Bohrer ind Items die gecraftet, gefunden oder gekauft werden können und bessere BOhrer können schneller bohren und härtere MAterialien durchbohren.
   - Skilltree in den die Fortschrittspunkte verteilt werden
   - Skilltree gibt aktive und passive Fähigkeiten
-  - Hitpoints, Schadensreduzierung, Energie für Fähigkeiten, Geschwindigkeit, 
-  - Es gibt Slots für spezielle Items (Hüte, Rüstung) und welche für Allgemeines (Ringe, Amulette, ...) 
-  - Beispielfähigkeiten(aktiv): Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
+  - Hitpoints, Schadensreduzierung, Energie für Fähigkeiten, Geschwindigkeit 
+  - Es gibt einen kosmetische Itemslot der nur das Aussehen verändert.
+  - Es gibt RüstungsItems (Specialslot, Energieslot, Räder, 3 Rüstungsslots)
+  - Beispielfähigkeiten(aktiv): Grappling Hook, Dash, Schweben, Teleport, Heilen, Berserk, Schockwelle, Schutzschild, Licht, Pet beschwören
   - Beispielfähigkeiten(passiv): schneller laufen, graben, mehr Schaden, mehr Hitpoints, ...
   - Wie stark unterscheiden sich die Klassen? Ist der Supporter alleine schwächer als der DamageDealer?
 - Kampfsytem/Gegner:
@@ -53,8 +55,26 @@
   - Gegner kommen von ausser/innerhalb der Sichtweite und greifen an, Gegner greifen an wenn sie den Spieler sehen.   
 -  Items:
   - Die Items geben kosmetische und (nervtötende, nicht abschaltbare) akustische Effekte.
-  - Die Items geben kleinere Boni auf Stats und Fähigkeiten, die aber nicht Spielentscheidend sind.
+  - Die Items geben Boni auf Stats und Fähigkeiten
   - Gibt es Zufällige Items.
+- Waffen:
+  - Racketenwefer (AoE-Schaden, explodieren bei Kontakt oder wenn sie das Ziel erreichen, auf as man geklickt hat)
+  - Granatwerfer explodiert bei Kontakt oder nach einer Zeit
+  - MG/Minigun/Gewehr
+  - Nahkampf (Motorsäge, Lötlampe, Hammer)
+  - Laser (Hitscan)
+  - Minenleger
+  - Schrotflinte
+  - Waffen machen auf dem Schützen Friendly Fire
+  - Starke Waffen überhitzen
+  - Munitionsregeneration (langsam) und fettes Aufstocken im Lager. 
+  - Kontersystem: Hohlmantelmuni stark gegen ungepanzerte, Panzerbrechende Muni gegen schwer gepanzerte Gegner.
+  - 3 Rüstungstypen: leicht, Mittel, Schwer
+  - 3 Schadenstypen: nichtpanzerbrechend ( gut gegen leichte panzer), Mittelmäßigpanzerbrechend, panzerbrechend (gut gegen schwere panzer)
+  - Explosivwaffen sind nicht panzerbrechend
+  - Maschinengewehre sind mittelmäßigpanzerbrechend
+  - Schrotflinten sind nicht panzerbrechend
+  - Laser panzerbrechend
 - Mapdesign + Umwelt:
   - Die Gruppe ist immer zusammen auf einem Planeten des aktuellen Sonnensystems
   - Die Gruppe kann innerhalb eines Systems zusammen von Planet zu Planet fliegen
