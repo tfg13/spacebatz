@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
@@ -75,7 +85,7 @@ public class ServerNetwork2 {
 				    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
 				    continue;
 				}
-				client.getNetworkConnection().enqueuePacket(new InputPacket(data, client));
+				client.getNetworkConnection().enqueuePacket(new CTSPacket(data, client));
 				break;
 			    case 1:
 				// noClient-Modus (sofort verarbeiten)

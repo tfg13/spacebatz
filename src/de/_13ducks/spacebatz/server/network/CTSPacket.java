@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.data.Client;
@@ -9,7 +19,7 @@ import de._13ducks.spacebatz.util.Bits;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-class InputPacket implements Comparable<InputPacket> {
+class CTSPacket implements Comparable<CTSPacket> {
 
     /**
      * Die empfangenen Rohdaten.
@@ -29,7 +39,7 @@ class InputPacket implements Comparable<InputPacket> {
      *
      * @param rawData die Rohdaten
      */
-    InputPacket(byte[] rawData, Client sender) {
+    CTSPacket(byte[] rawData, Client sender) {
 	this.rawData = rawData;
 	index = Bits.getShort(rawData, 1);
     }
@@ -44,20 +54,19 @@ class InputPacket implements Comparable<InputPacket> {
     }
 
     @Override
-    public int compareTo(InputPacket o) {
+    public int compareTo(CTSPacket o) {
 	// wrap-around:
 	if (Math.abs(this.index - o.index) > Short.MAX_VALUE / 2) {
 	    return this.index - o.index;
 	} else {
 	    return o.index - this.index;
 	}
-
     }
 
     @Override
     public boolean equals(Object o) {
-	if (o instanceof InputPacket) {
-	    InputPacket i = (InputPacket) o;
+	if (o instanceof CTSPacket) {
+	    CTSPacket i = (CTSPacket) o;
 	    return this.index == i.index;
 	}
 	return false;

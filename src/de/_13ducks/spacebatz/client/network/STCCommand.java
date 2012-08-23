@@ -8,24 +8,20 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.server.network;
-
-import de._13ducks.spacebatz.server.data.Client;
-
+package de._13ducks.spacebatz.client.network;
 /**
- * Ein Netzwerkbefehl, den der Server ausführen kann.
+ * Ein Netzwerkbefehl, den der Client ausführen kann.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public abstract class CTSCommand {
-
+public abstract class STCCommand {
+    
     /**
-     * Führt diesen Serverbefehl aus.
+     * Führt diesen Clientbefehl aus.
      *
-     * @param client der Client, von dem dieser Befehl kommt
-     * @param data die Daten, die der Client mitgeschickt hat
+     * @param data die Daten, die der Server mitgeschickt hat
      */
-    public abstract void execute(Client client, byte[] data);
+    public abstract void execute(byte[] data);
 
     /**
      * Sagt, ob die Größe dieses Pakets fest oder variabel ist.
@@ -48,4 +44,5 @@ public abstract class CTSCommand {
      * @return die Anzahl der Datenblöcke, eventuell mitgelieferter inklusive, Kommandonummer selber exklusiv.
      */
     public abstract int getSize(byte sizeData);
+
 }
