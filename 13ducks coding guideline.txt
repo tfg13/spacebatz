@@ -1,0 +1,7 @@
+- öffentliche Methoden überprüfen alle Argumente und werfen Exceptions wenn etwas nicht stimmt.
+  Das spiel schmiert bei Fehlern also sofort ab, damit diese sofort behoben werden und sich nichts einschleicht.
+- Immer getter und Setter nehmen!
+- Kommentare Deutsch, Klassen- und Variablennamen Englisch
+- Keine Rückschritte im Meisterzweig
+- Alle öffentlichen Methoden werden mit aussagekräftigen Javadoc-Kommentaren versehen
+- Module werden so gut wie möglich isoliert (eigenes Packet, wenige Schnittstellen zu anderen Packeten)
