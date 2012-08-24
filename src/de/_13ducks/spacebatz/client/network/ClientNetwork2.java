@@ -167,6 +167,30 @@ public class ClientNetwork2 {
     }
 
     /**
+     * Registriert einen neuen Befehl beim Netzwerksystem.
+     * Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet.
+     * Die gewählte ID muss im erlaubten Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
+     *
+     * @param cmdID die BefehlsID
+     * @param cmd der Befehl selber
+     */
+    public void registerSTCCommand(byte cmdID, STCCommand cmd) {
+	if (cmd == null) {
+	    throw new IllegalArgumentException("STCCommand must not be null!");
+	}
+	// cmdID: Range prüfen:
+	if (cmdID <= 0 || cmdID > 127) {
+	    throw new IllegalArgumentException("Illegal cmdID!");
+	}
+	// Override?
+	if (cmdMap[cmdID] != null) {
+	    System.out.println("INFO: NET: Overriding cmd " + cmdID);
+	}
+	cmdMap[cmdID] = cmd;
+	System.out.println("INFO: NET: Registered STC cmd " + cmdID);
+    }
+
+    /**
      * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Befehle vom Server.
      * Darf erst nach connect aufgerufen werden.
      */

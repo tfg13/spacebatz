@@ -133,9 +133,9 @@ public class ServerNetwork2 {
      * @param cmdID die BefehlsID
      * @param cmd der Befehl selber
      */
-    public void registerServerNetCmd(byte cmdID, CTSCommand cmd) {
+    public void registerCTSCommand(byte cmdID, CTSCommand cmd) {
 	if (cmd == null) {
-	    throw new IllegalArgumentException("ServerNetCmd must not be null!");
+	    throw new IllegalArgumentException("CTSCommand must not be null!");
 	}
 	// cmdID: Range prüfen:
 	if (cmdID <= 0 || cmdID > 127) {
