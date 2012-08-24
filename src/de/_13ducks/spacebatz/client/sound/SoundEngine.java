@@ -17,14 +17,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.util.WaveData;
+import org.newdawn.slick.openal.OggData;
+import org.newdawn.slick.openal.OggDecoder;
 
 /**
- * Die Soundengine
+ * Das OpenAL-Soundmodul. 
+ * Lädt alle Ogg-Dateien im "sound"-Ordner beim Starten.
+ * Kann Soundeffekte und Musik abspielen, pausieren und stoppen.
  *
  * @author michael
  */
@@ -41,19 +42,6 @@ public class SoundEngine {
             System.out.println("[ERROR]: Failed to set library lookup path! Details:");
             ex.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        SoundEngine s = new SoundEngine();
-
-        s.playSound("sound.wav");
-        s.tick();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SoundEngine.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
     /**
      * Die Puffer für geladene Audiodateien
@@ -85,20 +73,22 @@ public class SoundEngine {
 
             for (int i = 0; i < soundFiles.length; i++) {
                 File file = soundFiles[i];
-                if (file.getName().contains(".wav")) {
-                    WaveData o = WaveData.create(new BufferedInputStream(new FileInputStream(file.getAbsolutePath())));
+                if (file.getName().toLowerCase().matches(".+\\.ogg")) {
+                    OggData data = new OggDecoder().getData(new BufferedInputStream(new FileInputStream(file.getAbsolutePath())));
+                    int format = data.channels > 1 ? AL10.AL_FORMAT_STEREO16 : AL10.AL_FORMAT_MONO16;
                     int buffer = AL10.alGenBuffers();
-                    AL10.alBufferData(buffer, o.format, o.data, o.samplerate);
+                    AL10.alBufferData(buffer, format, data.data, data.rate);
                     buffers.put(file.getName(), buffer);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("SoundEngine initialised (" + buffers.size() + " sounds loaded).");
     }
 
     /**
-     * Spielt einen Soundeffekt ab
+     * Spielt einen Soundeffekt asynchron ab.
      *
      * @param name der Name der Sounddatei
      */
@@ -113,7 +103,7 @@ public class SoundEngine {
     }
 
     /**
-     * Gibt einen neuen Soundeffekt zurück.
+     * Gibt einen neuen Soundeffekt zurück, der dann abgespielt und wieder angehalten werden kann.
      *
      * @param name der Name der Audiodate
      * @return ein Sound-Objekt
@@ -133,7 +123,7 @@ public class SoundEngine {
     /**
      * Gibt benutzten Speicher wieder frei.
      */
-    private void cleanUp() {
+    private void shutdown() {
         for (int s : buffers.values()) {
             AL10.alDeleteBuffers(s);
         }
@@ -146,11 +136,11 @@ public class SoundEngine {
     /**
      * Löscht bereits abgespielte Sounds.
      */
-    public void tick() {
+    public void deleteUnusedSounds() {
         Iterator<Sound> iter = sounds.iterator();
         while (iter.hasNext()) {
             Sound s = iter.next();
-            if (s.isDisposable()) {
+            if (s.deleteMe()) {
                 iter.remove();
             }
         }

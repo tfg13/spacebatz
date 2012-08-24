@@ -13,7 +13,8 @@ package de._13ducks.spacebatz.client.sound;
 import org.lwjgl.openal.AL10;
 
 /**
- * Ein Soundeffekt Sounds werden gelöscht, wenn sie fertig abgespielt sind, es sei denn sie sind permanent.
+ * Steuert das Abspielen eines Soundeffekts.
+ * Sounds werden gelöscht, wenn sie fertig abgespielt sind, es sei denn sie sind permanent.
  *
  * @author michael
  */
@@ -34,7 +35,7 @@ public class Sound {
      * @param buffer der Puffer, aus dem der Sound geladen werden soll
      * @param permanent gibt an, ob der Sound permanent ist. permanente Sounds werden nicht gelöscht wenn sie fertig abgespielt sind.
      */
-    public Sound(int buffer, boolean permanent) {
+    protected Sound(int buffer, boolean permanent) {
         this.permanent = permanent;
 
         source = AL10.alGenSources();
@@ -50,7 +51,7 @@ public class Sound {
      *
      * @return der ALINT der die source beschreibt
      */
-    public int getSource() {
+    protected int getSource() {
         return source;
     }
 
@@ -69,12 +70,23 @@ public class Sound {
     }
 
     /**
-     * Gibt true zurück, wenn der Sound fertig ist und nicht permanent ist
-     *
-     * @return true, wenn der Sound gelöscht werden soll
+     * Löscht den Sound ordnungsgemäss, so dass er keinen Speicher verschwendet.
      */
-    public boolean isDisposable() {
-        if (permanent || AL10.alGetSourcei(source, AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
+    public void dispose() {
+        permanent = false;
+    }
+
+    public boolean isPlaying() {
+        return AL10.alGetSourcei(source, AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING;
+    }
+
+    /**
+     * Gibt true zurück, wenn der Sound gelöscht werden kann.
+     *
+     * @return true, wenn der Sound fertig abgespielt ist und nicht permanent ist.
+     */
+    protected boolean deleteMe() {
+        if (permanent || isPlaying()) {
             return false;
         } else {
             // Das Source-Objekt löschen:
