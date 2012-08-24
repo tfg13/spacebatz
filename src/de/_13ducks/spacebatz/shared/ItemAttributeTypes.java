@@ -28,44 +28,44 @@ public class ItemAttributeTypes {
 
         ItemAttribute moreDamage = new ItemAttribute("More Damage");
         moreDamage.itemStats.setBaseProperty("quality", 1.0);
-        moreDamage.weaponStats.setMutliplicator("damage", 0.1);
+        moreDamage.weaponStats.setMutliplicatorModifier("damage", 0.1);
         attributelist.add(moreDamage);
 
         ItemAttribute evenMoreDamage = new ItemAttribute("Even More Damage");
         evenMoreDamage.itemStats.setBaseProperty("quality", 2.0);
-        evenMoreDamage.weaponStats.setMutliplicator("damage", 0.3);
+        evenMoreDamage.weaponStats.setMutliplicatorModifier("damage", 0.3);
         attributelist.add(evenMoreDamage);
 
         ItemAttribute moreAttackSpeed = new ItemAttribute("More Attackspeed");
         moreAttackSpeed.itemStats.setBaseProperty("quality", 1.0);
-        moreAttackSpeed.weaponStats.setMutliplicator("attackspeed", 0.1);
+        moreAttackSpeed.weaponStats.setMutliplicatorModifier("attackspeed", 0.1);
         attributelist.add(moreAttackSpeed);
 
         ItemAttribute evenMoreAttackSpeed = new ItemAttribute("Even More Attackspeed");
         evenMoreAttackSpeed.itemStats.setBaseProperty("quality", 2.0);
-        evenMoreAttackSpeed.weaponStats.setMutliplicator("attackspeed", 0.3);
+        evenMoreAttackSpeed.weaponStats.setMutliplicatorModifier("attackspeed", 0.3);
         attributelist.add(evenMoreAttackSpeed);
 
         ItemAttribute moreRange = new ItemAttribute("More Range");
         moreRange.itemStats.setBaseProperty("quality", 2.0);
-        moreRange.weaponStats.setMutliplicator("range", 0.2);
+        moreRange.weaponStats.setMutliplicatorModifier("range", 0.2);
         attributelist.add(moreRange);
 
         ItemAttribute moreEverything = new ItemAttribute("More Everything");
         moreEverything.itemStats.setBaseProperty("quality", 3.0);
-        moreEverything.weaponStats.setMutliplicator("damage", 0.1);
-        moreEverything.weaponStats.setMutliplicator("attackspeed", 0.1);
-        moreEverything.weaponStats.setMutliplicator("range", 0.1);
+        moreEverything.weaponStats.setMutliplicatorModifier("damage", 0.1);
+        moreEverything.weaponStats.setMutliplicatorModifier("attackspeed", 0.1);
+        moreEverything.weaponStats.setMutliplicatorModifier("range", 0.1);
         attributelist.add(moreEverything);
 
         ItemAttribute moreArmor = new ItemAttribute("More Armor");
         moreArmor.itemStats.setBaseProperty("quality", 1.0);
-        moreArmor.weaponStats.setMutliplicator("armor", 0.1);
+        moreArmor.weaponStats.setMutliplicatorModifier("armor", 0.1);
         attributelist.add(moreArmor);
 
         ItemAttribute evenMoreArmor = new ItemAttribute("Even More Armor");
         evenMoreArmor.itemStats.setBaseProperty("quality", 2.0);
-        evenMoreArmor.weaponStats.setMutliplicator("armor", 0.3);
+        evenMoreArmor.weaponStats.setMutliplicatorModifier("armor", 0.3);
         attributelist.add(evenMoreArmor);
 
         ItemAttribute moreHP = new ItemAttribute("More Healthpoints");
@@ -75,7 +75,7 @@ public class ItemAttributeTypes {
 
         ItemAttribute moreMovespeed = new ItemAttribute("More Movespeed");
         moreMovespeed.itemStats.setBaseProperty("quality", 2.0);
-        moreMovespeed.bonusStats.setMutliplicator("movespeed", 0.2);
+        moreMovespeed.bonusStats.setMutliplicatorModifier("movespeed", 0.2);
         attributelist.add(moreMovespeed);
 
         ItemAttribute unusual = new ItemAttribute("Unusual");
