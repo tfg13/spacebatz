@@ -49,10 +49,10 @@ public class STCPacket implements Comparable<STCPacket> {
     @Override
     public int compareTo(STCPacket o) {
 	// wrap-around:
-	if (Math.abs(this.index - o.index) > Short.MAX_VALUE / 2) {
-	    return this.index - o.index;
-	} else {
+	if (Math.abs(o.index - this.index) > Short.MAX_VALUE / 2) {
 	    return o.index - this.index;
+	} else {
+	    return this.index - o.index;
 	}
     }
     
