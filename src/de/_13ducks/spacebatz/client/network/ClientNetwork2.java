@@ -82,31 +82,35 @@ public class ClientNetwork2 {
 		    data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
 		    DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
 		    // Antwort-Packet
-		    byte[] ansData = new byte[2];
+		    byte[] ansData = new byte[3];
 		    DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
 		    socket.setSoTimeout(50000);
 		    socket.send(packet);
-		    try {
-			socket.receive(ansPacket);
-			socket.setSoTimeout(0);
-		    } catch (SocketTimeoutException timeoutEx) {
-			// Timeout, ging nicht, Ende.
-			socket.close();
-			System.out.println("Connecting failed. Request timed out.");
-			return;// false;
-		    }
-		    // Antwort auswerten (erstes Bit):
-		    if ((ansData[0] & 0x80) != 0) {
-			// Verbindung ok, Parameter auslesen.
-			int nextTick = ansData[0] & 0x7F;
-			int clientID = ansData[1];
-			System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextTick " + nextTick);
-			initializeReceiver();
-			return;// true;
-		    } else {
-			System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x7F));
-			socket.close();
-			return;// false;
+		    while (true) {
+			try {
+			    socket.receive(ansPacket);
+			    socket.setSoTimeout(0);
+			} catch (SocketTimeoutException timeoutEx) {
+			    // Timeout, ging nicht, Ende.
+			    socket.close();
+			    System.out.println("Connecting failed. Request timed out.");
+			    return;// false;
+			}
+			// Antwort auswerten (via netmode):
+			if ((ansData[0] & 0xC0) == 0x40) {
+			    socket.setSoTimeout(0);
+			    // Verbindung ok, Parameter auslesen.
+			    int nextTick = ((ansData[0] & 0x3F) << 8) | ansData[1];
+			    int clientID = ansData[2];
+			    connected = true;
+			    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextTick " + nextTick);
+			    initializeReceiver();
+			    return;// true;
+			} else if ((ansData[0] & 0xC0) == 0x80) {
+			    System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x3F));
+			    socket.close();
+			    return;// false;
+			}
 		    }
 		} catch (IOException ex) {
 		    System.out.println("Connecting failed. IOException: " + ex.getLocalizedMessage() + " reason: " + ex.getCause());

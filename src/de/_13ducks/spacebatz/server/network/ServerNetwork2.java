@@ -168,7 +168,7 @@ public class ServerNetwork2 {
 	int port = Bits.getInt(packetData, 1);
 	// Craft answer:
 	byte[] connectAnswer = new byte[3];
-	connectAnswer[0] = (byte) (0x8F | (nextOutIndex >> 8));
+	connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
 	connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
 	// Vorläufig: ClientID aus altem Netzwerksystem holen:
 	//connectAnswer[2] = Server.game.newClientID();
