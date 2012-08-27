@@ -23,13 +23,14 @@ public class PropertyList implements Serializable {
      */
     private HashMap<String, Double> baseValues;
     /**
-     * Die Liste der Multiplikatoren
+     * Die Liste der Multiplikatorenmodifikatoren.
+     * Das sind die Werte, um die der Standardmultiplikator 1.0 verändert wird.
      */
-    private HashMap<String, Double> multiplicators;
+    private HashMap<String, Double> multiplicatorModifiers;
 
     public PropertyList() {
         baseValues = new HashMap<>();
-        multiplicators = new HashMap<>();
+        multiplicatorModifiers = new HashMap<>();
     }
 
     /**
@@ -40,7 +41,7 @@ public class PropertyList implements Serializable {
      */
     final public double getProperty(String name) {
         if (baseValues.containsKey(name)) {
-            return baseValues.get(name) * getMultiplicator(name);
+            return baseValues.get(name) * 1 + getMultiplicatorModifier(name);
         } else {
             return 0;
         }
@@ -98,8 +99,8 @@ public class PropertyList implements Serializable {
      * @param name der Name der Eigenschaft, deren Multiplikator inkrementiert werden soll
      * @param value der Wert, um den der Multiplikator der Eigenschaft inkrementiert werden soll
      */
-    final public void incrementMutliplicator(String name, double value) {
-        multiplicators.put(name, getMultiplicator(name) + value);
+    final public void incrementMutliplicatorModifier(String name, double value) {
+        multiplicatorModifiers.put(name, getMultiplicatorModifier(name) + value);
     }
 
     /**
@@ -108,8 +109,12 @@ public class PropertyList implements Serializable {
      * @param name der Name der Eigenschaft, deren Multiplikator dekrementiert werden soll
      * @param value der Wert, um den der Multiplikator der Eigenschaft dekrementiert werden soll
      */
-    final public void decrementMutliplicator(String name, double value) {
-        multiplicators.put(name, getMultiplicator(name) - value);
+    final public void decrementMutliplicatorModifier(String name, double value) {
+        if (getMultiplicatorModifier(name) - value < -1) {
+            throw new IllegalArgumentException("Der Multiplikatormodifizierer darf nicht kleiner als -1 sein, sonst wird der Multiplikator negativ!");
+        } else {
+            multiplicatorModifiers.put(name, getMultiplicatorModifier(name) - value);
+        }
     }
 
     /**
@@ -119,11 +124,11 @@ public class PropertyList implements Serializable {
      * @param name der Name des gesuchten Multiplikators
      * @return der Wert des Multiplikators oder 1.0 wenn er nicht gesetzt wurde.
      */
-    private double getMultiplicator(String name) {
-        if (multiplicators.containsKey(name)) {
-            return multiplicators.get(name);
+    private double getMultiplicatorModifier(String name) {
+        if (multiplicatorModifiers.containsKey(name)) {
+            return multiplicatorModifiers.get(name);
         } else {
-            return 1.0;
+            return 0;
         }
     }
 
@@ -133,8 +138,13 @@ public class PropertyList implements Serializable {
      * @param name der Name der Eigenschaft, deren Multiplikator gesetzt werden soll
      * @param value der Wert, auf den der Multiplikator der Eigenschaft gesetzt werden soll
      */
-    final public void setMutliplicator(String name, double value) {
-        multiplicators.put(name, value);
+    final public void setMutliplicatorModifier(String name, double value) {
+        if (value < -1) {
+            throw new IllegalArgumentException("Der Multiplikatormodifizierer darf nicht kleiner als -1 sein, sonst wird der Multiplikator negativ!");
+        } else {
+            multiplicatorModifiers.put(name, value);
+        }
+
     }
 
     /**
@@ -151,10 +161,10 @@ public class PropertyList implements Serializable {
             incrementBaseProperty(next.getKey(), next.getValue());
         }
         // Multiplikatoren:
-        iter = otherProperties.getMulitplicatorIterator();
+        iter = otherProperties.getMulitplicatorModifierIterator();
         while (iter.hasNext()) {
             Entry<String, Double> next = iter.next();
-            incrementMutliplicator(next.getKey(), next.getValue());
+            incrementMutliplicatorModifier(next.getKey(), next.getValue());
         }
     }
 
@@ -172,10 +182,10 @@ public class PropertyList implements Serializable {
             decrementBaseProperty(next.getKey(), next.getValue());
         }
         // Multiplikatoren:
-        iter = otherProperties.getMulitplicatorIterator();
+        iter = otherProperties.getMulitplicatorModifierIterator();
         while (iter.hasNext()) {
             Entry<String, Double> next = iter.next();
-            decrementMutliplicator(next.getKey(), next.getValue());
+            decrementMutliplicatorModifier(next.getKey(), next.getValue());
         }
     }
 
@@ -193,8 +203,8 @@ public class PropertyList implements Serializable {
      *
      * @return ein Iterator über alle Mutliplikatoren
      */
-    private Iterator<Entry<String, Double>> getMulitplicatorIterator() {
-        return multiplicators.entrySet().iterator();
+    private Iterator<Entry<String, Double>> getMulitplicatorModifierIterator() {
+        return multiplicatorModifiers.entrySet().iterator();
     }
 
     /**
@@ -212,7 +222,7 @@ public class PropertyList implements Serializable {
             text += " = ";
             text += entry.getValue();
             text += " * ";
-            text += multiplicators.get(entry.getKey());
+            text += 1 + multiplicatorModifiers.get(entry.getKey());
             text += "\n";
         }
         return text;

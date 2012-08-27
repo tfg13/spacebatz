@@ -82,7 +82,7 @@ public class ServerNetworkConnection {
     /**
      * Die Queue der ankommenden Pakete.
      */
-    private PriorityBlockingQueue<InputPacket> inputQueue;
+    private PriorityBlockingQueue<CTSPacket> inputQueue;
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
@@ -191,7 +191,7 @@ public class ServerNetworkConnection {
      *
      * @param packet das neue Paket.
      */
-    void enqueuePacket(InputPacket packet) {
+    void enqueuePacket(CTSPacket packet) {
 	// Nicht aufnehmen, wenn zu alt (wrap-around)
 	if (Math.abs(packet.getIndex() - lastPkgIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastPkgIndex) {
 	    if (!inputQueue.contains(packet)) {
@@ -211,7 +211,7 @@ public class ServerNetworkConnection {
 		next = 0;
 	    }
 	    if (inputQueue.peek().getIndex() == next) {
-		InputPacket packet = inputQueue.poll();
+		CTSPacket packet = inputQueue.poll();
 		packet.compute();
 		lastPkgIndex = packet.getIndex();
 	    } else {

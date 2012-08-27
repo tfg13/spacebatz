@@ -1,3 +1,13 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
@@ -9,7 +19,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -31,7 +40,7 @@ public class ServerNetwork2 {
      * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
      * Enthält sowohl interne, als auch externe Kommandos.
      */
-    static HashMap<Integer, ServerNetCmd> cmdMap = new HashMap<>();
+    static CTSCommand[] cmdMap = new CTSCommand[256];
     /**
      * Der Index des Datenpakets, dass der Server als nächstes versendet.
      */
@@ -54,10 +63,10 @@ public class ServerNetwork2 {
 	} catch (SocketException ex) {
 	    System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
 	    ex.printStackTrace();
+	    return;
 	}
 	// Listener-Thread starten
 	thread = new Thread(new Runnable() {
-
 	    @Override
 	    public void run() {
 		try {
@@ -76,7 +85,7 @@ public class ServerNetwork2 {
 				    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
 				    continue;
 				}
-				client.getNetworkConnection().enqueuePacket(new InputPacket(data, client));
+				client.getNetworkConnection().enqueuePacket(new CTSPacket(data, client));
 				break;
 			    case 1:
 				// noClient-Modus (sofort verarbeiten)
@@ -117,6 +126,30 @@ public class ServerNetwork2 {
     }
 
     /**
+     * Registriert einen neuen Befehl beim Netzwerksystem.
+     * Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet.
+     * Die gewählte ID muss im erlaubten Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
+     *
+     * @param cmdID die BefehlsID
+     * @param cmd der Befehl selber
+     */
+    public void registerCTSCommand(byte cmdID, CTSCommand cmd) {
+	if (cmd == null) {
+	    throw new IllegalArgumentException("CTSCommand must not be null!");
+	}
+	// cmdID: Range prüfen:
+	if (cmdID <= 0 || cmdID > 127) {
+	    throw new IllegalArgumentException("Illegal cmdID!");
+	}
+	// Override?
+	if (cmdMap[cmdID] != null) {
+	    System.out.println("INFO: NET: Overriding cmd " + cmdID);
+	}
+	cmdMap[cmdID] = cmd;
+	System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
+    }
+
+    /**
      * Verarbeitet die Anfrage eines Clients, dem Server zu joinen.
      *
      * @param packetData die empfangenen Daten der Anfrage
@@ -135,7 +168,7 @@ public class ServerNetwork2 {
 	int port = Bits.getInt(packetData, 1);
 	// Craft answer:
 	byte[] connectAnswer = new byte[3];
-	connectAnswer[0] = (byte) (0x8F | (nextOutIndex >> 8));
+	connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
 	connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
 	// Vorläufig: ClientID aus altem Netzwerksystem holen:
 	//connectAnswer[2] = Server.game.newClientID();
