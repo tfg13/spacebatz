@@ -200,7 +200,6 @@ public class ServerNetworkConnection {
      * @param packet das neue Paket.
      */
     void enqueuePacket(CTSPacket packet) {
-	System.out.println("Got " + packet.getIndex());
 	// Nicht aufnehmen, wenn zu alt (wrap-around)
 	if (Math.abs(packet.getIndex() - lastPkgIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastPkgIndex) {
 	    if (!inputQueue.contains(packet)) {
@@ -222,10 +221,8 @@ public class ServerNetworkConnection {
 	    if (next < 0) {
 		next = 0;
 	    }
-	    System.out.println(inputQueue.peek().getIndex() + " " + next);
 	    if (inputQueue.peek().getIndex() == next) {
 		CTSPacket packet = inputQueue.poll();
-		System.out.println("Blub. " + packet.getIndex());
 		packet.compute();
 		lastPkgIndex = packet.getIndex();
 	    } else {

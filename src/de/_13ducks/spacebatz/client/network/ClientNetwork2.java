@@ -185,7 +185,6 @@ public class ClientNetwork2 {
 	DatagramPacket pack = new DatagramPacket(cts, cts.length, InetAddress.getLoopbackAddress(), Settings.SERVER_UDPPORT2);
 	try {
 	    socket.send(pack);
-	    System.out.println("out, " + (nextOutIndex - 1));
 	} catch (IOException ex) {
 	    ex.printStackTrace();
 	}

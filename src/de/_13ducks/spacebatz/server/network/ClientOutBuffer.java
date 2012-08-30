@@ -130,17 +130,9 @@ public class ClientOutBuffer {
      * @param packID die packID des Pakets, das bestätigt wurde
      */
     void ackPacket(int packID) {
-	System.out.print(packID + " buffers are:");
-	for (int i = 0; i < buffer.length; i++) {
-	    if (buffer[i] != null) {
-		System.out.print(" " + buffer[i].packID);
-	    }
-	}
-	System.out.println();
 	// Paket suchen.
 	int ringBufferIter = ringBufferFirst;
 	while (buffer[ringBufferIter] != null) {
-	    System.out.println(ringBufferIter);
 	    if (buffer[ringBufferIter].packID == packID) {
 		break; // Gefunden
 	    }
@@ -155,7 +147,6 @@ public class ClientOutBuffer {
 	    buffer[ringBufferIter].acked = true;
 	    // Aufräumen?
 	    while (buffer[ringBufferFirst] != null && buffer[ringBufferFirst].acked) {
-		System.out.println("DELACK " + buffer[ringBufferFirst].packID);
 		buffer[ringBufferFirst] = null;
 		bufferSize--;
 		// Increment
