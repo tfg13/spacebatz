@@ -233,7 +233,6 @@ public class ClientNetwork2 {
 		if (next < 0) {
 		    next = 0;
 		}
-		System.out.println(inputQueue.peek().getIndex() + " " + next);
 		if (inputQueue.peek().getIndex() == next) {
 		    STCPacket packet = inputQueue.poll();
 		    packet.compute();
