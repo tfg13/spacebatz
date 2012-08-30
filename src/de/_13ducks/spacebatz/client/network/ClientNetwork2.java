@@ -44,7 +44,7 @@ public class ClientNetwork2 {
     /**
      * Die Nummer des nächsten zu versendenen Pakets.
      */
-    private int nextOutIndex;
+    private int nextOutIndex = 1;
     /**
      * Die Queue der ankommenden Pakete.
      */
