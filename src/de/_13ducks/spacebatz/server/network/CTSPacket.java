@@ -101,7 +101,7 @@ class CTSPacket implements Comparable<CTSPacket> {
 	    int dataSize = cmd.isVariableSize() ? cmd.getSize(rawData[nextCmdIndex]) : cmd.getSize((byte) 0);
 	    byte[] data = new byte[dataSize];
 	    // Daten kopieren
-	    if (nextCmdIndex + dataSize < rawData.length) {
+	    if (nextCmdIndex + dataSize <= rawData.length) {
 		for (int i = 0; i < dataSize; i++) {
 		    data[i] = rawData[nextCmdIndex + i];
 		}

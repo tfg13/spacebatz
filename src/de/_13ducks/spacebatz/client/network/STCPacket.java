@@ -91,7 +91,7 @@ public class STCPacket implements Comparable<STCPacket> {
 	    byte[] data = new byte[dataSize];
 	    // Daten kopieren
 	    if (nextCmdIndex + dataSize < rawData.length) {
-		for (int i = 0; i < dataSize; i++) {
+		for (int i = 0; i <= dataSize; i++) {
 		    data[i] = rawData[nextCmdIndex + i];
 		}
 	    } else {

@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -139,7 +140,7 @@ public class ClientNetwork2 {
 			DatagramPacket pack = new DatagramPacket(new byte[512], 512);
 			// blockt
 			socket.receive(pack);
-			byte[] data = pack.getData();
+			byte[] data = Utilities.extractData(pack);
 			byte mode = data[0];
 			// NETMODE auswerten:
 			switch (mode >>> 6) {
@@ -229,7 +230,7 @@ public class ClientNetwork2 {
 		if (next < 0) {
 		    next = 0;
 		}
-		//System.out.println(inputQueue.peek().getIndex() + " " + next);
+		System.out.println(inputQueue.peek().getIndex() + " " + next);
 		if (inputQueue.peek().getIndex() == next) {
 		    STCPacket packet = inputQueue.poll();
 		    packet.compute();

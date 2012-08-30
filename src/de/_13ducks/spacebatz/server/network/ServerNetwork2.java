@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -76,7 +77,7 @@ public class ServerNetwork2 {
 			DatagramPacket inputPacket = new DatagramPacket(new byte[512], 512);
 			// Blocken, bis Paket empfangen
 			socket.receive(inputPacket);
-			byte[] data = inputPacket.getData();
+			byte[] data = Utilities.extractData(inputPacket);
 			byte mode = data[0];
 			// NETMODE auswerten:
 			switch (mode >>> 6) {
