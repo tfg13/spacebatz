@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.shared.network.Constants;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class ClientOutBuffer {
 	    // Id muss eins größer sein als Vorgänger:
 	    int expectedID = buffer[ringBufferLast].packID + 1;
 	    // Wrap-around:
-	    if (expectedID == Constants.OVERFLOW_PACK_ID) {
+	    if (expectedID == Constants.OVERFLOW_STC_PACK_ID) {
 		expectedID = 0;
 	    }
 	    if (packID != expectedID) {

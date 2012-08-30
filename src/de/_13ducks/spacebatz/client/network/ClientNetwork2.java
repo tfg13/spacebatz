@@ -109,6 +109,10 @@ public class ClientNetwork2 {
 			    // Verbindung ok, Parameter auslesen.
 			    int nextTick = ((ansData[0] & 0x3F) << 8) | ansData[1];
 			    int clientID = ansData[2];
+			    lastInIndex = (short) (nextTick - 1);
+			    if (lastInIndex < 0) {
+				lastInIndex = (short) de._13ducks.spacebatz.shared.network.Constants.OVERFLOW_STC_PACK_ID - 1;
+			    }
 			    connected = true;
 			    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextTick " + nextTick);
 			    initializeReceiver();
