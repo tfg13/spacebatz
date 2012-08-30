@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -37,11 +39,15 @@ public class ClientNetwork2 {
     /**
      * Die Nummer des letzten vom Server empfangenen Netzwerkpakets.
      */
-    private short lastPkgIndex;
+    private short lastInIndex;
+    /**
+     * Die Nummer des nächsten zu versendenen Pakets.
+     */
+    private int nextOutIndex;
     /**
      * Die Queue der ankommenden Pakete.
      */
-    private PriorityBlockingQueue<STCPacket> inputQueue;
+    private PriorityBlockingQueue<STCPacket> inputQueue = new PriorityBlockingQueue<>();
     /**
      * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
      * Enthält sowohl interne, als auch externe Kommandos.
@@ -163,10 +169,24 @@ public class ClientNetwork2 {
      */
     private void enqueuePacket(STCPacket packet) {
 	// Nicht aufnehmen, wenn zu alt (wrap-around)
-	if (Math.abs(packet.getIndex() - lastPkgIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastPkgIndex) {
+	if (Math.abs(packet.getIndex() - lastInIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastInIndex) {
 	    if (!inputQueue.contains(packet)) {
 		inputQueue.add(packet);
 	    }
+	}
+	// Empfang bestätigen: (DEBUG)
+	byte[] cts = new byte[7];
+	cts[0] = Client.getClientID();
+	Bits.putShort(cts, 1, (short) nextOutIndex++);
+	// MAC ist egal
+	cts[4] = 1;
+	Bits.putShort(cts, 5, packet.getIndex());
+	DatagramPacket pack = new DatagramPacket(cts, cts.length, InetAddress.getLoopbackAddress(), Settings.SERVER_UDPPORT2);
+	try {
+	    socket.send(pack);
+	    System.out.println("out, " + (nextOutIndex - 1));
+	} catch (IOException ex) {
+	    ex.printStackTrace();
 	}
     }
 
@@ -202,14 +222,18 @@ public class ClientNetwork2 {
 	if (connected) {
 	    // Schauen, ob der Index des nächsten Pakets stimmt:
 	    while (true) {
-		short next = (short) (lastPkgIndex + 1);
+		if (inputQueue.isEmpty()) {
+		    break;
+		}
+		short next = (short) (lastInIndex + 1);
 		if (next < 0) {
 		    next = 0;
 		}
+		//System.out.println(inputQueue.peek().getIndex() + " " + next);
 		if (inputQueue.peek().getIndex() == next) {
 		    STCPacket packet = inputQueue.poll();
 		    packet.compute();
-		    lastPkgIndex = packet.getIndex();
+		    lastInIndex = packet.getIndex();
 		} else {
 		    break;
 		}

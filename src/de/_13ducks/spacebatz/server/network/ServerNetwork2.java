@@ -19,6 +19,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -50,6 +51,7 @@ public class ServerNetwork2 {
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
+	cmdMap[1] = new CTS_ACK();
     }
 
     /**
@@ -123,6 +125,32 @@ public class ServerNetwork2 {
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
+	// DEBUG/TEST
+	if (Server.game.getTick() % 100 == 0) {
+	    // Manuell ein Paket craften:
+	    byte[] manPack = new byte[4];
+	    short packId = getAndIncrementNextIndex();
+	    Bits.putShort(manPack, 0, packId);
+	    // Das Paket hat eine gültige Nummer, keinen MAC und genau ein Kommando, nämlich NOOP.
+	    // Senden:
+	    for (Client c : Server.game.clients.values()) {
+		if (c.getNetworkConnection().getPort() != 0) {
+		    DatagramPacket dPack = new DatagramPacket(manPack, manPack.length, c.getNetworkConnection().getSocket().getInetAddress(), c.getNetworkConnection().getPort());
+		    schedulePacket(dPack, c, packId);
+		}
+	    }
+	}
+
+	for (Client c : Server.game.clients.values()) {
+	    ArrayList<DatagramPacket> sendList = c.getNetworkConnection().getOutBuffer().packetsToSend();
+	    for (DatagramPacket packet : sendList) {
+		try {
+		    socket.send(packet);
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		}
+	    }
+	}
     }
 
     /**
@@ -147,6 +175,30 @@ public class ServerNetwork2 {
 	}
 	cmdMap[cmdID] = cmd;
 	System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
+    }
+
+    /**
+     * Registriert dieses Paket.
+     * Das bedeutet, dass der Client dieses Paket erhalten soll.
+     * Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Client den Empfang bestätigt hat.
+     *
+     * @param dPack Ein Netzwerkpaket, für einen bestimmten Client bestimmt.
+     * @param client der Client
+     * @param packID die PaketID
+     */
+    private void schedulePacket(DatagramPacket dPack, Client client, int packID) {
+	if (!client.getNetworkConnection().getOutBuffer().registerPacket(dPack, packID)) {
+	    // Dieser Client ist hoffnungslos
+	    System.out.println("ERROR: NET: Paket output overflow!!!");
+	}
+    }
+
+    private short getAndIncrementNextIndex() {
+	short ret = (short) nextOutIndex++;
+	if (nextOutIndex >= Short.MAX_VALUE / 4) {
+	    nextOutIndex = 0;
+	}
+	return ret;
     }
 
     /**
@@ -189,5 +241,6 @@ public class ServerNetwork2 {
 	socket.send(pack);
 	//TODO: Neuen Client richtig anlegen/einfügen
 	System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
+	Server.game.clients.get(connectAnswer[2]).getNetworkConnection().setPort(port);
     }
 }
