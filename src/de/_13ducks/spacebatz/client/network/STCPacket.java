@@ -33,8 +33,11 @@ public class STCPacket implements Comparable<STCPacket> {
      * @param rawData die Rohdaten
      */
     STCPacket(byte[] rawData) {
+	if (rawData == null || rawData.length == 0) {
+	    throw new IllegalArgumentException("rawData must neither be null nor empty");
+	}
 	this.rawData = rawData;
-	index = Bits.getShort(rawData, 1);
+	index = Bits.getShort(rawData, 0);
     }
     
     /**
@@ -76,19 +79,19 @@ public class STCPacket implements Comparable<STCPacket> {
      * Verarbeitet das Datenpaket.
      */
     void compute() {
-	int nextCmdIndex = 5;
+	int nextCmdIndex = 3;
 	while (nextCmdIndex < rawData.length) {
-	    int cmdID = rawData[nextCmdIndex];
+	    int cmdID = rawData[nextCmdIndex++];
 	    STCCommand cmd = ClientNetwork2.cmdMap[cmdID];
 	    if (cmd == null) {
 		System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
 		continue;
 	    }
-	    int dataSize = cmd.isVariableSize() ? cmd.getSize(rawData[nextCmdIndex + 1]) : cmd.getSize((byte) 0);
+	    int dataSize = cmd.isVariableSize() ? cmd.getSize(rawData[nextCmdIndex]) : cmd.getSize((byte) 0);
 	    byte[] data = new byte[dataSize];
 	    // Daten kopieren
 	    if (nextCmdIndex + dataSize < rawData.length) {
-		for (int i = 1; i <= dataSize; i++) {
+		for (int i = 0; i < dataSize; i++) {
 		    data[i] = rawData[nextCmdIndex + i];
 		}
 	    } else {
@@ -103,6 +106,7 @@ public class STCPacket implements Comparable<STCPacket> {
 		System.out.println("WARNING: NET: Execution of packet failed with Exception: " + ex);
 		ex.printStackTrace();
 	    }
+	    nextCmdIndex += dataSize;
 	}
     }
 
