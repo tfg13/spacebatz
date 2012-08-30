@@ -11,6 +11,8 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.NetCommand;
+import de._13ducks.spacebatz.shared.network.NetPacket;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -19,16 +21,8 @@ import de._13ducks.spacebatz.util.Bits;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-class CTSPacket implements Comparable<CTSPacket> {
+class CTSPacket extends NetPacket implements Comparable<CTSPacket> {
 
-    /**
-     * Die empfangenen Rohdaten.
-     */
-    private byte[] rawData;
-    /**
-     * Die fortlaufende (wrap-around) Indexnummer.
-     */
-    private short index;
     /**
      * Der Absender dieses Pakets.
      */
@@ -40,24 +34,31 @@ class CTSPacket implements Comparable<CTSPacket> {
      * @param rawData die Rohdaten
      */
     CTSPacket(byte[] rawData, Client sender) {
-	if (rawData == null || rawData.length == 0) {
-	    throw new IllegalArgumentException("rawData must neither be null nor empty");
-	}
+	super(rawData);
 	if (sender == null) {
 	    throw new IllegalArgumentException("sender must not be null");
 	}
-	this.rawData = rawData;
-	index = Bits.getShort(rawData, 1);
 	this.sender = sender;
     }
 
-    /**
-     * Liefert den Index dieses Pakets.
-     *
-     * @return den Index
-     */
-    public short getIndex() {
-	return index;
+    @Override
+    protected short readIndex() {
+	return Bits.getShort(rawData, 1);
+    }
+    
+    @Override
+    protected int getInitialCmdIndex() {
+	return 4;
+    }
+    
+    @Override
+    protected NetCommand getCommand(int id) {
+	return ServerNetwork2.cmdMap[id];
+    }
+    
+    @Override
+    protected void runCommand(NetCommand cmd, byte[] data) {
+	((CTSCommand) cmd).execute(sender, data);
     }
 
     @Override
@@ -84,40 +85,5 @@ class CTSPacket implements Comparable<CTSPacket> {
 	int hash = 7;
 	hash = 97 * hash + this.index;
 	return hash;
-    }
-
-    /**
-     * Verarbeitet das Datenpaket.
-     */
-    void compute() {
-	int nextCmdIndex = 4;
-	while (nextCmdIndex < rawData.length) {
-	    int cmdID = rawData[nextCmdIndex++];
-	    CTSCommand cmd = ServerNetwork2.cmdMap[cmdID];
-	    if (cmd == null) {
-		System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
-		continue;
-	    }
-	    int dataSize = cmd.isVariableSize() ? cmd.getSize(rawData[nextCmdIndex]) : cmd.getSize((byte) 0);
-	    byte[] data = new byte[dataSize];
-	    // Daten kopieren
-	    if (nextCmdIndex + dataSize <= rawData.length) {
-		for (int i = 0; i < dataSize; i++) {
-		    data[i] = rawData[nextCmdIndex + i];
-		}
-	    } else {
-		System.out.println("WARNING: NET: illegal cmd size, insufficient data bytes! (id: " + cmdID + " size: " + dataSize);
-		// In diesem Fall ist wirklich gar nichts mehr zu retten abbrechen!
-		break;
-	    }
-	    // Ausführen
-	    try {
-		cmd.execute(sender, data);
-	    } catch (Exception ex) {
-		System.out.println("WARNING: NET: Execution of packet failed with Exception: " + ex);
-		ex.printStackTrace();
-	    }
-	    nextCmdIndex += dataSize;
-	}
     }
 }
