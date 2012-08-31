@@ -83,6 +83,14 @@ public class ServerNetworkConnection {
      * Die Queue der ankommenden Pakete.
      */
     private PriorityBlockingQueue<CTSPacket> inputQueue;
+    /**
+     * Der Port des neuen Netzwerksystems, auf dem der Client lauscht.
+     */
+    private int port;
+    /**
+     * Puffert alle Daten für den Client, bis der sie erhalten hat.
+     */
+    private ClientOutBuffer outBuffer = new ClientOutBuffer();
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
@@ -206,6 +214,9 @@ public class ServerNetworkConnection {
     void computePackets() {
 	// Schauen, ob der Index des nächsten Pakets stimmt:
 	while (true) {
+	    if (inputQueue.isEmpty()) {
+		break;
+	    }
 	    short next = (short) (lastPkgIndex + 1);
 	    if (next < 0) {
 		next = 0;
@@ -218,5 +229,26 @@ public class ServerNetworkConnection {
 		break;
 	    }
 	}
+    }
+
+    /**
+     * @return the port
+     */
+    int getPort() {
+	return port;
+    }
+
+    /**
+     * @param port the port to set
+     */
+    void setPort(int port) {
+	this.port = port;
+    }
+
+    /**
+     * @return the outBuffer
+     */
+    ClientOutBuffer getOutBuffer() {
+	return outBuffer;
     }
 }

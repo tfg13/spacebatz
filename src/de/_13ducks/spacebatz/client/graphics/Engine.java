@@ -166,6 +166,8 @@ public class Engine {
             Client.udpTick();
             // TCP-Input verarbeiten:
             Client.getMsgInterpreter().interpretAllTcpMessages();
+	    // Input neues Netzwerksystem verarbeiten
+	    Client.getNetwork2().inTick();
             // Render-Code
             render();
             // Fertig, Puffer swappen:
@@ -174,6 +176,8 @@ public class Engine {
             updateFPS();
             // Input verarbeiten:
             directInput();
+	    // Output neues Netzwerksystem:
+	    Client.getNetwork2().outTick();
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }

@@ -10,22 +10,15 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.shared.network.NetCommand;
+import de._13ducks.spacebatz.shared.network.NetPacket;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class STCPacket implements Comparable<STCPacket> {
-    
-    /**
-     * Die empfangenen Rohdaten.
-     */
-    private byte[] rawData;
-    /**
-     * Die fortlaufende (wrap-around) Indexnummer.
-     */
-    private short index;
+public class STCPacket extends NetPacket implements Comparable<STCPacket> {
     
     /**
      * Erzeugt ein neues Datenpaket aus den gegebenen Rohdaten
@@ -33,17 +26,27 @@ public class STCPacket implements Comparable<STCPacket> {
      * @param rawData die Rohdaten
      */
     STCPacket(byte[] rawData) {
-	this.rawData = rawData;
-	index = Bits.getShort(rawData, 1);
+	super(rawData);
     }
     
-    /**
-     * Liefert den Index dieses Pakets.
-     *
-     * @return den Index
-     */
-    public short getIndex() {
-	return index;
+    @Override
+    protected short readIndex() {
+	return Bits.getShort(rawData, 0);
+    }
+
+    @Override
+    protected int getInitialCmdIndex() {
+	return 3;
+    }
+    
+    @Override
+    protected NetCommand getCommand(int id) {
+	return ClientNetwork2.cmdMap[id];
+    }
+    
+    @Override
+    protected void runCommand(NetCommand cmd, byte[] data) {
+	((STCCommand) cmd).execute(data);
     }
 
     @Override
@@ -71,39 +74,4 @@ public class STCPacket implements Comparable<STCPacket> {
 	hash = 83 * hash + this.index;
 	return hash;
     }
-    
-    /**
-     * Verarbeitet das Datenpaket.
-     */
-    void compute() {
-	int nextCmdIndex = 5;
-	while (nextCmdIndex < rawData.length) {
-	    int cmdID = rawData[nextCmdIndex];
-	    STCCommand cmd = ClientNetwork2.cmdMap[cmdID];
-	    if (cmd == null) {
-		System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
-		continue;
-	    }
-	    int dataSize = cmd.isVariableSize() ? cmd.getSize(rawData[nextCmdIndex + 1]) : cmd.getSize((byte) 0);
-	    byte[] data = new byte[dataSize];
-	    // Daten kopieren
-	    if (nextCmdIndex + dataSize < rawData.length) {
-		for (int i = 1; i <= dataSize; i++) {
-		    data[i] = rawData[nextCmdIndex + i];
-		}
-	    } else {
-		System.out.println("WARNING: NET: illegal cmd size, insufficient data bytes! (id: " + cmdID + " size: " + dataSize);
-		// In diesem Fall ist wirklich gar nichts mehr zu retten abbrechen!
-		break;
-	    }
-	    // Ausführen
-	    try {
-		cmd.execute(data);
-	    } catch (Exception ex) {
-		System.out.println("WARNING: NET: Execution of packet failed with Exception: " + ex);
-		ex.printStackTrace();
-	    }
-	}
-    }
-
 }
