@@ -16,13 +16,15 @@ public class FireBulletAbility extends Ability {
     private static final long serialVersionUID = 1L;
 
     public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
-        setBaseProperty("damage", damage);
-        setBaseProperty("attackspeed", attackspeed);
-        setBaseProperty("range", range);
-        setBaseProperty("bulletpic", bulletpic);
-        setBaseProperty("bulletspeed", bulletspeed);
-        setBaseProperty("spread", spread);
-        setBaseProperty("explosionradius", explosionradius);
+        setDamage(damage);
+        setAttackspeed(attackspeed);
+        setRange(range);
+        setBulletpic(bulletpic);
+        setBulletspeed(bulletspeed);
+
+        setSpread(spread);
+        setExplosionRadius(explosionradius);
+
     }
 
     @Override
@@ -33,13 +35,13 @@ public class FireBulletAbility extends Ability {
     @Override
     public void useInAngle(Char user, double angle) {
 
-        double damage = getProperty("damage");
-        double attackspeed = getProperty("attackspeed");
-        double range = getProperty("range");
-        int bulletpic = (int) getProperty("bulletpic");
-        double bulletspeed = getProperty("bulletspeed");
-        double spread = getProperty("spread");
-        double explosionradius = getProperty("explosionradius");
+        double damage = getDamage();
+        double attackspeed = getAttackspeed();
+        double range = getRange();
+        int bulletpic = (int) getBulletpic();
+        double bulletspeed = getBulletspeed();
+        double spread = getSpread();
+        double explosionradius = getExplosionRadius();
 
 
 

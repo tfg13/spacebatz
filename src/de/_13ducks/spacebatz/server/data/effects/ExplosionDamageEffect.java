@@ -40,10 +40,9 @@ public class ExplosionDamageEffect extends Effect {
     @Override
     public void applyToPosition(double x, double y, EffectCarrier hitChar) {
         /**
-         * Hier wird der Flächenschaden berechnet und ausgeteilt.
-         * hitChar ist der Char der direkt getroffen wurde.
+         * Hier wird der Flächenschaden berechnet und ausgeteilt. hitChar ist der Char der direkt getroffen wurde.
          */
-        hitChar.decrementProperty("hitpoints", damage);
+        hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
         Server.msgSender.sendCharHit(hitChar.netID, damage, false);
         HitManager.computeBulletExplosion(damage, x, y, hitChar, radius);
     }

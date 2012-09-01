@@ -1,230 +1,436 @@
 package de._13ducks.spacebatz.shared;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
- * Verwaltet eine Liste von Eigenschaften. Jede Eigenschaft hat einen string-Namen, einen Grundwert und einen
- * Multiplikator. Der Wert einer Eigenschaft ergibt sich aus dem Grundwert mal dem Multiplikator. Nicht gesetzte
- * Eigenschaften werden als 0 interpretiert, nicht gesetzte Multiplikatoren asl 1.0 .
- *
- * Beim Addieren/subtrahieren anderer PropertyLists zu/von dieser PropertyList werden Grundwerte zu Grundwerten und
- * Multiplikatoren zu Multiplikatoren addiert/subtrahiert.
+ * Verwaltet Attribute von Chars oder Items.
  *
  * @author michael
  */
 public class PropertyList implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
+
     /**
-     * Die Liste der Grundwerte
+     * @return the serialVersionUID
      */
-    private HashMap<String, Double> baseValues;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     /**
-     * Die Liste der Multiplikatorenmodifikatoren.
-     * Das sind die Werte, um die der Standardmultiplikator 1.0 verändert wird.
+     * @param aSerialVersionUID the serialVersionUID to set
      */
-    private HashMap<String, Double> multiplicatorModifiers;
+    public static void setSerialVersionUID(long aSerialVersionUID) {
+        serialVersionUID = aSerialVersionUID;
+    }
+    /**
+     * Die Lebenspunkte
+     */
+    private int hitpoints;
+    private double damage;
+    private double attackspeed;
+    private double range;
+    private int bulletpic;
+    private double bulletspeed;
+    private double spread;
+    private double explosionRadius;
+    // PictureID setzen:
+    private int pictureId;
+    private double size;
+    private double sightrange;
+    /**
+     * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 +
+     * movespeedMultiplicatorBonus.
+     */
+    private double movespeedMultiplicatorBonus;
+    private double attackcooldown;
+    /**
+     * Der Bonus auf den Rüstungsmultiplikator. Der Rüstungsmultiplikator ist also 1.0 + armorMultiplicatorBonus.
+     */
+    private double armorMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Reichweitemultiplikator. Der Reichweitemultiplikator ist also 1.0 + rangeMultiplicatorBonus.
+     */
+    private double rangeMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Schadensmultiplikator. Der Schadensmultiplikator ist also 1.0 + damageMultiplicatorBonus.
+     */
+    private double damageMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Angriffsgeschwindigkeitsmultiplikator. Der Angriffsgeschwindigkeitsmultiplikator ist also 1.0 +
+     * attackSpeedMultiplicatorBonus.
+     */
+    private double attackSpeedMultiplicatorBonus;
+    private int pic;
+    private int itemclass;
+    private int quality;
+    private int amount;
 
     public PropertyList() {
-        baseValues = new HashMap<>();
-        multiplicatorModifiers = new HashMap<>();
     }
 
     /**
-     * Gibt den Wert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
+     * Addiert Attribute zu diesen hinzu.
      *
-     * @param name der Name der gesuchten Eigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
+     * @param other die Attribute die addiert werden.
      */
-    final public double getProperty(String name) {
-        if (baseValues.containsKey(name)) {
-            return baseValues.get(name) * 1 + getMultiplicatorModifier(name);
-        } else {
-            return 0;
-        }
+    public void addProperties(PropertyList other) {
+        hitpoints += other.getHitpoints();
+        damage += other.getDamage();
+        attackspeed += other.getAttackspeed();
+        range += other.getRange();
+        bulletpic += other.getBulletpic();
+        bulletspeed += other.getBulletspeed();
+        spread += other.getSpread();
+        explosionRadius += other.getExplosionRadius();
+        pictureId += other.getPictureId();
+        size += other.getSize();
+        sightrange += other.getSightrange();
+        movespeedMultiplicatorBonus += other.getMovespeedMultiplicatorBonus();
+        attackcooldown += other.getAttackcooldown();
+        armorMultiplicatorBonus += other.getArmorMultiplicatorBonus();
+        rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
+        damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
+        attackSpeedMultiplicatorBonus += other.getAttackSpeedMultiplicatorBonus();
+        pic += other.getPic();
+        itemclass += other.getItemclass();
+        quality += other.getQuality();
+        amount += other.getAmount();
     }
 
     /**
-     * Setzt den Grundwert einer Eigenschaft. Falls der Multiplikator dieser Eigenschaft noch nicht gesetzt ist, wird er
-     * auf 1.0 gesetzt.
+     * Subtrahiert Attribute von diesen.
      *
-     * @param name der Name der Eigenschaft, deren Grundwert gesetzt werden soll
-     * @param value der Wert, auf den der Grundwert der Eigenschaft gesetzt werden soll
+     * @param other die Attribute die abgezogen werden.
      */
-    final public void setBaseProperty(String name, double value) {
-        baseValues.put(name, value);
+    public void removeProperties(PropertyList other) {
+        hitpoints -= other.getHitpoints();
+        damage -= other.getDamage();
+        attackspeed -= other.getAttackspeed();
+        range -= other.getRange();
+        bulletpic -= other.getBulletpic();
+        bulletspeed -= other.getBulletspeed();
+        spread -= other.getSpread();
+        explosionRadius -= other.getExplosionRadius();
+        pictureId -= other.getPictureId();
+        size -= other.getSize();
+        sightrange -= other.getSightrange();
+        movespeedMultiplicatorBonus -= other.getMovespeedMultiplicatorBonus();
+        attackcooldown -= other.getAttackcooldown();
+        armorMultiplicatorBonus -= other.getArmorMultiplicatorBonus();
+        rangeMultiplicatorBonus -= other.getRangeMultiplicatorBonus();
+        damageMultiplicatorBonus -= other.getDamageMultiplicatorBonus();
+        attackSpeedMultiplicatorBonus -= other.getAttackSpeedMultiplicatorBonus();
+        pic -= other.getPic();
+        itemclass -= other.getItemclass();
+        quality -= other.getQuality();
+        amount -= other.getAmount();
     }
 
     /**
-     * Gibt den Grundwert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0
-     * zurückgegeben.
+     * Gibt eine Textdarstellung dieser Attribute zurück.
      *
-     * @param name der Name der gesuchten Grundeigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
-     */
-    final public double getBaseProperty(String name) {
-        if (baseValues.containsKey(name)) {
-            return baseValues.get(name);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Inkrementiert den Wert einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, der inkrementiert werden soll
-     * @param value der Wert, um den die Eigenschaft inkrementiert werden soll
-     */
-    final public void incrementBaseProperty(String name, double value) {
-        baseValues.put(name, getBaseProperty(name) + value);
-    }
-
-    /**
-     * Dekrementiert den Wert einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, der dekrementiert werden soll
-     * @param value der Wert, um den die Eigenschaft dekrementiert werden soll
-     */
-    final public void decrementBaseProperty(String name, double value) {
-        baseValues.put(name, getBaseProperty(name) - value);
-    }
-
-    /**
-     * Inkrementiert den Multiplikator einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, deren Multiplikator inkrementiert werden soll
-     * @param value der Wert, um den der Multiplikator der Eigenschaft inkrementiert werden soll
-     */
-    final public void incrementMutliplicatorModifier(String name, double value) {
-        multiplicatorModifiers.put(name, getMultiplicatorModifier(name) + value);
-    }
-
-    /**
-     * Dekrementiert den Multiplikator einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, deren Multiplikator dekrementiert werden soll
-     * @param value der Wert, um den der Multiplikator der Eigenschaft dekrementiert werden soll
-     */
-    final public void decrementMutliplicatorModifier(String name, double value) {
-        if (getMultiplicatorModifier(name) - value < -1) {
-            throw new IllegalArgumentException("Der Multiplikatormodifizierer darf nicht kleiner als -1 sein, sonst wird der Multiplikator negativ!");
-        } else {
-            multiplicatorModifiers.put(name, getMultiplicatorModifier(name) - value);
-        }
-    }
-
-    /**
-     * Gibt den Wert eines Multiplikators zurück. Wenn der Multiplikator nicht initialisiert wurde, wird 0
-     * zurückgegeben.
-     *
-     * @param name der Name des gesuchten Multiplikators
-     * @return der Wert des Multiplikators oder 1.0 wenn er nicht gesetzt wurde.
-     */
-    private double getMultiplicatorModifier(String name) {
-        if (multiplicatorModifiers.containsKey(name)) {
-            return multiplicatorModifiers.get(name);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Setzt den Wert eines Multiplikators.
-     *
-     * @param name der Name der Eigenschaft, deren Multiplikator gesetzt werden soll
-     * @param value der Wert, auf den der Multiplikator der Eigenschaft gesetzt werden soll
-     */
-    final public void setMutliplicatorModifier(String name, double value) {
-        if (value < -1) {
-            throw new IllegalArgumentException("Der Multiplikatormodifizierer darf nicht kleiner als -1 sein, sonst wird der Multiplikator negativ!");
-        } else {
-            multiplicatorModifiers.put(name, value);
-        }
-
-    }
-
-    /**
-     * Addiert alle Grundwete eines anderen Properties-Objekts zu den Grundewerten dieser Properties hinzu. Addiert die
-     * Multiplikatoren des anderen Properties-Objekts zu den Multiplikatoren dieser Properties hinzu.
-     *
-     * @param otherProperties die Properties die subtrahiert werden
-     */
-    public void addProperties(PropertyList otherProperties) {
-        // Grundwerte:
-        Iterator<Entry<String, Double>> iter = otherProperties.getBaseValueIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            incrementBaseProperty(next.getKey(), next.getValue());
-        }
-        // Multiplikatoren:
-        iter = otherProperties.getMulitplicatorModifierIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            incrementMutliplicatorModifier(next.getKey(), next.getValue());
-        }
-    }
-
-    /**
-     * Subtrahiert alle Grundwete eines anderen Properties-Objekts von den Grundewerten dieser Properties. Subtrahiert
-     * die Multiplikatoren des anderen Properties-Objekts von den Multiplikatoren dieser Properties.
-     *
-     * @param otherProperties die Properties, die subtrahiert werden
-     */
-    public void removeProperties(PropertyList otherProperties) {
-        // Grundwerte:
-        Iterator<Entry<String, Double>> iter = otherProperties.getBaseValueIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            decrementBaseProperty(next.getKey(), next.getValue());
-        }
-        // Multiplikatoren:
-        iter = otherProperties.getMulitplicatorModifierIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            decrementMutliplicatorModifier(next.getKey(), next.getValue());
-        }
-    }
-
-    /**
-     * Gibt einen Iterator über alle Grundwerte dieser Properties zurück
-     *
-     * @return ein Iterator über alle Grundwerte
-     */
-    private Iterator<Entry<String, Double>> getBaseValueIterator() {
-        return baseValues.entrySet().iterator();
-    }
-
-    /**
-     * Gibt einen Iterator über alle Multiplikatoren dieser Properties zurück
-     *
-     * @return ein Iterator über alle Mutliplikatoren
-     */
-    private Iterator<Entry<String, Double>> getMulitplicatorModifierIterator() {
-        return multiplicatorModifiers.entrySet().iterator();
-    }
-
-    /**
-     * Gibt eine Liste mit Werten, die in diesen Properties gesetzt sind, zurück.
-     *
-     * @return eine Liste mit Werten, die in diesen Properties gesetzt sind
+     * @return
      */
     @Override
     public String toString() {
         String text = "";
-        Iterator<Entry<String, Double>> iter = baseValues.entrySet().iterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> entry = iter.next();
-            text += entry.getKey();
-            text += " = ";
-            text += entry.getValue();
-            text += " * ";
-            text += 1 + multiplicatorModifiers.get(entry.getKey());
-            text += "\n";
-        }
+        text += "Hitpoints: " + getHitpoints();
         return text;
+    }
+
+    /**
+     * @return the damage
+     */
+    public double getDamage() {
+        return damage;
+    }
+
+    /**
+     * @return the attackspeed
+     */
+    public double getAttackspeed() {
+        return attackspeed;
+    }
+
+    /**
+     * @return the range
+     */
+    public double getRange() {
+        return range;
+    }
+
+    /**
+     * @return the bulletpic
+     */
+    public int getBulletpic() {
+        return bulletpic;
+    }
+
+    /**
+     * @return the bulletspeed
+     */
+    public double getBulletspeed() {
+        return bulletspeed;
+    }
+
+    /**
+     * @return the spread
+     */
+    public double getSpread() {
+        return spread;
+    }
+
+    /**
+     * @return the explosionRadius
+     */
+    public double getExplosionRadius() {
+        return explosionRadius;
+    }
+
+    /**
+     * @param damage the damage to set
+     */
+    public void setDamage(double damage) {
+        this.damage = damage;
+    }
+
+    /**
+     * @param attackspeed the attackspeed to set
+     */
+    public void setAttackspeed(double attackspeed) {
+        this.attackspeed = attackspeed;
+    }
+
+    /**
+     * @param range the range to set
+     */
+    public void setRange(double range) {
+        this.range = range;
+    }
+
+    /**
+     * @param bulletpic the bulletpic to set
+     */
+    public void setBulletpic(int bulletpic) {
+        this.bulletpic = bulletpic;
+    }
+
+    /**
+     * @param bulletspeed the bulletspeed to set
+     */
+    public void setBulletspeed(double bulletspeed) {
+        this.bulletspeed = bulletspeed;
+    }
+
+    /**
+     * @param spread the spread to set
+     */
+    public void setSpread(double spread) {
+        this.spread = spread;
+    }
+
+    /**
+     * @param explosionRadius the explosionRadius to set
+     */
+    public void setExplosionRadius(double explosionRadius) {
+        this.explosionRadius = explosionRadius;
+    }
+
+    /**
+     * @return the pictureId
+     */
+    public int getPictureId() {
+        return pictureId;
+    }
+
+    /**
+     * @param pictureId the pictureId to set
+     */
+    public void setPictureId(int pictureId) {
+        this.pictureId = pictureId;
+    }
+
+    /**
+     * @return the size
+     */
+    public double getSize() {
+        return size;
+    }
+
+    /**
+     * @param size the size to set
+     */
+    public void setSize(double size) {
+        this.size = size;
+    }
+
+    /**
+     * @return the sightrange
+     */
+    public double getSightrange() {
+        return sightrange;
+    }
+
+    /**
+     * @param sightrange the sightrange to set
+     */
+    public void setSightrange(double sightrange) {
+        this.sightrange = sightrange;
+    }
+
+    /**
+     * @return the attackcooldown
+     */
+    public double getAttackcooldown() {
+        return attackcooldown;
+    }
+
+    /**
+     * @param attackcooldown the attackcooldown to set
+     */
+    public void setAttackcooldown(double attackcooldown) {
+        this.attackcooldown = attackcooldown;
+    }
+
+    /**
+     * @return the hitpoints
+     */
+    public int getHitpoints() {
+        return hitpoints;
+    }
+
+    /**
+     * @param hitpoints the hitpoints to set
+     */
+    public void setHitpoints(int hitpoints) {
+        this.hitpoints = hitpoints;
+    }
+
+    /**
+     * @return the itemclass
+     */
+    public int getItemclass() {
+        return itemclass;
+    }
+
+    /**
+     * @param itemclass the itemclass to set
+     */
+    public void setItemclass(int itemclass) {
+        this.itemclass = itemclass;
+    }
+
+    /**
+     * @return the quality
+     */
+    public int getQuality() {
+        return quality;
+    }
+
+    /**
+     * @param quality the quality to set
+     */
+    public void setQuality(int quality) {
+        this.quality = quality;
+    }
+
+    /**
+     * @return the amount
+     */
+    public int getAmount() {
+        return amount;
+    }
+
+    /**
+     * @param amount the amount to set
+     */
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    /**
+     * @return the damageMultiplicatorBonus
+     */
+    public double getDamageMultiplicatorBonus() {
+        return damageMultiplicatorBonus;
+    }
+
+    /**
+     * @param damageMultiplicatorBonus the damageMultiplicatorBonus to set
+     */
+    public void setDamageMultiplicatorBonus(double damageMultiplicatorBonus) {
+        this.damageMultiplicatorBonus = damageMultiplicatorBonus;
+    }
+
+    /**
+     * @return the pic
+     */
+    public int getPic() {
+        return pic;
+    }
+
+    /**
+     * @param pic the pic to set
+     */
+    public void setPic(int pic) {
+        this.pic = pic;
+    }
+
+    /**
+     * @return the attackSpeedMultiplicatorBonus
+     */
+    public double getAttackSpeedMultiplicatorBonus() {
+        return attackSpeedMultiplicatorBonus;
+    }
+
+    /**
+     * @param attackSpeedMultiplicatorBonus the attackSpeedMultiplicatorBonus to set
+     */
+    public void setAttackSpeedMultiplicatorBonus(double attackSpeedMultiplicatorBonus) {
+        this.attackSpeedMultiplicatorBonus = attackSpeedMultiplicatorBonus;
+    }
+
+    /**
+     * @return the armorMultiplicatorBonus
+     */
+    public double getArmorMultiplicatorBonus() {
+        return armorMultiplicatorBonus;
+    }
+
+    /**
+     * @param armorMultiplicatorBonus the armorMultiplicatorBonus to set
+     */
+    public void setArmorMultiplicatorBonus(double armorMultiplicatorBonus) {
+        this.armorMultiplicatorBonus = armorMultiplicatorBonus;
+    }
+
+    /**
+     * @return the rangeMultiplicatorBonus
+     */
+    public double getRangeMultiplicatorBonus() {
+        return rangeMultiplicatorBonus;
+    }
+
+    /**
+     * @param rangeMultiplicatorBonus the rangeMultiplicatorBonus to set
+     */
+    public void setRangeMultiplicatorBonus(double rangeMultiplicatorBonus) {
+        this.rangeMultiplicatorBonus = rangeMultiplicatorBonus;
+    }
+
+    /**
+     * @return the movespeedMultiplicatorBonus
+     */
+    public double getMovespeedMultiplicatorBonus() {
+        return movespeedMultiplicatorBonus;
+    }
+
+    /**
+     * @param movespeedMultiplicatorBonus the movespeedMultiplicatorBonus to set
+     */
+    public void setMovespeedMultiplicatorBonus(double movespeedMultiplicatorBonus) {
+        this.movespeedMultiplicatorBonus = movespeedMultiplicatorBonus;
     }
 }

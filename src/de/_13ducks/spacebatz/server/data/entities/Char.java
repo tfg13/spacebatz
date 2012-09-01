@@ -39,59 +39,15 @@ public abstract class Char extends Entity {
         properties = new PropertyList();
 
         // PictureID setzen:
-        setProperty("pictureId", 0);
-        setProperty("size", Settings.CHARSIZE);
-        setProperty("hitpoints", Settings.CHARHEALTH);
-        setProperty("damage", 1);
-        setProperty("range", 10.0);
-        setProperty("sightrange", 10.0);
-        setProperty("attackcooldown", 60.0);
-    }
+        properties.setPictureId(0);
+        properties.setSize(Settings.CHARSIZE);
+        properties.setHitpoints(Settings.CHARHEALTH);
+        properties.setDamage(1);
+        properties.setRange(10.0);
+        properties.setSightrange(10.0);
+        properties.setAttackcooldown(60.0);
 
-    /**
-     * Gibt den Wert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
-     *
-     * @param name der Name der gesuchten Eigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
-     */
-    final public double getProperty(String name) {
-        return properties.getProperty(name);
-    }
 
-    /**
-     * Inkrementiert den Wert einer Eigenschaft.
-     *
-     * @param name der Name der Eigenschaft, der inkrementiert werden soll
-     * @param value der Wert, um den die Eigenschaft inkrementiert werden soll
-     * @return der neue Wert der Eigenschaft
-     */
-    final public double incrementProperty(String name, double value) {
-        properties.incrementBaseProperty(name, value);
-
-        return properties.getProperty(name);
-
-    }
-
-    /**
-     * Dekrementiert den Wert einer Eigenschaft.
-     *
-     * @param name der Name der Eigenschaft, der dekrementiert werden soll
-     * @param value der Wert, um den die Eigenschaft dekrementiert werden soll
-     * @return der neue Wert der Eigenschaft
-     */
-    final public double decrementProperty(String name, double value) {
-        properties.decrementBaseProperty(name, value);
-        return properties.getProperty(name);
-    }
-
-    /**
-     * Setzt den Wert einer Eigenschaft.
-     *
-     * @param name der Name der Eigenschaft, der gesetzt werden soll
-     * @param value der Wert, auf den die Eigenschaft gesetzt werden soll
-     */
-    final public void setProperty(String name, double value) {
-        properties.setBaseProperty(name, value);
     }
 
     /**
@@ -117,7 +73,7 @@ public abstract class Char extends Entity {
      *
      * @return die Propertie dieses Chars
      */
-    protected PropertyList getProperties() {
+    public PropertyList getProperties() {
         return properties;
     }
 }
