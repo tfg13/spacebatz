@@ -4,6 +4,9 @@
   - Es gibt Tageszeiten, die das Gameplay beeinflussen (z.B. mehr Mobs in der Nacht).
   - In der Basis kann man Items aus Materialien und Zutaten craften. (Items haben Zuffalseffekte)
   - In der Basis kann man Handeln.
+  - Rohstoffe sollen dauerhaft sinvoll sein, man soll nicht ala terraria nie wieder eisen brauchen
+  - Jeder hat einen globalen, nahezu unbegrenzten Zähler für Materialien. 
+  - Inventar für grob 20 Waffen ala Diablo, meistens für Bossdrops 
   - Materialien gewinnt man durch Bergbau.
   - Für beessere Materialien braucht man besseres Werkzeug. 
   - Wie erreichen wir verschiedene Spielstile, die alle Spaß machen?
