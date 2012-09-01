@@ -43,10 +43,6 @@ public class ServerNetwork2 {
      * Enthält sowohl interne, als auch externe Kommandos.
      */
     static CTSCommand[] cmdMap = new CTSCommand[256];
-    /**
-     * Der Index des Datenpakets, dass der Server als nächstes versendet.
-     */
-    private int nextOutIndex;
 
     /**
      * Erstellt ein neues Server-Netzwerksystem
@@ -126,19 +122,10 @@ public class ServerNetwork2 {
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
-	// DEBUG/TEST
-	if (Server.game.getTick() % 100 == 0) {
-	    // Manuell ein Paket craften:
-	    byte[] manPack = new byte[4];
-	    short packId = getAndIncrementNextIndex();
-	    Bits.putShort(manPack, 0, packId);
-	    // Das Paket hat eine gültige Nummer, keinen MAC und genau ein Kommando, nämlich NOOP.
-	    // Senden:
-	    for (Client c : Server.game.clients.values()) {
-		if (c.getNetworkConnection().getPort() != 0) {
-		    DatagramPacket dPack = new DatagramPacket(manPack, manPack.length, c.getNetworkConnection().getSocket().getInetAddress(), c.getNetworkConnection().getPort());
-		    schedulePacket(dPack, c, packId);
-		}
+	for (Client c : Server.game.clients.values()) {
+	    if (c.getNetworkConnection().getPort() != 0) {
+		DatagramPacket dPack = c.getNetworkConnection().craftPacket();
+		schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
 	    }
 	}
 
@@ -194,14 +181,6 @@ public class ServerNetwork2 {
 	}
     }
 
-    private short getAndIncrementNextIndex() {
-	short ret = (short) nextOutIndex++;
-	if (nextOutIndex >= Short.MAX_VALUE / 4) {
-	    nextOutIndex = 0;
-	}
-	return ret;
-    }
-
     /**
      * Verarbeitet die Anfrage eines Clients, dem Server zu joinen.
      *
@@ -221,8 +200,9 @@ public class ServerNetwork2 {
 	int port = Bits.getInt(packetData, 1);
 	// Craft answer:
 	byte[] connectAnswer = new byte[3];
-	connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
-	connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
+	// Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
+	connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
+	connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
 	// Vorläufig: ClientID aus altem Netzwerksystem holen:
 	//connectAnswer[2] = Server.game.newClientID();
 	boolean found = false;

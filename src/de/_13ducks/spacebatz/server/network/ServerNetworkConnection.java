@@ -12,10 +12,15 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -91,6 +96,14 @@ public class ServerNetworkConnection {
      * Puffert alle Daten für den Client, bis der sie erhalten hat.
      */
     private ClientOutBuffer outBuffer = new ClientOutBuffer();
+    /**
+     * Puffert Befehle, die gesendet werden sollen.
+     */
+    private Queue<OutgoingCommand> cmdOutQueue = new LinkedList<>();
+    /**
+     * Der Index des Datenpakets, dass der Server als nächstes versendet.
+     */
+    private int nextOutIndex;
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
@@ -250,5 +263,46 @@ public class ServerNetworkConnection {
      */
     ClientOutBuffer getOutBuffer() {
 	return outBuffer;
+    }
+
+    /**
+     * Schiebt einen Befehl in die Warteschlange für ausgehende Befehle.
+     *
+     * @param cmd
+     */
+    void queueOutgoingCommand(OutgoingCommand cmd) {
+	cmdOutQueue.add(cmd);
+    }
+
+    private short getAndIncrementNextIndex() {
+	short ret = (short) nextOutIndex++;
+	if (nextOutIndex >= Short.MAX_VALUE / 4) {
+	    nextOutIndex = 0;
+	}
+	return ret;
+    }
+
+    /**
+     * Baut aus den Befehlen, die derzeit in der Warteschlange sind ein Netzwerkpaket zusammen.
+     *
+     * @return das DatenPaket
+     */
+    DatagramPacket craftPacket() {
+	byte[] buf = new byte[512];
+	Bits.putShort(buf, 0, getAndIncrementNextIndex());
+	buf[2] = 0; // MAC
+	int pos = 3;
+	while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+	    // Befehl passt noch rein
+	    OutgoingCommand cmd = cmdOutQueue.poll();
+	    buf[pos++] = (byte) cmd.cmdID;
+	    System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
+	    pos += cmd.data.length;
+	}
+	if (pos == 3) {
+	    // NOOP einbauen
+	    buf[3] = 0;
+	}
+	return new DatagramPacket(buf, pos + 1, mySocket.getInetAddress(), port);
     }
 }
