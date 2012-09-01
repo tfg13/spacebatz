@@ -81,6 +81,10 @@ public abstract class NetPacket {
 	int nextCmdIndex = getInitialCmdIndex();
 	while (nextCmdIndex < rawData.length) {
 	    int cmdID = rawData[nextCmdIndex++];
+	    if (cmdID == 0) {
+		// NOOP
+		continue;
+	    }
 	    NetCommand cmd = getCommand(cmdID);
 	    if (cmd == null) {
 		System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
