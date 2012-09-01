@@ -8,8 +8,7 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.Iterator;
 
 /**
- * Berechnet Schaden.
- * Kümmert sich zB um das löschen von Bullets, Schaden, Effekte, etc...
+ * Berechnet Schaden. Kümmert sich zB um das löschen von Bullets, Schaden, Effekte, etc...
  *
  * @author michael
  */
@@ -29,7 +28,7 @@ public class HitManager {
         // alle Effekte des Bullets auf den Char übertragen:
         bullet.applyEffectsToChar(character);
         bullet.activateEffectsAtPosition(bullet.getX(), bullet.getY(), character);
-        if (character.getProperty("hitpoints") <= 0) {
+        if (character.getProperties().getHitpoints() <= 0) {
             Server.game.netIDMap.remove(character.netID);
             Server.entityMap.removeEntity(character);
             DropManager.dropItem(character.getX(), character.getY(), 2);
@@ -39,16 +38,15 @@ public class HitManager {
     }
 
     /**
-     * Berechnet Kollision eines Bullets mit einer Wand.
-     * Leider ist das hier nicht der Collisionmanager.
+     * Berechnet Kollision eines Bullets mit einer Wand. Leider ist das hier nicht der Collisionmanager.
      */
     public static void bulletWallCollision() {
     }
 
     /**
-     * Berechnet Flächenschaden von Bullet-Explosionen
-     * Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden kriegt
-     * 
+     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit
+     * dieser nicht nochmal Schaden kriegt
+     *
      * @param damage Schaden, den die Explosion macht (wird evtl durch Distanz abgeschwächt)
      * @param x Position
      * @param y Position
@@ -68,7 +66,9 @@ public class HitManager {
                         // Zurzeit nur Gegnern Schaden machen
                         if (c instanceof Enemy) {
                             int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
-                            c.decrementProperty("hitpoints", damagereduced);
+
+                            c.getProperties().setHitpoints(c.getProperties().getHitpoints() - damagereduced);
+
                             Server.msgSender.sendCharHit(c.netID, damagereduced, false);
                         }
                     }

@@ -21,7 +21,7 @@ public class PoisonEffect extends Effect {
 
     @Override
     public boolean tick() {
-        affectedChar.decrementProperty("hitpoints", 1);
+        affectedChar.getProperties().setHitpoints(affectedChar.getProperties().getHitpoints() - 1);
         remainingTime--;
         if (remainingTime < 0) {
             return false;

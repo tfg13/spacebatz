@@ -23,7 +23,7 @@ public class EffectManager {
             if (e instanceof EffectCarrier) {
                 ((EffectCarrier) e).tick();
                 // Wenn der Char tot ist, entfernen:
-                if (((Char) e).getProperty("hitpoints") <= 0) {
+                if (((Char) e).getProperties().getHitpoints() <= 0) {
                     iter.remove();
                 }
             }

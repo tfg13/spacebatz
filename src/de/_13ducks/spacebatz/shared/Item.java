@@ -11,7 +11,6 @@
 package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.client.InventorySlot;
-import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -97,9 +96,9 @@ public class Item implements Serializable {
         // Das Attribut in die Liste aufnehmen:
         itemAttributes.add(itemAttribute);
         // Die Bonus-Werte des Attributs zu den ItemProperties addieren:
-        bonusProperties.addProperties(itemAttribute.getBonusStats());
+        getBonusProperties().addProperties(itemAttribute.getBonusStats());
         // Die Item-Werte des Attributs hinzufügen:
-        itemProperties.addProperties(itemAttribute.getItemStats());
+        getItemProperties().addProperties(itemAttribute.getItemStats());
         if (weaponAbility != null) {
             // Die Waffenstats der Waffenfähigkeit geben, wenn dies eine Waffe ist:
             weaponAbility.addProperties(itemAttribute.getWeaponStats());
@@ -199,17 +198,6 @@ public class Item implements Serializable {
     }
 
     /**
-     * Gibt den Wert einer Item-Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0
-     * zurückgegeben.
-     *
-     * @param name der Name der gesuchten Eigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
-     */
-    public double getItemProperty(String name) {
-        return itemProperties.getProperty(name);
-    }
-
-    /**
      * Gibt die Boni des Items zurück
      *
      * @return die Boni des Items zurück
@@ -225,5 +213,12 @@ public class Item implements Serializable {
      */
     public Ability getWeaponAbility() {
         return weaponAbility;
+    }
+
+    /**
+     * @return the itemProperties
+     */
+    public PropertyList getItemProperties() {
+        return itemProperties;
     }
 }

@@ -22,13 +22,13 @@ public class HitscanAbility extends Ability {
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects = new ArrayList<>();
-    
+
     public HitscanAbility(double damage, double attackspeed, double range) {
         TrueDamageEffect damageeff = new TrueDamageEffect((int) damage);
         effects.add(damageeff);
-        setBaseProperty("range", range);
-        setBaseProperty("attackspeed", attackspeed);
-        
+        setRange(range);
+        setAttackspeed(attackspeed);
+
     }
 
     /**
@@ -38,21 +38,21 @@ public class HitscanAbility extends Ability {
      */
     @Override
     public void useInAngle(Char user, double angle) {
-        
-        double range = getProperty("range");
-        double attackspeed = getProperty("attackspeed");
+
+        double range = getRange();
+        double attackspeed = getAttackspeed();
         if (user.attackCooldownTick <= Server.game.getTick()) {
             user.attackCooldownTick = Server.game.getTick() + (int) attackspeed;
 
             // Schaden an Gegnern
             ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
-            
+
             for (Char character : charsHit) {
                 for (Effect effect : effects) {
                     effect.applyToChar((EffectCarrier) character);
                 }
-                
-                if (character.getProperty("hitpoints") <= 0) {
+
+                if (character.getProperties().getHitpoints() <= 0) {
                     Server.game.netIDMap.remove(character.netID);
                     Server.entityMap.removeEntity(character);
                     DropManager.dropItem(character.getX(), character.getY(), 2);
@@ -60,7 +60,7 @@ public class HitscanAbility extends Ability {
             }
 
             // Block abbauem
-            Position test = CollisionManager.computeHitscanOnBlocks(user, angle, user.getProperty("range"));
+            Position test = CollisionManager.computeHitscanOnBlocks(user, angle, user.getProperties().getRange());
             if (test != null) {
                 if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
                     Server.game.getLevel().destroyBlock(test.getX(), test.getY());
@@ -68,7 +68,7 @@ public class HitscanAbility extends Ability {
             }
         }
     }
-    
+
     @Override
     public void useOnPosition(Char user,
             double x,

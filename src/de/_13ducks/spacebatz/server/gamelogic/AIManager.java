@@ -69,13 +69,13 @@ public class AIManager {
             // wenn er kein Ziel hat sucht er ob eines in dwer Nähe ist:
             for (Client client : Server.game.clients.values()) {
                 Player player = client.getPlayer();
-                if (mob.getProperty("sightrange") > Distance.getDistance(mob.getX(), mob.getY(), player.getX(), player.getY())) {
+                if (mob.getProperties().getSightrange() > Distance.getDistance(mob.getX(), mob.getY(), player.getX(), player.getY())) {
                     mob.setMyTarget(player);
                 }
             }
         } else {
             // wenn er eins hat schaut er ob es noch in reichweite ist:
-            if (mob.getProperty("sightrange") * 2 < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
+            if (mob.getProperties().getSightrange() * 2 < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
                 mob.setMyTarget(null);
                 mob.stopMovement();
             } else {

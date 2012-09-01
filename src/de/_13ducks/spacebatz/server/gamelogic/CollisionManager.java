@@ -30,7 +30,9 @@ import java.util.Iterator;
 public class CollisionManager {
 
     /**
-     * Der Radius, in dem Entitys für Kolliisonsberechnung gesucht werden @TODO: gescheiten Namen finden
+     * Der Radius, in dem Entitys für Kolliisonsberechnung gesucht werden
+     *
+     * @TODO: gescheiten Namen finden
      */
     private static double HARDCODEDCOLLISIONAROUNDMERADIUS = 2.0;
 
@@ -122,7 +124,7 @@ public class CollisionManager {
 
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
         // Wert cachen:
-        double size = mover.getProperty("size");
+        double size = mover.getProperties().getSize();
         // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
@@ -163,7 +165,7 @@ public class CollisionManager {
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getProperties().getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -204,7 +206,7 @@ public class CollisionManager {
 
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
 
-                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getProperties().getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -270,7 +272,7 @@ public class CollisionManager {
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
 
-                            if (item.getItemProperty("itemclass") == 0) {
+                            if (item.getItemProperties().getItemclass() == 0) {
                                 // stackbares Item
                                 if (item.getName().equals("Money")) {
                                     collector.setMoney(collector.getMoney() + item.getAmount());
