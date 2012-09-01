@@ -34,10 +34,7 @@ public class ItemAttribute implements Serializable {
      * Die Bonuswerte, die dieses Attribut gibt. z.B. +10 Hitpoints
      */
     public PropertyList bonusStats;
-    /**
-     * Die Eigenschaften des Items, z.B. Qualität
-     */
-    public PropertyList itemStats;
+    private int quality, itemClass, pic, amount;
     /**
      * Die Eigenschaften der Waffe, z.B. Schaden
      */
@@ -58,7 +55,7 @@ public class ItemAttribute implements Serializable {
         super();
         this.name = name;
         bonusStats = new PropertyList();
-        itemStats = new PropertyList();
+
         weaponStats = new PropertyList();
     }
 
@@ -71,7 +68,7 @@ public class ItemAttribute implements Serializable {
         super();
         this.name = name;
         bonusStats = new PropertyList();
-        itemStats = new PropertyList();
+
         weaponStats = new PropertyList();
     }
 
@@ -100,15 +97,6 @@ public class ItemAttribute implements Serializable {
      */
     public PropertyList getWeaponStats() {
         return weaponStats;
-    }
-
-    /**
-     * Gibt die Weapos-Stats, die dieses Attribut gibt, zurück.
-     *
-     * @return die Waffen-Stats dieses Attributs
-     */
-    public PropertyList getItemStats() {
-        return itemStats;
     }
 
     @Override
@@ -145,5 +133,55 @@ public class ItemAttribute implements Serializable {
      */
     public void setWeaponAbility(Ability weaponAbility) {
         this.weaponAbility = weaponAbility;
+    }
+
+    /**
+     * @return the quality
+     */
+    public int getQuality() {
+        return quality;
+    }
+
+    /**
+     * @return the itemClass
+     */
+    public int getItemClass() {
+        return itemClass;
+    }
+
+    /**
+     * @return the pic
+     */
+    public int getPic() {
+        return pic;
+    }
+
+    /**
+     * @param quality the quality to set
+     */
+    public void setQuality(int quality) {
+        this.quality = quality;
+    }
+
+    /**
+     * @param itemClass the itemClass to set
+     */
+    public void setItemClass(int itemClass) {
+        this.itemClass = itemClass;
+    }
+
+    /**
+     * @param pic the pic to set
+     */
+    public void setPic(int pic) {
+        this.pic = pic;
+    }
+
+    void setAmount(int i) {
+        amount = i;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 }

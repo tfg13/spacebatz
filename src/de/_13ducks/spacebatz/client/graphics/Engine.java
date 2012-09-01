@@ -229,7 +229,7 @@ public class Engine {
                                 // Hut-Slot
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                    if ((int) selecteditem.getItemProperties().getItemclass() == 2) {
+                                    if ((int) selecteditem.getItemClass() == 2) {
                                         Client.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                         selecteditemslot = -1;
                                     }
@@ -253,7 +253,7 @@ public class Engine {
                                 // Waffenslot
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                    if ((int) selecteditem.getItemProperties().getItemclass() == 1) {
+                                    if ((int) selecteditem.getItemClass() == 1) {
                                         Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                         selecteditemslot = -1;
                                     }
@@ -475,8 +475,8 @@ public class Engine {
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
 
-            float v = 0.0625f * (int) item.getItemProperties().getPic();
-            float w = 0.0625f * ((int) item.getItemProperties().getPic() / 16);
+            float v = 0.0625f * (int) item.getPic();
+            float w = 0.0625f * ((int) item.getPic() / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.0625f);
@@ -606,8 +606,8 @@ public class Engine {
                 float width = 0.11f * tilesX;
                 float height = 0.11f * tilesY;
 
-                float v = 0.0625f * (int) item.getItemProperties().getPic();
-                float w = 0.0625f * ((int) item.getItemProperties().getPic() / 16);
+                float v = 0.0625f * (int) item.getPic();
+                float w = 0.0625f * ((int) item.getPic() / 16);
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.0625f);
@@ -657,8 +657,8 @@ public class Engine {
                         float width = 0.11f * tilesX;
                         float height = 0.11f * tilesY;
 
-                        float v = 0.0625f * (int) item.getItemProperties().getPic();
-                        float w = 0.0625f * ((int) item.getItemProperties().getPic() / 16);
+                        float v = 0.0625f * (int) item.getPic();
+                        float w = 0.0625f * ((int) item.getPic() / 16);
 
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glTexCoord2f(v, w + 0.0625f);
@@ -684,8 +684,8 @@ public class Engine {
 
             float size = 0.08f;
 
-            float v = 0.0625f * (int) item.getItemProperties().getPic();
-            float w = 0.0625f * ((int) item.getItemProperties().getPic() / 16);
+            float v = 0.0625f * (int) item.getPic();
+            float w = 0.0625f * ((int) item.getPic() / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.0625f);

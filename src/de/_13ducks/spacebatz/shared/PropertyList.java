@@ -62,10 +62,6 @@ public class PropertyList implements Serializable {
      * attackSpeedMultiplicatorBonus.
      */
     private double attackSpeedMultiplicatorBonus;
-    private int pic;
-    private int itemclass;
-    private int quality;
-    private int amount;
 
     public PropertyList() {
     }
@@ -93,10 +89,7 @@ public class PropertyList implements Serializable {
         rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
         attackSpeedMultiplicatorBonus += other.getAttackSpeedMultiplicatorBonus();
-        pic += other.getPic();
-        itemclass += other.getItemclass();
-        quality += other.getQuality();
-        amount += other.getAmount();
+
     }
 
     /**
@@ -122,10 +115,7 @@ public class PropertyList implements Serializable {
         rangeMultiplicatorBonus -= other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus -= other.getDamageMultiplicatorBonus();
         attackSpeedMultiplicatorBonus -= other.getAttackSpeedMultiplicatorBonus();
-        pic -= other.getPic();
-        itemclass -= other.getItemclass();
-        quality -= other.getQuality();
-        amount -= other.getAmount();
+
     }
 
     /**
@@ -309,48 +299,6 @@ public class PropertyList implements Serializable {
     }
 
     /**
-     * @return the itemclass
-     */
-    public int getItemclass() {
-        return itemclass;
-    }
-
-    /**
-     * @param itemclass the itemclass to set
-     */
-    public void setItemclass(int itemclass) {
-        this.itemclass = itemclass;
-    }
-
-    /**
-     * @return the quality
-     */
-    public int getQuality() {
-        return quality;
-    }
-
-    /**
-     * @param quality the quality to set
-     */
-    public void setQuality(int quality) {
-        this.quality = quality;
-    }
-
-    /**
-     * @return the amount
-     */
-    public int getAmount() {
-        return amount;
-    }
-
-    /**
-     * @param amount the amount to set
-     */
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    /**
      * @return the damageMultiplicatorBonus
      */
     public double getDamageMultiplicatorBonus() {
@@ -362,20 +310,6 @@ public class PropertyList implements Serializable {
      */
     public void setDamageMultiplicatorBonus(double damageMultiplicatorBonus) {
         this.damageMultiplicatorBonus = damageMultiplicatorBonus;
-    }
-
-    /**
-     * @return the pic
-     */
-    public int getPic() {
-        return pic;
-    }
-
-    /**
-     * @param pic the pic to set
-     */
-    public void setPic(int pic) {
-        this.pic = pic;
     }
 
     /**

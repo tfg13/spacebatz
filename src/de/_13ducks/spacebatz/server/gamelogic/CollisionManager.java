@@ -272,7 +272,7 @@ public class CollisionManager {
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
 
-                            if (item.getItemProperties().getItemclass() == 0) {
+                            if (item.getItemClass() == 0) {
                                 // stackbares Item
                                 if (item.getName().equals("Money")) {
                                     collector.setMoney(collector.getMoney() + item.getAmount());

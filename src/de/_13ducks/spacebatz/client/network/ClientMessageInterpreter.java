@@ -245,7 +245,7 @@ public class ClientMessageInterpreter {
                 int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
                 if (clientID4 == Client.getClientID()) {
                     Item item = Client.getInventoryItems().get(netIDItem3);
-                    Client.getEquippedItems().getEquipslots()[(int) item.getItemProperties().getItemclass()][selslot] = item;
+                    Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
                     for (int i = 0; i < Client.getInventorySlots().length; i++) {
                         if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
                             Client.getInventorySlots()[i] = null;

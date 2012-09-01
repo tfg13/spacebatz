@@ -50,7 +50,7 @@ public class DropManager {
 
         ArrayList<ItemAttribute> dropableitems = new ArrayList<>();
         for (int i = 0; i < itemtypelist.size(); i++) {
-            int itemquality = (int) itemtypelist.get(i).itemStats.getQuality();
+            int itemquality = (int) itemtypelist.get(i).getQuality();
             //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
             if (itemquality <= droplevel && itemquality != 0) {
                 dropableitems.add(itemtypelist.get(i));
@@ -59,7 +59,7 @@ public class DropManager {
         ItemAttribute stats = dropableitems.get(random.nextInt(dropableitems.size()));
         Item item = new Item(stats.getName(), stats, x, y, Server.game.newNetID());
 
-        if ((int) stats.itemStats.getItemclass() != 0) {
+        if ((int) stats.getItemClass() != 0) {
             item = addAttributes(item, droplevel);
         } else {
             if (stats.getName().equals("Money")) {
@@ -103,7 +103,7 @@ public class DropManager {
 
         for (int i = 0; i < attributesofrightclass.size(); i++) {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
-            double test = attributesofrightclass.get(i).itemStats.getQuality();
+            double test = attributesofrightclass.get(i).getQuality();
             if (test <= droplevel) {
                 qualityallowedattributes.add(attributesofrightclass.get(i));
             }
