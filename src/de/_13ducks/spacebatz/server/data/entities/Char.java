@@ -40,7 +40,6 @@ public abstract class Char extends Entity {
 
         // PictureID setzen:
         properties.setPictureId(0);
-        properties.setSize(Settings.CHARSIZE);
         properties.setHitpoints(Settings.CHARHEALTH);
         properties.setDamage(1);
         properties.setRange(10.0);

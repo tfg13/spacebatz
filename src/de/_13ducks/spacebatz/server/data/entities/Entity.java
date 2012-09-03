@@ -10,12 +10,14 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
- * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und Bewegungsinformationen
+ * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und
+ * Bewegungsinformationen
  *
  * @author michael
  */
@@ -65,6 +67,10 @@ public class Entity {
      * Die aktuelle Positon auf der EntityMap.
      */
     private int[] entityMapPos;
+    /**
+     * Die Größe der Entity für Kollisionsberechnung.
+     */
+    private double size;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -80,6 +86,7 @@ public class Entity {
         entityMapPos = new int[2];
         Server.entityMap.insertEntity(this);
         this.netID = netID;
+        size = Settings.CHARSIZE;
     }
 
     /**
@@ -92,9 +99,9 @@ public class Entity {
     }
 
     /**
-     * Setzt die Position dieser Einheit auf den angegebenen Wert.
-     * Wenn entweder x oder y (nicht beide!) NaN sind, wird die Bewegung nur in eine Richtung angehalten.
-     * Darf nicht aufgerufen werden, wenn sich die Einheit gar nicht bewegt.
+     * Setzt die Position dieser Einheit auf den angegebenen Wert. Wenn entweder x oder y (nicht beide!) NaN sind, wird
+     * die Bewegung nur in eine Richtung angehalten. Darf nicht aufgerufen werden, wenn sich die Einheit gar nicht
+     * bewegt.
      *
      * @param x die X-Stop-Koordinate oder NaN
      * @param y die Y-Stop-Koordinate oder NaN
@@ -133,9 +140,9 @@ public class Entity {
     }
 
     /**
-     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach beendet. Es passiert nichts, wenn die Einheit
-     * schon steht.
-     * Nicht zur Kollisionsberechnung geeignet, da die Einheit die Bewegung dieses Ticks noch vollständig ausführt. Besser setStop verwenden.
+     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach
+     * beendet. Es passiert nichts, wenn die Einheit schon steht. Nicht zur Kollisionsberechnung geeignet, da die
+     * Einheit die Bewegung dieses Ticks noch vollständig ausführt. Besser setStop verwenden.
      */
     public void stopMovement() {
         posX = getX();
@@ -145,7 +152,8 @@ public class Entity {
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit
+     * ein.
      *
      * @return Die echte Position X dieses Chars.
      */
@@ -157,7 +165,8 @@ public class Entity {
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit ein.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit
+     * ein.
      *
      * @return Die echte Position X dieses Chars.
      */
@@ -169,8 +178,9 @@ public class Entity {
     }
 
     /**
-     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet falls nötig die aktuelle Position zuerst
-     * neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
+     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet
+     * falls nötig die aktuelle Position zuerst neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht
+     * beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
         if (x == 0 && y == 0) {
@@ -194,8 +204,9 @@ public class Entity {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit neu, damit Geschwindigkeitsänderungen
-     * während der Bewegung möglich sind. Sollte daher wenn möglich vor dem Start der Bewegung aufgerufen werden.
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit
+     * neu, damit Geschwindigkeitsänderungen während der Bewegung möglich sind. Sollte daher wenn möglich vor dem Start
+     * der Bewegung aufgerufen werden.
      *
      * @param speed die neue Geschwindigkeit > 0
      */
@@ -270,8 +281,9 @@ public class Entity {
     }
 
     /**
-     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten! Implementierungen von Entity müssen diese Methode
-     * überschreiben und super.byteArraySize() + Eigenbedarf zurückgeben!
+     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten!
+     * Implementierungen von Entity müssen diese Methode überschreiben und super.byteArraySize() + Eigenbedarf
+     * zurückgeben!
      *
      * @return die größe des byte[]'s, das netPack() braucht.
      */
@@ -280,9 +292,10 @@ public class Entity {
     }
 
     /**
-     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset
-     * groß sein. Unterklassen müssen diese Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich
-     * stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann selber den Puffer ab super.byteArraySize() + offset befüllen.
+     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array
+     * muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese Methode überschreiben, falls sie
+     * irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden
+     * müssen erst super.netPack() aufrufen, und dann selber den Puffer ab super.byteArraySize() + offset befüllen.
      *
      * @param b der Puffer, in den geschrieben ist.
      */
@@ -292,9 +305,8 @@ public class Entity {
     }
 
     /**
-     * Liefert die Richtung in die sich diese Einheit gerade bewegt.
-     * Die Angabe ist eine Fließkommazahl von 0 bis 2PI im üblichen Einheitskreisverfahren.
-     * Das Verhalten, wenn die Einheit sich nicht bewegt ist nicht definiert.
+     * Liefert die Richtung in die sich diese Einheit gerade bewegt. Die Angabe ist eine Fließkommazahl von 0 bis 2PI im
+     * üblichen Einheitskreisverfahren. Das Verhalten, wenn die Einheit sich nicht bewegt ist nicht definiert.
      *
      * @return die Richtung in die sich diese Einheit gerade bewegt
      */
@@ -322,5 +334,12 @@ public class Entity {
      */
     public void setEntityMapPos(int[] entityMapPos) {
         this.entityMapPos = entityMapPos;
+    }
+
+    /**
+     * @return the size
+     */
+    public double getSize() {
+        return size;
     }
 }

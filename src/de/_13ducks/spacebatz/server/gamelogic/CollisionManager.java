@@ -124,7 +124,7 @@ public class CollisionManager {
 
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
         // Wert cachen:
-        double size = mover.getProperties().getSize();
+        double size = mover.getSize();
         // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
@@ -165,7 +165,7 @@ public class CollisionManager {
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getProperties().getSize() / 2.0) + 0.5)) {
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -206,7 +206,7 @@ public class CollisionManager {
 
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
 
-                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getProperties().getSize() / 2.0) + 0.5)) {
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {

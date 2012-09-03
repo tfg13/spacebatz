@@ -37,7 +37,6 @@ public class PropertyList implements Serializable {
     private double explosionRadius;
     // PictureID setzen:
     private int pictureId;
-    private double size;
     private double sightrange;
     /**
      * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 +
@@ -81,7 +80,6 @@ public class PropertyList implements Serializable {
         spread += other.getSpread();
         explosionRadius += other.getExplosionRadius();
         pictureId += other.getPictureId();
-        size += other.getSize();
         sightrange += other.getSightrange();
         movespeedMultiplicatorBonus += other.getMovespeedMultiplicatorBonus();
         attackcooldown += other.getAttackcooldown();
@@ -107,7 +105,6 @@ public class PropertyList implements Serializable {
         spread -= other.getSpread();
         explosionRadius -= other.getExplosionRadius();
         pictureId -= other.getPictureId();
-        size -= other.getSize();
         sightrange -= other.getSightrange();
         movespeedMultiplicatorBonus -= other.getMovespeedMultiplicatorBonus();
         attackcooldown -= other.getAttackcooldown();
@@ -240,20 +237,6 @@ public class PropertyList implements Serializable {
      */
     public void setPictureId(int pictureId) {
         this.pictureId = pictureId;
-    }
-
-    /**
-     * @return the size
-     */
-    public double getSize() {
-        return size;
-    }
-
-    /**
-     * @param size the size to set
-     */
-    public void setSize(double size) {
-        this.size = size;
     }
 
     /**
