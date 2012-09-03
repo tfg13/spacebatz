@@ -43,7 +43,6 @@ public class PropertyList implements Serializable {
      * movespeedMultiplicatorBonus.
      */
     private double movespeedMultiplicatorBonus;
-    private double attackcooldown;
     /**
      * Der Bonus auf den Rüstungsmultiplikator. Der Rüstungsmultiplikator ist also 1.0 + armorMultiplicatorBonus.
      */
@@ -82,7 +81,7 @@ public class PropertyList implements Serializable {
         pictureId += other.getPictureId();
         sightrange += other.getSightrange();
         movespeedMultiplicatorBonus += other.getMovespeedMultiplicatorBonus();
-        attackcooldown += other.getAttackcooldown();
+
         armorMultiplicatorBonus += other.getArmorMultiplicatorBonus();
         rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
@@ -107,7 +106,7 @@ public class PropertyList implements Serializable {
         pictureId -= other.getPictureId();
         sightrange -= other.getSightrange();
         movespeedMultiplicatorBonus -= other.getMovespeedMultiplicatorBonus();
-        attackcooldown -= other.getAttackcooldown();
+
         armorMultiplicatorBonus -= other.getArmorMultiplicatorBonus();
         rangeMultiplicatorBonus -= other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus -= other.getDamageMultiplicatorBonus();
@@ -251,20 +250,6 @@ public class PropertyList implements Serializable {
      */
     public void setSightrange(double sightrange) {
         this.sightrange = sightrange;
-    }
-
-    /**
-     * @return the attackcooldown
-     */
-    public double getAttackcooldown() {
-        return attackcooldown;
-    }
-
-    /**
-     * @param attackcooldown the attackcooldown to set
-     */
-    public void setAttackcooldown(double attackcooldown) {
-        this.attackcooldown = attackcooldown;
     }
 
     /**

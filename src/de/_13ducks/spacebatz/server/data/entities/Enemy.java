@@ -54,7 +54,7 @@ public class Enemy extends EffectCarrier {
         getProperties().setDamage(estats.getDamage());
         getProperties().setSightrange(estats.getSightrange());
         getProperties().setPictureId(estats.getPicture());
-        getProperties().setAttackcooldown(60.0);
+        
 
         speed = estats.getSpeed();
         this.enemylevel = estats.getEnemylevel();

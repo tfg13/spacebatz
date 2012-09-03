@@ -44,7 +44,7 @@ public abstract class Char extends Entity {
         properties.setDamage(1);
         properties.setRange(10.0);
         properties.setSightrange(10.0);
-        properties.setAttackcooldown(60.0);
+
 
 
     }
