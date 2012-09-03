@@ -29,13 +29,13 @@ public class OutgoingCommand {
     
     /**
      * Erzeugt einen neuen ausgehenden Befehl
-     * @param cmdID die Befehlsnummer, muss eine gültige custom-cmdID sein (siehe network_docs)
+     * @param cmdID die Befehlsnummer, muss eine gültige custom-cmdID sein (siehe network_docs) derzeit noch egal
      * @param data die Daten. Maximalgröße: 128. Kann leer, darf aber nicht null sein.
      */
     public OutgoingCommand(int cmdID, byte[] data) {
-	if (cmdID < 1 || cmdID > 0x80) {
+	/*if (cmdID < 1 || cmdID > 0x80) {
 	    throw new IllegalArgumentException("Illegal cmdID");
-	}
+	}*/
 	if (data == null || data.length > 128) {
 	    throw new IllegalArgumentException("Illegal data segment");
 	}

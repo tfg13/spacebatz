@@ -270,7 +270,7 @@ public class ServerNetworkConnection {
      *
      * @param cmd
      */
-    void queueOutgoingCommand(OutgoingCommand cmd) {
+    public void queueOutgoingCommand(OutgoingCommand cmd) {
 	cmdOutQueue.add(cmd);
     }
 
