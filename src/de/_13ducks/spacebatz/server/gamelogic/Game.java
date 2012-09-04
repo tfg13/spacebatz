@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -194,8 +195,13 @@ public class Game {
         Server.entityMap.calculateEntityPositions();
         // Gegner Spawnen:
         EnemySpawner.tick();
-        // Effekte berechnen:
-        EffectManager.computeEffects();
+        // den tick für alle Entities berechnen:
+        Iterator<Entity> iter = getEntityManager().getEntityIterator();
+        while (iter.hasNext()) {
+            Entity entity = iter.next();
+            entity.tick();
+        }
+
     }
 
     /**

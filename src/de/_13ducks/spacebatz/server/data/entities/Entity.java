@@ -361,4 +361,10 @@ public class Entity {
     public void dispose() {
         this.isDisposable = true;
     }
+
+    /**
+     * Berechnet einen gameTick für die Entity.
+     */
+    public void tick() {
+    }
 }
