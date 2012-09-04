@@ -276,7 +276,7 @@ public class UDPConnection {
             Client client = iter.next();
             //TODO: Berechnen, welche entitys dieser client wirklich sieht:
             ArrayList<Entity> update = new ArrayList<>();
-            Iterator<Entity> iterE = Server.game.netIDMap.values().iterator();
+            Iterator<Entity> iterE = Server.game.getEntityManager().netIDMap.values().iterator();
             while (iterE.hasNext()) {
                 Entity e = iterE.next();
                 // Kennt der Client diese Einheit?
@@ -303,7 +303,7 @@ public class UDPConnection {
             Iterator<Entity> clientCharIter = client.getContext().knownEntiysIterator();
             while (clientCharIter.hasNext()) {
                 Entity e = clientCharIter.next();
-                if (!Server.game.netIDMap.containsKey(e.netID)) {
+                if (!Server.game.getEntityManager().netIDMap.containsKey(e.netID)) {
                     // Gibts nicht mehr, löschen
                     sendCharEntity(client, e);
                 }

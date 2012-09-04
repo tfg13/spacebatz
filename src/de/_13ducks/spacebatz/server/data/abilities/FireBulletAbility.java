@@ -54,7 +54,7 @@ public class FireBulletAbility extends Ability {
             Bullet bullet = new Bullet(Server.game.getTick(), lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
             //bullet.addEffect(new TrueDamageEffect((int) damage));
             bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
-            Server.game.netIDMap.put(bullet.netID, bullet);
+            Server.game.getEntityManager().netIDMap.put(bullet.netID, bullet);
         }
     }
 }

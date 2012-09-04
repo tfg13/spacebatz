@@ -39,7 +39,7 @@ public class EnemySpawner {
         Random random = new Random();
         if (Server.game.getTick() % (1000 / Settings.SERVER_TICKRATE / Settings.SERVER_SPAWNER_EXECSPERSEC) == 0) {
             // Alle Spieler durchgehen
-            for (Entity e : Server.game.netIDMap.values()) {
+            for (Entity e : Server.game.getEntityManager().netIDMap.values()) {
                 if (e instanceof Player) {
                     Player player = (Player) e;
                     // Das Gebiet dieses Spielers finden
@@ -242,7 +242,7 @@ public class EnemySpawner {
                 }
                 
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
-                Server.game.netIDMap.put(enem.netID, enem);
+                Server.game.getEntityManager().netIDMap.put(enem.netID, enem);
                 enem.setMyTarget(player);
             }
         }

@@ -29,11 +29,11 @@ public class HitManager {
         bullet.applyEffectsToChar(character);
         bullet.activateEffectsAtPosition(bullet.getX(), bullet.getY(), character);
         if (character.getProperties().getHitpoints() <= 0) {
-            Server.game.netIDMap.remove(character.netID);
+            Server.game.getEntityManager().netIDMap.remove(character.netID);
             Server.entityMap.removeEntity(character);
             DropManager.dropItem(character.getX(), character.getY(), 2);
         }
-        Server.game.netIDMap.remove(bullet.netID);
+        Server.game.getEntityManager().netIDMap.remove(bullet.netID);
         Server.entityMap.removeEntity(bullet);
     }
 
@@ -54,7 +54,7 @@ public class HitManager {
      * @param radius der Explosionsradius
      */
     public static void computeBulletExplosion(int damage, double x, double y, Char charhit, double radius) {
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().netIDMap.values().iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
