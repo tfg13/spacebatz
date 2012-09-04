@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.data.abilities;
 
+import de._13ducks.spacebatz.shared.WeaponStats;
+
 /**
  * Eine Fähigkeit, die WeaponStats hat die verbessert werden können.
  *

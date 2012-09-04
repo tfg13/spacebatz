@@ -12,7 +12,6 @@ package de._13ducks.spacebatz.shared;
 
 import com.rits.cloning.Cloner;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
-import de._13ducks.spacebatz.server.data.abilities.WeaponStats;
 import java.io.Serializable;
 import java.util.Objects;
 

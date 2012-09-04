@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.data.abilities;
+package de._13ducks.spacebatz.shared;
 
 import java.io.Serializable;
 
