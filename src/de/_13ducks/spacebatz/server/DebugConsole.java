@@ -205,7 +205,7 @@ public class DebugConsole {
                 // Befehle:
                 switch (words[0]) {
                     case "entitystats":
-                        outStream.println("Entities in netIDMap: " + Server.game.getEntityManager().netIDMap.size());
+                        outStream.println("Entities in netIDMap: " + Server.game.getEntityManager().getEntityCount());
                         break;
                     case "entities-at":
                         double x = Double.valueOf(words[1]);
@@ -309,7 +309,7 @@ public class DebugConsole {
                     case "spawnenemy":
                         for (Client c : Server.game.clients.values()) {
                             Enemy e1 = new Enemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1);
-                            Server.game.getEntityManager().netIDMap.put(e1.netID, e1);
+                            Server.game.getEntityManager().addEntity(e1.netID, e1);
                         }
                         break;
                     case "help":

@@ -126,7 +126,7 @@ public class Game {
             Server.msgSender.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
-            getEntityManager().netIDMap.put(player.netID, player);
+            getEntityManager().addEntity(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
             // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
             Server.serverNetwork.udp.addClient(client);
@@ -187,7 +187,7 @@ public class Game {
      */
     public void gameTick() {
         // KI berechnen:
-        AIManager.computeMobBehavior(getEntityManager().netIDMap.values());
+        AIManager.computeMobBehavior(getEntityManager().getValues());
         // Kollision berechnen:
         CollisionManager.computeCollision();
         // EinheitenPositionen neue berechnen:

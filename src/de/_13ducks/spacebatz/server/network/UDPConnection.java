@@ -27,8 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Senden und verarbeitet UDP-Pakete auf Server-Seite. Lässt sich nicht direkt steuern, versendet automatisch "schnelle" Änderungen bei jedem Tick. Eingehender
- * Input wird gepuffert und beim Tick verarbeitet. Die tick()-Methode muss bei jedem Server-Gametick einmal aufgerufen werden.
+ * Senden und verarbeitet UDP-Pakete auf Server-Seite. Lässt sich nicht direkt steuern, versendet automatisch "schnelle"
+ * Änderungen bei jedem Tick. Eingehender Input wird gepuffert und beim Tick verarbeitet. Die tick()-Methode muss bei
+ * jedem Server-Gametick einmal aufgerufen werden.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -63,7 +64,6 @@ public class UDPConnection {
             clientMap = new ConcurrentHashMap<>();
             // InputThread starten
             inputQueuer = new Thread(new Runnable() {
-
                 @Override
                 public void run() {
                     try {
@@ -99,16 +99,15 @@ public class UDPConnection {
     }
 
     /**
-     * Startet das UDP-Netzwerksystem.
-     * Ab jetzt emfängt und sender der Server UDP-Nachrichten.
+     * Startet das UDP-Netzwerksystem. Ab jetzt emfängt und sender der Server UDP-Nachrichten.
      */
     public void start() {
         inputQueuer.start();
     }
 
     /**
-     * Verarbeitet den bis zum Zeitpunkt des Aufrufs dieser Methode eingegangenen Input von den Clients.
-     * Möglicherweise auch noch Pakete, die während der Verarbeitung der ältesten Pakete reinkommen. Das ist aber nicht garantiert.
+     * Verarbeitet den bis zum Zeitpunkt des Aufrufs dieser Methode eingegangenen Input von den Clients. Möglicherweise
+     * auch noch Pakete, die während der Verarbeitung der ältesten Pakete reinkommen. Das ist aber nicht garantiert.
      */
     public void receive() {
         syncClients();
@@ -116,18 +115,17 @@ public class UDPConnection {
     }
 
     /**
-     * Synchronisiert die Clients, indem alle Informationen an sie gesendet werden (UDP), die sie brauchen.
-     * Berechnet anhand des Client-Sichtframes, dem MovementSystem und dem ClientContext selbst, was die Clients wissen müssen.
+     * Synchronisiert die Clients, indem alle Informationen an sie gesendet werden (UDP), die sie brauchen. Berechnet
+     * anhand des Client-Sichtframes, dem MovementSystem und dem ClientContext selbst, was die Clients wissen müssen.
      */
     public void send() {
         sendData();
     }
 
     /**
-     * Fügt einen Client zum (laufenden) Spiel hinzu.
-     * Der Gametick dieses Clients wird anschließend synchronisiert.
-     * Sobald die synchronisierung abgeschlossen ist, wird der Client beim UDP-Senden berücksichtigt.
-     * Erst dann wird er auch in die clientMap des Servers eingetragen.
+     * Fügt einen Client zum (laufenden) Spiel hinzu. Der Gametick dieses Clients wird anschließend synchronisiert.
+     * Sobald die synchronisierung abgeschlossen ist, wird der Client beim UDP-Senden berücksichtigt. Erst dann wird er
+     * auch in die clientMap des Servers eingetragen.
      *
      * @param client Das Game-Client-Objekt
      */
@@ -141,8 +139,7 @@ public class UDPConnection {
     }
 
     /**
-     * (Re-)Synct alle Clients, die in der Sync-Liste stehen.
-     * Sendet ein Sync-Paket.
+     * (Re-)Synct alle Clients, die in der Sync-Liste stehen. Sendet ein Sync-Paket.
      */
     private void syncClients() {
         for (Client c : syncClients) {
@@ -155,9 +152,8 @@ public class UDPConnection {
     }
 
     /**
-     * Wir aufgerufen, wenn ein Client-TickSync-ACK ankommt.
-     * Setzt den Client auf erfolgreich synchronisiert.
-     * Kann gefahrlos mehrfach aufgerufen werden.
+     * Wir aufgerufen, wenn ein Client-TickSync-ACK ankommt. Setzt den Client auf erfolgreich synchronisiert. Kann
+     * gefahrlos mehrfach aufgerufen werden.
      *
      * @param clientID die clientID des clients.
      */
@@ -182,10 +178,10 @@ public class UDPConnection {
     }
 
     /**
-     * Verarbeitet gepufferten Input von den Clients.
-     * Pakete werden in FIFO-Reihenfolge verarbeitet.
-     * Es ist garantiert, dass alle Pakete verarbeitet werden, die bis zum Aufruf dieser Methode angekommen sind.
-     * Es ist möglich, aber nicht garantiert, dass Pakete, die während der Verarbeitung dieser Methode noch ankommen, auch noch beachtet werden.
+     * Verarbeitet gepufferten Input von den Clients. Pakete werden in FIFO-Reihenfolge verarbeitet. Es ist garantiert,
+     * dass alle Pakete verarbeitet werden, die bis zum Aufruf dieser Methode angekommen sind. Es ist möglich, aber
+     * nicht garantiert, dass Pakete, die während der Verarbeitung dieser Methode noch ankommen, auch noch beachtet
+     * werden.
      */
     private void computeInput() {
         Iterator<DatagramPacket> iter = queue.iterator();
@@ -276,7 +272,7 @@ public class UDPConnection {
             Client client = iter.next();
             //TODO: Berechnen, welche entitys dieser client wirklich sieht:
             ArrayList<Entity> update = new ArrayList<>();
-            Iterator<Entity> iterE = Server.game.getEntityManager().netIDMap.values().iterator();
+            Iterator<Entity> iterE = Server.game.getEntityManager().getEntityIterator();
             while (iterE.hasNext()) {
                 Entity e = iterE.next();
                 // Kennt der Client diese Einheit?
@@ -303,7 +299,7 @@ public class UDPConnection {
             Iterator<Entity> clientCharIter = client.getContext().knownEntiysIterator();
             while (clientCharIter.hasNext()) {
                 Entity e = clientCharIter.next();
-                if (!Server.game.getEntityManager().netIDMap.containsKey(e.netID)) {
+                if (!Server.game.getEntityManager().containsEntity(e.netID)) {
                     // Gibts nicht mehr, löschen
                     sendCharEntity(client, e);
                 }

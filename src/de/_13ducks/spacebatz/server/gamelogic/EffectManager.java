@@ -17,7 +17,7 @@ public class EffectManager {
      * Berechnet alle Effekte.
      */
     public static void computeEffects() {
-        Iterator<Entity> iter = Server.game.getEntityManager().netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof EffectCarrier) {

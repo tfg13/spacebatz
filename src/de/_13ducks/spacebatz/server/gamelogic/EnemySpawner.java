@@ -31,74 +31,73 @@ public class EnemySpawner {
     private static HashMap<Player, PlayerSpawnHistory> history = new HashMap<>();
 
     /**
-     * Muss jeden Gametick aufgerufen werden.
-     * Entscheidet für alle Spieler, ob neue Gegner benötigt werden
-     * Rechner nicht bei jedem Tick.
+     * Muss jeden Gametick aufgerufen werden. Entscheidet für alle Spieler, ob neue Gegner benötigt werden Rechner nicht
+     * bei jedem Tick.
      */
     public static void tick() {
         Random random = new Random();
         if (Server.game.getTick() % (1000 / Settings.SERVER_TICKRATE / Settings.SERVER_SPAWNER_EXECSPERSEC) == 0) {
             // Alle Spieler durchgehen
-            for (Entity e : Server.game.getEntityManager().netIDMap.values()) {
+            for (Entity e : Server.game.getEntityManager().getValues()) {
                 if (e instanceof Player) {
                     Player player = (Player) e;
                     // Das Gebiet dieses Spielers finden
                     Zone zone = Zone.getMostSpecializedZone(player.getX(), player.getY());
-		    // In dieser Zone überhaupt spawnen?
-		    if (isSpawnEnabled(zone)) {
-			// Die Spawngeschichte dieses Spielers finden
-			PlayerSpawnHistory h = getHistory(player);
-			// Entscheiden, ob ein Gegner gespawnt werden soll.
+                    // In dieser Zone überhaupt spawnen?
+                    if (isSpawnEnabled(zone)) {
+                        // Die Spawngeschichte dieses Spielers finden
+                        PlayerSpawnHistory h = getHistory(player);
+                        // Entscheiden, ob ein Gegner gespawnt werden soll.
 			/*
-			* Die Spawnformel ist:
-			*
-			* s = (tsl/rate)*Math.random()
-			* Wenn s > .5 ist wird gespawnt
-			*
-			* tsl ist die Zeit in Millisekunden seit dem letzten Spawnen
-			* rate ist die Spawnrate des Sektors. Die Durchschnittliche Wartezeit zwischen 2 spawnenden Einheiten.
-			*/
-			if (h.inWaveSpawn()) {
-			    // es wird gerade eine Gegnerwelle gespawnt -> schnelles Spawnen
-			    if (h.timeSinceLastSpawn() / 300 * random.nextDouble() > .5) {
-				// Spawnen!
-				h.spawn(player);
-			    }
-			} else {
-			    // es wird gerade keine Gegnerwelle gespawnt -> lange bis zum nächsten Spawnen
-			    if (h.timeSinceLastSpawn() / getSpawnRate(zone) * random.nextDouble() > .5) {
-				// Anzahl der Gegner in dieser Welle festlegen
-				int enemywave = Math.min((int) Math.abs(random.nextGaussian() * 2.5) + 1, 6);
-				h.startWaveSpawn(enemywave);
-				// Spawnen!
-				h.spawn(player);
-			    }
-			}
-		    }
-		}
+                         * Die Spawnformel ist:
+                         *
+                         * s = (tsl/rate)*Math.random()
+                         * Wenn s > .5 ist wird gespawnt
+                         *
+                         * tsl ist die Zeit in Millisekunden seit dem letzten Spawnen
+                         * rate ist die Spawnrate des Sektors. Die Durchschnittliche Wartezeit zwischen 2 spawnenden Einheiten.
+                         */
+                        if (h.inWaveSpawn()) {
+                            // es wird gerade eine Gegnerwelle gespawnt -> schnelles Spawnen
+                            if (h.timeSinceLastSpawn() / 300 * random.nextDouble() > .5) {
+                                // Spawnen!
+                                h.spawn(player);
+                            }
+                        } else {
+                            // es wird gerade keine Gegnerwelle gespawnt -> lange bis zum nächsten Spawnen
+                            if (h.timeSinceLastSpawn() / getSpawnRate(zone) * random.nextDouble() > .5) {
+                                // Anzahl der Gegner in dieser Welle festlegen
+                                int enemywave = Math.min((int) Math.abs(random.nextGaussian() * 2.5) + 1, 6);
+                                h.startWaveSpawn(enemywave);
+                                // Spawnen!
+                                h.spawn(player);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
      * Prüft, ob in diesem Gebiet überhaupt Gegner gespawnt werden sollen
+     *
      * @param zone die Zone
      * @return true, wenn Spawnen erlaubt
      */
     private static boolean isSpawnEnabled(Zone zone) {
-	int val = 1; // Notfall-Default ist an
-	Object spawnOn = zone.getValue("spawn_enabled");
-	if (spawnOn != null) {
-	    val = (Integer) spawnOn;
-	} else {
-	    System.out.println("WARNING: global zone does not define \"spawn_enabled\" (i)");
-	}
-	return val != 0;
+        int val = 1; // Notfall-Default ist an
+        Object spawnOn = zone.getValue("spawn_enabled");
+        if (spawnOn != null) {
+            val = (Integer) spawnOn;
+        } else {
+            System.out.println("WARNING: global zone does not define \"spawn_enabled\" (i)");
+        }
+        return val != 0;
     }
 
     /**
-     * Liefert die History zum gegebenen Player.
-     * Wenn es noch keine History gibt, wird eine angelegt.
+     * Liefert die History zum gegebenen Player. Wenn es noch keine History gibt, wird eine angelegt.
      *
      * @param player der Player, dessen History interessiert
      * @return die gespeicherte oder neu erstellte History
@@ -123,8 +122,8 @@ public class EnemySpawner {
         if (rrate != null) {
             rate = (Integer) rrate;
         } else {
-	    System.out.println("WARNING: global zone does not define \"spawnrate\" (i)");
-	}
+            System.out.println("WARNING: global zone does not define \"spawnrate\" (i)");
+        }
         return rate;
     }
 
@@ -206,7 +205,8 @@ public class EnemySpawner {
         }
 
         /**
-         * Gibt zurück, ob der nächste Gegner in kurzer Zeit gespawnt werden soll (gehört zur Gegnerwelle) oder erst nach längerer Zeit
+         * Gibt zurück, ob der nächste Gegner in kurzer Zeit gespawnt werden soll (gehört zur Gegnerwelle) oder erst
+         * nach längerer Zeit
          */
         private boolean inWaveSpawn() {
             if (waveSpawnRemaining > 0) {
@@ -240,9 +240,9 @@ public class EnemySpawner {
                 } else if (randomenemy == 2) {
                     enemytype = 2;
                 }
-                
+
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
-                Server.game.getEntityManager().netIDMap.put(enem.netID, enem);
+                Server.game.getEntityManager().addEntity(enem.netID, enem);
                 enem.setMyTarget(player);
             }
         }
