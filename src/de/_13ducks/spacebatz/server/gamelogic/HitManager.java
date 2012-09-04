@@ -30,11 +30,9 @@ public class HitManager {
         bullet.activateEffectsAtPosition(bullet.getX(), bullet.getY(), character);
         if (character.getProperties().getHitpoints() <= 0) {
             Server.game.getEntityManager().removeEntity(character.netID);
-            Server.entityMap.removeEntity(character);
             DropManager.dropItem(character.getX(), character.getY(), 2);
         }
         Server.game.getEntityManager().removeEntity(bullet.netID);
-        Server.entityMap.removeEntity(bullet);
     }
 
     /**

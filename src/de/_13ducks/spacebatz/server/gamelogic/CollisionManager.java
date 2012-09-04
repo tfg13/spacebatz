@@ -65,8 +65,9 @@ public class CollisionManager {
 
             // Bullet muss nach bestimmter Zeit gelöscht werden
             if (Server.game.getTick() > bullet.getDeletetick()) {
-                listIterator.remove();
-                Server.entityMap.removeEntity(bullet);
+                Server.game.getEntityManager().removeEntity(bullet.netID);
+//                listIterator.remove();
+//                Server.entityMap.removeEntity(bullet);
 
                 continue;
             }
@@ -81,7 +82,6 @@ public class CollisionManager {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
 
                 Server.game.getEntityManager().removeEntity(bullet.netID);
-                Server.entityMap.removeEntity(bullet);
             }
 
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();

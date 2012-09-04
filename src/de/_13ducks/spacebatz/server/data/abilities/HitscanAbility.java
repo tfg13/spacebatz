@@ -54,7 +54,6 @@ public class HitscanAbility extends WeaponAbility {
 
                 if (character.getProperties().getHitpoints() <= 0) {
                     Server.game.getEntityManager().removeEntity(character.netID);
-                    Server.entityMap.removeEntity(character);
                     DropManager.dropItem(character.getX(), character.getY(), 2);
                 }
             }

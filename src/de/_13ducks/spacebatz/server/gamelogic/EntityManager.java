@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,7 +17,7 @@ public class EntityManager {
      * Alle dynamischen Objekte
      */
     private ConcurrentHashMap<Integer, Entity> netIDMap;
-
+    
     public EntityManager() {
         netIDMap = new ConcurrentHashMap<>();
     }
@@ -52,23 +53,24 @@ public class EntityManager {
     public Iterator<Entity> getEntityIterator() {
         return netIDMap.values().iterator();
     }
-
+    
     public int getEntityCount() {
         return netIDMap.size();
     }
-
+    
     public void removeEntity(int netID) {
+        Server.entityMap.removeEntity(netIDMap.get(netID));
         netIDMap.remove(netID);
     }
-
+    
     public boolean containsEntity(int netID) {
         return netIDMap.containsKey(netID);
     }
-
+    
     public Collection<Entity> getValues() {
         return netIDMap.values();
     }
-
+    
     public Entity getEntityById(int netID) {
         return netIDMap.get(netID);
     }
