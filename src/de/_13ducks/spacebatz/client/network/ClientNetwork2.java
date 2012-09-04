@@ -12,10 +12,14 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -29,6 +33,14 @@ public class ClientNetwork2 {
      * Sagt ob wir zu einem Server verbunden sind, und daher Daten senden und empfangen können.
      */
     private boolean connected = false;
+    /**
+     * Adresse des Servers. Nur definiert, wenn connected = true
+     */
+    private InetAddress serverAdr;
+    /**
+     * Port des Servers. Nur definiert, wenn connected = true
+     */
+    private int serverPort;
     /**
      * Thread, der auf UDP-Pakete lauscht.
      */
@@ -54,6 +66,10 @@ public class ClientNetwork2 {
      * Enthält sowohl interne, als auch externe Kommandos.
      */
     static STCCommand[] cmdMap = new STCCommand[256];
+    /**
+     * Puffert Befehle, die gesendet werden sollen.
+     */
+    private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -113,6 +129,8 @@ public class ClientNetwork2 {
 			    if (lastInIndex < 0) {
 				lastInIndex = (short) de._13ducks.spacebatz.shared.network.Constants.OVERFLOW_STC_PACK_ID - 1;
 			    }
+			    serverAdr = targetAddress;
+			    serverPort = port;
 			    connected = true;
 			    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextTick " + nextTick);
 			    initializeReceiver();
@@ -179,19 +197,60 @@ public class ClientNetwork2 {
 		inputQueue.add(packet);
 	    }
 	}
-	// Empfang bestätigen: (DEBUG)
-	byte[] cts = new byte[7];
-	cts[0] = Client.getClientID();
-	Bits.putShort(cts, 1, (short) nextOutIndex++);
-	// MAC ist egal
-	cts[4] = 1;
-	Bits.putShort(cts, 5, packet.getIndex());
-	DatagramPacket pack = new DatagramPacket(cts, cts.length, InetAddress.getLoopbackAddress(), Settings.SERVER_UDPPORT2);
-	try {
-	    socket.send(pack);
-	} catch (IOException ex) {
-	    ex.printStackTrace();
+	// Empfang immer bestätigen:
+	ackPacket(packet);
+    }
+
+    /**
+     * Craftet ein ACK-Signal und scheduled es zum Senden
+     * @param packet das Empfangene STCPacket
+     */
+    private void ackPacket(STCPacket packet) {
+	byte[] ackData = new byte[2];
+	Bits.putShort(ackData, 0, packet.getIndex());
+	queueOutgoingCommand(new OutgoingCommand(1, ackData));
+    }
+
+    /**
+     * Schiebt einen Befehl in die Warteschlange für ausgehende Befehle.
+     *
+     * @param cmd
+     */
+    public void queueOutgoingCommand(OutgoingCommand cmd) {
+	cmdOutQueue.add(cmd);
+    }
+
+    /**
+     * Baut aus den Befehlen, die derzeit in der Warteschlange sind ein Netzwerkpaket zusammen.
+     *
+     * @return das DatenPaket
+     */
+    DatagramPacket craftPacket() {
+	byte[] buf = new byte[512];
+	buf[0] = Client.getClientID();
+	Bits.putShort(buf, 1, getAndIncrementNextIndex());
+	buf[3] = 0; // MAC
+	int pos = 4;
+	while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+	    // Befehl passt noch rein
+	    OutgoingCommand cmd = cmdOutQueue.poll();
+	    buf[pos++] = (byte) cmd.cmdID;
+	    System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
+	    pos += cmd.data.length;
 	}
+	if (pos == 4) {
+	    // NOOP einbauen
+	    buf[4] = 0;
+	}
+	return new DatagramPacket(buf, pos + 1, serverAdr, serverPort);
+    }
+
+    private short getAndIncrementNextIndex() {
+	short ret = (short) nextOutIndex++;
+	if (nextOutIndex >= Short.MAX_VALUE / 4) {
+	    nextOutIndex = 0;
+	}
+	return ret;
     }
 
     /**
@@ -252,6 +311,8 @@ public class ClientNetwork2 {
      */
     public void outTick() {
 	if (connected) {
+	    DatagramPacket dPack = craftPacket();
+
 	} else {
 	    System.out.println("ERROR: Cannot send data, not connected!");
 	}
