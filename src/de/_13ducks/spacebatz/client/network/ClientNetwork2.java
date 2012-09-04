@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
@@ -19,7 +18,6 @@ import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
