@@ -28,15 +28,6 @@ public class PropertyList implements Serializable {
      * Die Lebenspunkte
      */
     private int hitpoints;
-    private double damage;
-    private double attackspeed;
-    private double range;
-    private int bulletpic;
-    private double bulletspeed;
-    private double spread;
-    private double explosionRadius;
-    // PictureID setzen:
-    private int pictureId;
     private double sightrange;
     /**
      * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 +
@@ -71,22 +62,12 @@ public class PropertyList implements Serializable {
      */
     public void addProperties(PropertyList other) {
         hitpoints += other.getHitpoints();
-        damage += other.getDamage();
-        attackspeed += other.getAttackspeed();
-        range += other.getRange();
-        bulletpic += other.getBulletpic();
-        bulletspeed += other.getBulletspeed();
-        spread += other.getSpread();
-        explosionRadius += other.getExplosionRadius();
-        pictureId += other.getPictureId();
         sightrange += other.getSightrange();
         movespeedMultiplicatorBonus += other.getMovespeedMultiplicatorBonus();
-
         armorMultiplicatorBonus += other.getArmorMultiplicatorBonus();
         rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
         attackSpeedMultiplicatorBonus += other.getAttackSpeedMultiplicatorBonus();
-
     }
 
     /**
@@ -96,22 +77,12 @@ public class PropertyList implements Serializable {
      */
     public void removeProperties(PropertyList other) {
         hitpoints -= other.getHitpoints();
-        damage -= other.getDamage();
-        attackspeed -= other.getAttackspeed();
-        range -= other.getRange();
-        bulletpic -= other.getBulletpic();
-        bulletspeed -= other.getBulletspeed();
-        spread -= other.getSpread();
-        explosionRadius -= other.getExplosionRadius();
-        pictureId -= other.getPictureId();
         sightrange -= other.getSightrange();
         movespeedMultiplicatorBonus -= other.getMovespeedMultiplicatorBonus();
-
         armorMultiplicatorBonus -= other.getArmorMultiplicatorBonus();
         rangeMultiplicatorBonus -= other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus -= other.getDamageMultiplicatorBonus();
         attackSpeedMultiplicatorBonus -= other.getAttackSpeedMultiplicatorBonus();
-
     }
 
     /**
@@ -124,118 +95,6 @@ public class PropertyList implements Serializable {
         String text = "";
         text += "Hitpoints: " + getHitpoints();
         return text;
-    }
-
-    /**
-     * @return the damage
-     */
-    public double getDamage() {
-        return damage;
-    }
-
-    /**
-     * @return the attackspeed
-     */
-    public double getAttackspeed() {
-        return attackspeed;
-    }
-
-    /**
-     * @return the range
-     */
-    public double getRange() {
-        return range;
-    }
-
-    /**
-     * @return the bulletpic
-     */
-    public int getBulletpic() {
-        return bulletpic;
-    }
-
-    /**
-     * @return the bulletspeed
-     */
-    public double getBulletspeed() {
-        return bulletspeed;
-    }
-
-    /**
-     * @return the spread
-     */
-    public double getSpread() {
-        return spread;
-    }
-
-    /**
-     * @return the explosionRadius
-     */
-    public double getExplosionRadius() {
-        return explosionRadius;
-    }
-
-    /**
-     * @param damage the damage to set
-     */
-    public void setDamage(double damage) {
-        this.damage = damage;
-    }
-
-    /**
-     * @param attackspeed the attackspeed to set
-     */
-    public void setAttackspeed(double attackspeed) {
-        this.attackspeed = attackspeed;
-    }
-
-    /**
-     * @param range the range to set
-     */
-    public void setRange(double range) {
-        this.range = range;
-    }
-
-    /**
-     * @param bulletpic the bulletpic to set
-     */
-    public void setBulletpic(int bulletpic) {
-        this.bulletpic = bulletpic;
-    }
-
-    /**
-     * @param bulletspeed the bulletspeed to set
-     */
-    public void setBulletspeed(double bulletspeed) {
-        this.bulletspeed = bulletspeed;
-    }
-
-    /**
-     * @param spread the spread to set
-     */
-    public void setSpread(double spread) {
-        this.spread = spread;
-    }
-
-    /**
-     * @param explosionRadius the explosionRadius to set
-     */
-    public void setExplosionRadius(double explosionRadius) {
-        this.explosionRadius = explosionRadius;
-    }
-
-    /**
-     * @return the pictureId
-     */
-    public int getPictureId() {
-        return pictureId;
-    }
-
-    /**
-     * @param pictureId the pictureId to set
-     */
-    public void setPictureId(int pictureId) {
-        this.pictureId = pictureId;
     }
 
     /**

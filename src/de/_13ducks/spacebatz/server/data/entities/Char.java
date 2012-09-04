@@ -39,10 +39,10 @@ public abstract class Char extends Entity {
         properties = new PropertyList();
 
         // PictureID setzen:
-        properties.setPictureId(0);
+        //properties.setPictureId(0);
         properties.setHitpoints(Settings.CHARHEALTH);
-        properties.setDamage(1);
-        properties.setRange(10.0);
+        //properties.setDamage(1);
+        //properties.setRange(10.0);
         properties.setSightrange(10.0);
 
 

@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author michael
  */
-public class FireBulletAbility extends Ability {
+public class FireBulletAbility extends WeaponAbility {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,7 +21,6 @@ public class FireBulletAbility extends Ability {
         setRange(range);
         setBulletpic(bulletpic);
         setBulletspeed(bulletspeed);
-
         setSpread(spread);
         setExplosionRadius(explosionradius);
 
