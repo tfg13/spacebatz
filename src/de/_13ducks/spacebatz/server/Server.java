@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.EntityMap;
+import de._13ducks.spacebatz.server.data.FastFindGrid;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
@@ -38,7 +38,7 @@ public final class Server {
     /**
      * EntityMap, für performante Zugriffe auf Entitys
      */
-    public static EntityMap entityMap;
+    public static FastFindGrid entityMap;
     /**
      * Das Netzwerkmodul des Servers
      */
@@ -63,7 +63,7 @@ public final class Server {
      */
     public static void startServer() {
         game = new Game();
-        entityMap = new EntityMap(game.getLevel().getSizeX(), game.getLevel().getSizeY());
+        entityMap = new FastFindGrid(game.getLevel().getSizeX(), game.getLevel().getSizeY());
         serverNetwork.startServer();
 	serverNetwork2.start();
 
