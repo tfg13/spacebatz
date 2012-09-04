@@ -63,7 +63,7 @@ public class EntityMap {
      * Aktualisiert die Positionen der Entitys
      */
     public void calculateEntityPositions() {
-        Iterator<Entity> iterator = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iterator = Server.game.getEntityManager().getEntityIterator();
 
         while (iterator.hasNext()) {
             Entity e = iterator.next();
@@ -76,7 +76,7 @@ public class EntityMap {
                 } else {
                     // Entity ganz aus dem Spiel löschen, wenn aus der Map raus.
                     removeEntity(e);
-                    Server.game.netIDMap.remove(e.netID);
+                    Server.game.getEntityManager().removeEntity(e.netID);
                 }
             }
         }

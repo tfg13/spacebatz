@@ -51,7 +51,7 @@ public class CollisionManager {
      */
     private static void computeBulletCollision() {
 
-        Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> listIterator = Server.game.getEntityManager().getEntityIterator();
 
         while (listIterator.hasNext()) {
             Bullet bullet;
@@ -80,7 +80,7 @@ public class CollisionManager {
             if (Server.game.getLevel().isBlockDestroyable((int) x, (int) y)) {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
 
-                Server.game.netIDMap.remove(bullet.netID);
+                Server.game.getEntityManager().removeEntity(bullet.netID);
                 Server.entityMap.removeEntity(bullet);
             }
 
@@ -102,7 +102,7 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
@@ -234,7 +234,7 @@ public class CollisionManager {
      */
     private static void computeMobCollission() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
@@ -260,7 +260,7 @@ public class CollisionManager {
      * Berechnet Kollision mit Items
      */
     private static void computeItemCollission() {
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Player) {

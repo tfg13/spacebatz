@@ -53,7 +53,7 @@ public class HitscanAbility extends Ability {
                 }
 
                 if (character.getProperties().getHitpoints() <= 0) {
-                    Server.game.netIDMap.remove(character.netID);
+                    Server.game.getEntityManager().removeEntity(character.netID);
                     Server.entityMap.removeEntity(character);
                     DropManager.dropItem(character.getX(), character.getY(), 2);
                 }

@@ -71,6 +71,7 @@ public class Entity {
      * Die Größe der Entity für Kollisionsberechnung.
      */
     private double size;
+    private boolean isDisposable;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -341,5 +342,23 @@ public class Entity {
      */
     public double getSize() {
         return size;
+    }
+
+    /**
+     * Gibt an, ob die Entity gelöscht werden darf
+     *
+     * @return the isDisposable
+     */
+    public boolean isDisposable() {
+        return isDisposable;
+    }
+
+    /**
+     * Markiert die Entity zum Löschen
+     *
+     * @param isDisposable the isDisposable to set
+     */
+    public void dispose() {
+        this.isDisposable = true;
     }
 }
