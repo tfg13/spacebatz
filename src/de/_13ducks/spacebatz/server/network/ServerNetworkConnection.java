@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -19,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.Socket;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -96,7 +96,7 @@ public class ServerNetworkConnection {
     /**
      * Puffert alle Daten für den Client, bis der sie erhalten hat.
      */
-    private ClientOutBuffer outBuffer = new ClientOutBuffer();
+    private OutBuffer outBuffer = new OutBuffer();
     /**
      * Puffert Befehle, die gesendet werden sollen.
      */
@@ -262,7 +262,7 @@ public class ServerNetworkConnection {
     /**
      * @return the outBuffer
      */
-    ClientOutBuffer getOutBuffer() {
+    OutBuffer getOutBuffer() {
 	return outBuffer;
     }
 
