@@ -21,6 +21,7 @@ import java.net.DatagramPacket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -99,7 +100,7 @@ public class ServerNetworkConnection {
     /**
      * Puffert Befehle, die gesendet werden sollen.
      */
-    private Queue<OutgoingCommand> cmdOutQueue = new LinkedList<>();
+    private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
     /**
      * Der Index des Datenpakets, dass der Server als nächstes versendet.
      */
