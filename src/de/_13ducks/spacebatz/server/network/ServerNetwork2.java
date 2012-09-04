@@ -131,12 +131,12 @@ public class ServerNetwork2 {
 
 	for (Client c : Server.game.clients.values()) {
 	    ArrayList<DatagramPacket> sendList = c.getNetworkConnection().getOutBuffer().packetsToSend();
-	    for (DatagramPacket packet : sendList) {
-		try {
+	    try {
+		for (DatagramPacket packet : sendList) {
 		    socket.send(packet);
-		} catch (IOException ex) {
-		    ex.printStackTrace();
 		}
+	    } catch (IOException ex) {
+		ex.printStackTrace();
 	    }
 	}
     }

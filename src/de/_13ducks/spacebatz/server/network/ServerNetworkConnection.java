@@ -220,6 +220,19 @@ public class ServerNetworkConnection {
 		inputQueue.add(packet);
 	    }
 	}
+	// Empfang bestätigen:
+	ackPacket(packet);
+    }
+
+    /**
+     * Craftet ein ACK-Signal und scheduled es zum Senden
+     *
+     * @param packet das Empfangene STCPacket
+     */
+    private void ackPacket(CTSPacket packet) {
+	byte[] ackData = new byte[2];
+	Bits.putShort(ackData, 0, packet.getIndex());
+	queueOutgoingCommand(new OutgoingCommand(1, ackData));
     }
 
     /**

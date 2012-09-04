@@ -12,11 +12,13 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -70,11 +72,16 @@ public class ClientNetwork2 {
      * Puffert Befehle, die gesendet werden sollen.
      */
     private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
+    /**
+     * Puffert Pakete, die gesendet werden sollen.
+     */
+    OutBuffer outBuffer = new OutBuffer();
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
      */
     public ClientNetwork2() {
+	cmdMap[1] = new STC_ACK();
     }
 
     /**
@@ -203,6 +210,7 @@ public class ClientNetwork2 {
 
     /**
      * Craftet ein ACK-Signal und scheduled es zum Senden
+     *
      * @param packet das Empfangene STCPacket
      */
     private void ackPacket(STCPacket packet) {
@@ -311,10 +319,33 @@ public class ClientNetwork2 {
      */
     public void outTick() {
 	if (connected) {
-	    DatagramPacket dPack = craftPacket();
-
+	    try {
+		DatagramPacket dPack = craftPacket();
+		schedulePacket(dPack, Bits.getShort(dPack.getData(), 1));
+		ArrayList<DatagramPacket> sendList = outBuffer.packetsToSend();
+		for (DatagramPacket packet : sendList) {
+		    socket.send(packet);
+		}
+	    } catch (IOException ex) {
+		ex.printStackTrace();
+	    }
 	} else {
 	    System.out.println("ERROR: Cannot send data, not connected!");
+	}
+    }
+
+    /**
+     * Registriert dieses Paket.
+     * Das bedeutet, dass der Server dieses Paket erhalten soll.
+     * Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Server den Empfang bestätigt hat.
+     *
+     * @param dPack Ein Netzwerkpaket
+     * @param packID die PaketID
+     */
+    private void schedulePacket(DatagramPacket dPack, int packID) {
+	if (!outBuffer.registerPacket(dPack, packID)) {
+	    // Es ist hoffnungslos
+	    System.out.println("ERROR: CNET: Paket output overflow!!!");
 	}
     }
 }
