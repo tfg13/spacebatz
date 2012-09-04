@@ -81,6 +81,9 @@ public abstract class NetPacket {
 	int nextCmdIndex = getInitialCmdIndex();
 	while (nextCmdIndex < rawData.length) {
 	    int cmdID = rawData[nextCmdIndex++];
+	    if (cmdID < 0) {
+		cmdID += 256;
+	    }
 	    if (cmdID == 0) {
 		// NOOP
 		continue;

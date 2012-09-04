@@ -48,7 +48,7 @@ public class ServerNetwork2 {
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
-	cmdMap[1] = new CTS_ACK();
+	cmdMap[0x80] = new CTS_ACK();
     }
 
     /**

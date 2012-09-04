@@ -81,7 +81,7 @@ public class ClientNetwork2 {
      * Erzeugt ein neues Netzwerkmodul.
      */
     public ClientNetwork2() {
-	cmdMap[1] = new STC_ACK();
+	cmdMap[0x80] = new STC_ACK();
     }
 
     /**
@@ -216,7 +216,7 @@ public class ClientNetwork2 {
     private void ackPacket(STCPacket packet) {
 	byte[] ackData = new byte[2];
 	Bits.putShort(ackData, 0, packet.getIndex());
-	queueOutgoingCommand(new OutgoingCommand(1, ackData));
+	queueOutgoingCommand(new OutgoingCommand(0x80, ackData));
     }
 
     /**

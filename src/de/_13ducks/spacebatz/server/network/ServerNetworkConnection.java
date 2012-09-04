@@ -232,7 +232,7 @@ public class ServerNetworkConnection {
     private void ackPacket(CTSPacket packet) {
 	byte[] ackData = new byte[2];
 	Bits.putShort(ackData, 0, packet.getIndex());
-	queueOutgoingCommand(new OutgoingCommand(1, ackData));
+	queueOutgoingCommand(new OutgoingCommand(0x80, ackData));
     }
 
     /**
