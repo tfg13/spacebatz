@@ -48,7 +48,7 @@ public class ServerNetwork2 {
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
-	cmdMap[1] = new CTS_ACK();
+	cmdMap[0x80] = new CTS_ACK();
     }
 
     /**
@@ -131,12 +131,12 @@ public class ServerNetwork2 {
 
 	for (Client c : Server.game.clients.values()) {
 	    ArrayList<DatagramPacket> sendList = c.getNetworkConnection().getOutBuffer().packetsToSend();
-	    for (DatagramPacket packet : sendList) {
-		try {
+	    try {
+		for (DatagramPacket packet : sendList) {
 		    socket.send(packet);
-		} catch (IOException ex) {
-		    ex.printStackTrace();
 		}
+	    } catch (IOException ex) {
+		ex.printStackTrace();
 	    }
 	}
     }

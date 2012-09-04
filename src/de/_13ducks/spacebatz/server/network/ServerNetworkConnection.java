@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -19,8 +20,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.Socket;
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -95,11 +96,11 @@ public class ServerNetworkConnection {
     /**
      * Puffert alle Daten für den Client, bis der sie erhalten hat.
      */
-    private ClientOutBuffer outBuffer = new ClientOutBuffer();
+    private OutBuffer outBuffer = new OutBuffer();
     /**
      * Puffert Befehle, die gesendet werden sollen.
      */
-    private Queue<OutgoingCommand> cmdOutQueue = new LinkedList<>();
+    private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
     /**
      * Der Index des Datenpakets, dass der Server als nächstes versendet.
      */
@@ -219,6 +220,19 @@ public class ServerNetworkConnection {
 		inputQueue.add(packet);
 	    }
 	}
+	// Empfang bestätigen:
+	ackPacket(packet);
+    }
+
+    /**
+     * Craftet ein ACK-Signal und scheduled es zum Senden
+     *
+     * @param packet das Empfangene STCPacket
+     */
+    private void ackPacket(CTSPacket packet) {
+	byte[] ackData = new byte[2];
+	Bits.putShort(ackData, 0, packet.getIndex());
+	queueOutgoingCommand(new OutgoingCommand(0x80, ackData));
     }
 
     /**
@@ -261,7 +275,7 @@ public class ServerNetworkConnection {
     /**
      * @return the outBuffer
      */
-    ClientOutBuffer getOutBuffer() {
+    OutBuffer getOutBuffer() {
 	return outBuffer;
     }
 
@@ -270,7 +284,7 @@ public class ServerNetworkConnection {
      *
      * @param cmd
      */
-    void queueOutgoingCommand(OutgoingCommand cmd) {
+    public void queueOutgoingCommand(OutgoingCommand cmd) {
 	cmdOutQueue.add(cmd);
     }
 
