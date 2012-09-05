@@ -15,7 +15,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.Item;
-
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import de._13ducks.spacebatz.util.Vector;
@@ -62,17 +61,11 @@ public class CollisionManager {
                 continue;
             }
 
-
             // Bullet muss nach bestimmter Zeit gelöscht werden
             if (Server.game.getTick() > bullet.getDeletetick()) {
                 Server.game.getEntityManager().removeEntity(bullet.netID);
-//                listIterator.remove();
-//                Server.entityMap.removeEntity(bullet);
-
                 continue;
             }
-
-
 
             double x = bullet.getX();
             double y = bullet.getY();
