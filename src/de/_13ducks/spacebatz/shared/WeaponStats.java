@@ -2,14 +2,40 @@ package de._13ducks.spacebatz.shared;
 
 import java.io.Serializable;
 
+/**
+ * Stats einer Waffe.
+ *
+ * @author michael
+ */
 public class WeaponStats implements Serializable {
 
+    /**
+     * Der Schaden, den die Waffe anrichtet.
+     */
     private double damage;
+    /**
+     * Die Angriffsgeschwindigkeit.
+     */
     private double attackspeed;
+    /**
+     * Die Reichweite, die die Waffe hat.
+     */
     private double range;
+    /**
+     * Das Bild der Geschosse.
+     */
     private int bulletpic;
+    /**
+     * Die Geschwindigkeit der Geschosse.
+     */
     private double bulletspeed;
+    /**
+     * Der Streufaktor der Geschosse.
+     */
     private double spread;
+    /**
+     * Der Explosionsradius der Geschosse.
+     */
     private double explosionRadius;
     // PictureID setzen:
     private int pictureId;
@@ -28,8 +54,6 @@ public class WeaponStats implements Serializable {
         spread += other.getSpread();
         explosionRadius += other.getExplosionRadius();
         pictureId += other.getPictureId();
-
-
     }
 
     /**
