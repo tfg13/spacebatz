@@ -90,11 +90,32 @@ public class CollisionManager {
                 if (e instanceof Char) {
                     Char c = (Char) e;
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
-                        HitManager.charBulletHit(c, bullet);
+                        charBulletHit(c, bullet);
                     }
                 }
             }
         }
+    }
+    
+     /**
+     * Berechnet Schaden, wenn Bullet etwas trifft.
+     *
+     * @param character der Char der Schaden nehmen soll
+     * @param bullet das Bullet das Schaden austeilt
+     */
+    public static void charBulletHit(Char character, Bullet bullet) {
+        // abbrechen, wenn der Char das Bullet selber erzeugt hat:
+        if (bullet.getOwner().equals(character)) {
+            return;
+        }
+        // alle Effekte des Bullets auf den Char übertragen:
+        bullet.applyEffectsToChar(character);
+        bullet.activateEffectsAtPosition(bullet.getX(), bullet.getY(), character);
+        if (character.getProperties().getHitpoints() <= 0) {
+            Server.game.getEntityManager().removeEntity(character.netID);
+            DropManager.dropItem(character.getX(), character.getY(), 2);
+        }
+        Server.game.getEntityManager().removeEntity(bullet.netID);
     }
 
     /**
