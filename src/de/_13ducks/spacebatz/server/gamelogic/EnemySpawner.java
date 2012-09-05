@@ -136,7 +136,7 @@ public class EnemySpawner {
     private static double[] calcPosition(Player p) {
         LinkedList<double[]> positions = positionsOnCircleSegment(p.getX(), p.getY(), 15, p.getDirection(), p.isMoving() ? Math.PI / 2 : Math.PI * 2);
         // Nur die freien Positionen nehmen:
-        removeNonFree(positions);
+        removeNonFree(positions, p.getSize());
         // Noch Position übrig?
         if (!positions.isEmpty()) {
             // Eine Auslosen
@@ -171,11 +171,23 @@ public class EnemySpawner {
      *
      * @param positions die Liste
      */
-    private static void removeNonFree(List<double[]> positions) {
+    private static void removeNonFree(List<double[]> positions, double size) {
         Iterator<double[]> iter = positions.iterator();
         while (iter.hasNext()) {
             double[] pos = iter.next();
-            if (Server.game.getLevel().getCollisionMap()[(int) Math.round(pos[0])][(int) Math.round(pos[1])]) {
+            int x = (int) Math.round(pos[0]);
+            int y = (int) Math.round(pos[1]);
+            // Ein deltaxdelta-Feld auf Kollision überprüfen:
+            boolean remove = false;
+            int delta = (int) (size / 0.5 + 0.5);
+            for (int tx = x - delta; tx < x + delta; tx++) {
+                for (int ty = y - delta; ty < y + delta; ty++) {
+                    if (Server.game.getLevel().getCollisionMap()[tx][ty]) {
+                        remove = true;
+                    }
+                }
+            }
+            if (remove) {
                 iter.remove();
             }
         }
