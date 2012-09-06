@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,9 +18,11 @@ public class EntityManager {
      * Alle dynamischen Objekte
      */
     private ConcurrentHashMap<Integer, Entity> netIDMap;
-    
+    private Stack<Integer> entitiesToRemove;
+
     public EntityManager() {
         netIDMap = new ConcurrentHashMap<>();
+        entitiesToRemove = new Stack<>();
     }
 
     /**
@@ -33,18 +36,18 @@ public class EntityManager {
         netIDMap.put(netID, entity);
     }
 
-//    /**
-//     * Entfernt alle Entities, die tot sind.
-//     */
-//    public void removeDisposableEntities() {
-//        Iterator<Entity> iter = getValues().iterator();
-//        while (iter.hasNext()) {
-//            Entity entity = iter.next();
-//            if (entity.isDisposable()) {
-//                iter.remove();
-//            }
-//        }
-//    }
+    /**
+     * Entfernt alle Entities, die tot sind.
+     */
+    public void removeDisposableEntities() {
+        while (!entitiesToRemove.empty()) {
+            int netId = entitiesToRemove.pop();
+            Server.entityMap.removeEntity(netIDMap.get(netId));
+            netIDMap.remove(netId);
+
+        }
+    }
+
     /**
      * Gibt einen Iterator über alle Entities zurück.
      *
@@ -53,24 +56,23 @@ public class EntityManager {
     public Iterator<Entity> getEntityIterator() {
         return netIDMap.values().iterator();
     }
-    
+
     public int getEntityCount() {
         return netIDMap.size();
     }
-    
+
     public void removeEntity(int netID) {
-        Server.entityMap.removeEntity(netIDMap.get(netID));
-        netIDMap.remove(netID);
+        entitiesToRemove.add(netID);
     }
-    
+
     public boolean containsEntity(int netID) {
         return netIDMap.containsKey(netID);
     }
-    
+
     public Collection<Entity> getValues() {
         return netIDMap.values();
     }
-    
+
     public Entity getEntityById(int netID) {
         return netIDMap.get(netID);
     }

@@ -201,6 +201,8 @@ public class Game {
             Entity entity = iter.next();
             entity.tick();
         }
+        //Tote Entities aufräumen:
+        entityManager.removeDisposableEntities();
 
     }
 
