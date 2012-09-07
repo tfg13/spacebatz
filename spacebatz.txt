@@ -129,3 +129,6 @@
   - Sprints mit jeweils 10-20 abschätzbar Unteraufgaben
   - Besprechung: was wurde gemacht, was nicht, warum? Was wird als nächstes gemacht?
   - github-Bugverwaltung
+- Items
+  - Items haben 1-x Attribute
+  - Attribute verbessern beliebig viele Stats des Items (Rüstung, HP, ...)
