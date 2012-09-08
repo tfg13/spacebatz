@@ -34,7 +34,7 @@ public class FireBulletAbility extends WeaponAbility {
     @Override
     public void useInAngle(Char user, double angle) {
 
-        double damage = getDamage();
+        double damage = getDamage() * (1 + user.getProperties().getDamageMultiplicatorBonus());
         double attackspeed = getAttackspeed();
         double range = getRange();
         int bulletpic = (int) getBulletpic();
