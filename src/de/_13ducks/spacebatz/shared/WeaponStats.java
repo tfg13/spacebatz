@@ -14,6 +14,10 @@ public class WeaponStats implements Serializable {
      */
     private double damage;
     /**
+     * Der Schadensmultiplikator, wird auf den Schaden draufgerechnet.
+     */
+    private double damageMultiplicatorBonus;
+    /**
      * Die Angriffsgeschwindigkeit.
      */
     private double attackspeed;
@@ -47,6 +51,7 @@ public class WeaponStats implements Serializable {
      */
     public void addStats(WeaponStats other) {
         damage += other.getDamage();
+        damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
         attackspeed += other.getAttackspeed();
         range += other.getRange();
         bulletpic += other.getBulletpic();
@@ -166,5 +171,19 @@ public class WeaponStats implements Serializable {
      */
     public void setPictureId(int pictureId) {
         this.pictureId = pictureId;
+    }
+
+    /**
+     * @return the damagemultiplicator
+     */
+    public double getDamageMultiplicatorBonus() {
+        return damageMultiplicatorBonus;
+    }
+
+    /**
+     * @param damagemultiplicator the damagemultiplicator to set
+     */
+    public void setDamagemultiplicator(double damagemultiplicator) {
+        this.damageMultiplicatorBonus = damagemultiplicator;
     }
 }
