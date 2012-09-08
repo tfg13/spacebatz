@@ -24,7 +24,7 @@ public class Enemy extends Char {
     private int enemytypeid = 1;
 
     public Enemy(int netID, int enemytypeid) {
-        super(netID, new RenderObject(new Animation((enemytypeid == 2) ? 8 : 0, 2, 2, 1, 1)));
+        super(netID, new RenderObject(new Animation(enemytypeid*8, 2, 2, 1, 1)));
         this.enemytypeid = enemytypeid;
     }
 
