@@ -1,15 +1,26 @@
+/*
+ * Copyright 2011, 2012:
+ *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
+ *  Michael Haas (mekhar[AT]gmx[DOT]de)
+ *  Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de
+ *
+ * - All rights reserved -
+ *
+ * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
+ */
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -31,16 +42,13 @@ public class ServerNetwork2 {
      * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
      * Enthält sowohl interne, als auch externe Kommandos.
      */
-    static HashMap<Integer, ServerNetCmd> cmdMap = new HashMap<>();
-    /**
-     * Der Index des Datenpakets, dass der Server als nächstes versendet.
-     */
-    private int nextOutIndex;
+    static CTSCommand[] cmdMap = new CTSCommand[256];
 
     /**
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
+	cmdMap[0x80] = new CTS_ACK();
     }
 
     /**
@@ -54,10 +62,10 @@ public class ServerNetwork2 {
 	} catch (SocketException ex) {
 	    System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
 	    ex.printStackTrace();
+	    return;
 	}
 	// Listener-Thread starten
 	thread = new Thread(new Runnable() {
-
 	    @Override
 	    public void run() {
 		try {
@@ -65,7 +73,7 @@ public class ServerNetwork2 {
 			DatagramPacket inputPacket = new DatagramPacket(new byte[512], 512);
 			// Blocken, bis Paket empfangen
 			socket.receive(inputPacket);
-			byte[] data = inputPacket.getData();
+			byte[] data = Utilities.extractData(inputPacket);
 			byte mode = data[0];
 			// NETMODE auswerten:
 			switch (mode >>> 6) {
@@ -76,7 +84,7 @@ public class ServerNetwork2 {
 				    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
 				    continue;
 				}
-				client.getNetworkConnection().enqueuePacket(new InputPacket(data, client));
+				client.getNetworkConnection().enqueuePacket(new CTSPacket(data, client));
 				break;
 			    case 1:
 				// noClient-Modus (sofort verarbeiten)
@@ -114,6 +122,63 @@ public class ServerNetwork2 {
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
+	for (Client c : Server.game.clients.values()) {
+	    if (c.getNetworkConnection().getPort() != 0) {
+		DatagramPacket dPack = c.getNetworkConnection().craftPacket();
+		schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
+	    }
+	}
+
+	for (Client c : Server.game.clients.values()) {
+	    ArrayList<DatagramPacket> sendList = c.getNetworkConnection().getOutBuffer().packetsToSend();
+	    try {
+		for (DatagramPacket packet : sendList) {
+		    socket.send(packet);
+		}
+	    } catch (IOException ex) {
+		ex.printStackTrace();
+	    }
+	}
+    }
+
+    /**
+     * Registriert einen neuen Befehl beim Netzwerksystem.
+     * Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet.
+     * Die gewählte ID muss im erlaubten Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
+     *
+     * @param cmdID die BefehlsID
+     * @param cmd der Befehl selber
+     */
+    public void registerCTSCommand(byte cmdID, CTSCommand cmd) {
+	if (cmd == null) {
+	    throw new IllegalArgumentException("CTSCommand must not be null!");
+	}
+	// cmdID: Range prüfen:
+	if (cmdID <= 0 || cmdID > 127) {
+	    throw new IllegalArgumentException("Illegal cmdID!");
+	}
+	// Override?
+	if (cmdMap[cmdID] != null) {
+	    System.out.println("INFO: NET: Overriding cmd " + cmdID);
+	}
+	cmdMap[cmdID] = cmd;
+	System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
+    }
+
+    /**
+     * Registriert dieses Paket.
+     * Das bedeutet, dass der Client dieses Paket erhalten soll.
+     * Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Client den Empfang bestätigt hat.
+     *
+     * @param dPack Ein Netzwerkpaket, für einen bestimmten Client bestimmt.
+     * @param client der Client
+     * @param packID die PaketID
+     */
+    private void schedulePacket(DatagramPacket dPack, Client client, int packID) {
+	if (!client.getNetworkConnection().getOutBuffer().registerPacket(dPack, packID)) {
+	    // Dieser Client ist hoffnungslos
+	    System.out.println("ERROR: NET: Paket output overflow!!!");
+	}
     }
 
     /**
@@ -135,8 +200,9 @@ public class ServerNetwork2 {
 	int port = Bits.getInt(packetData, 1);
 	// Craft answer:
 	byte[] connectAnswer = new byte[3];
-	connectAnswer[0] = (byte) (0x8F | (nextOutIndex >> 8));
-	connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
+	// Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
+	connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
+	connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
 	// Vorläufig: ClientID aus altem Netzwerksystem holen:
 	//connectAnswer[2] = Server.game.newClientID();
 	boolean found = false;
@@ -151,10 +217,13 @@ public class ServerNetwork2 {
 	if (!found) {
 	    System.out.println("ERROR: NET: Cannot find ClientID for request from " + origin + ", connect via old system first!");
 	}
+	Bits.putShort(connectAnswer, 0, (short) Server.game.clients.get(connectAnswer[2]).getNetworkConnection().nextOutIndex);
+	connectAnswer[0] |= 0x40;
 	// Senden
 	DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
 	socket.send(pack);
 	//TODO: Neuen Client richtig anlegen/einfügen
 	System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
+	Server.game.clients.get(connectAnswer[2]).getNetworkConnection().setPort(port);
     }
 }

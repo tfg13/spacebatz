@@ -34,8 +34,8 @@ public class ClientContext {
     }
 
     /**
-     * Aufrufen, wenn ein Bewegungszustand zum Client geschickt wurde. Speichert diese Bewegung als versendet, überschreibt die möglicherweise zuletzt
-     * gesendete.
+     * Aufrufen, wenn ein Bewegungszustand zum Client geschickt wurde. Speichert diese Bewegung als versendet,
+     * überschreibt die möglicherweise zuletzt gesendete.
      *
      * @param e das Entity
      * @param m die Bewegung
@@ -86,19 +86,20 @@ public class ClientContext {
     }
 
     /**
-     * Setzt ein Entity als bekannt.
-     * In Zukunft wird knowsChar also true liefern.
+     * Setzt ein Entity als bekannt. In Zukunft wird knowsChar also true liefern.
+     *
      * @param c der ab sofort bekannte Char.
      */
     public void makeEntityKnown(int netID) {
         if (!entityMap.containsKey(netID)) {
-            Entity e = Server.game.netIDMap.get(netID);
-            entityMap.put(netID, Server.game.netIDMap.get(netID));
+            Entity e = Server.game.getEntityManager().getEntityById(netID);
+            entityMap.put(netID, Server.game.getEntityManager().getEntityById(netID));
         }
     }
 
     /**
      * Liefert einen Iterator über alle dem Client bekannten Entitys.
+     *
      * @return einen Iterator über alle dem Client bekannten Entitys.
      */
     public Iterator<Entity> knownEntiysIterator() {
@@ -106,8 +107,8 @@ public class ClientContext {
     }
 
     /**
-     * Löscht ein Entity aus dem Kontext des Clients.
-     * Dieser Client kennt das Entity zukünftig nicht mehr.
+     * Löscht ein Entity aus dem Kontext des Clients. Dieser Client kennt das Entity zukünftig nicht mehr.
+     *
      * @param netID Die netID des zu löschenden Entitys.
      */
     public void removeEntity(int netID) {

@@ -11,18 +11,19 @@ import java.util.Random;
  *
  * @author michael
  */
-public class FireBulletAbility extends Ability {
+public class FireBulletAbility extends WeaponAbility {
 
     private static final long serialVersionUID = 1L;
 
     public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
-        setBaseProperty("damage", damage);
-        setBaseProperty("attackspeed", attackspeed);
-        setBaseProperty("range", range);
-        setBaseProperty("bulletpic", bulletpic);
-        setBaseProperty("bulletspeed", bulletspeed);
-        setBaseProperty("spread", spread);
-        setBaseProperty("explosionradius", explosionradius);
+        setDamage(damage);
+        setAttackspeed(attackspeed);
+        setRange(range);
+        setBulletpic(bulletpic);
+        setBulletspeed(bulletspeed);
+        setSpread(spread);
+        setExplosionRadius(explosionradius);
+
     }
 
     @Override
@@ -33,13 +34,13 @@ public class FireBulletAbility extends Ability {
     @Override
     public void useInAngle(Char user, double angle) {
 
-        double damage = getProperty("damage");
-        double attackspeed = getProperty("attackspeed");
-        double range = getProperty("range");
-        int bulletpic = (int) getProperty("bulletpic");
-        double bulletspeed = getProperty("bulletspeed");
-        double spread = getProperty("spread");
-        double explosionradius = getProperty("explosionradius");
+        double damage = getDamage() * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus());
+        double attackspeed = getAttackspeed();
+        double range = getRange();
+        int bulletpic = (int) getBulletpic();
+        double bulletspeed = getBulletspeed();
+        double spread = getSpread();
+        double explosionradius = getExplosionRadius();
 
 
 
@@ -52,7 +53,7 @@ public class FireBulletAbility extends Ability {
             Bullet bullet = new Bullet(Server.game.getTick(), lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
             //bullet.addEffect(new TrueDamageEffect((int) damage));
             bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
-            Server.game.netIDMap.put(bullet.netID, bullet);
+            Server.game.getEntityManager().addEntity(bullet.netID, bullet);
         }
     }
 }

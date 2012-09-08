@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,9 +39,9 @@ public class Game {
      */
     public HashMap<Byte, Client> clients;
     /**
-     * Alle dynamischen Objekte
+     * Der EntityManager
      */
-    public ConcurrentHashMap<Integer, Entity> netIDMap;
+    private EntityManager entityManager;
     /**
      * HashMap ordnet netID Items zu
      */
@@ -74,8 +75,8 @@ public class Game {
      * Konstruktor
      */
     public Game() {
+        entityManager = new EntityManager();
         clients = new HashMap<>();
-        netIDMap = new ConcurrentHashMap<>();
         level = LevelGenerator.generateLevel();
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
@@ -126,7 +127,7 @@ public class Game {
             Server.msgSender.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             Server.msgSender.sendSetPlayer(client, player);
-            netIDMap.put(player.netID, player);
+            getEntityManager().addEntity(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
             // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
             Server.serverNetwork.udp.addClient(client);
@@ -187,15 +188,22 @@ public class Game {
      */
     public void gameTick() {
         // KI berechnen:
-        AIManager.computeMobBehavior(netIDMap.values());
+        AIManager.computeMobBehavior(getEntityManager().getValues());
         // Kollision berechnen:
         CollisionManager.computeCollision();
         // EinheitenPositionen neue berechnen:
         Server.entityMap.calculateEntityPositions();
         // Gegner Spawnen:
         EnemySpawner.tick();
-        // Effekte berechnen:
-        EffectManager.computeEffects();
+        // den tick für alle Entities berechnen:
+        Iterator<Entity> iter = getEntityManager().getEntityIterator();
+        while (iter.hasNext()) {
+            Entity entity = iter.next();
+            entity.tick();
+        }
+        //Tote Entities aufräumen:
+        entityManager.removeDisposableEntities();
+
     }
 
     /**
@@ -238,5 +246,12 @@ public class Game {
      */
     public HashMap<Integer, Item> getItemMap() {
         return itemMap;
+    }
+
+    /**
+     * @return the entityManager
+     */
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

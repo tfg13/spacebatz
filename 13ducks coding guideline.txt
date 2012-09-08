@@ -5,3 +5,5 @@
 - Keine Rückschritte im Meisterzweig
 - Alle öffentlichen Methoden werden mit aussagekräftigen Javadoc-Kommentaren versehen
 - Module werden so gut wie möglich isoliert (eigenes Packet, wenige Schnittstellen zu anderen Packeten)
+- Bugfixes werden immer mit einem Junit-Test versehen, so dass der Bug nie wieder auftritt.
+

@@ -21,7 +21,7 @@ import java.util.LinkedList;
  *
  * @author michael
  */
-public class EntityMap {
+public class FastFindGrid {
 
     /**
      * Die Größe eines Sektors der EntityMap
@@ -46,7 +46,7 @@ public class EntityMap {
      * @param levelWidth die Breite des Levels
      * @param levelHeight die Höhe des Levels
      */
-    public EntityMap(int levelWidth, int levelHeight) {
+    public FastFindGrid(int levelWidth, int levelHeight) {
         entityMapWidth = (int) (levelWidth / SECTORSIZE) + 1;
         entityMapHeight = (int) (levelHeight / SECTORSIZE) + 1;
 
@@ -63,7 +63,7 @@ public class EntityMap {
      * Aktualisiert die Positionen der Entitys
      */
     public void calculateEntityPositions() {
-        Iterator<Entity> iterator = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iterator = Server.game.getEntityManager().getEntityIterator();
 
         while (iterator.hasNext()) {
             Entity e = iterator.next();
@@ -76,7 +76,7 @@ public class EntityMap {
                 } else {
                     // Entity ganz aus dem Spiel löschen, wenn aus der Map raus.
                     removeEntity(e);
-                    Server.game.netIDMap.remove(e.netID);
+                    Server.game.getEntityManager().removeEntity(e.netID);
                 }
             }
         }

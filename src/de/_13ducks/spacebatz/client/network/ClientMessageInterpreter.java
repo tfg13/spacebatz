@@ -56,7 +56,6 @@ public class ClientMessageInterpreter {
 
         // Der Thread der anfangs TcpPackete empfängt:
         initTcpReceiverThread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 while (initTcpReceiverThreadRun) {
@@ -128,7 +127,6 @@ public class ClientMessageInterpreter {
             case 22:
                 // Engine starten:
                 Thread t = new Thread(new Runnable() {
-
                     @Override
                     public void run() {
                         Client.setEngine(new Engine());
@@ -145,7 +143,7 @@ public class ClientMessageInterpreter {
                 Client.setClientID(message[0]);
                 break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
-                
+
                 // Char wird von Bullet / angriff getroffen
                 int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
                 int damage = Bits.getInt(message, 4);
@@ -247,7 +245,7 @@ public class ClientMessageInterpreter {
                 int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
                 if (clientID4 == Client.getClientID()) {
                     Item item = Client.getInventoryItems().get(netIDItem3);
-                    Client.getEquippedItems().getEquipslots()[(int) item.getItemProperty("itemclass")][selslot] = item;
+                    Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
                     for (int i = 0; i < Client.getInventorySlots().length; i++) {
                         if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
                             Client.getInventorySlots()[i] = null;

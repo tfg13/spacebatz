@@ -76,7 +76,7 @@ public class ItemCarrier extends EffectCarrier {
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
         if (item.getName().equals("Money")) {
-            setMoney(getMoney() + (int) item.getItemProperty("amount"));
+            setMoney(getMoney() + (int) item.getAmount());
         }
     }
 
@@ -103,7 +103,7 @@ public class ItemCarrier extends EffectCarrier {
     public boolean equipItem(int itemnetID, byte selectedslot) {
         Item item = getItems().get(itemnetID);
         // richtiger Itemtyp für diesen Slot?
-        int slottype = (int) item.getItemProperty("itemclass");
+        int slottype = (int) item.getItemClass();
 
         if (getEquipslots()[slottype] != null && getEquipslots()[slottype][selectedslot] == null && item != null) {
             // Jetzt neues Item anlegen

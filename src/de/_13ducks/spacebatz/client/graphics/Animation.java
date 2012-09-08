@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 /**
  * Eine Animation, die aus Bildern und einer Zeit besteht.
  * Wird benutzt um alle möglichen Objekte grafisch darzustellen.
+ * Z.B. in Fx und RenderObject
  * 
  * @author jk
  */

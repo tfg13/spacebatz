@@ -30,7 +30,7 @@ public class TrueDamageEffect extends Effect {
 
     @Override
     public void applyToChar(EffectCarrier affectedChar) {
-        affectedChar.decrementProperty("hitpoints", damage);
+        affectedChar.getProperties().setHitpoints(affectedChar.getProperties().getHitpoints() - damage);
         Server.msgSender.sendCharHit(affectedChar.netID, damage, false);
     }
 

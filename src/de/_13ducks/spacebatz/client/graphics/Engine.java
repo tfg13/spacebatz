@@ -103,8 +103,7 @@ public class Engine {
      */
     private boolean terminal = false;
     /**
-     * Der aktuelle Zoomfaktor.
-     * Wird benötigt, um Schriften immer gleich groß anzeigen zu können
+     * Der aktuelle Zoomfaktor. Wird benötigt, um Schriften immer gleich groß anzeigen zu können
      */
     private int zoomFactor = 2;
     /**
@@ -166,6 +165,8 @@ public class Engine {
             Client.udpTick();
             // TCP-Input verarbeiten:
             Client.getMsgInterpreter().interpretAllTcpMessages();
+            // Input neues Netzwerksystem verarbeiten
+            Client.getNetwork2().inTick();
             // Render-Code
             render();
             // Fertig, Puffer swappen:
@@ -174,6 +175,8 @@ public class Engine {
             updateFPS();
             // Input verarbeiten:
             directInput();
+            // Output neues Netzwerksystem:
+            Client.getNetwork2().outTick();
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
@@ -226,7 +229,7 @@ public class Engine {
                                 // Hut-Slot
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                    if ((int) selecteditem.getItemProperty("itemclass") == 2) {
+                                    if ((int) selecteditem.getItemClass() == 2) {
                                         Client.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                         selecteditemslot = -1;
                                     }
@@ -250,7 +253,7 @@ public class Engine {
                                 // Waffenslot
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
-                                    if ((int) selecteditem.getItemProperty("itemclass") == 1) {
+                                    if ((int) selecteditem.getItemClass() == 1) {
                                         Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                         selecteditemslot = -1;
                                     }
@@ -472,8 +475,8 @@ public class Engine {
             float x = (float) item.getPosX();
             float y = (float) item.getPosY();
 
-            float v = 0.0625f * (int) item.getItemProperty("pic");
-            float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
+            float v = 0.0625f * (int) item.getPic();
+            float w = 0.0625f * ((int) item.getPic() / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.0625f);
@@ -492,7 +495,7 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                if (enemy.getEnemytypeid() == 0) {
+                if (enemy.getEnemytypeid() == 1) {
                     // roten Gegner einfärben
                     glColor3f(1f, .5f, .5f);
                     renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
@@ -603,8 +606,8 @@ public class Engine {
                 float width = 0.11f * tilesX;
                 float height = 0.11f * tilesY;
 
-                float v = 0.0625f * (int) item.getItemProperty("pic");
-                float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
+                float v = 0.0625f * (int) item.getPic();
+                float w = 0.0625f * ((int) item.getPic() / 16);
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.0625f);
@@ -654,8 +657,8 @@ public class Engine {
                         float width = 0.11f * tilesX;
                         float height = 0.11f * tilesY;
 
-                        float v = 0.0625f * (int) item.getItemProperty("pic");
-                        float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
+                        float v = 0.0625f * (int) item.getPic();
+                        float w = 0.0625f * ((int) item.getPic() / 16);
 
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glTexCoord2f(v, w + 0.0625f);
@@ -681,8 +684,8 @@ public class Engine {
 
             float size = 0.08f;
 
-            float v = 0.0625f * (int) item.getItemProperty("pic");
-            float w = 0.0625f * ((int) item.getItemProperty("pic") / 16);
+            float v = 0.0625f * (int) item.getPic();
+            float w = 0.0625f * ((int) item.getPic() / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.0625f);
@@ -802,7 +805,8 @@ public class Engine {
     }
 
     /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
+     * selber rebinden!
      *
      * @param text Der zu zeichnende Text
      * @param x PositionX (unten links)
@@ -813,7 +817,8 @@ public class Engine {
     }
 
     /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
+     * selber rebinden!
      *
      * @param text Der zu zeichnende Text
      * @param x PositionX (unten links)
@@ -825,7 +830,8 @@ public class Engine {
     }
 
     /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
+     * selber rebinden!
      *
      * @param text Der zu zeichnende Text
      * @param x PositionX (unten links)
@@ -840,7 +846,8 @@ public class Engine {
     }
 
     /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
+     * selber rebinden!
      *
      * @param text Der zu zeichnende Text
      * @param x Relative X-Position (0-1)
@@ -952,6 +959,7 @@ public class Engine {
 
     /**
      * Legt eine Schadenszahl an, die in der nächsten Sekunde gerendert wird
+     *
      * @param damage Schaden der angezeigt wird
      * @param x x-Position
      * @param y y-Position
@@ -963,6 +971,7 @@ public class Engine {
 
     /**
      * Nimmt einen Fx-Effekt in die FX-Liste auf, so das er gerendert wird
+     *
      * @param newfx der Fx-Effekt
      */
     public static void addFx(Fx newfx) {
@@ -971,19 +980,21 @@ public class Engine {
 
     /**
      * Rendert eine Animation
+     *
      * @param animation die Animation, die gerendert werden soll
      * @param x Position
      * @param y Position
      * @param dir Richtung
-     * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig, wenn sie beim ersten Bild anfangen soll. Bei Einzelbild egal.
+     * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig, wenn sie beim ersten Bild anfangen soll.
+     * Bei Einzelbild egal.
      */
     private void renderAnim(Animation animation, double x, double y, double dir, int starttick) {
         float picsizex = 0.0625f * animation.getPicsizex();
         float picsizey = 0.0625f * animation.getPicsizey();
-        
+
         int currentpic = ((Client.frozenGametick - starttick) / animation.getPicduration()) % animation.getNumberofpics();
         currentpic += animation.getStartpic();
-        
+
         float v = (currentpic % (16 / animation.getPicsizex())) * picsizex;
         float w = (currentpic / (16 / animation.getPicsizey())) * picsizey;
 

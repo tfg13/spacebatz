@@ -10,14 +10,15 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
 /**
- * Ein Geschoss.
- * Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre lifetime
- * abgelaufen ist
+ * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre
+ * lifetime abgelaufen ist
  *
  * @author J.K.
  */
@@ -64,6 +65,27 @@ public class Bullet extends Entity {
         effects = new ArrayList<>();
     }
 
+    public void hitChar(Entity hitChar) {
+        if (hitChar instanceof EffectCarrier) {
+            EffectCarrier target = (EffectCarrier) hitChar;
+            // Effekte an den getroffenen Char geben:
+            for (Effect effect : effects) {
+                effect.applyToChar(target);
+            }
+            // AoE-Effekte auslösen:
+            for (Effect effect : effects) {
+                effect.applyToPosition(getX(), getY(), target);
+            }
+            // Wenn das Ziel stirbt es entfernen und loot dropen:
+            if (target.getProperties().getHitpoints() <= 0) {
+                Server.game.getEntityManager().removeEntity(target.netID);
+                DropManager.dropItem(hitChar.getX(), hitChar.getY(), 2);
+            }
+            // Das Bullet entfernen:
+            Server.game.getEntityManager().removeEntity(netID);
+        }
+    }
+
     /**
      * Gibt den Tick, zu dem das Bullet gelöscht wird, zurück
      *
@@ -89,31 +111,6 @@ public class Bullet extends Entity {
      */
     public void addEffect(Effect effect) {
         effects.add(effect);
-    }
-
-    /**
-     * Aktiviert alle AoE Effekte an einer Position.
-     *
-     *
-     * @param posX die X-Koordinate der Position an der der AoE-Effekt ausgelöst wird
-     * @param posY die Y-Koordinate der Position an der der AoE-Effekt ausgelöst wird
-     * @param hitCharacter der Char, der vom Bullet direkt getroffen wurde, oder null falls das Bullet eine Wand getroffen hat.
-     */
-    public void activateEffectsAtPosition(double posX, double posY, Char hitCharacter) {
-        for (Effect effect : effects) {
-            effect.applyToPosition(posX, posY, (EffectCarrier)hitCharacter);
-        }
-    }
-
-    /**
-     * Wendet alle Effekte auf einen Char an.
-     *
-     * @param target der Char auf den die Effekte ngewandt werden
-     */
-    public void applyEffectsToChar(Char target) {
-        for (Effect effect : effects) {
-            effect.applyToChar((EffectCarrier)target);
-        }
     }
 
     @Override

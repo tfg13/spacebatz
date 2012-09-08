@@ -12,10 +12,17 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.Constants;
+import de._13ducks.spacebatz.shared.network.OutBuffer;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
 import java.net.Socket;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -82,7 +89,28 @@ public class ServerNetworkConnection {
     /**
      * Die Queue der ankommenden Pakete.
      */
-    private PriorityBlockingQueue<InputPacket> inputQueue;
+    private PriorityBlockingQueue<CTSPacket> inputQueue;
+    /**
+     * Die zweite Queue der ankommenden Pakete.
+     * Der Wrap-Around funktioniert also nicht
+     */
+    private PriorityBlockingQueue<CTSPacket> inputQueue2;
+    /**
+     * Der Port des neuen Netzwerksystems, auf dem der Client lauscht.
+     */
+    private int port;
+    /**
+     * Puffert alle Daten für den Client, bis der sie erhalten hat.
+     */
+    private OutBuffer outBuffer = new OutBuffer();
+    /**
+     * Puffert Befehle, die gesendet werden sollen.
+     */
+    private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
+    /**
+     * Der Index des Datenpakets, dass der Server als nächstes versendet.
+     */
+    int nextOutIndex = 0x3FF0;
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
@@ -91,6 +119,7 @@ public class ServerNetworkConnection {
      */
     public ServerNetworkConnection(Socket socket) {
 	inputQueue = new PriorityBlockingQueue<>();
+	inputQueue2 = new PriorityBlockingQueue<>();
 	mySocket = socket;
 	tcpReceiverStatus = RECEIVE_CMDID;
 	try {
@@ -191,32 +220,126 @@ public class ServerNetworkConnection {
      *
      * @param packet das neue Paket.
      */
-    void enqueuePacket(InputPacket packet) {
+    synchronized void enqueuePacket(CTSPacket packet) {
 	// Nicht aufnehmen, wenn zu alt (wrap-around)
-	if (Math.abs(packet.getIndex() - lastPkgIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastPkgIndex) {
-	    if (!inputQueue.contains(packet)) {
-		inputQueue.add(packet);
+	int packdiff = Math.abs(packet.getIndex() - lastPkgIndex);
+	if ((packet.getIndex() < lastPkgIndex && packdiff > Constants.MAX_WRAPAROUND_PACK_ID_DIFF) || (packet.getIndex() > lastPkgIndex && packdiff < Constants.MAX_WRAPAROUND_PACK_ID_DIFF)) {
+	    // Sonderbehandlung für Wrap-Around in zweite Queue
+	    if (packet.getIndex() < lastPkgIndex) {
+		if (!inputQueue2.contains(packet)) {
+		    inputQueue2.add(packet);
+		}
+	    } else {
+		if (!inputQueue.contains(packet)) {
+		    inputQueue.add(packet);
+		}
 	    }
 	}
+	// Empfang bestätigen:
+	ackPacket(packet);
+    }
+
+    /**
+     * Craftet ein ACK-Signal und scheduled es zum Senden
+     *
+     * @param packet das Empfangene STCPacket
+     */
+    private void ackPacket(CTSPacket packet) {
+	byte[] ackData = new byte[2];
+	Bits.putShort(ackData, 0, packet.getIndex());
+	queueOutgoingCommand(new OutgoingCommand(0x80, ackData));
     }
 
     /**
      * Verarbeitet alle Packete, die derzeit verarbeitet werden können.
      */
-    void computePackets() {
+    synchronized void computePackets() {
 	// Schauen, ob der Index des nächsten Pakets stimmt:
 	while (true) {
-	    short next = (short) (lastPkgIndex + 1);
-	    if (next < 0) {
-		next = 0;
+	    // Queues tauschen?
+	    if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastPkgIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
+		System.out.println("CLIENT QUEUE SWAP");
+		PriorityBlockingQueue<CTSPacket> temp = inputQueue;
+		inputQueue = inputQueue2;
+		inputQueue2 = temp;
 	    }
+	    if (inputQueue.isEmpty()) {
+		break;
+	    }
+	    int next = lastPkgIndex + 1;
+	    if (next == Constants.OVERFLOW_STC_PACK_ID) {
+		next = 0;
+            }
 	    if (inputQueue.peek().getIndex() == next) {
-		InputPacket packet = inputQueue.poll();
+		CTSPacket packet = inputQueue.poll();
 		packet.compute();
 		lastPkgIndex = packet.getIndex();
 	    } else {
 		break;
 	    }
 	}
+    }
+
+    /**
+     * @return the port
+     */
+    int getPort() {
+	return port;
+    }
+
+    /**
+     * @param port the port to set
+     */
+    void setPort(int port) {
+	this.port = port;
+    }
+
+    /**
+     * @return the outBuffer
+     */
+    OutBuffer getOutBuffer() {
+	return outBuffer;
+    }
+
+    /**
+     * Schiebt einen Befehl in die Warteschlange für ausgehende Befehle.
+     *
+     * @param cmd
+     */
+    public void queueOutgoingCommand(OutgoingCommand cmd) {
+	cmdOutQueue.add(cmd);
+    }
+
+    private short getAndIncrementNextIndex() {
+	short ret = (short) nextOutIndex++;
+	if (nextOutIndex == Constants.OVERFLOW_STC_PACK_ID) {
+	    nextOutIndex = 0;
+	}
+	return ret;
+    }
+
+    /**
+     * Baut aus den Befehlen, die derzeit in der Warteschlange sind ein Netzwerkpaket zusammen.
+     *
+     * @return das DatenPaket
+     */
+    DatagramPacket craftPacket() {
+	byte[] buf = new byte[512];
+	short idx = getAndIncrementNextIndex();
+	Bits.putShort(buf, 0, idx);
+	buf[2] = 0; // MAC
+	int pos = 3;
+	while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+	    // Befehl passt noch rein
+	    OutgoingCommand cmd = cmdOutQueue.poll();
+	    buf[pos++] = (byte) cmd.cmdID;
+	    System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
+	    pos += cmd.data.length;
+	}
+	if (pos == 3) {
+	    // NOOP einbauen
+	    buf[3] = 0;
+	}
+	return new DatagramPacket(buf, pos + 1, mySocket.getInetAddress(), port);
     }
 }

@@ -15,7 +15,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.Item;
-
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import de._13ducks.spacebatz.util.Vector;
@@ -30,7 +29,9 @@ import java.util.Iterator;
 public class CollisionManager {
 
     /**
-     * Der Radius, in dem Entitys für Kolliisonsberechnung gesucht werden @TODO: gescheiten Namen finden
+     * Der Radius, in dem Entitys für Kolliisonsberechnung gesucht werden
+     *
+     * @TODO: gescheiten Namen finden
      */
     private static double HARDCODEDCOLLISIONAROUNDMERADIUS = 2.0;
 
@@ -49,7 +50,7 @@ public class CollisionManager {
      */
     private static void computeBulletCollision() {
 
-        Iterator<Entity> listIterator = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> listIterator = Server.game.getEntityManager().getEntityIterator();
 
         while (listIterator.hasNext()) {
             Bullet bullet;
@@ -60,16 +61,11 @@ public class CollisionManager {
                 continue;
             }
 
-
             // Bullet muss nach bestimmter Zeit gelöscht werden
             if (Server.game.getTick() > bullet.getDeletetick()) {
-                listIterator.remove();
-                Server.entityMap.removeEntity(bullet);
-
+                Server.game.getEntityManager().removeEntity(bullet.netID);
                 continue;
             }
-
-
 
             double x = bullet.getX();
             double y = bullet.getY();
@@ -78,8 +74,7 @@ public class CollisionManager {
             if (Server.game.getLevel().isBlockDestroyable((int) x, (int) y)) {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
 
-                Server.game.netIDMap.remove(bullet.netID);
-                Server.entityMap.removeEntity(bullet);
+                Server.game.getEntityManager().removeEntity(bullet.netID);
             }
 
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
@@ -88,7 +83,12 @@ public class CollisionManager {
                 if (e instanceof Char) {
                     Char c = (Char) e;
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
-                        HitManager.charBulletHit(c, bullet);
+                        // Wenn der Char das Bullet nicht selber erzeugt hat:
+                        if (!bullet.getOwner().equals(c)) {
+                            bullet.hitChar(c);
+                            break;
+                        }
+
                     }
                 }
             }
@@ -100,7 +100,7 @@ public class CollisionManager {
      */
     private static void computeWallCollision() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
@@ -122,7 +122,7 @@ public class CollisionManager {
 
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
         // Wert cachen:
-        double size = mover.getProperty("size");
+        double size = mover.getSize();
         // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
@@ -163,7 +163,7 @@ public class CollisionManager {
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -204,7 +204,7 @@ public class CollisionManager {
 
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
 
-                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getProperty("size") / 2.0) + 0.5)) {
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -232,7 +232,7 @@ public class CollisionManager {
      */
     private static void computeMobCollission() {
         // Alle Chars, die sich bewegen auf Kollision prüfen:
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
@@ -258,7 +258,7 @@ public class CollisionManager {
      * Berechnet Kollision mit Items
      */
     private static void computeItemCollission() {
-        Iterator<Entity> iter = Server.game.netIDMap.values().iterator();
+        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Player) {
@@ -270,7 +270,7 @@ public class CollisionManager {
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
 
-                            if (item.getItemProperty("itemclass") == 0) {
+                            if (item.getItemClass() == 0) {
                                 // stackbares Item
                                 if (item.getName().equals("Money")) {
                                     collector.setMoney(collector.getMoney() + item.getAmount());

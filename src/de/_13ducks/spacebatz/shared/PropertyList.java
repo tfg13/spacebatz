@@ -1,220 +1,197 @@
 package de._13ducks.spacebatz.shared;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
- * Verwaltet eine Liste von Eigenschaften. Jede Eigenschaft hat einen string-Namen, einen Grundwert und einen
- * Multiplikator. Der Wert einer Eigenschaft ergibt sich aus dem Grundwert mal dem Multiplikator. Nicht gesetzte
- * Eigenschaften werden als 0 interpretiert, nicht gesetzte Multiplikatoren asl 1.0 .
- *
- * Beim Addieren/subtrahieren anderer PropertyLists zu/von dieser PropertyList werden Grundwerte zu Grundwerten und
- * Multiplikatoren zu Multiplikatoren addiert/subtrahiert.
+ * Verwaltet Attribute von Chars oder Items.
  *
  * @author michael
  */
 public class PropertyList implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
+
     /**
-     * Die Liste der Grundwerte
+     * @return the serialVersionUID
      */
-    private HashMap<String, Double> baseValues;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     /**
-     * Die Liste der Multiplikatoren
+     * @param aSerialVersionUID the serialVersionUID to set
      */
-    private HashMap<String, Double> multiplicators;
+    public static void setSerialVersionUID(long aSerialVersionUID) {
+        serialVersionUID = aSerialVersionUID;
+    }
+    /**
+     * Die Lebenspunkte
+     */
+    private int hitpoints;
+    private double sightrange;
+    /**
+     * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 +
+     * movespeedMultiplicatorBonus.
+     */
+    private double movespeedMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Rüstungsmultiplikator. Der Rüstungsmultiplikator ist also 1.0 + armorMultiplicatorBonus.
+     */
+    private double armorMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Reichweitemultiplikator. Der Reichweitemultiplikator ist also 1.0 + rangeMultiplicatorBonus.
+     */
+    private double rangeMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Schadensmultiplikator. Der Schadensmultiplikator ist also 1.0 + damageMultiplicatorBonus.
+     */
+    private double damageMultiplicatorBonus;
+    /**
+     * Der Bonus auf den Angriffsgeschwindigkeitsmultiplikator. Der Angriffsgeschwindigkeitsmultiplikator ist also 1.0 +
+     * attackSpeedMultiplicatorBonus.
+     */
+    private double attackSpeedMultiplicatorBonus;
 
     public PropertyList() {
-        baseValues = new HashMap<>();
-        multiplicators = new HashMap<>();
     }
 
     /**
-     * Gibt den Wert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0 zurückgegeben.
+     * Addiert Attribute zu diesen hinzu.
      *
-     * @param name der Name der gesuchten Eigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
+     * @param other die Attribute die addiert werden.
      */
-    final public double getProperty(String name) {
-        if (baseValues.containsKey(name)) {
-            return baseValues.get(name) * getMultiplicator(name);
-        } else {
-            return 0;
-        }
+    public void addProperties(PropertyList other) {
+        hitpoints += other.getHitpoints();
+        sightrange += other.getSightrange();
+        movespeedMultiplicatorBonus += other.getMovespeedMultiplicatorBonus();
+        armorMultiplicatorBonus += other.getArmorMultiplicatorBonus();
+        rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
+        damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
+        attackSpeedMultiplicatorBonus += other.getAttackSpeedMultiplicatorBonus();
     }
 
     /**
-     * Setzt den Grundwert einer Eigenschaft. Falls der Multiplikator dieser Eigenschaft noch nicht gesetzt ist, wird er
-     * auf 1.0 gesetzt.
+     * Subtrahiert Attribute von diesen.
      *
-     * @param name der Name der Eigenschaft, deren Grundwert gesetzt werden soll
-     * @param value der Wert, auf den der Grundwert der Eigenschaft gesetzt werden soll
+     * @param other die Attribute die abgezogen werden.
      */
-    final public void setBaseProperty(String name, double value) {
-        baseValues.put(name, value);
+    public void removeProperties(PropertyList other) {
+        hitpoints -= other.getHitpoints();
+        sightrange -= other.getSightrange();
+        movespeedMultiplicatorBonus -= other.getMovespeedMultiplicatorBonus();
+        armorMultiplicatorBonus -= other.getArmorMultiplicatorBonus();
+        rangeMultiplicatorBonus -= other.getRangeMultiplicatorBonus();
+        damageMultiplicatorBonus -= other.getDamageMultiplicatorBonus();
+        attackSpeedMultiplicatorBonus -= other.getAttackSpeedMultiplicatorBonus();
     }
 
     /**
-     * Gibt den Grundwert einer Eigenschaft zurück. Wenn die Eigenschaft nicht initialisiert wurde, wird 0
-     * zurückgegeben.
+     * Gibt eine Textdarstellung dieser Attribute zurück.
      *
-     * @param name der Name der gesuchten Grundeigenschaft
-     * @return der Wert der Eigenschaft oder 0 wenn sie nicht gesetzt wurde.
-     */
-    final public double getBaseProperty(String name) {
-        if (baseValues.containsKey(name)) {
-            return baseValues.get(name);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Inkrementiert den Wert einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, der inkrementiert werden soll
-     * @param value der Wert, um den die Eigenschaft inkrementiert werden soll
-     */
-    final public void incrementBaseProperty(String name, double value) {
-        baseValues.put(name, getBaseProperty(name) + value);
-    }
-
-    /**
-     * Dekrementiert den Wert einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, der dekrementiert werden soll
-     * @param value der Wert, um den die Eigenschaft dekrementiert werden soll
-     */
-    final public void decrementBaseProperty(String name, double value) {
-        baseValues.put(name, getBaseProperty(name) - value);
-    }
-
-    /**
-     * Inkrementiert den Multiplikator einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, deren Multiplikator inkrementiert werden soll
-     * @param value der Wert, um den der Multiplikator der Eigenschaft inkrementiert werden soll
-     */
-    final public void incrementMutliplicator(String name, double value) {
-        multiplicators.put(name, getMultiplicator(name) + value);
-    }
-
-    /**
-     * Dekrementiert den Multiplikator einer Eigenschaft
-     *
-     * @param name der Name der Eigenschaft, deren Multiplikator dekrementiert werden soll
-     * @param value der Wert, um den der Multiplikator der Eigenschaft dekrementiert werden soll
-     */
-    final public void decrementMutliplicator(String name, double value) {
-        multiplicators.put(name, getMultiplicator(name) - value);
-    }
-
-    /**
-     * Gibt den Wert eines Multiplikators zurück. Wenn der Multiplikator nicht initialisiert wurde, wird 0
-     * zurückgegeben.
-     *
-     * @param name der Name des gesuchten Multiplikators
-     * @return der Wert des Multiplikators oder 1.0 wenn er nicht gesetzt wurde.
-     */
-    private double getMultiplicator(String name) {
-        if (multiplicators.containsKey(name)) {
-            return multiplicators.get(name);
-        } else {
-            return 1.0;
-        }
-    }
-
-    /**
-     * Setzt den Wert eines Multiplikators.
-     *
-     * @param name der Name der Eigenschaft, deren Multiplikator gesetzt werden soll
-     * @param value der Wert, auf den der Multiplikator der Eigenschaft gesetzt werden soll
-     */
-    final public void setMutliplicator(String name, double value) {
-        multiplicators.put(name, value);
-    }
-
-    /**
-     * Addiert alle Grundwete eines anderen Properties-Objekts zu den Grundewerten dieser Properties hinzu. Addiert die
-     * Multiplikatoren des anderen Properties-Objekts zu den Multiplikatoren dieser Properties hinzu.
-     *
-     * @param otherProperties die Properties die subtrahiert werden
-     */
-    public void addProperties(PropertyList otherProperties) {
-        // Grundwerte:
-        Iterator<Entry<String, Double>> iter = otherProperties.getBaseValueIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            incrementBaseProperty(next.getKey(), next.getValue());
-        }
-        // Multiplikatoren:
-        iter = otherProperties.getMulitplicatorIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            incrementMutliplicator(next.getKey(), next.getValue());
-        }
-    }
-
-    /**
-     * Subtrahiert alle Grundwete eines anderen Properties-Objekts von den Grundewerten dieser Properties. Subtrahiert
-     * die Multiplikatoren des anderen Properties-Objekts von den Multiplikatoren dieser Properties.
-     *
-     * @param otherProperties die Properties, die subtrahiert werden
-     */
-    public void removeProperties(PropertyList otherProperties) {
-        // Grundwerte:
-        Iterator<Entry<String, Double>> iter = otherProperties.getBaseValueIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            decrementBaseProperty(next.getKey(), next.getValue());
-        }
-        // Multiplikatoren:
-        iter = otherProperties.getMulitplicatorIterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> next = iter.next();
-            decrementMutliplicator(next.getKey(), next.getValue());
-        }
-    }
-
-    /**
-     * Gibt einen Iterator über alle Grundwerte dieser Properties zurück
-     *
-     * @return ein Iterator über alle Grundwerte
-     */
-    private Iterator<Entry<String, Double>> getBaseValueIterator() {
-        return baseValues.entrySet().iterator();
-    }
-
-    /**
-     * Gibt einen Iterator über alle Multiplikatoren dieser Properties zurück
-     *
-     * @return ein Iterator über alle Mutliplikatoren
-     */
-    private Iterator<Entry<String, Double>> getMulitplicatorIterator() {
-        return multiplicators.entrySet().iterator();
-    }
-
-    /**
-     * Gibt eine Liste mit Werten, die in diesen Properties gesetzt sind, zurück.
-     *
-     * @return eine Liste mit Werten, die in diesen Properties gesetzt sind
+     * @return
      */
     @Override
     public String toString() {
         String text = "";
-        Iterator<Entry<String, Double>> iter = baseValues.entrySet().iterator();
-        while (iter.hasNext()) {
-            Entry<String, Double> entry = iter.next();
-            text += entry.getKey();
-            text += " = ";
-            text += entry.getValue();
-            text += " * ";
-            text += multiplicators.get(entry.getKey());
-            text += "\n";
-        }
+        text += "Hitpoints: " + getHitpoints();
         return text;
+    }
+
+    /**
+     * @return the sightrange
+     */
+    public double getSightrange() {
+        return sightrange;
+    }
+
+    /**
+     * @param sightrange the sightrange to set
+     */
+    public void setSightrange(double sightrange) {
+        this.sightrange = sightrange;
+    }
+
+    /**
+     * @return the hitpoints
+     */
+    public int getHitpoints() {
+        return hitpoints;
+    }
+
+    /**
+     * @param hitpoints the hitpoints to set
+     */
+    public void setHitpoints(int hitpoints) {
+        this.hitpoints = hitpoints;
+    }
+
+    /**
+     * @return the damageMultiplicatorBonus
+     */
+    public double getDamageMultiplicatorBonus() {
+        return damageMultiplicatorBonus;
+    }
+
+    /**
+     * @param damageMultiplicatorBonus the damageMultiplicatorBonus to set
+     */
+    public void setDamageMultiplicatorBonus(double damageMultiplicatorBonus) {
+        this.damageMultiplicatorBonus = damageMultiplicatorBonus;
+    }
+
+    /**
+     * @return the attackSpeedMultiplicatorBonus
+     */
+    public double getAttackSpeedMultiplicatorBonus() {
+        return attackSpeedMultiplicatorBonus;
+    }
+
+    /**
+     * @param attackSpeedMultiplicatorBonus the attackSpeedMultiplicatorBonus to set
+     */
+    public void setAttackSpeedMultiplicatorBonus(double attackSpeedMultiplicatorBonus) {
+        this.attackSpeedMultiplicatorBonus = attackSpeedMultiplicatorBonus;
+    }
+
+    /**
+     * @return the armorMultiplicatorBonus
+     */
+    public double getArmorMultiplicatorBonus() {
+        return armorMultiplicatorBonus;
+    }
+
+    /**
+     * @param armorMultiplicatorBonus the armorMultiplicatorBonus to set
+     */
+    public void setArmorMultiplicatorBonus(double armorMultiplicatorBonus) {
+        this.armorMultiplicatorBonus = armorMultiplicatorBonus;
+    }
+
+    /**
+     * @return the rangeMultiplicatorBonus
+     */
+    public double getRangeMultiplicatorBonus() {
+        return rangeMultiplicatorBonus;
+    }
+
+    /**
+     * @param rangeMultiplicatorBonus the rangeMultiplicatorBonus to set
+     */
+    public void setRangeMultiplicatorBonus(double rangeMultiplicatorBonus) {
+        this.rangeMultiplicatorBonus = rangeMultiplicatorBonus;
+    }
+
+    /**
+     * @return the movespeedMultiplicatorBonus
+     */
+    public double getMovespeedMultiplicatorBonus() {
+        return movespeedMultiplicatorBonus;
+    }
+
+    /**
+     * @param movespeedMultiplicatorBonus the movespeedMultiplicatorBonus to set
+     */
+    public void setMovespeedMultiplicatorBonus(double movespeedMultiplicatorBonus) {
+        this.movespeedMultiplicatorBonus = movespeedMultiplicatorBonus;
     }
 }

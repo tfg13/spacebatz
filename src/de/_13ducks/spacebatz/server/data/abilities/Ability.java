@@ -1,14 +1,19 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.data.entities.Char;
-import de._13ducks.spacebatz.shared.PropertyList;
 
 /**
- * Eine Fähigkeit, die auf eine Position gewirkt werden kann.
+ * Schnittstelle für Fähigkeiten.
+ *
+ * Fähigkeiten können von Chars auf Positionen benutzt werden.
  *
  * @author michael
  */
-public abstract class Ability extends PropertyList {
+public interface Ability {
 
     /**
      * Benutzt die Fähigkeit auf eine Position.
