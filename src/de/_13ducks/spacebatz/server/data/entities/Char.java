@@ -37,16 +37,8 @@ public abstract class Char extends Entity {
     public Char(double x, double y, int netID, byte entityTypeID) {
         super(x, y, netID, entityTypeID);
         properties = new PropertyList();
-
-        // PictureID setzen:
-        //properties.setPictureId(0);
         properties.setHitpoints(Settings.CHARHEALTH);
-        //properties.setDamage(1);
-        //properties.setRange(10.0);
         properties.setSightrange(10.0);
-
-
-
     }
 
     /**
@@ -56,6 +48,7 @@ public abstract class Char extends Entity {
      */
     final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
+        setSpeed(Settings.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
     }
 
     /**
@@ -65,6 +58,7 @@ public abstract class Char extends Entity {
      */
     final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
+        setSpeed(Settings.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
     }
 
     /**
