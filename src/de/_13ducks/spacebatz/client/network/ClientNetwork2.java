@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
@@ -61,6 +62,11 @@ public class ClientNetwork2 {
      * Die Queue der ankommenden Pakete.
      */
     private PriorityBlockingQueue<STCPacket> inputQueue = new PriorityBlockingQueue<>();
+    /**
+     * Die zweite Queue der ankommenden Pakete.
+     * Der Wrap-Around funktioniert also nicht
+     */
+    private PriorityBlockingQueue<STCPacket> inputQueue2 = new PriorityBlockingQueue<>();
     /**
      * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
      * Enthält sowohl interne, als auch externe Kommandos.
@@ -128,7 +134,8 @@ public class ClientNetwork2 {
 			if ((ansData[0] & 0xC0) == 0x40) {
 			    socket.setSoTimeout(0);
 			    // Verbindung ok, Parameter auslesen.
-			    int nextTick = ((ansData[0] & 0x3F) << 8) | ansData[1];
+			    ansData[0] &= 0x3F;
+			    int nextTick = Bits.getShort(ansData, 0);
 			    int clientID = ansData[2];
 			    lastInIndex = (short) (nextTick - 1);
 			    if (lastInIndex < 0) {
@@ -195,11 +202,19 @@ public class ClientNetwork2 {
      *
      * @param packet das neue Paket.
      */
-    private void enqueuePacket(STCPacket packet) {
+    private synchronized void enqueuePacket(STCPacket packet) {
 	// Nicht aufnehmen, wenn zu alt (wrap-around)
-	if (Math.abs(packet.getIndex() - lastInIndex) > Short.MAX_VALUE / 2 || packet.getIndex() > lastInIndex) {
-	    if (!inputQueue.contains(packet)) {
-		inputQueue.add(packet);
+	int packdiff = Math.abs(packet.getIndex() - lastInIndex);
+	if ((packet.getIndex() < lastInIndex && packdiff > Constants.MAX_WRAPAROUND_PACK_ID_DIFF) || (packet.getIndex() > lastInIndex && packdiff < Constants.MAX_WRAPAROUND_PACK_ID_DIFF)) {
+	    // Sonderbehandlung für Wrap-Around in zweite Queue
+	    if (packet.getIndex() < lastInIndex) {
+		if (!inputQueue2.contains(packet)) {
+		    inputQueue2.add(packet);
+		}
+	    } else {
+		if (!inputQueue.contains(packet)) {
+		    inputQueue.add(packet);
+		}
 	    }
 	}
 	// Empfang immer bestätigen:
@@ -234,7 +249,8 @@ public class ClientNetwork2 {
     DatagramPacket craftPacket() {
 	byte[] buf = new byte[512];
 	buf[0] = Client.getClientID();
-	Bits.putShort(buf, 1, getAndIncrementNextIndex());
+	short idx = getAndIncrementNextIndex();
+	Bits.putShort(buf, 1, idx);
 	buf[3] = 0; // MAC
 	int pos = 4;
 	while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
@@ -253,7 +269,7 @@ public class ClientNetwork2 {
 
     private short getAndIncrementNextIndex() {
 	short ret = (short) nextOutIndex++;
-	if (nextOutIndex >= Short.MAX_VALUE / 4) {
+	if (nextOutIndex == Constants.OVERFLOW_STC_PACK_ID) {
 	    nextOutIndex = 0;
 	}
 	return ret;
@@ -287,15 +303,22 @@ public class ClientNetwork2 {
      * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Befehle vom Server.
      * Darf erst nach connect aufgerufen werden.
      */
-    public void inTick() {
+    public synchronized void inTick() {
 	if (connected) {
 	    // Schauen, ob der Index des nächsten Pakets stimmt:
 	    while (true) {
+		// Queues tauschen?
+		if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
+		    System.out.println("CLIENT QUEUE SWAP");
+		    PriorityBlockingQueue<STCPacket> temp = inputQueue;
+		    inputQueue = inputQueue2;
+		    inputQueue2 = temp;
+		}
 		if (inputQueue.isEmpty()) {
 		    break;
 		}
-		short next = (short) (lastInIndex + 1);
-		if (next < 0) {
+		int next = lastInIndex + 1;
+		if (next == Constants.OVERFLOW_STC_PACK_ID) {
 		    next = 0;
 		}
 		if (inputQueue.peek().getIndex() == next) {

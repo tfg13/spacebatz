@@ -217,6 +217,8 @@ public class ServerNetwork2 {
 	if (!found) {
 	    System.out.println("ERROR: NET: Cannot find ClientID for request from " + origin + ", connect via old system first!");
 	}
+	Bits.putShort(connectAnswer, 0, (short) Server.game.clients.get(connectAnswer[2]).getNetworkConnection().nextOutIndex);
+	connectAnswer[0] |= 0x40;
 	// Senden
 	DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
 	socket.send(pack);
