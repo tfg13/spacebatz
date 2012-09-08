@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author Jojo
  */
-public class HitscanAbility extends Ability {
+public class HitscanAbility extends WeaponAbility {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -54,13 +54,12 @@ public class HitscanAbility extends Ability {
 
                 if (character.getProperties().getHitpoints() <= 0) {
                     Server.game.getEntityManager().removeEntity(character.netID);
-                    Server.entityMap.removeEntity(character);
                     DropManager.dropItem(character.getX(), character.getY(), 2);
                 }
             }
 
             // Block abbauem
-            Position test = CollisionManager.computeHitscanOnBlocks(user, angle, user.getProperties().getRange());
+            Position test = CollisionManager.computeHitscanOnBlocks(user, angle, getRange());
             if (test != null) {
                 if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
                     Server.game.getLevel().destroyBlock(test.getX(), test.getY());

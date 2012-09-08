@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.client.InventorySlot;
-import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -58,7 +58,7 @@ public class Item implements Serializable {
     /**
      * Die Fähigkeit, falls das Item eine Waffe ist
      */
-    private transient Ability weaponAbility;
+    private transient WeaponAbility weaponAbility;
 
     /**
      * Erzeugt ein neues Item
@@ -101,7 +101,7 @@ public class Item implements Serializable {
         amount += itemAttribute.getAmount();
         if (weaponAbility != null) {
             // Die Waffenstats der Waffenfähigkeit geben, wenn dies eine Waffe ist:
-            weaponAbility.addProperties(itemAttribute.getWeaponStats());
+            weaponAbility.addWeaponStats(itemAttribute.getWeaponStats());
 
         }
 
@@ -211,7 +211,7 @@ public class Item implements Serializable {
      *
      * @return the weaponAbility
      */
-    public Ability getWeaponAbility() {
+    public WeaponAbility getWeaponAbility() {
         return weaponAbility;
     }
 

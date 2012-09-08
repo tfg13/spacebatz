@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Eine Entity, die von Effekten beeinflusst werden kann.
- * Verwaltet und berechnet Effekte regelmäßig.
+ * Eine Entity, die von Effekten beeinflusst werden kann. Verwaltet und berechnet Effekte regelmäßig.
  *
  * @author michael
  */
@@ -42,7 +41,9 @@ public class EffectCarrier extends Char {
     /**
      * Berechnet alle Effekte und entfernt abgelaufene Effekte.
      */
+    @Override
     public final void tick() {
+        super.tick();
         Iterator<Effect> iter = effects.iterator();
         while (iter.hasNext()) {
             Effect effect = iter.next();

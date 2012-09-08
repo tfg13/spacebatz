@@ -51,9 +51,9 @@ public class Enemy extends EffectCarrier {
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
 
         getProperties().setHitpoints(estats.getHealthpoints());
-        getProperties().setDamage(estats.getDamage());
+        //getProperties().setDamage(estats.getDamage());
         getProperties().setSightrange(estats.getSightrange());
-        getProperties().setPictureId(estats.getPicture());
+        //getProperties().setPictureId(estats.getPicture());
         
 
         speed = estats.getSpeed();

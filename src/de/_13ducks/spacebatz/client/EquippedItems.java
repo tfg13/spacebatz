@@ -8,7 +8,9 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.shared;
+package de._13ducks.spacebatz.client;
+
+import de._13ducks.spacebatz.shared.Item;
 
 /**
  * Verwaltet Slots für die Items, die der Client (Client- und Serverseite) gerade angelegt hat

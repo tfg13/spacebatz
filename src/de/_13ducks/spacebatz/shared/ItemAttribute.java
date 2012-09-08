@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.shared;
 
 import com.rits.cloning.Cloner;
-import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -38,11 +38,11 @@ public class ItemAttribute implements Serializable {
     /**
      * Die Eigenschaften der Waffe, z.B. Schaden
      */
-    public PropertyList weaponStats;
+    public WeaponStats weaponStats;
     /**
      * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
      */
-    private transient Ability weaponAbility;
+    private transient WeaponAbility weaponAbility;
 
     /**
      * Erstellt ein neues Attribut mit Bonuswerten.
@@ -56,7 +56,7 @@ public class ItemAttribute implements Serializable {
         this.name = name;
         bonusStats = new PropertyList();
 
-        weaponStats = new PropertyList();
+        weaponStats = new WeaponStats();
     }
 
     /**
@@ -69,7 +69,7 @@ public class ItemAttribute implements Serializable {
         this.name = name;
         bonusStats = new PropertyList();
 
-        weaponStats = new PropertyList();
+        weaponStats = new WeaponStats();
     }
 
     /**
@@ -95,7 +95,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die WaffenStats, die dieses Attrbut der Waffe gibt
      */
-    public PropertyList getWeaponStats() {
+    public WeaponStats getWeaponStats() {
         return weaponStats;
     }
 
@@ -121,7 +121,7 @@ public class ItemAttribute implements Serializable {
      *
      * @return die Fähigkeit, die dieses ItemAttribut gibt oder null
      */
-    public Ability getNewWeaponAbilityInstance() {
+    public WeaponAbility getNewWeaponAbilityInstance() {
         Cloner cloner = new Cloner();
         return cloner.deepClone(weaponAbility);
     }
@@ -131,7 +131,7 @@ public class ItemAttribute implements Serializable {
      *
      * @param weaponAbility the weaponAbility to set
      */
-    public void setWeaponAbility(Ability weaponAbility) {
+    public void setWeaponAbility(WeaponAbility weaponAbility) {
         this.weaponAbility = weaponAbility;
     }
 

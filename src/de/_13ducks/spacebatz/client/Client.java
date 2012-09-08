@@ -14,7 +14,6 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.shared.EnemyTypes;
-import de._13ducks.spacebatz.shared.EquippedItems;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
 import java.util.*;

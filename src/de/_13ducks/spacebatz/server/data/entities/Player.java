@@ -12,7 +12,7 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +30,7 @@ public class Player extends ItemCarrier {
      * Der, Client, dem der Player gehört
      */
     private Client client;
-    private Ability standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0);
+    private WeaponAbility standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0);
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann

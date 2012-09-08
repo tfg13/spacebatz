@@ -15,7 +15,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.Item;
-
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import de._13ducks.spacebatz.util.Vector;
@@ -62,16 +61,11 @@ public class CollisionManager {
                 continue;
             }
 
-
             // Bullet muss nach bestimmter Zeit gelöscht werden
             if (Server.game.getTick() > bullet.getDeletetick()) {
-                listIterator.remove();
-                Server.entityMap.removeEntity(bullet);
-
+                Server.game.getEntityManager().removeEntity(bullet.netID);
                 continue;
             }
-
-
 
             double x = bullet.getX();
             double y = bullet.getY();
@@ -81,7 +75,6 @@ public class CollisionManager {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
 
                 Server.game.getEntityManager().removeEntity(bullet.netID);
-                Server.entityMap.removeEntity(bullet);
             }
 
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
@@ -90,7 +83,12 @@ public class CollisionManager {
                 if (e instanceof Char) {
                     Char c = (Char) e;
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
-                        HitManager.charBulletHit(c, bullet);
+                        // Wenn der Char das Bullet nicht selber erzeugt hat:
+                        if (!bullet.getOwner().equals(c)) {
+                            bullet.hitChar(c);
+                            break;
+                        }
+
                     }
                 }
             }

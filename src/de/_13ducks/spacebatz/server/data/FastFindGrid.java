@@ -21,7 +21,7 @@ import java.util.LinkedList;
  *
  * @author michael
  */
-public class EntityMap {
+public class FastFindGrid {
 
     /**
      * Die Größe eines Sektors der EntityMap
@@ -46,7 +46,7 @@ public class EntityMap {
      * @param levelWidth die Breite des Levels
      * @param levelHeight die Höhe des Levels
      */
-    public EntityMap(int levelWidth, int levelHeight) {
+    public FastFindGrid(int levelWidth, int levelHeight) {
         entityMapWidth = (int) (levelWidth / SECTORSIZE) + 1;
         entityMapHeight = (int) (levelHeight / SECTORSIZE) + 1;
 
