@@ -22,10 +22,11 @@ public class EnemyTypes implements java.io.Serializable{
     
     public EnemyTypes() {
         enemytypelist = new ArrayList<>();
-        //int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel
-        enemytypelist.add(new EnemyTypeStats(60, 5, 0, 0.1f, 11, 4));
-        enemytypelist.add(new EnemyTypeStats(12, 3, 1, 0.12f, 8, 8));
+        //int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel        
+        enemytypelist.add(new EnemyTypeStats(12, 3, 0, 0.12f, 8, 8));
+        enemytypelist.add(new EnemyTypeStats(60, 5, 1, 0.1f, 11, 4));
         enemytypelist.add(new EnemyTypeStats(25, 7, 2, 0.17f, 8, 6));
+        enemytypelist.add(new EnemyTypeStats(100, 7, 3, 0.20f, 8, 8));
     }
 
     /**

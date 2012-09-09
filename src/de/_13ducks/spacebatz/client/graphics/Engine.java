@@ -495,7 +495,7 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                if (enemy.getEnemytypeid() == 0) {
+                if (enemy.getEnemytypeid() == 1) {
                     // roten Gegner einfärben
                     glColor3f(1f, .5f, .5f);
                     renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
