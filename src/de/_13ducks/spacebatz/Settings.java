@@ -69,8 +69,9 @@ public final class Settings {
     public static final int CLIENT_UDPPORT = 13948;
     /**
      * Die Server-Tickrate in default-Delay zwischen Ticks. 15 entspricht also einer Tickrate von 66,66666666...
+     * Wert darf nicht negativ sein, also nicht über 127 steigen. Die minimal mögliche Server-Tickrate ist also etwa 8 Ticks/s
      */
-    public static final int SERVER_TICKRATE = 15;
+    public static final byte SERVER_TICKRATE = 15;
     /**
      * Ob der Server eingehende rcon-Verbindungen akzeptiert.
      */

@@ -76,4 +76,6 @@ Connecting to server:
 			rest: index of next udp-packet if accepted, otherwise reason for refusal (6 bit unsigned (part1))
 		byte 2: 8 bit unsigned (concatenated with part from byte 1): next udp-pack index
 		byte 3: signed int clientID if accepted, not specified otherwise
+		byte 4-7: signed int serverTick - the current server tick, for lerp-timings
+		byte 8: signed byte server-tickdelay. Time between two server ticks
 

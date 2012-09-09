@@ -199,7 +199,7 @@ public class ServerNetwork2 {
 	// get port
 	int port = Bits.getInt(packetData, 1);
 	// Craft answer:
-	byte[] connectAnswer = new byte[3];
+	byte[] connectAnswer = new byte[8];
 	// Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
 	connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
 	connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
@@ -219,6 +219,9 @@ public class ServerNetwork2 {
 	}
 	Bits.putShort(connectAnswer, 0, (short) Server.game.clients.get(connectAnswer[2]).getNetworkConnection().nextOutIndex);
 	connectAnswer[0] |= 0x40;
+	// Aktuellen Tick
+	Bits.putInt(connectAnswer, 3, Server.game.getTick());
+	connectAnswer[7] = Settings.SERVER_TICKRATE;
 	// Senden
 	DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
 	socket.send(pack);

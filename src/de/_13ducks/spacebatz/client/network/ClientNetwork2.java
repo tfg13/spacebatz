@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -80,6 +82,15 @@ public class ClientNetwork2 {
      * Puffert Pakete, die gesendet werden sollen.
      */
     OutBuffer outBuffer = new OutBuffer();
+    /**
+     * Timer zählt Serverticks so weit wie möglich mit, um Lerp reinrechnen zu können.
+     */
+    private Timer lerpTimer = new Timer("NET_LERPTIMER");
+    /**
+     * Der mehr oder weniger aktuelle Tickwert des Servers.
+     * Ist zwangsweise mindestens um die Ping der Sync-Pakete verschoben.
+     */
+    private int serverTick;
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -116,7 +127,7 @@ public class ClientNetwork2 {
 		    data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
 		    DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
 		    // Antwort-Packet
-		    byte[] ansData = new byte[3];
+		    byte[] ansData = new byte[8];
 		    DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
 		    socket.setSoTimeout(50000);
 		    socket.send(packet);
@@ -135,16 +146,23 @@ public class ClientNetwork2 {
 			    socket.setSoTimeout(0);
 			    // Verbindung ok, Parameter auslesen.
 			    ansData[0] &= 0x3F;
-			    int nextTick = Bits.getShort(ansData, 0);
+			    int packID = Bits.getShort(ansData, 0);
 			    int clientID = ansData[2];
-			    lastInIndex = (short) (nextTick - 1);
+			    serverTick = Bits.getInt(ansData, 3);
+			    lerpTimer.scheduleAtFixedRate(new TimerTask() {
+				@Override
+				public void run() {
+				    serverTick++;
+				}
+			    }, ansData[7], ansData[7]);
+			    lastInIndex = (short) (packID - 1);
 			    if (lastInIndex < 0) {
 				lastInIndex = (short) de._13ducks.spacebatz.shared.network.Constants.OVERFLOW_STC_PACK_ID - 1;
 			    }
 			    serverAdr = targetAddress;
 			    serverPort = port;
 			    connected = true;
-			    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextTick " + nextTick);
+			    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextPackID " + packID);
 			    initializeReceiver();
 			    return;// true;
 			} else if ((ansData[0] & 0xC0) == 0x80) {
