@@ -91,6 +91,20 @@ public class ClientNetwork2 {
      * Ist zwangsweise mindestens um die Ping der Sync-Pakete verschoben.
      */
     private int serverTick;
+    /**
+     * Gibt an, bei welchem Servertick das Paket mit der packID 0 gesendet wurde.
+     * Dieser Wert ist notwendig, um bei der Lerp-Berechnung herausfinden zu können, bei welchem Tick ein Paket vom Server gesendet wurde.
+     * Dann kann einfach bestimmt werden, wie lange das Paket noch zurückgehalten werden soll.
+     * Wert wird bei jedem Wrap-Around der packIDs neu manipuliert.
+     */
+    private int packZeroServerTick;
+    /**
+     * Die Anzahl von Ticks, die der Client absichtlicht hinter dem Server gehalten wird.
+     * Der hier initialisierte Wert ist default, kann aber im laufenden Spiel (automatisch) angepasst werden.
+     * Der Defaultwert von 10 entspricht 150 ms. Das ist etwa der minimale Wert, den OutBuffer.MAX_ACKTIME_MS noch zulässt.
+     * Wenn dieser Wert geändert wird, sollte auch OutBuffer.MAX_ACKTIME_MS geändert werden. @todo: änderbar machen.
+     */
+    private int lerp = 10;
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -159,6 +173,7 @@ public class ClientNetwork2 {
 			    if (lastInIndex < 0) {
 				lastInIndex = (short) de._13ducks.spacebatz.shared.network.Constants.OVERFLOW_STC_PACK_ID - 1;
 			    }
+			    packZeroServerTick = serverTick - packID;
 			    serverAdr = targetAddress;
 			    serverPort = port;
 			    connected = true;
@@ -331,15 +346,20 @@ public class ClientNetwork2 {
 		    PriorityBlockingQueue<STCPacket> temp = inputQueue;
 		    inputQueue = inputQueue2;
 		    inputQueue2 = temp;
+		    // Servertick bei packID 0 ändern:
+		    packZeroServerTick+= Constants.OVERFLOW_STC_PACK_ID;
 		}
 		if (inputQueue.isEmpty()) {
 		    break;
 		}
+		// Berechnen, bei welchem Servertick das nächste Paket gesendet wurde:
+		int packetServerTick = inputQueue.peek().getIndex() + packZeroServerTick;
 		int next = lastInIndex + 1;
 		if (next == Constants.OVERFLOW_STC_PACK_ID) {
 		    next = 0;
 		}
-		if (inputQueue.peek().getIndex() == next) {
+		// Zweite Bedingung ist Lerp. Verzögern, bis wir lerp Ticks Vorsprung haben
+		if (inputQueue.peek().getIndex() == next && packetServerTick < serverTick + lerp) {
 		    STCPacket packet = inputQueue.poll();
 		    packet.compute();
 		    lastInIndex = packet.getIndex();
