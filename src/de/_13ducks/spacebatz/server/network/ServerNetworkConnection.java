@@ -335,7 +335,6 @@ public class ServerNetworkConnection {
 	 */
 	byte[] buf = new byte[512];
 	short idx = getAndIncrementNextIndex();
-	System.out.println("Crafting packet " + idx + " at tick " + Server.game.getTick());
 	Bits.putShort(buf, 0, idx);
 	buf[2] = 0; // MAC
 	int pos = 3;
