@@ -13,8 +13,6 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.shared.network.MessageFragmenter;
-import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -41,7 +39,8 @@ public class ServerNetwork2 {
      */
     private Thread thread;
     /**
-     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann. Enthält sowohl interne, als auch externe Kommandos.
+     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
+     * Enthält sowohl interne, als auch externe Kommandos.
      */
     static CTSCommand[] cmdMap = new CTSCommand[256];
 
@@ -49,136 +48,137 @@ public class ServerNetwork2 {
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
-        cmdMap[0x80] = new CTS_ACK();
-        cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new CTS_FRAGMENTED_MESSAGE(); // 0x81
-        cmdMap[(byte) 82] = new CTS_DEBUG();
+	cmdMap[0x80] = new CTS_ACK();
     }
 
     /**
-     * Startet das Netzwerksystem. Spawnt einen neuen Thread
+     * Startet das Netzwerksystem.
+     * Spawnt einen neuen Thread
      */
     public void start() {
-        // Socket eröffnen
-        try {
-            socket = new DatagramSocket(Settings.SERVER_UDPPORT2);
-        } catch (SocketException ex) {
-            System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
-            ex.printStackTrace();
-            return;
-        }
-        // Listener-Thread starten
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        DatagramPacket inputPacket = new DatagramPacket(new byte[512], 512);
-                        // Blocken, bis Paket empfangen
-                        socket.receive(inputPacket);
-                        byte[] data = Utilities.extractData(inputPacket);
-                        byte mode = data[0];
-                        // NETMODE auswerten:
-                        switch (mode >>> 6) {
-                            case 0:
-                                // Normales Datenpaket
-                                Client client = Server.game.clients.get(mode);
-                                if (client == null) {
-                                    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
-                                    continue;
-                                }
-                                client.getNetworkConnection().enqueuePacket(new CTSPacket(data, client));
-                                break;
-                            case 1:
-                                // noClient-Modus (sofort verarbeiten)
-                                byte noClientMode = (byte) (mode & 0x3F);
-                                switch (noClientMode) {
-                                    case 0:
-                                        // Connect
-                                        clientRequest(data, inputPacket.getAddress());
-                                        break;
-                                }
-                                break;
-                        }
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, "serv_net");
-        thread.setDaemon(true);
-        thread.start();
+	// Socket eröffnen
+	try {
+	    socket = new DatagramSocket(Settings.SERVER_UDPPORT2);
+	} catch (SocketException ex) {
+	    System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
+	    ex.printStackTrace();
+	    return;
+	}
+	// Listener-Thread starten
+	thread = new Thread(new Runnable() {
+	    @Override
+	    public void run() {
+		try {
+		    while (true) {
+			DatagramPacket inputPacket = new DatagramPacket(new byte[512], 512);
+			// Blocken, bis Paket empfangen
+			socket.receive(inputPacket);
+			byte[] data = Utilities.extractData(inputPacket);
+			byte mode = data[0];
+			// NETMODE auswerten:
+			switch (mode >>> 6) {
+			    case 0:
+				// Normales Datenpaket
+				Client client = Server.game.clients.get(mode);
+				if (client == null) {
+				    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
+				    continue;
+				}
+				client.getNetworkConnection().enqueuePacket(new CTSPacket(data, client));
+				break;
+			    case 1:
+				// noClient-Modus (sofort verarbeiten)
+				byte noClientMode = (byte) (mode & 0x3F);
+				switch (noClientMode) {
+				    case 0:
+					// Connect
+					clientRequest(data, inputPacket.getAddress());
+					break;
+				}
+				break;
+			}
+		    }
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		}
+	    }
+	}, "serv_net");
+	thread.setDaemon(true);
+	thread.start();
     }
 
     /**
      * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Input der Clients.
      */
     public void inTick() {
-        Iterator<Client> iter = Server.game.clients.values().iterator();
-        while (iter.hasNext()) {
-            Client client = iter.next();
-            client.getNetworkConnection().computePackets();
-        }
+	Iterator<Client> iter = Server.game.clients.values().iterator();
+	while (iter.hasNext()) {
+	    Client client = iter.next();
+	    client.getNetworkConnection().computePackets();
+	}
     }
 
     /**
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
-        for (Client c : Server.game.clients.values()) {
-            if (c.getNetworkConnection().getPort() != 0) {
-                DatagramPacket dPack = c.getNetworkConnection().craftPacket();
-                schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
-            }
-        }
+	for (Client c : Server.game.clients.values()) {
+	    if (c.getNetworkConnection().getPort() != 0) {
+		DatagramPacket dPack = c.getNetworkConnection().craftPacket();
+		schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
+	    }
+	}
 
-        for (Client c : Server.game.clients.values()) {
-            ArrayList<DatagramPacket> sendList = c.getNetworkConnection().getOutBuffer().packetsToSend();
-            try {
-                for (DatagramPacket packet : sendList) {
-                    socket.send(packet);
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+	for (Client c : Server.game.clients.values()) {
+	    ArrayList<DatagramPacket> sendList = c.getNetworkConnection().getOutBuffer().packetsToSend();
+	    try {
+		for (DatagramPacket packet : sendList) {
+		    socket.send(packet);
+		}
+	    } catch (IOException ex) {
+		ex.printStackTrace();
+	    }
+	}
     }
 
     /**
-     * Registriert einen neuen Befehl beim Netzwerksystem. Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet. Die gewählte ID muss im erlaubten
-     * Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
+     * Registriert einen neuen Befehl beim Netzwerksystem.
+     * Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet.
+     * Die gewählte ID muss im erlaubten Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
      *
      * @param cmdID die BefehlsID
      * @param cmd der Befehl selber
      */
     public void registerCTSCommand(byte cmdID, CTSCommand cmd) {
-        if (cmd == null) {
-            throw new IllegalArgumentException("CTSCommand must not be null!");
-        }
-        // cmdID: Range prüfen:
-        if (cmdID <= 0 || cmdID > 127) {
-            throw new IllegalArgumentException("Illegal cmdID!");
-        }
-        // Override?
-        if (cmdMap[cmdID] != null) {
-            System.out.println("INFO: NET: Overriding cmd " + cmdID);
-        }
-        cmdMap[cmdID] = cmd;
-        System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
+	if (cmd == null) {
+	    throw new IllegalArgumentException("CTSCommand must not be null!");
+	}
+	// cmdID: Range prüfen:
+	if (cmdID <= 0 || cmdID > 127) {
+	    throw new IllegalArgumentException("Illegal cmdID!");
+	}
+	// Override?
+	if (cmdMap[cmdID] != null) {
+	    System.out.println("INFO: NET: Overriding cmd " + cmdID);
+	}
+	cmdMap[cmdID] = cmd;
+	System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
     }
 
     /**
-     * Registriert dieses Paket. Das bedeutet, dass der Client dieses Paket erhalten soll. Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Client den
-     * Empfang bestätigt hat.
+     * Registriert dieses Paket.
+     * Das bedeutet, dass der Client dieses Paket erhalten soll.
+     * Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Client den Empfang bestätigt hat.
      *
      * @param dPack Ein Netzwerkpaket, für einen bestimmten Client bestimmt.
      * @param client der Client
      * @param packID die PaketID
      */
     private void schedulePacket(DatagramPacket dPack, Client client, int packID) {
-        if (!client.getNetworkConnection().getOutBuffer().registerPacket(dPack, packID)) {
-            // Dieser Client ist hoffnungslos
-            System.out.println("ERROR: NET: Paket output overflow!!!");
-        }
+	if (!client.getNetworkConnection().getOutBuffer().registerPacket(dPack, packID)) {
+	    // Dieser Client ist hoffnungslos
+	    System.out.println("ERROR: NET: Paket output overflow!!!");
+	}
     }
 
     /**
@@ -189,59 +189,44 @@ public class ServerNetwork2 {
      * @throws IOException falls das Antwort-Senden nicht klappt
      */
     private void clientRequest(byte[] packetData, InetAddress origin) throws IOException {
-        //TODO: Check maximum capacity
-        // Erstmal auf das alte Netzwerksystem warten
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-        // get port
-        int port = Bits.getInt(packetData, 1);
-        // Craft answer:
-        byte[] connectAnswer = new byte[3];
-        // Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
-        connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
-        connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
-        // Vorläufig: ClientID aus altem Netzwerksystem holen:
-        //connectAnswer[2] = Server.game.newClientID();
-        boolean found = false;
-        for (Client client : Server.game.clients.values()) {
-            if (client.getNetworkConnection().getSocket().getInetAddress().equals(origin)) {
-                // Gefunden, diese ID nehmen
-                connectAnswer[2] = client.clientID;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            System.out.println("ERROR: NET: Cannot find ClientID for request from " + origin + ", connect via old system first!");
-        }
-        Bits.putShort(connectAnswer, 0, (short) Server.game.clients.get(connectAnswer[2]).getNetworkConnection().nextOutIndex);
-        connectAnswer[0] |= 0x40;
-        // Senden
-        DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
-        socket.send(pack);
-        //TODO: Neuen Client richtig anlegen/einfügen
-        System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
-        Server.game.clients.get(connectAnswer[2]).getNetworkConnection().setPort(port);
-    }
-
-    /**
-     * Schiebt einen Befehl in die Warteschlange für ausgehende Befehle. c Befehle automatisch auf. Teilt zu lange
-     *
-     * @param cmd
-     */
-    public void queueOutgoingCommand(OutgoingCommand cmd, Client client) {
-        if (cmd.data.length > 128) {
-            byte[][] fragments = MessageFragmenter.fragmentMessage((byte) cmd.cmdID, cmd.data);
-            for (int i = 0; i < fragments.length; i++) {
-                client.getNetworkConnection().queueOutgoingCommand(new OutgoingCommand(Settings.NET_FRAGMENTED_MESSAGE, fragments[i]));
-            }
-        } else {
-            client.getNetworkConnection().queueOutgoingCommand(cmd);
-        }
-
-
+	//TODO: Check maximum capacity
+	// Erstmal auf das alte Netzwerksystem warten
+	try {
+	    Thread.sleep(1000);
+	} catch (InterruptedException ex) {
+	    ex.printStackTrace();
+	}
+	// get port
+	int port = Bits.getInt(packetData, 1);
+	// Craft answer:
+	byte[] connectAnswer = new byte[8];
+	// Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
+	connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
+	connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
+	// Vorläufig: ClientID aus altem Netzwerksystem holen:
+	//connectAnswer[2] = Server.game.newClientID();
+	boolean found = false;
+	for (Client client : Server.game.clients.values()) {
+	    if (client.getNetworkConnection().getSocket().getInetAddress().equals(origin)) {
+		// Gefunden, diese ID nehmen
+		connectAnswer[2] = client.clientID;
+		found = true;
+		break;
+	    }
+	}
+	if (!found) {
+	    System.out.println("ERROR: NET: Cannot find ClientID for request from " + origin + ", connect via old system first!");
+	}
+	Bits.putShort(connectAnswer, 0, (short) Server.game.clients.get(connectAnswer[2]).getNetworkConnection().nextOutIndex);
+	connectAnswer[0] |= 0x40;
+	// Aktuellen Tick
+	Bits.putInt(connectAnswer, 3, Server.game.getTick());
+	connectAnswer[7] = Settings.SERVER_TICKRATE;
+	// Senden
+	DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
+	socket.send(pack);
+	//TODO: Neuen Client richtig anlegen/einfügen
+	System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
+	Server.game.clients.get(connectAnswer[2]).getNetworkConnection().setPort(port);
     }
 }

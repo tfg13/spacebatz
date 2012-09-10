@@ -109,8 +109,11 @@ public class ServerNetworkConnection {
     private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
     /**
      * Der Index des Datenpakets, dass der Server als nächstes versendet.
+     * Darf nicht 0 sein, der Client muss noch gefahrlos 1 abziehen können
+     * Dieser Index darf nicht größer sein, als die Tickzahl des Servers.
+     * Dieser Wert startet also bei 1, so machen auch sehr früh connectende Clients keine Probleme.
      */
-    int nextOutIndex = 0x3FF0;
+    int nextOutIndex = 1;
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
@@ -258,7 +261,7 @@ public class ServerNetworkConnection {
 	while (true) {
 	    // Queues tauschen?
 	    if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastPkgIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
-		System.out.println("CLIENT QUEUE SWAP");
+		System.out.println("SERVER QUEUE SWAP");
 		PriorityBlockingQueue<CTSPacket> temp = inputQueue;
 		inputQueue = inputQueue2;
 		inputQueue2 = temp;
@@ -324,8 +327,15 @@ public class ServerNetworkConnection {
      * @return das DatenPaket
      */
     DatagramPacket craftPacket() {
+	/*
+	 * ACHTUNG: NICHT EINFACH SO ANPASSEN, DASS BEI BEDARF MEHRERE PAKETE GESENDET WERDEN!!!
+	 * Der Clientseitige Lerp-Mechanismus hängt massiv davon ab, dass der Server genau 1 Paket pro Tick versenden.
+	 * Wenn man mehr als ein neues Paket schickt, muss man ein internes Kommando dazu tun, das dem Client das mitteilt, damit der
+	 * Lerp entsprechend angepasst werden kann. Das ist noch in keinster Weise eingebaut und muss alles auf einmal gemacht werden.
+	 */
 	byte[] buf = new byte[512];
 	short idx = getAndIncrementNextIndex();
+	System.out.println("Crafting packet " + idx + " at tick " + Server.game.getTick());
 	Bits.putShort(buf, 0, idx);
 	buf[2] = 0; // MAC
 	int pos = 3;
