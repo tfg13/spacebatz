@@ -248,7 +248,7 @@ public class EnemySpawner {
                 int enemytype = 0;
                 int randomenemy = random.nextInt(5);
                 if (randomenemy == 0) {
-                    enemytype =  1+random.nextInt(2);
+                    enemytype =  1+random.nextInt(3);
                 } 
 
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
