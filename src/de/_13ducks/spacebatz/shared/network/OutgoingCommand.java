@@ -36,9 +36,9 @@ public class OutgoingCommand {
 	/*if (cmdID < 1 || cmdID > 0x80) {
 	    throw new IllegalArgumentException("Illegal cmdID");
 	}*/
-	if (data == null || data.length > 128) {
-	    throw new IllegalArgumentException("Illegal data segment");
-	}
+//	if (data == null || data.length > 128) {
+//	    throw new IllegalArgumentException("Illegal data segment");
+//	}
 	this.cmdID = cmdID;
 	this.data = data;
     }
