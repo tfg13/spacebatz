@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.shared.network;
 
 /**
- * Oberklasse für CTS und STC Packete.
+ * Oberklasse für CTS und STC Pakete.
  * Bietet, was ohnehin für beide gleich ist.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
