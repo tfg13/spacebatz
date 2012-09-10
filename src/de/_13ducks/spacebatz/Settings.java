@@ -23,6 +23,10 @@ public final class Settings {
     private Settings() {
     }
     /**
+     * Daten eines Fragmentierten Packets
+     */
+    public static final int NET_FRAGMENTED_MESSAGE = 81;
+    /**
      * Die X-Auflösung der Grafikausgabe.
      */
     public static final int CLIENT_GFX_RES_X = 800;
