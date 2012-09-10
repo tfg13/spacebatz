@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import java.util.Iterator;
 
 /**
@@ -79,6 +80,11 @@ public class ExplosionDamageEffect extends Effect {
                             int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
 
                             c.getProperties().setHitpoints(c.getProperties().getHitpoints() - damagereduced);
+
+                            if (c.getProperties().getHitpoints() <= 0) {
+                                Server.game.getEntityManager().removeEntity(c.netID);
+                                DropManager.dropItem(c.getX(), c.getY(), 2);
+                            }
 
                             Server.msgSender.sendCharHit(c.netID, damagereduced, false);
                         }
