@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -139,6 +140,21 @@ public class ClientTerminal {
                             }
                             outln("usage: zoom (>0)");
                             break;
+
+                        case "sendsevens":
+                            try {
+                                int length = Integer.parseInt(words[1]);
+                                byte msg[] = new byte[length * 100];
+
+                                for (int i = 0; i < length * 100; i++) {
+                                    msg[i] = (byte) 7;
+                                }
+                                msg[0] = (byte) length;
+                                Client.getNetwork2().queueOutgoingCommand(new OutgoingCommand(82, msg));
+                            } catch (Exception ex) {
+                                outln("usage: sendsevens x (100*x sevens will be sent)");
+                            }
+                            break;
                         case "about":
                             outln("spacebatz aurora");
                             outln("13ducks PROPRIETARY/CONFIDENTIAL");
@@ -156,6 +172,7 @@ public class ClientTerminal {
                             outln("net_graph");
                             outln("resync");
                             outln("rcon");
+                            outln("sendsevens");
                             outln("-------------------");
                             break;
                         default:
@@ -256,7 +273,6 @@ public class ClientTerminal {
             rconOut = new PrintStream(rconSock.getOutputStream());
             rconRead = new BufferedReader(new InputStreamReader(rconSock.getInputStream()));
             Thread rconReader = new Thread(new Runnable() {
-
                 @Override
                 public void run() {
                     try {
