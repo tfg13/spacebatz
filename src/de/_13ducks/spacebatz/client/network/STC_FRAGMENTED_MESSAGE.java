@@ -4,6 +4,7 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 
 /**
@@ -22,9 +23,9 @@ public class STC_FRAGMENTED_MESSAGE extends STCCommand {
         messageConnector.fragmentedMessageData(data);
         if (messageConnector.isComplete()) {
             // Packet ausführen:
-            new STCPacket(messageConnector.getCompletedMessage()).compute();
+            STCCommand cmd = Client.getNetwork2().getCmdForId(messageConnector.getMessageID());
+            cmd.execute(messageConnector.getCompletedMessage());
         }
-
     }
 
     @Override

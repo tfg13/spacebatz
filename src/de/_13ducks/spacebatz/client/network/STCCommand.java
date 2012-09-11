@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.shared.network.NetCommand;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public abstract class STCCommand extends NetCommand {
-    
+
     /**
      * Führt diesen Clientbefehl aus.
      *
@@ -26,4 +26,14 @@ public abstract class STCCommand extends NetCommand {
      */
     public abstract void execute(byte[] data);
 
+    /**
+     * Pre-Executed diesen Clientbefehl. Diese Methode darf zwar jeder
+     * überschreiben, aber nur interne Befehle des Netzwerksystems werden
+     * preexecuted. Für andere wird diese Methode nie aufgerufen.
+     *
+     * @param data die Daten, die der Server mitgeschickt hat
+     */
+    public void preExecute(byte[] data) {
+        // default = empty
+    }
 }

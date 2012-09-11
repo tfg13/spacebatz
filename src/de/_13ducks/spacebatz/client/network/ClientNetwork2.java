@@ -12,9 +12,9 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.shared.network.BitEncoder;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
+import de._13ducks.spacebatz.shared.network.NetCommand;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
@@ -27,6 +27,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
+import sun.nio.cs.ext.PCK;
 
 /**
  * Die Client-Seite des neuen Netzwerksystems
@@ -195,6 +196,16 @@ public class ClientNetwork2 {
         t.start();
     }
 
+    /**
+     * Gibt das Kommando für diese ID zurück
+     *
+     * @param id
+     * @return
+     */
+    STCCommand getCmdForId(int id) {
+        return cmdMap[id];
+    }
+
     private void initializeReceiver() {
         thread = new Thread(new Runnable() {
             @Override
@@ -210,7 +221,9 @@ public class ClientNetwork2 {
                         switch (mode >>> 6) {
                             case 0:
                                 // Normales Datenpaket
-                                enqueuePacket(new STCPacket(data));
+                                STCPacket stc = new STCPacket(data);
+                                stc.preCompute();
+                                enqueuePacket(stc);
                                 break;
                             default:
                                 System.out.println("WARNING: NET: Ignoring packet with unknown netmode (" + (mode >>> 6) + ")");

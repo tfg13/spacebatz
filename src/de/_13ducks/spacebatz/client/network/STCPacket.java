@@ -74,4 +74,9 @@ public class STCPacket extends NetPacket implements Comparable<STCPacket> {
 	hash = 83 * hash + this.index;
 	return hash;
     }
+
+    @Override
+    protected void preRunCommand(NetCommand cmd, byte[] data) {
+        ((STCCommand) cmd).preExecute(data);
+    }
 }

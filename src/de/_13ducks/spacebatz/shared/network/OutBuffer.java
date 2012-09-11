@@ -55,7 +55,7 @@ public class OutBuffer {
      * @param packet das fertig gecraftete Paket
      * @param packID die ID dieses Pakets
      */
-    public boolean registerPacket(DatagramPacket packet, int packID) {
+    public synchronized boolean registerPacket(DatagramPacket packet, int packID) {
 	if (packet == null) {
 	    throw new IllegalArgumentException("Packet must not be null");
 	}
@@ -95,7 +95,7 @@ public class OutBuffer {
      *
      * @return eine Liste aller Pakete, die gesendet werden sollen.
      */
-    public ArrayList<DatagramPacket> packetsToSend() {
+    public synchronized ArrayList<DatagramPacket> packetsToSend() {
 	final long time = System.currentTimeMillis();
 	ArrayList<DatagramPacket> sendList = new ArrayList<>();
 	int ringBufferIter = ringBufferFirst;
@@ -129,7 +129,7 @@ public class OutBuffer {
      *
      * @param packID die packID des Pakets, das bestätigt wurde
      */
-    public void ackPacket(int packID) {
+    public synchronized void ackPacket(int packID) {
 	// Paket suchen.
 	int ringBufferIter = ringBufferFirst;
 	while (buffer[ringBufferIter] != null) {

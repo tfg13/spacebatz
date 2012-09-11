@@ -4,6 +4,7 @@
  */
 package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 
 /**
@@ -22,7 +23,8 @@ public class CTS_FRAGMENTED_MESSAGE extends CTSCommand {
         messageConnector.fragmentedMessageData(data);
         if (messageConnector.isComplete()) {
             // Packet ausführen:
-            new CTSPacket(messageConnector.getCompletedMessage(), client).compute();
+            CTSCommand cmd = Server.serverNetwork2.getCmdForId(messageConnector.getMessageID());
+            cmd.execute(client, messageConnector.getCompletedMessage());
         }
 
     }

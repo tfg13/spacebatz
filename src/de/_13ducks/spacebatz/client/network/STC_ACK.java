@@ -11,7 +11,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_ACK extends STCCommand {
 
     @Override
-    public void execute(byte[] data) {
+    public void preExecute(byte[] data) {
 	Client.getNetwork2().outBuffer.ackPacket(Bits.getShort(data, 0));
     }
 
@@ -23,6 +23,11 @@ public class STC_ACK extends STCCommand {
     @Override
     public int getSize(byte sizeData) {
 	return 2;
+    }
+
+    @Override
+    public void execute(byte[] data) {
+        // nix
     }
 
 }
