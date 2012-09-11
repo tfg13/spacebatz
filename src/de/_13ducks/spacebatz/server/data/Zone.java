@@ -83,7 +83,7 @@ public class Zone {
 	global = true;
 	parent = null;
 	// Default-Werte adden:
-	values.put("spawnrate", new Integer(9000)); // Default-Spawnwert
+	values.put("spawnrate", new Integer(4000)); // Default-Spawnwert
 	values.put("spawn_enabled", new Integer(1));// Spawnen ist per default an
     }
 
