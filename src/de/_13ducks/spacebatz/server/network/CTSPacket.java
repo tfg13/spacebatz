@@ -86,4 +86,9 @@ class CTSPacket extends NetPacket implements Comparable<CTSPacket> {
 	hash = 97 * hash + this.index;
 	return hash;
     }
+
+    @Override
+    protected void preRunCommand(NetCommand cmd, byte[] data) {
+        ((CTSCommand) cmd).preExecute(sender, data);
+    }
 }
