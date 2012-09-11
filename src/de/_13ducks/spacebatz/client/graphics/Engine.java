@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.client.graphics;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -495,14 +496,12 @@ public class Engine {
         for (Char c : Client.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
-                if (enemy.getEnemytypeid() == 1) {
-                    // roten Gegner einfärben
-                    glColor3f(1f, .5f, .5f);
-                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
-                    glColor3f(1f, 1f, 1f);
-                } else {
-                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
-                }
+
+                // Werte fürs Einfärben nehmen und rendern
+                EnemyTypeStats ets = Client.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
+                glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
+                glColor3f(1f, 1f, 1f);
 
             }
         }

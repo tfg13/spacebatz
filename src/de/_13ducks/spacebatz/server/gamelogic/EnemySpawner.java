@@ -246,10 +246,10 @@ public class EnemySpawner {
             double[] pos = calcPosition(player);
             if (pos != null) {
                 int enemytype = 0;
-                int randomenemy = random.nextInt(5);
+                int randomenemy = random.nextInt(4);
                 if (randomenemy == 0) {
-                    enemytype =  1+random.nextInt(3);
-                } 
+                    enemytype = 1 + random.nextInt(3);
+                }
 
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                 Server.game.getEntityManager().addEntity(enem.netID, enem);

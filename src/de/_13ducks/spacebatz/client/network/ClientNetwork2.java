@@ -87,7 +87,7 @@ public class ClientNetwork2 {
     /**
      * Timer zählt Serverticks so weit wie möglich mit, um Lerp reinrechnen zu können.
      */
-    private Timer lerpTimer = new Timer("NET_LERPTIMER");
+    private Timer lerpTimer = new Timer("NET_LERPTIMER", true);
     /**
      * Der mehr oder weniger aktuelle Tickwert des Servers. Ist zwangsweise mindestens um die Ping der Sync-Pakete verschoben.
      */
