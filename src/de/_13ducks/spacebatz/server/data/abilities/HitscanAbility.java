@@ -22,13 +22,13 @@ public class HitscanAbility extends WeaponAbility {
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects = new ArrayList<>();
+    
+    private double damage;
 
     public HitscanAbility(double damage, double attackspeed, double range) {
-        TrueDamageEffect damageeff = new TrueDamageEffect((int) damage);
-        effects.add(damageeff);
         setRange(range);
         setAttackspeed(attackspeed);
-
+        this.damage = damage;
     }
 
     /**
@@ -46,6 +46,10 @@ public class HitscanAbility extends WeaponAbility {
 
             // Schaden an Gegnern
             ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
+
+            TrueDamageEffect damageeff = new TrueDamageEffect((int) (damage * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus())));
+            effects.clear();
+            effects.add(damageeff);
 
             for (Char character : charsHit) {
                 for (Effect effect : effects) {
