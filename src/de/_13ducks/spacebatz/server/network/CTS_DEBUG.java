@@ -9,11 +9,9 @@ import de._13ducks.spacebatz.server.data.Client;
  */
 public class CTS_DEBUG extends CTSCommand {
 
-    private int size;
-
     @Override
     public void execute(Client client, byte[] data) {
-        System.out.println("Hi, Debug here.  Size:" + size);
+        System.out.println("Hi, Debug here.  Size:" + data.length);
         for (int i = 0; i < data.length; i++) {
             System.out.print(data[i]);
         }
@@ -27,8 +25,6 @@ public class CTS_DEBUG extends CTSCommand {
 
     @Override
     public int getSize(byte sizeData) {
-        size = (int) sizeData * 100;
-        System.out.println(size);
-        return size;
+        return (int) sizeData * 100;
     }
 }

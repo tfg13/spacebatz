@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.shared.network.BitEncoder;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
+import de._13ducks.spacebatz.shared.network.NetCommand;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
@@ -193,6 +194,16 @@ public class ClientNetwork2 {
         t.setName("NETNET_CONNECT_HELP");
         t.setDaemon(true);
         t.start();
+    }
+
+    /**
+     * Gibt das Kommando für diese ID zurück
+     *
+     * @param id
+     * @return
+     */
+    STCCommand getCmdForId(int id) {
+        return cmdMap[id];
     }
 
     private void initializeReceiver() {

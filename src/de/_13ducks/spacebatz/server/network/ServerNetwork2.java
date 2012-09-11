@@ -247,4 +247,8 @@ public class ServerNetwork2 {
 
 
     }
+
+    CTSCommand getCmdForId(int messageID) {
+        return cmdMap[messageID];
+    }
 }
