@@ -86,6 +86,12 @@ public class Bullet extends Entity {
         }
     }
 
+    public void hitGround(double x, double y) {
+        for (Effect effect : effects) {
+            effect.applyToPosition(getX(), getY(), null);
+        }
+    }
+
     /**
      * Gibt den Tick, zu dem das Bullet gelöscht wird, zurück
      *

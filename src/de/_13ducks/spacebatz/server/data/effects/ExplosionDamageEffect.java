@@ -45,8 +45,10 @@ public class ExplosionDamageEffect extends Effect {
         /**
          * Hier wird der Flächenschaden berechnet und ausgeteilt. hitChar ist der Char der direkt getroffen wurde.
          */
-        hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
-        Server.msgSender.sendCharHit(hitChar.netID, damage, false);
+        if (hitChar != null) {
+            hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
+            Server.msgSender.sendCharHit(hitChar.netID, damage, false);
+        }
         computeBulletExplosion(damage, x, y, hitChar, radius);
     }
 
