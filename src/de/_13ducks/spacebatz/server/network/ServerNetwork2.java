@@ -86,7 +86,9 @@ public class ServerNetwork2 {
                                     System.out.println("NET: ignoring packet from unknown client (id: " + mode);
                                     continue;
                                 }
-                                client.getNetworkConnection().enqueuePacket(new CTSPacket(data, client));
+                                CTSPacket cts = new CTSPacket(data, client);
+                                cts.preCompute();
+                                client.getNetworkConnection().enqueuePacket(cts);
                                 break;
                             case 1:
                                 // noClient-Modus (sofort verarbeiten)

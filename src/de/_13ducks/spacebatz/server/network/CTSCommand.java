@@ -27,4 +27,16 @@ public abstract class CTSCommand extends NetCommand {
      * @param data die Daten, die der Client mitgeschickt hat
      */
     public abstract void execute(Client client, byte[] data);
+
+    /**
+     * Pre-Executed diesen Serverbefehl. Diese Methode darf zwar jeder
+     * überschreiben, aber nur interne Befehle des Netzwerksystems werden
+     * preexecuted. Für andere wird diese Methode nie aufgerufen.
+     *
+     * @param client der Client, von dem dieser Befehl kommt
+     * @param data die Daten, die der Client mitgeschickt hat
+     */
+    public void preExecute(Client client, byte[] data) {
+        // default = empty
+    }
 }

@@ -11,7 +11,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class CTS_ACK extends CTSCommand {
 
     @Override
-    public void execute(Client client, byte[] data) {
+    public void preExecute(Client client, byte[] data) {
 	int ackID = Bits.getShort(data, 0);
 	client.getNetworkConnection().getOutBuffer().ackPacket(ackID);
     }
@@ -24,6 +24,11 @@ public class CTS_ACK extends CTSCommand {
     @Override
     public int getSize(byte sizeData) {
 	return 2;
+    }
+
+    @Override
+    public void execute(Client client, byte[] data) {
+        // nix
     }
 
 }
