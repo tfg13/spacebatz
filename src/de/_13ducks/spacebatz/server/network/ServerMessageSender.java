@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.HashMap;
 
@@ -92,7 +93,8 @@ public class ServerMessageSender {
             } else {
                 b[8] = 0;
             }
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHAR_HIT, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHAR_HIT, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHAR_HIT, b), c);
         }
     }
 
@@ -113,11 +115,11 @@ public class ServerMessageSender {
             byte[] b = new byte[8];
             Bits.putInt(b, 0, itemnetID);
             Bits.putInt(b, 4, clientID);
-
+            
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
         }
     }
-    
+
     /**
      * Item wird von Spieler aufgesammelt und auf ein anderes draufgestackt
      */
@@ -127,7 +129,7 @@ public class ServerMessageSender {
             Bits.putInt(b, 0, newitemnetID);
             Bits.putInt(b, 4, clientID);
             Bits.putInt(b, 8, stackitemID);
-
+            
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b, c);
         }
     }
@@ -158,7 +160,7 @@ public class ServerMessageSender {
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
         }
     }
-
+    
     public void sendAllItems(Client client, HashMap<Integer, Item> items) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
     }
@@ -226,14 +228,15 @@ public class ServerMessageSender {
 
     /**
      * Antwortet dem Client mit ja oder nein auf seine rcon-anfrage
+     *
      * @param sender
      * @param answer
-     * @param port 
+     * @param port
      */
     void sendRconAnswer(Client sender, boolean answer, int port) {
-	byte[] b = new byte[5];
-	b[0] = (byte) (answer ? 1 : 0);
-	Bits.putInt(b, 1, port);
-	Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_ANSWER_RCON, b, sender);
+        byte[] b = new byte[5];
+        b[0] = (byte) (answer ? 1 : 0);
+        Bits.putInt(b, 1, port);
+        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_ANSWER_RCON, b, sender);
     }
 }

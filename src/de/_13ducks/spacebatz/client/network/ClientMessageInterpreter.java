@@ -143,34 +143,34 @@ public class ClientMessageInterpreter {
                 Client.setClientID(message[0]);
                 break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
-
-                // Char wird von Bullet / angriff getroffen
-                int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
-                int damage = Bits.getInt(message, 4);
-
-                byte victimdies = message[8];
-
-                if (Client.netIDMap.get(netIDVictim) instanceof Player) {
-                    // HP abziehen, wenn eigener Spieler
-                    Player p = (Player) Client.netIDMap.get(netIDVictim);
-                    if (p == Client.getPlayer()) {
-
-                        if (victimdies == 1) {
-
-                            // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
-                            p.setHealthpoints(p.getHealthpointsmax());
-                        } else {
-                            p.setHealthpoints(p.getHealthpoints() - damage);
-                        }
-                    }
-                } else if (Client.netIDMap.get(netIDVictim) instanceof Enemy) {
-                    Enemy e = (Enemy) Client.netIDMap.get(netIDVictim);
-                    // Schadenszahl rendern:
-                    Engine.createDamageNumber(damage, e.getX(), e.getY());
-                    // Test-Explosion:
-                    Animation anim = new Animation(0, 2, 2, 3, 4);
-                    Engine.addFx(new Fx(anim, e.getX(), e.getY(), 12));
-                }
+//
+//                // Char wird von Bullet / angriff getroffen
+//                int netIDVictim = Bits.getInt(message, 0); // netID von dem, der getroffen wird
+//                int damage = Bits.getInt(message, 4);
+//
+//                byte victimdies = message[8];
+//
+//                if (Client.netIDMap.get(netIDVictim) instanceof Player) {
+//                    // HP abziehen, wenn eigener Spieler
+//                    Player p = (Player) Client.netIDMap.get(netIDVictim);
+//                    if (p == Client.getPlayer()) {
+//
+//                        if (victimdies == 1) {
+//
+//                            // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt
+//                            p.setHealthpoints(p.getHealthpointsmax());
+//                        } else {
+//                            p.setHealthpoints(p.getHealthpoints() - damage);
+//                        }
+//                    }
+//                } else if (Client.netIDMap.get(netIDVictim) instanceof Enemy) {
+//                    Enemy e = (Enemy) Client.netIDMap.get(netIDVictim);
+//                    // Schadenszahl rendern:
+//                    Engine.createDamageNumber(damage, e.getX(), e.getY());
+//                    // Test-Explosion:
+//                    Animation anim = new Animation(0, 2, 2, 3, 4);
+//                    Engine.addFx(new Fx(anim, e.getX(), e.getY(), 12));
+//                }
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:
                 // EnemyTypes empfangen (nur einmal)       
