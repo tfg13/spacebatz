@@ -21,7 +21,7 @@ public abstract class FixedSizeSTCCommand extends STCCommand {
 
     @Override
     public boolean isVariableSize() {
-        return true;
+        return false;
     }
 
     @Override

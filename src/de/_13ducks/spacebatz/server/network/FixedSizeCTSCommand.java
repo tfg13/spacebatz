@@ -23,7 +23,7 @@ public abstract class FixedSizeCTSCommand extends CTSCommand {
 
     @Override
     public boolean isVariableSize() {
-        return true;
+        return false;
     }
 
     @Override
