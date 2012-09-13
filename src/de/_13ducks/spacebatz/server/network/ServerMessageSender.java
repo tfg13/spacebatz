@@ -158,7 +158,8 @@ public class ServerMessageSender {
             b[4] = selslot;
             b[5] = droptoground;
             Bits.putInt(b, 6, clientID);
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, b), c);
         }
     }
 

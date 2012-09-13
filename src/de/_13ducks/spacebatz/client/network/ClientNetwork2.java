@@ -116,6 +116,7 @@ public class ClientNetwork2 {
         cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
         registerSTCCommand(Settings.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
+        registerSTCCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
     }
 
     /**

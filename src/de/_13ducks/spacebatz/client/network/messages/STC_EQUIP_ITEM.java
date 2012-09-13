@@ -1,11 +1,6 @@
 package de._13ducks.spacebatz.client.network.messages;
 
 import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.Enemy;
-import de._13ducks.spacebatz.client.Player;
-import de._13ducks.spacebatz.client.graphics.Animation;
-import de._13ducks.spacebatz.client.graphics.Engine;
-import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;

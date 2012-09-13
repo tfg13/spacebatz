@@ -255,18 +255,18 @@ public class ClientMessageInterpreter {
 //                }
 //                break;
             case Settings.NET_TCP_CMD_DEQUIP_ITEM:
-                // Ein Client will ein bestimmtes Item ablegen
-                int slottype = Bits.getInt(message, 0); // netID des  Items
-                byte selslot2 = message[4];
-                byte droptoground = message[5];
-                int clientID2 = Bits.getInt(message, 6); // clientID des Spielers
-                if (clientID2 == Client.getClientID()) {
-                    Item item = Client.getEquippedItems().getEquipslots()[slottype][selslot2];
-                    Client.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
-                    if (droptoground == 0) {
-                        Client.addToInventory(item);
-                    }
-                }
+//                // Ein Client will ein bestimmtes Item ablegen
+//                int slottype = Bits.getInt(message, 0); // netID des  Items
+//                byte selslot2 = message[4];
+//                byte droptoground = message[5];
+//                int clientID2 = Bits.getInt(message, 6); // clientID des Spielers
+//                if (clientID2 == Client.getClientID()) {
+//                    Item item = Client.getEquippedItems().getEquipslots()[slottype][selslot2];
+//                    Client.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
+//                    if (droptoground == 0) {
+//                        Client.addToInventory(item);
+//                    }
+//                }
                 break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:
                 // Geänderten Boden übernehmen:
