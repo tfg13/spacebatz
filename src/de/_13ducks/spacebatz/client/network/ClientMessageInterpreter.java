@@ -183,15 +183,15 @@ public class ClientMessageInterpreter {
                 }
                 break;
             case Settings.NET_TCP_CMD_SPAWN_ITEM:
-                // Item wird gedroppt    
-                try {
-                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
-                    Item item = (Item) is.readObject();
-                    Client.getItemMap().put(item.getNetID(), item);
-
-                } catch (IOException | ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                }
+//                // Item wird gedroppt    
+//                try {
+//                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+//                    Item item = (Item) is.readObject();
+//                    Client.getItemMap().put(item.getNetID(), item);
+//
+//                } catch (IOException | ClassNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
 
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM:

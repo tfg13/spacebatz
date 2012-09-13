@@ -103,7 +103,11 @@ public class ServerMessageSender {
      */
     public void sendItemDrop(byte[] seritem) {
         for (Client c : Server.game.clients.values()) {
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
+            byte[] message = new byte[seritem.length + 1];
+            message[0] = (byte) seritem.length;
+            System.arraycopy(seritem, 0, message, 1, seritem.length);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem), c);
         }
     }
 
