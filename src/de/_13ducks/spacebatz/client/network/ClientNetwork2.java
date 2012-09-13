@@ -21,6 +21,7 @@ import de._13ducks.spacebatz.client.network.messages.STC_CHAR_HIT;
 import de._13ducks.spacebatz.client.network.messages.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DROP;
 import de._13ducks.spacebatz.client.network.messages.STC_SWITCH_WEAPON;
+import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.NetCommand;
@@ -130,6 +131,7 @@ public class ClientNetwork2 {
         registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM, new STC_GRAB_ITEM());
         registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, new STC_GRAB_ITEM_TO_STACK());
         registerSTCCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, new STC_ITEM_DROP());
+        registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, new STC_TRANSFER_ENEMYTYPES());
 
 
 

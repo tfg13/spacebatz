@@ -41,7 +41,11 @@ public class ServerMessageSender {
      * @param client der Client, an den die enemytypes gesendet werden sollen
      */
     public void sendEnemyTypes(Client client) {
-        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
+        //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
+        byte[] message = new byte[Server.game.getSerializedEnemyTypes().length + 1];
+        message[0] = (byte) Server.game.getSerializedEnemyTypes().length;
+        System.arraycopy(Server.game.getSerializedEnemyTypes(), 0, message, 1, Server.game.getSerializedEnemyTypes().length);
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes()), client);
     }
 
     /**

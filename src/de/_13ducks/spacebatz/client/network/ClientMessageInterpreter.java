@@ -173,14 +173,14 @@ public class ClientMessageInterpreter {
 //                }
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES:
-                // EnemyTypes empfangen (nur einmal)       
-                try {
-                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
-                    EnemyTypes et = (EnemyTypes) is.readObject();
-                    Client.enemytypes = et;
-                } catch (IOException | ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                }
+//                // EnemyTypes empfangen (nur einmal)       
+//                try {
+//                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+//                    EnemyTypes et = (EnemyTypes) is.readObject();
+//                    Client.enemytypes = et;
+//                } catch (IOException | ClassNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
                 break;
             case Settings.NET_TCP_CMD_SPAWN_ITEM:
 //                // Item wird gedroppt    
