@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import java.io.BufferedReader;
@@ -150,7 +151,7 @@ public class ClientTerminal {
                                     msg[i] = (byte) 7;
                                 }
                                 msg[0] = (byte) length;
-                                Client.getNetwork2().queueOutgoingCommand(new OutgoingCommand(82, msg));
+                                Client.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_DEBUG, msg));
                             } catch (Exception ex) {
                                 outln("usage: sendsevens x (100*x sevens will be sent)");
                             }

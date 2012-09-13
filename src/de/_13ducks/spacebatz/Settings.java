@@ -23,9 +23,13 @@ public final class Settings {
     private Settings() {
     }
     /**
+     * Debugnachricht, das erste byte ist die länge
+     */
+    public static final int NET_CTS_DEBUG = 0x81;
+    /**
      * Daten eines Fragmentierten Packets
      */
-    public static final int NET_FRAGMENTED_MESSAGE = 81;
+    public static final int NET_FRAGMENTED_MESSAGE = 0x82;
     /**
      * Die X-Auflösung der Grafikausgabe.
      */
