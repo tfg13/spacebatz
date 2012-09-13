@@ -195,38 +195,38 @@ public class ClientMessageInterpreter {
 
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM:
-                // Item wird aufgesammelt
-                int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
-                int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
-
-                // Item ins Client-Inventar verschieben, wenn eigene clientID
-                if (clientID == Client.getClientID()) {
-                    Item item = Client.getItemMap().get(netIDItem2);
-
-                    Client.addToInventory(item);
-                }
-                Client.getItemMap().remove(netIDItem2);
+//                // Item wird aufgesammelt
+//                int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
+//                int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+//
+//                // Item ins Client-Inventar verschieben, wenn eigene clientID
+//                if (clientID == Client.getClientID()) {
+//                    Item item = Client.getItemMap().get(netIDItem2);
+//
+//                    Client.addToInventory(item);
+//                }
+//                Client.getItemMap().remove(netIDItem2);
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK:
-                // Item wird aufgesammelt
-                int newnetIDItem3 = Bits.getInt(message, 0); // netID des aufgesammelten Items
-                int clientID3 = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
-                int stacknetID = Bits.getInt(message, 8); // die netID des Items, auf das gestackt werden soll
-
-                // Item ins Client-Inventar verschieben, wenn eigene clientID
-                if (clientID3 == Client.getClientID()) {
-                    Item item = Client.getItemMap().get(newnetIDItem3);
-
-                    // Item soll gestackt werden
-                    if (item.getName().equals("Money")) {
-                        Client.addMoney(item.getAmount());
-                    } else {
-                        Item itemStack = Client.getInventoryItems().get(stacknetID);
-                        itemStack.setAmount(itemStack.getAmount() + item.getAmount());
-                    }
-
-                }
-                Client.getItemMap().remove(newnetIDItem3);
+//                // Item wird aufgesammelt
+//                int newnetIDItem3 = Bits.getInt(message, 0); // netID des aufgesammelten Items
+//                int clientID3 = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+//                int stacknetID = Bits.getInt(message, 8); // die netID des Items, auf das gestackt werden soll
+//
+//                // Item ins Client-Inventar verschieben, wenn eigene clientID
+//                if (clientID3 == Client.getClientID()) {
+//                    Item item = Client.getItemMap().get(newnetIDItem3);
+//
+//                    // Item soll gestackt werden
+//                    if (item.getName().equals("Money")) {
+//                        Client.addMoney(item.getAmount());
+//                    } else {
+//                        Item itemStack = Client.getInventoryItems().get(stacknetID);
+//                        itemStack.setAmount(itemStack.getAmount() + item.getAmount());
+//                    }
+//
+//                }
+//                Client.getItemMap().remove(newnetIDItem3);
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
                 // alle aktuell herumliegenden Items an neuen Client geschickt
@@ -239,60 +239,60 @@ public class ClientMessageInterpreter {
                 }
                 break;
             case Settings.NET_TCP_CMD_EQUIP_ITEM:
-                // Ein Client will ein bestimmtes Item anlegen
-                int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
-                byte selslot = message[4];
-                int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
-                if (clientID4 == Client.getClientID()) {
-                    Item item = Client.getInventoryItems().get(netIDItem3);
-                    Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
-                    for (int i = 0; i < Client.getInventorySlots().length; i++) {
-                        if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
-                            Client.getInventorySlots()[i] = null;
-                        }
-                    }
-                    Client.getInventoryItems().values().remove(item);
-                }
-                break;
+//                // Ein Client will ein bestimmtes Item anlegen
+//                int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
+//                byte selslot = message[4];
+//                int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
+//                if (clientID4 == Client.getClientID()) {
+//                    Item item = Client.getInventoryItems().get(netIDItem3);
+//                    Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
+//                    for (int i = 0; i < Client.getInventorySlots().length; i++) {
+//                        if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
+//                            Client.getInventorySlots()[i] = null;
+//                        }
+//                    }
+//                    Client.getInventoryItems().values().remove(item);
+//                }
+//                break;
             case Settings.NET_TCP_CMD_DEQUIP_ITEM:
-                // Ein Client will ein bestimmtes Item ablegen
-                int slottype = Bits.getInt(message, 0); // netID des  Items
-                byte selslot2 = message[4];
-                byte droptoground = message[5];
-                int clientID2 = Bits.getInt(message, 6); // clientID des Spielers
-                if (clientID2 == Client.getClientID()) {
-                    Item item = Client.getEquippedItems().getEquipslots()[slottype][selslot2];
-                    Client.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
-                    if (droptoground == 0) {
-                        Client.addToInventory(item);
-                    }
-                }
+//                // Ein Client will ein bestimmtes Item ablegen
+//                int slottype = Bits.getInt(message, 0); // netID des  Items
+//                byte selslot2 = message[4];
+//                byte droptoground = message[5];
+//                int clientID2 = Bits.getInt(message, 6); // clientID des Spielers
+//                if (clientID2 == Client.getClientID()) {
+//                    Item item = Client.getEquippedItems().getEquipslots()[slottype][selslot2];
+//                    Client.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
+//                    if (droptoground == 0) {
+//                        Client.addToInventory(item);
+//                    }
+//                }
                 break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:
-                // Geänderten Boden übernehmen:
-                int x = Bits.getInt(message, 0);
-                int y = Bits.getInt(message, 4);
-                int newGround = Bits.getInt(message, 8);
-                Client.currentLevel.getGround()[x][y] = newGround;
+//                // Geänderten Boden übernehmen:
+//                int x = Bits.getInt(message, 0);
+//                int y = Bits.getInt(message, 4);
+//                int newGround = Bits.getInt(message, 8);
+//                Client.currentLevel.getGround()[x][y] = newGround;
                 break;
             case Settings.NET_TCP_CMD_CHANGE_COLLISION:
-                // Geänderten Boden übernehmen:
-                int tx = Bits.getInt(message, 0);
-                int ty = Bits.getInt(message, 4);
-                int newCollision = Bits.getInt(message, 8);
-                if (newCollision == 1) {
-                    Client.currentLevel.getCollisionMap()[tx][ty] = true;
-                } else {
-                    Client.currentLevel.getCollisionMap()[tx][ty] = false;
-                }
+//                // Geänderten Boden übernehmen:
+//                int tx = Bits.getInt(message, 0);
+//                int ty = Bits.getInt(message, 4);
+//                int newCollision = Bits.getInt(message, 8);
+//                if (newCollision == 1) {
+//                    Client.currentLevel.getCollisionMap()[tx][ty] = true;
+//                } else {
+//                    Client.currentLevel.getCollisionMap()[tx][ty] = false;
+//                }
                 break;
             case Settings.NET_TCP_CMD_SWITCH_WEAPON:
-                // Ein Client will andere Waffe auswählen
-                int clientid = Bits.getInt(message, 0);
-                byte wslot = message[4];
-                if (clientid == Client.getClientID()) {
-                    Client.getPlayer().setSelectedattack(wslot);
-                }
+//                // Ein Client will andere Waffe auswählen
+//                int clientid = Bits.getInt(message, 0);
+//                byte wslot = message[4];
+//                if (clientid == Client.getClientID()) {
+//                    Client.getPlayer().setSelectedattack(wslot);
+//                }
                 break;
             case Settings.NET_TCP_CMD_ANSWER_RCON:
                 if (message[0] == 1) {

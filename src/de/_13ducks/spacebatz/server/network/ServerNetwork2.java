@@ -50,8 +50,8 @@ public class ServerNetwork2 {
      */
     public ServerNetwork2() {
         cmdMap[0x80] = new CTS_ACK();
-        cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new CTS_FRAGMENTED_MESSAGE(); // 0x81
-        cmdMap[(byte) 82] = new CTS_DEBUG();
+        cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new CTS_FRAGMENTED_MESSAGE();
+        cmdMap[Settings.NET_CTS_DEBUG] = new CTS_DEBUG();
     }
 
     /**

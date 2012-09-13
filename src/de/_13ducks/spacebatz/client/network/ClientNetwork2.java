@@ -10,9 +10,16 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM;
+import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.network.messages.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.client.network.messages.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.client.network.messages.STC_CHAR_HIT;
+import de._13ducks.spacebatz.client.network.messages.STC_EQUIP_ITEM;
+import de._13ducks.spacebatz.client.network.messages.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.NetCommand;
@@ -114,6 +121,17 @@ public class ClientNetwork2 {
         cmdMap[0x80] = new STC_ACK();
         cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
         registerSTCCommand(Settings.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
+        registerSTCCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
+        registerSTCCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
+        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_GROUND, new STC_BROADCAST_GROUND_CHANGE());
+        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_COLLISION, new STC_CHANGE_COLLISION());
+        registerSTCCommand(Settings.NET_TCP_CMD_SWITCH_WEAPON, new STC_SWITCH_WEAPON());
+        registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM, new STC_GRAB_ITEM());
+        registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, new STC_GRAB_ITEM_TO_STACK());
+
+
+
+
     }
 
     /**

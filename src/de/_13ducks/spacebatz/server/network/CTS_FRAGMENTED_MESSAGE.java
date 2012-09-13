@@ -23,7 +23,11 @@ public class CTS_FRAGMENTED_MESSAGE extends CTSCommand {
         messageConnector.fragmentedMessageData(data);
         if (messageConnector.isComplete()) {
             // Packet ausführen:
-            CTSCommand cmd = Server.serverNetwork2.getCmdForId(messageConnector.getMessageID());
+            int id = messageConnector.getMessageID();
+            if (id < 0) {
+                id += 256;
+            }
+            CTSCommand cmd = Server.serverNetwork2.getCmdForId(id);
             cmd.execute(client, messageConnector.getCompletedMessage());
         }
 
