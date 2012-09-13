@@ -239,21 +239,21 @@ public class ClientMessageInterpreter {
                 }
                 break;
             case Settings.NET_TCP_CMD_EQUIP_ITEM:
-                // Ein Client will ein bestimmtes Item anlegen
-                int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
-                byte selslot = message[4];
-                int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
-                if (clientID4 == Client.getClientID()) {
-                    Item item = Client.getInventoryItems().get(netIDItem3);
-                    Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
-                    for (int i = 0; i < Client.getInventorySlots().length; i++) {
-                        if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
-                            Client.getInventorySlots()[i] = null;
-                        }
-                    }
-                    Client.getInventoryItems().values().remove(item);
-                }
-                break;
+//                // Ein Client will ein bestimmtes Item anlegen
+//                int netIDItem3 = Bits.getInt(message, 0); // netID des  Items
+//                byte selslot = message[4];
+//                int clientID4 = Bits.getInt(message, 5); // clientID des Spielers
+//                if (clientID4 == Client.getClientID()) {
+//                    Item item = Client.getInventoryItems().get(netIDItem3);
+//                    Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
+//                    for (int i = 0; i < Client.getInventorySlots().length; i++) {
+//                        if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
+//                            Client.getInventorySlots()[i] = null;
+//                        }
+//                    }
+//                    Client.getInventoryItems().values().remove(item);
+//                }
+//                break;
             case Settings.NET_TCP_CMD_DEQUIP_ITEM:
                 // Ein Client will ein bestimmtes Item ablegen
                 int slottype = Bits.getInt(message, 0); // netID des  Items

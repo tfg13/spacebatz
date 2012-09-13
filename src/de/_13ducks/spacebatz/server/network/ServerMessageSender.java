@@ -115,7 +115,7 @@ public class ServerMessageSender {
             byte[] b = new byte[8];
             Bits.putInt(b, 0, itemnetID);
             Bits.putInt(b, 4, clientID);
-            
+
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
         }
     }
@@ -129,7 +129,7 @@ public class ServerMessageSender {
             Bits.putInt(b, 0, newitemnetID);
             Bits.putInt(b, 4, clientID);
             Bits.putInt(b, 8, stackitemID);
-            
+
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b, c);
         }
     }
@@ -143,7 +143,8 @@ public class ServerMessageSender {
             Bits.putInt(b, 0, itemnetID);
             b[4] = selslot;
             Bits.putInt(b, 5, clientID);
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_EQUIP_ITEM, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_EQUIP_ITEM, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, b), c);
         }
     }
 
@@ -160,7 +161,7 @@ public class ServerMessageSender {
             Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
         }
     }
-    
+
     public void sendAllItems(Client client, HashMap<Integer, Item> items) {
         Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
     }
