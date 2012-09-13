@@ -195,38 +195,38 @@ public class ClientMessageInterpreter {
 
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM:
-                // Item wird aufgesammelt
-                int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
-                int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
-
-                // Item ins Client-Inventar verschieben, wenn eigene clientID
-                if (clientID == Client.getClientID()) {
-                    Item item = Client.getItemMap().get(netIDItem2);
-
-                    Client.addToInventory(item);
-                }
-                Client.getItemMap().remove(netIDItem2);
+//                // Item wird aufgesammelt
+//                int netIDItem2 = Bits.getInt(message, 0); // netID des aufgesammelten Items
+//                int clientID = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+//
+//                // Item ins Client-Inventar verschieben, wenn eigene clientID
+//                if (clientID == Client.getClientID()) {
+//                    Item item = Client.getItemMap().get(netIDItem2);
+//
+//                    Client.addToInventory(item);
+//                }
+//                Client.getItemMap().remove(netIDItem2);
                 break;
             case Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK:
-                // Item wird aufgesammelt
-                int newnetIDItem3 = Bits.getInt(message, 0); // netID des aufgesammelten Items
-                int clientID3 = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
-                int stacknetID = Bits.getInt(message, 8); // die netID des Items, auf das gestackt werden soll
-
-                // Item ins Client-Inventar verschieben, wenn eigene clientID
-                if (clientID3 == Client.getClientID()) {
-                    Item item = Client.getItemMap().get(newnetIDItem3);
-
-                    // Item soll gestackt werden
-                    if (item.getName().equals("Money")) {
-                        Client.addMoney(item.getAmount());
-                    } else {
-                        Item itemStack = Client.getInventoryItems().get(stacknetID);
-                        itemStack.setAmount(itemStack.getAmount() + item.getAmount());
-                    }
-
-                }
-                Client.getItemMap().remove(newnetIDItem3);
+//                // Item wird aufgesammelt
+//                int newnetIDItem3 = Bits.getInt(message, 0); // netID des aufgesammelten Items
+//                int clientID3 = Bits.getInt(message, 4); // netID des Spielers, der es aufgesammelt hat
+//                int stacknetID = Bits.getInt(message, 8); // die netID des Items, auf das gestackt werden soll
+//
+//                // Item ins Client-Inventar verschieben, wenn eigene clientID
+//                if (clientID3 == Client.getClientID()) {
+//                    Item item = Client.getItemMap().get(newnetIDItem3);
+//
+//                    // Item soll gestackt werden
+//                    if (item.getName().equals("Money")) {
+//                        Client.addMoney(item.getAmount());
+//                    } else {
+//                        Item itemStack = Client.getInventoryItems().get(stacknetID);
+//                        itemStack.setAmount(itemStack.getAmount() + item.getAmount());
+//                    }
+//
+//                }
+//                Client.getItemMap().remove(newnetIDItem3);
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
                 // alle aktuell herumliegenden Items an neuen Client geschickt

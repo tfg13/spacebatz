@@ -116,7 +116,8 @@ public class ServerMessageSender {
             Bits.putInt(b, 0, itemnetID);
             Bits.putInt(b, 4, clientID);
 
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_GRAB_ITEM, b), c);
         }
     }
 
@@ -130,7 +131,9 @@ public class ServerMessageSender {
             Bits.putInt(b, 4, clientID);
             Bits.putInt(b, 8, stackitemID);
 
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b), c);
+
         }
     }
 

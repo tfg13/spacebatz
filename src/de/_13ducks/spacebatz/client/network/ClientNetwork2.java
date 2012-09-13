@@ -10,6 +10,9 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM;
+import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.network.messages.STC_BROADCAST_GROUND_CHANGE;
@@ -123,6 +126,9 @@ public class ClientNetwork2 {
         registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_GROUND, new STC_BROADCAST_GROUND_CHANGE());
         registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_COLLISION, new STC_CHANGE_COLLISION());
         registerSTCCommand(Settings.NET_TCP_CMD_SWITCH_WEAPON, new STC_SWITCH_WEAPON());
+        registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM, new STC_GRAB_ITEM());
+        registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, new STC_GRAB_ITEM_TO_STACK());
+
 
 
 
