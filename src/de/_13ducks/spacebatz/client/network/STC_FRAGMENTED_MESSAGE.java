@@ -35,6 +35,9 @@ public class STC_FRAGMENTED_MESSAGE extends STCCommand {
 
     @Override
     public int getSize(byte sizeData) {
-        return messageConnector.wantBytes();
+        if (sizeData < 0) {
+            return 128;
+        }
+        return sizeData;
     }
 }

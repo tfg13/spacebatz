@@ -36,6 +36,9 @@ public class CTS_FRAGMENTED_MESSAGE extends CTSCommand {
 
     @Override
     public int getSize(byte sizeData) {
-        return messageConnector.wantBytes();
+        if(sizeData < 0){
+            return 128;
+        }
+        return sizeData;
     }
 }
