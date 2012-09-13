@@ -110,10 +110,6 @@ public abstract class NetPacket {
                 // NOOP
                 continue;
             }
-            if (pre && cmdID < 0x80) {
-                // Nur Netzwerkinterne Befehle werden Preexecuted!
-                continue;
-            }
             NetCommand cmd = getCommand(cmdID);
             if (cmd == null) {
                 System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
@@ -131,16 +127,18 @@ public abstract class NetPacket {
                 // In diesem Fall ist wirklich gar nichts mehr zu retten abbrechen!
                 break;
             }
-            // Ausführen
-            try {
-                if (!pre) {
-                    runCommand(cmd, data);
-                } else {
-                    preRunCommand(cmd, data);
+            if (!pre || cmdID >= 0x80) {
+                // Ausführen
+                try {
+                    if (!pre) {
+                        runCommand(cmd, data);
+                    } else {
+                        preRunCommand(cmd, data);
+                    }
+                } catch (Exception ex) {
+                    System.out.println("WARNING: NET: Execution of packet failed with Exception: " + ex);
+                    ex.printStackTrace();
                 }
-            } catch (Exception ex) {
-                System.out.println("WARNING: NET: Execution of packet failed with Exception: " + ex);
-                ex.printStackTrace();
             }
             nextCmdIndex += dataSize;
         }
