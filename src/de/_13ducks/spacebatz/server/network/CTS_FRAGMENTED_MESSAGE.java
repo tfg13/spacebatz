@@ -13,13 +13,9 @@ import de._13ducks.spacebatz.shared.network.MessageFragmenter;
  */
 public class CTS_FRAGMENTED_MESSAGE extends CTSCommand {
 
-    /**
-     * Fügt fragmentierte Nachrichten für den Client wieder zusammen.
-     */
-    private static MessageFragmenter messageConnector = new MessageFragmenter();
-
     @Override
     public void execute(de._13ducks.spacebatz.server.data.Client client, byte[] data) {
+        MessageFragmenter messageConnector = client.getNetworkConnection().getFragmenter();
         messageConnector.fragmentedMessageData(data);
         if (messageConnector.isComplete()) {
             // Packet ausführen:
@@ -40,7 +36,7 @@ public class CTS_FRAGMENTED_MESSAGE extends CTSCommand {
 
     @Override
     public int getSize(byte sizeData) {
-        if(sizeData < 0){
+        if (sizeData < 0) {
             return 128;
         }
         return sizeData;

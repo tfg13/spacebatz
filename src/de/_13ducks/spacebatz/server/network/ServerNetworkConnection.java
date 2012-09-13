@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.Constants;
+import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
@@ -32,6 +33,10 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public class ServerNetworkConnection {
 
+    /**
+     * Defragentiert Nachrichten
+     */
+    private MessageFragmenter fragmenter;
     /**
      * Der Socket, der mit dem Client verbunden ist
      */
@@ -121,16 +126,17 @@ public class ServerNetworkConnection {
      * @param socket der Socket, der mit dem Client verbunden ist
      */
     public ServerNetworkConnection(Socket socket) {
-	inputQueue = new PriorityBlockingQueue<>();
-	inputQueue2 = new PriorityBlockingQueue<>();
-	mySocket = socket;
-	tcpReceiverStatus = RECEIVE_CMDID;
-	try {
-	    sendStream = new ObjectOutputStream(socket.getOutputStream());
-	    receiveStream = new ObjectInputStream(socket.getInputStream());
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+        fragmenter = new MessageFragmenter();
+        inputQueue = new PriorityBlockingQueue<>();
+        inputQueue2 = new PriorityBlockingQueue<>();
+        mySocket = socket;
+        tcpReceiverStatus = RECEIVE_CMDID;
+        try {
+            sendStream = new ObjectOutputStream(socket.getOutputStream());
+            receiveStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -140,46 +146,46 @@ public class ServerNetworkConnection {
      */
     public void receiveData() {
 
-	try {
-	    while (receiveStream.available() > 0) {
-		switch (tcpReceiverStatus) {
-		    case RECEIVE_CMDID:
-			if (receiveStream.available() > 0) {
-			    cmdId = receiveStream.readByte();
-			    tcpReceiverStatus = RECEIVE_PACKETSIZE;
-			} else {
-			    return;
-			}
-			break;
-		    case RECEIVE_PACKETSIZE:
-			if (receiveStream.available() > 1) {
-			    messageSize = receiveStream.readShort();
-			    buffer = new byte[messageSize];
-			    tcpReceiverStatus = RECEIVE_PACKET;
-			} else {
-			    return;
-			}
-			break;
-		    case RECEIVE_PACKET:
-			if (receiveStream.available() > 0) {
-			    index += receiveStream.read(buffer, index, messageSize - index);
-			    if (index == messageSize) {
-				tcpReceiverStatus = RECEIVE_CMDID;
-				Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
-				buffer = null;
-				cmdId = 0;
-				index = 0;
-			    }
+        try {
+            while (receiveStream.available() > 0) {
+                switch (tcpReceiverStatus) {
+                    case RECEIVE_CMDID:
+                        if (receiveStream.available() > 0) {
+                            cmdId = receiveStream.readByte();
+                            tcpReceiverStatus = RECEIVE_PACKETSIZE;
+                        } else {
+                            return;
+                        }
+                        break;
+                    case RECEIVE_PACKETSIZE:
+                        if (receiveStream.available() > 1) {
+                            messageSize = receiveStream.readShort();
+                            buffer = new byte[messageSize];
+                            tcpReceiverStatus = RECEIVE_PACKET;
+                        } else {
+                            return;
+                        }
+                        break;
+                    case RECEIVE_PACKET:
+                        if (receiveStream.available() > 0) {
+                            index += receiveStream.read(buffer, index, messageSize - index);
+                            if (index == messageSize) {
+                                tcpReceiverStatus = RECEIVE_CMDID;
+                                Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
+                                buffer = null;
+                                cmdId = 0;
+                                index = 0;
+                            }
 
-			} else {
-			    return;
-			}
-			break;
-		}
-	    }
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+                        } else {
+                            return;
+                        }
+                        break;
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -188,7 +194,7 @@ public class ServerNetworkConnection {
      * @return der Socket
      */
     public Socket getSocket() {
-	return mySocket;
+        return mySocket;
     }
 
     /**
@@ -197,7 +203,7 @@ public class ServerNetworkConnection {
      * @return der Client
      */
     public Client getClient() {
-	return myClient;
+        return myClient;
     }
 
     /**
@@ -206,7 +212,7 @@ public class ServerNetworkConnection {
      * @return the sendStream
      */
     public ObjectOutputStream getSendStream() {
-	return sendStream;
+        return sendStream;
     }
 
     /**
@@ -215,7 +221,7 @@ public class ServerNetworkConnection {
      * @param client
      */
     void setClient(Client client) {
-	this.myClient = client;
+        this.myClient = client;
     }
 
     /**
@@ -224,22 +230,22 @@ public class ServerNetworkConnection {
      * @param packet das neue Paket.
      */
     synchronized void enqueuePacket(CTSPacket packet) {
-	// Nicht aufnehmen, wenn zu alt (wrap-around)
-	int packdiff = Math.abs(packet.getIndex() - lastPkgIndex);
-	if ((packet.getIndex() < lastPkgIndex && packdiff > Constants.MAX_WRAPAROUND_PACK_ID_DIFF) || (packet.getIndex() > lastPkgIndex && packdiff < Constants.MAX_WRAPAROUND_PACK_ID_DIFF)) {
-	    // Sonderbehandlung für Wrap-Around in zweite Queue
-	    if (packet.getIndex() < lastPkgIndex) {
-		if (!inputQueue2.contains(packet)) {
-		    inputQueue2.add(packet);
-		}
-	    } else {
-		if (!inputQueue.contains(packet)) {
-		    inputQueue.add(packet);
-		}
-	    }
-	}
-	// Empfang bestätigen:
-	ackPacket(packet);
+        // Nicht aufnehmen, wenn zu alt (wrap-around)
+        int packdiff = Math.abs(packet.getIndex() - lastPkgIndex);
+        if ((packet.getIndex() < lastPkgIndex && packdiff > Constants.MAX_WRAPAROUND_PACK_ID_DIFF) || (packet.getIndex() > lastPkgIndex && packdiff < Constants.MAX_WRAPAROUND_PACK_ID_DIFF)) {
+            // Sonderbehandlung für Wrap-Around in zweite Queue
+            if (packet.getIndex() < lastPkgIndex) {
+                if (!inputQueue2.contains(packet)) {
+                    inputQueue2.add(packet);
+                }
+            } else {
+                if (!inputQueue.contains(packet)) {
+                    inputQueue.add(packet);
+                }
+            }
+        }
+        // Empfang bestätigen:
+        ackPacket(packet);
     }
 
     /**
@@ -248,60 +254,60 @@ public class ServerNetworkConnection {
      * @param packet das Empfangene STCPacket
      */
     private void ackPacket(CTSPacket packet) {
-	byte[] ackData = new byte[2];
-	Bits.putShort(ackData, 0, packet.getIndex());
-	queueOutgoingCommand(new OutgoingCommand(0x80, ackData));
+        byte[] ackData = new byte[2];
+        Bits.putShort(ackData, 0, packet.getIndex());
+        queueOutgoingCommand(new OutgoingCommand(0x80, ackData));
     }
 
     /**
      * Verarbeitet alle Packete, die derzeit verarbeitet werden können.
      */
     synchronized void computePackets() {
-	// Schauen, ob der Index des nächsten Pakets stimmt:
-	while (true) {
-	    // Queues tauschen?
-	    if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastPkgIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
-		System.out.println("SERVER QUEUE SWAP");
-		PriorityBlockingQueue<CTSPacket> temp = inputQueue;
-		inputQueue = inputQueue2;
-		inputQueue2 = temp;
-	    }
-	    if (inputQueue.isEmpty()) {
-		break;
-	    }
-	    int next = lastPkgIndex + 1;
-	    if (next == Constants.OVERFLOW_STC_PACK_ID) {
-		next = 0;
+        // Schauen, ob der Index des nächsten Pakets stimmt:
+        while (true) {
+            // Queues tauschen?
+            if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastPkgIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
+                System.out.println("SERVER QUEUE SWAP");
+                PriorityBlockingQueue<CTSPacket> temp = inputQueue;
+                inputQueue = inputQueue2;
+                inputQueue2 = temp;
             }
-	    if (inputQueue.peek().getIndex() == next) {
-		CTSPacket packet = inputQueue.poll();
-		packet.compute();
-		lastPkgIndex = packet.getIndex();
-	    } else {
-		break;
-	    }
-	}
+            if (inputQueue.isEmpty()) {
+                break;
+            }
+            int next = lastPkgIndex + 1;
+            if (next == Constants.OVERFLOW_STC_PACK_ID) {
+                next = 0;
+            }
+            if (inputQueue.peek().getIndex() == next) {
+                CTSPacket packet = inputQueue.poll();
+                packet.compute();
+                lastPkgIndex = packet.getIndex();
+            } else {
+                break;
+            }
+        }
     }
 
     /**
      * @return the port
      */
     int getPort() {
-	return port;
+        return port;
     }
 
     /**
      * @param port the port to set
      */
     void setPort(int port) {
-	this.port = port;
+        this.port = port;
     }
 
     /**
      * @return the outBuffer
      */
     OutBuffer getOutBuffer() {
-	return outBuffer;
+        return outBuffer;
     }
 
     /**
@@ -310,15 +316,15 @@ public class ServerNetworkConnection {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd) {
-	cmdOutQueue.add(cmd);
+        cmdOutQueue.add(cmd);
     }
 
     private short getAndIncrementNextIndex() {
-	short ret = (short) nextOutIndex++;
-	if (nextOutIndex == Constants.OVERFLOW_STC_PACK_ID) {
-	    nextOutIndex = 0;
-	}
-	return ret;
+        short ret = (short) nextOutIndex++;
+        if (nextOutIndex == Constants.OVERFLOW_STC_PACK_ID) {
+            nextOutIndex = 0;
+        }
+        return ret;
     }
 
     /**
@@ -327,28 +333,35 @@ public class ServerNetworkConnection {
      * @return das DatenPaket
      */
     DatagramPacket craftPacket() {
-	/*
-	 * ACHTUNG: NICHT EINFACH SO ANPASSEN, DASS BEI BEDARF MEHRERE PAKETE GESENDET WERDEN!!!
-	 * Der Clientseitige Lerp-Mechanismus hängt massiv davon ab, dass der Server genau 1 Paket pro Tick versenden.
-	 * Wenn man mehr als ein neues Paket schickt, muss man ein internes Kommando dazu tun, das dem Client das mitteilt, damit der
-	 * Lerp entsprechend angepasst werden kann. Das ist noch in keinster Weise eingebaut und muss alles auf einmal gemacht werden.
-	 */
-	byte[] buf = new byte[512];
-	short idx = getAndIncrementNextIndex();
-	Bits.putShort(buf, 0, idx);
-	buf[2] = 0; // MAC
-	int pos = 3;
-	while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
-	    // Befehl passt noch rein
-	    OutgoingCommand cmd = cmdOutQueue.poll();
-	    buf[pos++] = (byte) cmd.cmdID;
-	    System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
-	    pos += cmd.data.length;
-	}
-	if (pos == 3) {
-	    // NOOP einbauen
-	    buf[3] = 0;
-	}
-	return new DatagramPacket(buf, pos + 1, mySocket.getInetAddress(), port);
+        /*
+         * ACHTUNG: NICHT EINFACH SO ANPASSEN, DASS BEI BEDARF MEHRERE PAKETE GESENDET WERDEN!!!
+         * Der Clientseitige Lerp-Mechanismus hängt massiv davon ab, dass der Server genau 1 Paket pro Tick versenden.
+         * Wenn man mehr als ein neues Paket schickt, muss man ein internes Kommando dazu tun, das dem Client das mitteilt, damit der
+         * Lerp entsprechend angepasst werden kann. Das ist noch in keinster Weise eingebaut und muss alles auf einmal gemacht werden.
+         */
+        byte[] buf = new byte[512];
+        short idx = getAndIncrementNextIndex();
+        Bits.putShort(buf, 0, idx);
+        buf[2] = 0; // MAC
+        int pos = 3;
+        while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+            // Befehl passt noch rein
+            OutgoingCommand cmd = cmdOutQueue.poll();
+            buf[pos++] = (byte) cmd.cmdID;
+            System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
+            pos += cmd.data.length;
+        }
+        if (pos == 3) {
+            // NOOP einbauen
+            buf[3] = 0;
+        }
+        return new DatagramPacket(buf, pos + 1, mySocket.getInetAddress(), port);
+    }
+
+    /**
+     * @return the fragmenter
+     */
+    public MessageFragmenter getFragmenter() {
+        return fragmenter;
     }
 }
