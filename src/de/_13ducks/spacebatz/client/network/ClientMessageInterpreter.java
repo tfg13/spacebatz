@@ -269,30 +269,30 @@ public class ClientMessageInterpreter {
 //                }
                 break;
             case Settings.NET_TCP_CMD_CHANGE_GROUND:
-                // Geänderten Boden übernehmen:
-                int x = Bits.getInt(message, 0);
-                int y = Bits.getInt(message, 4);
-                int newGround = Bits.getInt(message, 8);
-                Client.currentLevel.getGround()[x][y] = newGround;
+//                // Geänderten Boden übernehmen:
+//                int x = Bits.getInt(message, 0);
+//                int y = Bits.getInt(message, 4);
+//                int newGround = Bits.getInt(message, 8);
+//                Client.currentLevel.getGround()[x][y] = newGround;
                 break;
             case Settings.NET_TCP_CMD_CHANGE_COLLISION:
-                // Geänderten Boden übernehmen:
-                int tx = Bits.getInt(message, 0);
-                int ty = Bits.getInt(message, 4);
-                int newCollision = Bits.getInt(message, 8);
-                if (newCollision == 1) {
-                    Client.currentLevel.getCollisionMap()[tx][ty] = true;
-                } else {
-                    Client.currentLevel.getCollisionMap()[tx][ty] = false;
-                }
+//                // Geänderten Boden übernehmen:
+//                int tx = Bits.getInt(message, 0);
+//                int ty = Bits.getInt(message, 4);
+//                int newCollision = Bits.getInt(message, 8);
+//                if (newCollision == 1) {
+//                    Client.currentLevel.getCollisionMap()[tx][ty] = true;
+//                } else {
+//                    Client.currentLevel.getCollisionMap()[tx][ty] = false;
+//                }
                 break;
             case Settings.NET_TCP_CMD_SWITCH_WEAPON:
-                // Ein Client will andere Waffe auswählen
-                int clientid = Bits.getInt(message, 0);
-                byte wslot = message[4];
-                if (clientid == Client.getClientID()) {
-                    Client.getPlayer().setSelectedattack(wslot);
-                }
+//                // Ein Client will andere Waffe auswählen
+//                int clientid = Bits.getInt(message, 0);
+//                byte wslot = message[4];
+//                if (clientid == Client.getClientID()) {
+//                    Client.getPlayer().setSelectedattack(wslot);
+//                }
                 break;
             case Settings.NET_TCP_CMD_ANSWER_RCON:
                 if (message[0] == 1) {

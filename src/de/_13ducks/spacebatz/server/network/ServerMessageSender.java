@@ -191,7 +191,8 @@ public class ServerMessageSender {
         Bits.putInt(b, 4, y);
         Bits.putInt(b, 8, newGround);
         for (Client c : Server.game.clients.values()) {
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_GROUND, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_GROUND, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_GROUND, b), c);
         }
     }
 
@@ -212,7 +213,8 @@ public class ServerMessageSender {
             Bits.putInt(b, 8, 0);
         }
         for (Client c : Server.game.clients.values()) {
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_COLLISION, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_COLLISION, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_COLLISION, b), c);
         }
     }
 
@@ -224,7 +226,9 @@ public class ServerMessageSender {
         Bits.putInt(b, 0, client.clientID);
         b[4] = slot;
         for (Client c : Server.game.clients.values()) {
-            Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SWITCH_WEAPON, b, c);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SWITCH_WEAPON, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SWITCH_WEAPON, b), c);
+
         }
     }
 
@@ -239,6 +243,8 @@ public class ServerMessageSender {
         byte[] b = new byte[5];
         b[0] = (byte) (answer ? 1 : 0);
         Bits.putInt(b, 1, port);
-        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_ANSWER_RCON, b, sender);
+        //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_ANSWER_RCON, b, sender);
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_ANSWER_RCON, b), sender);
+
     }
 }
