@@ -46,7 +46,7 @@ public class ClientMessageInterpreter {
     /**
      * gibt an, ob der initTcpReceiverThread noch benötigt wird.
      */
-    private boolean initTcpReceiverThreadRun = true;
+    public boolean initTcpReceiverThreadRun = true;
 
     /**
      * Initialisiert den Interpreter
@@ -112,36 +112,36 @@ public class ClientMessageInterpreter {
     public void interpretTcpMessage(byte cmdId, byte message[]) {
         switch (cmdId) {
             case Settings.NET_TCP_CMD_TRANSFER_LEVEL:
-                try {
-                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
-                    Level myLevel = (Level) is.readObject();
-                    Client.currentLevel = myLevel;
-                } catch (IOException | ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                }
+//                try {
+//                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+//                    Level myLevel = (Level) is.readObject();
+//                    Client.currentLevel = myLevel;
+//                } catch (IOException | ClassNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
                 break;
             case Settings.NET_STC_SET_PLAYER:
-                // Player setzen
-                Client.player = new Player(Bits.getInt(message, 0));
-                Client.netIDMap.put(Client.player.netID, Client.player);
+//                // Player setzen
+//                Client.player = new Player(Bits.getInt(message, 0));
+//                Client.netIDMap.put(Client.player.netID, Client.player);
                 break;
             case Settings.NET_STC_START_ENGINE:
-                // Engine starten:
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Client.setEngine(new Engine());
-                        Client.getEngine().start();
-                    }
-                });
-                t.setName("CLIENT_ENGINE");
-                t.setDaemon(false);
-                t.start();
-                initTcpReceiverThreadRun = false;
+//                // Engine starten:
+//                Thread t = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Client.setEngine(new Engine());
+//                        Client.getEngine().start();
+//                    }
+//                });
+//                t.setName("CLIENT_ENGINE");
+//                t.setDaemon(false);
+//                t.start();
+//                initTcpReceiverThreadRun = false;
                 break;
             case Settings.NET_STC_SET_CLIENT:
-                // ClientID setzen
-                Client.setClientID(message[0]);
+//                // ClientID setzen
+//                Client.setClientID(message[0]);
                 break;
             case Settings.NET_TCP_CMD_CHAR_HIT:
 //
@@ -231,13 +231,13 @@ public class ClientMessageInterpreter {
                 break;
             case Settings.NET_TCP_CMD_TRANSFER_ITEMS:
                 // alle aktuell herumliegenden Items an neuen Client geschickt
-                try {
-                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
-                    HashMap<Integer, Item> items = (HashMap<Integer, Item>) is.readObject();
-                    Client.setItemMap(items);
-                } catch (IOException | ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                }
+//                try {
+//                    ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(message));
+//                    HashMap<Integer, Item> items = (HashMap<Integer, Item>) is.readObject();
+//                    Client.setItemMap(items);
+//                } catch (IOException | ClassNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
                 break;
             case Settings.NET_TCP_CMD_EQUIP_ITEM:
 //                // Ein Client will ein bestimmtes Item anlegen
@@ -296,10 +296,10 @@ public class ClientMessageInterpreter {
 //                }
                 break;
             case Settings.NET_TCP_CMD_ANSWER_RCON:
-                if (message[0] == 1) {
-                    // Server erlaubt rcon
-                    Client.terminal.rcon(Bits.getInt(message, 1));
-                }
+//                if (message[0] == 1) {
+//                    // Server erlaubt rcon
+//                    Client.terminal.rcon(Bits.getInt(message, 1));
+//                }
                 break;
             default:
                 System.out.println("WARNING: Client received unknown TCP-Command " + cmdId);

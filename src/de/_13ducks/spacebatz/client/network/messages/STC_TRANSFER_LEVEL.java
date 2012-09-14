@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.client.network.messages;
 
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.network.STCCommand;
-import de._13ducks.spacebatz.shared.EnemyTypes;
+import de._13ducks.spacebatz.shared.Level;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -10,15 +10,14 @@ import java.io.ObjectInputStream;
  *
  * @author michael
  */
-public class STC_TRANSFER_ENEMYTYPES extends STCCommand {
+public class STC_TRANSFER_LEVEL extends STCCommand {
 
     @Override
     public void execute(byte[] data) {
-        // EnemyTypes empfangen (nur einmal)       
         try {
             ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(data));
-            EnemyTypes et = (EnemyTypes) is.readObject();
-            Client.enemytypes = et;
+            Level myLevel = (Level) is.readObject();
+            Client.currentLevel = myLevel;
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
@@ -26,11 +25,11 @@ public class STC_TRANSFER_ENEMYTYPES extends STCCommand {
 
     @Override
     public boolean isVariableSize() {
-        throw new IllegalStateException("STC_TRANSFER_ENEMYTYPES wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+        throw new IllegalStateException("STC_TRANSFER_LEVEL wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
     }
 
     @Override
     public int getSize(byte sizeData) {
-        throw new IllegalStateException("STC_TRANSFER_ENEMYTYPES wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+        throw new IllegalStateException("STC_TRANSFER_LEVEL wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
     }
 }
