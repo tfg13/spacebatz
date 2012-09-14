@@ -10,6 +10,10 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ITEMS;
+import de._13ducks.spacebatz.client.network.messages.STC_SET_CLIENT;
+import de._13ducks.spacebatz.client.network.messages.STC_SET_PLAYER;
+import de._13ducks.spacebatz.client.network.messages.STC_START_ENGINE;
 import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM;
 import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM_TO_STACK;
@@ -22,6 +26,7 @@ import de._13ducks.spacebatz.client.network.messages.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DROP;
 import de._13ducks.spacebatz.client.network.messages.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ENEMYTYPES;
+import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_LEVEL;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.NetCommand;
@@ -91,6 +96,10 @@ public class ClientNetwork2 {
      */
     private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
     /**
+     * Puffert Befehle, die mit höherer Priorität gesendet werden sollen.
+     */
+    private Queue<OutgoingCommand> priorityCmdOutQueue = new LinkedBlockingQueue<>();
+    /**
      * Puffert Pakete, die gesendet werden sollen.
      */
     OutBuffer outBuffer = new OutBuffer();
@@ -132,10 +141,12 @@ public class ClientNetwork2 {
         registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, new STC_GRAB_ITEM_TO_STACK());
         registerSTCCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, new STC_ITEM_DROP());
         registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, new STC_TRANSFER_ENEMYTYPES());
-
-
-
-
+        registerSTCCommand(Settings.NET_STC_SET_CLIENT, new STC_SET_CLIENT());
+        registerSTCCommand(Settings.NET_STC_SET_PLAYER, new STC_SET_PLAYER());
+        registerSTCCommand(Settings.NET_STC_START_ENGINE, new STC_START_ENGINE());
+        registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ITEMS, new STC_TRANSFER_ITEMS());
+        registerSTCCommand(Settings.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
+        registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_LEVEL, new STC_TRANSFER_LEVEL());
     }
 
     /**
@@ -305,15 +316,20 @@ public class ClientNetwork2 {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd) {
-        if (cmd.data.length > 128) {
-            byte[][] fragments = MessageFragmenter.fragmentMessage((byte) cmd.cmdID, cmd.data);
-            for (int i = 0; i < fragments.length; i++) {
-                cmdOutQueue.add(new OutgoingCommand(Settings.NET_FRAGMENTED_MESSAGE, fragments[i]));
-            }
+        if (cmd.cmdID == 0x80) {
+            // Wenn es ein ACK ist in die Prioritätsqueue packen
+            priorityCmdOutQueue.add(cmd);
         } else {
-            cmdOutQueue.add(cmd);
+            // "Normale" Packete in die normale Queue
+            if (cmd.data.length > 128) {
+                byte[][] fragments = MessageFragmenter.fragmentMessage((byte) cmd.cmdID, cmd.data);
+                for (int i = 0; i < fragments.length; i++) {
+                    cmdOutQueue.add(new OutgoingCommand(Settings.NET_FRAGMENTED_MESSAGE, fragments[i]));
+                }
+            } else {
+                cmdOutQueue.add(cmd);
+            }
         }
-
     }
 
     /**
@@ -328,6 +344,15 @@ public class ClientNetwork2 {
         Bits.putShort(buf, 1, idx);
         buf[3] = 0; // MAC
         int pos = 4;
+        // Erst Packete mit höherer Priorität verwenden:
+        while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+            // Befehl passt noch rein
+            OutgoingCommand cmd = priorityCmdOutQueue.poll();
+            buf[pos++] = (byte) cmd.cmdID;
+            System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
+            pos += cmd.data.length;
+        }
+        // Dann normale Packete:
         while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
             // Befehl passt noch rein
             OutgoingCommand cmd = cmdOutQueue.poll();
@@ -408,7 +433,7 @@ public class ClientNetwork2 {
                 }
             }
         } else {
-            System.out.println("ERROR: Cannot read inputData, not connected!");
+            //System.out.println("ERROR: Cannot read inputData, not connected!");
         }
     }
 
@@ -428,7 +453,7 @@ public class ClientNetwork2 {
                 ex.printStackTrace();
             }
         } else {
-            System.out.println("ERROR: Cannot send data, not connected!");
+            //System.out.println("ERROR: Cannot send data, not connected!");
         }
     }
 

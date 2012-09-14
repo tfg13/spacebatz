@@ -113,6 +113,10 @@ public class ServerNetworkConnection {
      */
     private Queue<OutgoingCommand> cmdOutQueue = new LinkedBlockingQueue<>();
     /**
+     * Puffert Befehle, die mit hoher Priorität gesendet werden sollen.
+     */
+    private Queue<OutgoingCommand> priorityCmdOutQueue = new LinkedBlockingQueue<>();
+    /**
      * Der Index des Datenpakets, dass der Server als nächstes versendet.
      * Darf nicht 0 sein, der Client muss noch gefahrlos 1 abziehen können
      * Dieser Index darf nicht größer sein, als die Tickzahl des Servers.
@@ -316,7 +320,14 @@ public class ServerNetworkConnection {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd) {
-        cmdOutQueue.add(cmd);
+        if (cmd.cmdID == 0x80) {
+            // ACKs in die Prioritätsschlange
+            priorityCmdOutQueue.add(cmd);
+        } else {
+            // Alle anderen in die normale
+            cmdOutQueue.add(cmd);
+        }
+
     }
 
     private short getAndIncrementNextIndex() {
@@ -344,6 +355,15 @@ public class ServerNetworkConnection {
         Bits.putShort(buf, 0, idx);
         buf[2] = 0; // MAC
         int pos = 3;
+        // Nachrichten mit hoher Priorität
+        while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+            // Befehl passt noch rein
+            OutgoingCommand cmd = priorityCmdOutQueue.poll();
+            buf[pos++] = (byte) cmd.cmdID;
+            System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
+            pos += cmd.data.length;
+        }
+        // Normale Nachrichten:
         while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
             // Befehl passt noch rein
             OutgoingCommand cmd = cmdOutQueue.poll();
