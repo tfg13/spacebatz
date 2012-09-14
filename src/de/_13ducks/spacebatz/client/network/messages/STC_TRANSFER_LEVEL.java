@@ -5,6 +5,8 @@ import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.shared.Level;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  *
@@ -15,7 +17,7 @@ public class STC_TRANSFER_LEVEL extends STCCommand {
     @Override
     public void execute(byte[] data) {
         try {
-            ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(data));
+            ObjectInputStream is = new ObjectInputStream(new GZIPInputStream(new java.io.ByteArrayInputStream(data)));
             Level myLevel = (Level) is.readObject();
             Client.currentLevel = myLevel;
         } catch (IOException | ClassNotFoundException ex) {

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Enthält alle Daten eines Laufenden Spiels
@@ -82,32 +83,35 @@ public class Game {
         enemytypes = new EnemyTypes();
 
         // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        ObjectOutputStream os;
+
         try {
-            os = new ObjectOutputStream(bs);
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            GZIPOutputStream zipOut = new GZIPOutputStream(bs);
+            ObjectOutputStream os = new ObjectOutputStream(zipOut);
             os.writeObject(level);
             os.flush();
             bs.flush();
             bs.close();
             os.close();
             serializedLevel = bs.toByteArray();
+            System.out.println("Levelsize after GZIP compression: " + serializedLevel.length);
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
         // Enemytypes serialisieren, damit es später schnell an Clients gesendet werden kann:
-        ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
-        ObjectOutputStream os2;
         try {
-            os2 = new ObjectOutputStream(bs2);
-            os2.writeObject(enemytypes);
-            os2.flush();
-            bs2.flush();
-            bs2.close();
-            os2.close();
-            serializedEnemyTypes = bs2.toByteArray();
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            GZIPOutputStream zipOut = new GZIPOutputStream(bs);
+            ObjectOutputStream os = new ObjectOutputStream(zipOut);
+            os.writeObject(enemytypes);
+            os.flush();
+            bs.flush();
+            bs.close();
+            os.close();
+            serializedEnemyTypes = bs.toByteArray();
+            System.out.println("EnemyTypeListsize after GZIP compression: " + serializedEnemyTypes.length);
 
         } catch (IOException ex) {
             ex.printStackTrace();

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.zip.GZIPInputStream;
 
 /**
  *
@@ -16,7 +17,7 @@ public class STC_TRANSFER_ENEMYTYPES extends STCCommand {
     public void execute(byte[] data) {
         // EnemyTypes empfangen (nur einmal)       
         try {
-            ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(data));
+            ObjectInputStream is = new ObjectInputStream(new GZIPInputStream(new java.io.ByteArrayInputStream(data)));
             EnemyTypes et = (EnemyTypes) is.readObject();
             Client.enemytypes = et;
         } catch (IOException | ClassNotFoundException ex) {
