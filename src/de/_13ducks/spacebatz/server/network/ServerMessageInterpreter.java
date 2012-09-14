@@ -62,27 +62,27 @@ public class ServerMessageInterpreter {
 
         switch (cmdID) {
             case Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP:
-                int netID = Bits.getInt(message, 0);
-                byte selectedslot = message[4];
-                sender.getPlayer().clientEquipItem(netID, selectedslot);
+//                int netID = Bits.getInt(message, 0);
+//                byte selectedslot = message[4];
+//                sender.getPlayer().clientEquipItem(netID, selectedslot);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP:
-                int slottype = Bits.getInt(message, 0);
-                byte selslot = message[4];
-                sender.getPlayer().clientDequipItem(slottype, selslot);
+//                int slottype = Bits.getInt(message, 0);
+//                byte selslot = message[4];
+//                sender.getPlayer().clientDequipItem(slottype, selslot);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH:
-                byte selslot2 = message[0];
-                sender.getPlayer().clientSelectWeapon(selslot2);
+//                byte selslot2 = message[0];
+//                sender.getPlayer().clientSelectWeapon(selslot2);
                 break;
             case Settings.NET_TCP_CMD_CLIENT_DISCONNECT:
-                Server.disconnectClient(sender);
+//                Server.disconnectClient(sender);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_RESYNC:
-                Server.serverNetwork.udp.resyncClient(sender);
+//                Server.serverNetwork.udp.resyncClient(sender);
                 break;
             case Settings.NET_TCP_CMD_REQUEST_RCON:
-                Server.msgSender.sendRconAnswer(sender, Settings.SERVER_ENABLE_RCON, Settings.SERVER_RCONPORT);
+//                Server.msgSender.sendRconAnswer(sender, Settings.SERVER_ENABLE_RCON, Settings.SERVER_RCONPORT);
                 break;
             default:
                 System.out.println("WARNING: Received CTS-TCP with unknown cmdid! (was " + cmdID + ")");
