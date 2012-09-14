@@ -120,12 +120,12 @@ public class ClientMessageInterpreter {
                     ex.printStackTrace();
                 }
                 break;
-            case 21:
+            case Settings.NET_STC_SET_PLAYER:
                 // Player setzen
                 Client.player = new Player(Bits.getInt(message, 0));
                 Client.netIDMap.put(Client.player.netID, Client.player);
                 break;
-            case 22:
+            case Settings.NET_STC_START_ENGINE:
                 // Engine starten:
                 Thread t = new Thread(new Runnable() {
                     @Override
@@ -139,7 +139,7 @@ public class ClientMessageInterpreter {
                 t.start();
                 initTcpReceiverThreadRun = false;
                 break;
-            case 23:
+            case Settings.NET_STC_SET_CLIENT:
                 // ClientID setzen
                 Client.setClientID(message[0]);
                 break;

@@ -59,7 +59,7 @@ public class ServerMessageSender {
         Bits.putInt(b, 0, player.netID);
         Bits.putFloat(b, 4, (float) player.getX());
         Bits.putFloat(b, 8, (float) player.getY());
-        Server.serverNetwork.sendTcpData((byte) 21, b, client);
+        Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_SET_PLAYER, b, client);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ServerMessageSender {
      * @param client der Ziel-Client
      */
     public void sendStartGame(Client client) {
-        Server.serverNetwork.sendTcpData((byte) 22, new byte[1], client);
+        Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_START_ENGINE, new byte[1], client);
     }
 
     /**
@@ -77,7 +77,7 @@ public class ServerMessageSender {
      * @param client der Client, dessen ID an ihn gesendet wird.
      */
     public void sendSetClientID(Client client) {
-        Server.serverNetwork.sendTcpData((byte) 23, new byte[]{(byte) client.clientID}, client);
+        Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_SET_CLIENT, new byte[]{(byte) client.clientID}, client);
     }
 
     /**
