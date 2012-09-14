@@ -118,18 +118,18 @@ public class Client {
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
     public static void startClient(String ip) {
-	msgSender = new ClientMessageSender();
-	msgInterpreter = new ClientMessageInterpreter();
-	netIDMap = new HashMap<>();
-	network = new ClientNetwork();
-	network2 = new ClientNetwork2();
-	equippedItems = new EquippedItems();
-	if (getNetwork().tryConnect(ip)) {
-	    // StartRequest per TCP an Server schicken
-	    //player = new Player(30, 30);
-	} else {
-	    System.out.println("ERROR: Can't connect!");
-	}
+        msgSender = new ClientMessageSender();
+        network2 = new ClientNetwork2();
+        msgInterpreter = new ClientMessageInterpreter();
+        netIDMap = new HashMap<>();
+        network = new ClientNetwork();
+        equippedItems = new EquippedItems();
+        if (getNetwork().tryConnect(ip)) {
+            // StartRequest per TCP an Server schicken
+            //player = new Player(30, 30);
+        } else {
+            System.out.println("ERROR: Can't connect!");
+        }
     }
 
     /**
@@ -138,7 +138,7 @@ public class Client {
      * @return die Liste der Bullets
      */
     public static LinkedList<Bullet> getBulletList() {
-	return bulletList;
+        return bulletList;
     }
 
     /**
@@ -147,7 +147,7 @@ public class Client {
      * @return der eigene Spieler
      */
     public static Player getPlayer() {
-	return player;
+        return player;
     }
 
     /**
@@ -156,7 +156,7 @@ public class Client {
      * @return der MessageInterpreter
      */
     public static ClientMessageInterpreter getMsgInterpreter() {
-	return msgInterpreter;
+        return msgInterpreter;
     }
 
     /**
@@ -165,7 +165,7 @@ public class Client {
      * @return unsere ClientID
      */
     public static byte getClientID() {
-	return clientID;
+        return clientID;
     }
 
     /**
@@ -174,7 +174,7 @@ public class Client {
      * @param clientID die ClientID, die der Client verwenden soll
      */
     public static void setClientID(byte clientID) {
-	Client.clientID = clientID;
+        Client.clientID = clientID;
     }
 
     /**
@@ -183,17 +183,17 @@ public class Client {
      * @param packet udp-Paket
      */
     public static void udpOut(byte[] packet) {
-	if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
-	    throw new IllegalArgumentException("Illegal packet!");
-	}
-	getNetwork().udpSend(packet);
+        if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
+            throw new IllegalArgumentException("Illegal packet!");
+        }
+        getNetwork().udpSend(packet);
     }
 
     /**
      * Leitet UDP-Ticks ans Netzwerksystem weiter.
      */
     public static void udpTick() {
-	getNetwork().udpTick();
+        getNetwork().udpTick();
     }
 
     /**
@@ -202,69 +202,69 @@ public class Client {
      * @return das Netzwerkmodul des Clients
      */
     public static ClientNetwork getNetwork() {
-	return network;
+        return network;
     }
-    
+
     /**
      * Gibt das neue Netzwerkmodul zurück.
+     *
      * @return das neue Netzwerkmodul
      */
     public static ClientNetwork2 getNetwork2() {
-	return network2;
+        return network2;
     }
 
     public static void updateGametick() {
-	frozenGametick = gametick;
+        frozenGametick = gametick;
     }
 
     public static boolean startTickCounting(int serverStartTick) {
-	gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / tickrate);
-	if (tickTimer == null) {
-	    tickTimer = new Timer("Client_tickcounter", true);
-	    tickTimer.scheduleAtFixedRate(new TimerTask() {
-
-		@Override
-		public void run() {
-		    gametick++;
-		}
-	    }, 0, tickrate);
-	    return false;
-	}
-	return true;
+        gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / tickrate);
+        if (tickTimer == null) {
+            tickTimer = new Timer("Client_tickcounter", true);
+            tickTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    gametick++;
+                }
+            }, 0, tickrate);
+            return false;
+        }
+        return true;
     }
 
     public static HashMap<Integer, Item> getItemMap() {
-	return itemMap;
+        return itemMap;
     }
 
     public static void setItemMap(HashMap<Integer, Item> aItemMap) {
-	itemMap = aItemMap;
+        itemMap = aItemMap;
     }
 
     public static void setInventory(HashMap<Integer, Item> aInventory) {
-	inventoryItems = aInventory;
-	Iterator<Item> iterator = inventoryItems.values().iterator();
-	int i = 0;
-	while (iterator.hasNext()) {
-	    Item item = iterator.next();
-	    inventorySlots[i] = new InventorySlot(item);
-	    item.setInventoryslot(inventorySlots[i]);
-	    i++;
-	}
+        inventoryItems = aInventory;
+        Iterator<Item> iterator = inventoryItems.values().iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            inventorySlots[i] = new InventorySlot(item);
+            item.setInventoryslot(inventorySlots[i]);
+            i++;
+        }
     }
 
     /**
      * @return the inventory
      */
     public static HashMap<Integer, Item> getInventoryItems() {
-	return inventoryItems;
+        return inventoryItems;
     }
 
     /**
      * @return the inventorySlots
      */
     public static InventorySlot[] getInventorySlots() {
-	return inventorySlots;
+        return inventorySlots;
     }
 
     /**
@@ -273,66 +273,68 @@ public class Client {
      * @param item Item das geaddet werden soll
      */
     public static void addToInventory(Item item) {
-	for (int i = 0; i < inventorySlots.length; i++) {
-	    if (inventorySlots[i] == null) {
-		inventorySlots[i] = new InventorySlot(item);
-		inventoryItems.put(item.getNetID(), item);
-		item.setInventoryslot(inventorySlots[i]);
-		break;
-	    }
-	}
+        for (int i = 0; i < inventorySlots.length; i++) {
+            if (inventorySlots[i] == null) {
+                inventorySlots[i] = new InventorySlot(item);
+                inventoryItems.put(item.getNetID(), item);
+                item.setInventoryslot(inventorySlots[i]);
+                break;
+            }
+        }
     }
 
     public static void removeFromInventory(int slot) {
-	inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
-	inventorySlots[slot] = null;
+        inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
+        inventorySlots[slot] = null;
     }
 
     public static int getMoney() {
-	return money;
+        return money;
     }
 
     public static void addMoney(int amount) {
-	money += amount;
+        money += amount;
     }
 
     /**
      * @return the equippedSlots
      */
     public static EquippedItems getEquippedItems() {
-	return equippedItems;
+        return equippedItems;
     }
 
     /**
      * @param aEquippedSlots the equippedSlots to set
      */
     public static void setEquippedItems(EquippedItems aEquippedItems) {
-	equippedItems = aEquippedItems;
+        equippedItems = aEquippedItems;
     }
 
     /**
      * @return the msgSender
      */
     public static ClientMessageSender getMsgSender() {
-	return msgSender;
+        return msgSender;
     }
 
     /**
      * Liefert die Engine
+     *
      * @return the engine
      */
     public static Engine getEngine() {
-	return engine;
+        return engine;
     }
 
     /**
      * Setzt die Engine, falls das noch nicht passiert ist.
+     *
      * @param aEngine the engine to set
      */
     public static void setEngine(Engine aEngine) {
-	if (Client.engine != null) {
-	    throw new IllegalArgumentException("Engine already set!");
-	}
-	Client.engine = aEngine;
+        if (Client.engine != null) {
+            throw new IllegalArgumentException("Engine already set!");
+        }
+        Client.engine = aEngine;
     }
 }

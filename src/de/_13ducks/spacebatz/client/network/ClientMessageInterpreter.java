@@ -60,7 +60,8 @@ public class ClientMessageInterpreter {
             public void run() {
                 while (initTcpReceiverThreadRun) {
                     try {
-
+                        Client.getNetwork2().inTick();
+                        Client.getNetwork2().outTick();
                         for (int i = 0; i < messages.size(); i++) {
                             ClientTcpMessage m = messages.poll();
                             interpretTcpMessage(m.getCmdID(), m.getData());
