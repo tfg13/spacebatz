@@ -43,9 +43,6 @@ public class ServerMessageSender {
      */
     public void sendEnemyTypes(Client client) {
         //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
-        byte[] message = new byte[Server.game.getSerializedEnemyTypes().length + 1];
-        message[0] = (byte) Server.game.getSerializedEnemyTypes().length;
-        System.arraycopy(Server.game.getSerializedEnemyTypes(), 0, message, 1, Server.game.getSerializedEnemyTypes().length);
         Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes()), client);
     }
 
@@ -112,9 +109,6 @@ public class ServerMessageSender {
     public void sendItemDrop(byte[] seritem) {
         for (Client c : Server.game.clients.values()) {
             //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
-            byte[] message = new byte[seritem.length + 1];
-            message[0] = (byte) seritem.length;
-            System.arraycopy(seritem, 0, message, 1, seritem.length);
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem), c);
         }
     }
