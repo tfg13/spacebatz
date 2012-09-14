@@ -1,7 +1,8 @@
-package de._13ducks.spacebatz.client.network;
+package de._13ducks.spacebatz.client.network.messages;
 
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -11,7 +12,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_SET_PLAYER extends FixedSizeSTCCommand {
 
     public STC_SET_PLAYER() {
-        super(4);
+        super(12);
     }
 
     @Override

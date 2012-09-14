@@ -25,15 +25,15 @@ public final class Settings {
     /**
      * Teilt dem Spieler mit welchen Char er kontrolliert
      */
-    public static final int NET_STC_SET_PLAYER = 21;
+    public static final byte NET_STC_SET_PLAYER = 21;
     /**
      * Teilt dem CLients seine ClientID mit
      */
-    public static final int NET_STC_SET_CLIENT = 23;
+    public static final byte NET_STC_SET_CLIENT = 23;
     /**
      * Startet die Engine auf dem Client
      */
-    public static final int NET_STC_START_ENGINE = 22;
+    public static final byte NET_STC_START_ENGINE = 22;
     /**
      * Debugnachricht, das erste byte ist die länge
      */

@@ -10,7 +10,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_ANSWER_RCON extends FixedSizeSTCCommand {
 
     public STC_ANSWER_RCON() {
-        super(1);
+        super(5);
     }
 
     @Override

@@ -118,11 +118,12 @@ public class Client {
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
     public static void startClient(String ip) {
+        network = new ClientNetwork();
         msgSender = new ClientMessageSender();
         network2 = new ClientNetwork2();
         msgInterpreter = new ClientMessageInterpreter();
         netIDMap = new HashMap<>();
-        network = new ClientNetwork();
+
         equippedItems = new EquippedItems();
         if (getNetwork().tryConnect(ip)) {
             // StartRequest per TCP an Server schicken
