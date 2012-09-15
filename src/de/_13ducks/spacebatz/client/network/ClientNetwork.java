@@ -140,7 +140,7 @@ public class ClientNetwork {
 			long packetSize = is.readLong();
 			byte data[] = new byte[(int) packetSize];
 			is.readFully(data);
-			Client.getMsgInterpreter().addMessageToQueue(new ClientTcpMessage(cmdId, data));
+			//Client.getMsgInterpreter().addMessageToQueue(new ClientTcpMessage(cmdId, data));
 		    }
 		} catch (IOException ex) {
 		    ex.printStackTrace();

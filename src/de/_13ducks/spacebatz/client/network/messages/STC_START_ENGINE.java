@@ -27,6 +27,6 @@ public class STC_START_ENGINE extends FixedSizeSTCCommand {
         t.setName("CLIENT_ENGINE");
         t.setDaemon(false);
         t.start();
-        Client.getMsgInterpreter().initTcpReceiverThreadRun = false;
+        Client.getInitialMainloop().start();
     }
 }

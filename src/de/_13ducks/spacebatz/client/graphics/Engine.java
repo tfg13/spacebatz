@@ -164,8 +164,6 @@ public class Engine {
             Client.updateGametick();
             // UDP-Input verarbeiten:
             Client.udpTick();
-            // TCP-Input verarbeiten:
-            Client.getMsgInterpreter().interpretAllTcpMessages();
             // Input neues Netzwerksystem verarbeiten
             Client.getNetwork2().inTick();
             // Render-Code

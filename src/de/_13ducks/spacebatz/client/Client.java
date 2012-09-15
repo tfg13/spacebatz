@@ -41,7 +41,7 @@ public class Client {
     /**
      * Der Nachrichteninterpreter.
      */
-    private static ClientMessageInterpreter msgInterpreter;
+    private static InitialMainloop initMainloop;
     /**
      * Die Grafikengine.
      */
@@ -121,7 +121,8 @@ public class Client {
         network = new ClientNetwork();
         msgSender = new ClientMessageSender();
         network2 = new ClientNetwork2();
-        msgInterpreter = new ClientMessageInterpreter();
+        initMainloop = new InitialMainloop();
+        initMainloop.stop();
         netIDMap = new HashMap<>();
 
         equippedItems = new EquippedItems();
@@ -156,8 +157,8 @@ public class Client {
      *
      * @return der MessageInterpreter
      */
-    public static ClientMessageInterpreter getMsgInterpreter() {
-        return msgInterpreter;
+    public static InitialMainloop getInitialMainloop() {
+        return initMainloop;
     }
 
     /**
