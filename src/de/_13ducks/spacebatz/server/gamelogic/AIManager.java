@@ -40,6 +40,10 @@ public class AIManager {
      * @param allList die Liste aller mobs deren Verhalten berechnet werden soll
      */
     public static void computeMobBehavior(Collection<Entity> allList) {
+        // Performance-Workaround: KI nicht mehr jeden Tick berechnen
+        if (Server.game.getTick() % 20 != 0) {
+            return;
+        }
         for (Entity e : allList) {
             if (e instanceof Enemy) {
                 Enemy mob = (Enemy) e;
