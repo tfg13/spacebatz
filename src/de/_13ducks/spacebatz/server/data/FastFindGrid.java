@@ -17,14 +17,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- * Die EntityMap bietet performante Zugriffe auf Entities abhängig von ihrer Position.
+ * Das FastFindGrid bietet performante Zugriffe auf Entities abhängig von ihrer Position.
  *
  * @author michael
  */
 public class FastFindGrid {
 
     /**
-     * Die Größe eines Sektors der EntityMap
+     * Die Größe eines Sektors des FastFindGrids
      */
     private final static double SECTORSIZE = 1.0;
     /**
@@ -32,11 +32,11 @@ public class FastFindGrid {
      */
     private LinkedList<Entity>[][] sectors;
     /**
-     * Die Breite der EntityMap
+     * Die Breite des FastFindGrids
      */
     private int entityMapWidth;
     /**
-     * Die Höhe der EntityMap
+     * Die Höhe des FastFindGrids
      */
     private int entityMapHeight;
 
@@ -60,7 +60,7 @@ public class FastFindGrid {
     }
 
     /**
-     * Aktualisiert die Positionen der Entitys
+     * Aktualisiert die Positionen des FastFindGrids
      */
     public void calculateEntityPositions() {
         Iterator<Entity> iterator = Server.game.getEntityManager().getEntityIterator();
@@ -68,7 +68,7 @@ public class FastFindGrid {
         while (iterator.hasNext()) {
             Entity e = iterator.next();
             if (e.isMoving()) {
-                if (0 < e.getX() && e.getX() < entityMapWidth && 0 < e.getY() && e.getY() < entityMapHeight) {
+                if (0 < e.getX() && e.getX() < entityMapWidth * SECTORSIZE && 0 < e.getY() && e.getY() < entityMapHeight * SECTORSIZE) {
                     if (!getSector(e.getX(), e.getY()).contains(e)) {
                         removeEntity(e);
                         insertEntity(e);
@@ -104,15 +104,15 @@ public class FastFindGrid {
     }
 
     /**
-     * Registriert eine Entity in der EntityMap ein
+     * Registriert eine Entity im FastFindGrids.
      *
      * @param entity die Entity die eingefügt wird
      */
     public void insertEntity(Entity entity) {
-        if (0 < entity.getX() && entity.getX() < entityMapWidth && 0 < entity.getY() && entity.getY() < entityMapHeight) {
+        if (0 < entity.getX() && entity.getX() < entityMapWidth * SECTORSIZE && 0 < entity.getY() && entity.getY() < entityMapHeight * SECTORSIZE) {
             getSector(entity.getX(), entity.getY()).add(entity);
-	    entity.getEntityMapPos()[0] = (int) (entity.getX() / SECTORSIZE);
-	    entity.getEntityMapPos()[1] = (int) (entity.getY() / SECTORSIZE);
+            entity.getEntityMapPos()[0] = (int) (entity.getX() / SECTORSIZE);
+            entity.getEntityMapPos()[1] = (int) (entity.getY() / SECTORSIZE);
         } else {
             throw new RuntimeException("Cannot add Entity " + entity.netID + " to EntityMap, it has left the map (Position: " + entity.getX() + "/" + entity.getY() + ")!");
         }
@@ -120,7 +120,7 @@ public class FastFindGrid {
     }
 
     /**
-     * Entfernt eine Entity aus der EntityMap.
+     * Entfernt eine Entity aus dem FastFindGrid.
      *
      * @param entity die Entity die entfernt werden soll
      */
@@ -151,8 +151,13 @@ public class FastFindGrid {
     public LinkedList<Entity> getEntitiesInArea(int x1, int y1, int x2, int y2) {
         LinkedList<Entity> entities = new LinkedList<>();
 
-        for (int x = x1; x < x2; x++) {
-            for (int y = y1; y < y2; y++) {
+        int sectorX1 = (int) (x1 / SECTORSIZE);
+        int sectorY1 = (int) (y1 / SECTORSIZE);
+        int sectorX2 = (int) (x2 / SECTORSIZE);
+        int sectorY2 = (int) (y2 / SECTORSIZE);
+
+        for (int x = sectorX1; x < sectorX2; x++) {
+            for (int y = sectorY1; y < sectorY2; y++) {
                 if (0 < x && x < entityMapWidth && 0 < y && y < entityMapHeight) {
                     for (Entity e : sectors[x][y]) {
                         entities.add(e);
