@@ -580,7 +580,11 @@ public class Engine {
 
         // Items im Inventory zeichnen
         if (showinventory) {
+            // Anzahl der Materialien:
             renderText(String.valueOf(Client.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
+            renderText(String.valueOf(Client.getMaterial(1)), 0.45f * tilesX, 0.44f * tilesY);
+            renderText(String.valueOf(Client.getMaterial(2)), 0.75f * tilesX, 0.44f * tilesY);
+            
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
                 if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {

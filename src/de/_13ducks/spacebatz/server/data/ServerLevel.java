@@ -43,9 +43,9 @@ public class ServerLevel extends Level {
         super(xSize, ySize);
         areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
-        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, null));
-        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, "Iron Ore"));
-        destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, "Gold Ore"));
+        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, -1)); // -1: droppt nichts
+        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, 1));
+        destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, 2));
     }
 
     /**
@@ -56,10 +56,10 @@ public class ServerLevel extends Level {
      */
     public void destroyBlock(int x, int y) {
         // Material droppen
-        String material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
-        if (material != null) {
+        int material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
+        if (material >= 0) {
             // Material mit angepasster Position (int -> double) droppen
-            DropManager.dropMaterial_old(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, (double) x + 0.5, (double) y + 0.5);
+            DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, 1);
         }
 
         Server.msgSender.broadcastCollisionChange(x, y, false);
