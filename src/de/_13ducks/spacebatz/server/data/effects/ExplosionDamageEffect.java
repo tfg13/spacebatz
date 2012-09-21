@@ -85,7 +85,10 @@ public class ExplosionDamageEffect extends Effect {
 
                             if (c.getProperties().getHitpoints() <= 0) {
                                 Server.game.getEntityManager().removeEntity(c.netID);
-                                DropManager.dropItem(c.getX(), c.getY(), 2);
+                                if (c instanceof Enemy) {
+                                    Enemy enemy = (Enemy) c;
+                                    DropManager.dropItem(enemy.getX(), enemy.getY(), enemy.getEnemylevel());
+                                }
                             }
 
                             Server.msgSender.sendCharHit(c.netID, damagereduced, false);

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
+import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Position;
@@ -22,7 +23,6 @@ public class HitscanAbility extends WeaponAbility {
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects = new ArrayList<>();
-    
     private double damage;
 
     public HitscanAbility(double damage, double attackspeed, double range) {
@@ -58,7 +58,10 @@ public class HitscanAbility extends WeaponAbility {
 
                 if (character.getProperties().getHitpoints() <= 0) {
                     Server.game.getEntityManager().removeEntity(character.netID);
-                    DropManager.dropItem(character.getX(), character.getY(), 2);
+                    if (character instanceof Enemy) {
+                        Enemy e = (Enemy) character;
+                        DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
+                    }
                 }
             }
 

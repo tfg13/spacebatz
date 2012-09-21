@@ -113,4 +113,11 @@ public class Enemy extends EffectCarrier {
     public int getAiType() {
         return AiType;
     }
+
+    /**
+     * @return the enemylevel
+     */
+    public int getEnemylevel() {
+        return enemylevel;
+    }
 }

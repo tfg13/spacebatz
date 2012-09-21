@@ -79,7 +79,10 @@ public class Bullet extends Entity {
             // Wenn das Ziel stirbt es entfernen und loot dropen:
             if (target.getProperties().getHitpoints() <= 0) {
                 Server.game.getEntityManager().removeEntity(target.netID);
-                DropManager.dropItem(hitChar.getX(), hitChar.getY(), 2);
+                if (target instanceof Enemy) {
+                    Enemy e = (Enemy) target;
+                    DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
+                }
             }
             // Das Bullet entfernen:
             Server.game.getEntityManager().removeEntity(netID);
