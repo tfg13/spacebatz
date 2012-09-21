@@ -17,9 +17,9 @@ public class ItemCarrier extends EffectCarrier {
      */
     private HashMap<Integer, Item> items;
     /**
-     * Wieviel Geld im Inventar ist
+     * Wieviel Materialien der Spieler hat (Geld, Erze, ...)
      */
-    private int money;
+    private int materials[] = new int[Settings.NUMBER_OF_MATERIALS];
     /**
      * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
      */
@@ -84,14 +84,14 @@ public class ItemCarrier extends EffectCarrier {
      * @return the money
      */
     public int getMoney() {
-        return money;
+        return materials[0];
     }
 
     /**
      * @param money the money to set
      */
     public void setMoney(int money) {
-        this.money = money;
+        materials[0] = money;
     }
 
     /**

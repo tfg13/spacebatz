@@ -285,4 +285,8 @@ public final class Settings {
      * Grundgeschwindigkeit.
      */
     public static final double BASE_MOVESPEED = 0.15;
+    /**
+     * Anzahl der Materialien im Spiel (Geld, Erze, ...)
+     */
+    public static final int NUMBER_OF_MATERIALS = 3;
 }
