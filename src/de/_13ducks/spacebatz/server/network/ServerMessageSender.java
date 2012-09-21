@@ -114,7 +114,7 @@ public class ServerMessageSender {
     }
 
     /**
-     * Item wird von Spieler aufgesammelt und kriegt eigenen Itemslot
+     * Item (nicht Material) wird von Spieler aufgesammelt und kriegt eigenen Itemslot
      */
     public void sendItemGrab(int itemnetID, int clientID) {
         for (Client c : Server.game.clients.values()) {
@@ -140,6 +140,25 @@ public class ServerMessageSender {
             //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b, c);
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, b), c);
 
+        }
+    }
+
+    /**
+     * Menge eines Materials wird für einen Spieler geändert
+     *
+     * @param clientID ?
+     * @param material Nummer des Materialstyps
+     * @param amount Wieviel hinzugefügt werden soll
+     */
+    public void sendMaterialAmountChange(int clientID, int material, int amount) {
+        for (Client c : Server.game.clients.values()) {
+
+            byte[] b = new byte[12];
+            Bits.putInt(b, 0, clientID);
+            Bits.putInt(b, 4, material);
+            Bits.putInt(b, 8, amount);
+            
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, b), c);
         }
     }
 

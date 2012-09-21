@@ -580,7 +580,7 @@ public class Engine {
 
         // Items im Inventory zeichnen
         if (showinventory) {
-            renderText(String.valueOf(Client.getMoney()), 0.12f * tilesX, 0.44f * tilesY);
+            renderText(String.valueOf(Client.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
                 if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {

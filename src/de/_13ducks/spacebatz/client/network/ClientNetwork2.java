@@ -24,6 +24,7 @@ import de._13ducks.spacebatz.client.network.messages.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.client.network.messages.STC_CHAR_HIT;
 import de._13ducks.spacebatz.client.network.messages.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DROP;
+import de._13ducks.spacebatz.client.network.messages.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.client.network.messages.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_LEVEL;
@@ -147,6 +148,7 @@ public class ClientNetwork2 {
         registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ITEMS, new STC_TRANSFER_ITEMS());
         registerSTCCommand(Settings.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
         registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_LEVEL, new STC_TRANSFER_LEVEL());
+        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
     }
 
     /**

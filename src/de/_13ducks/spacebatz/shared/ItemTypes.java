@@ -29,7 +29,7 @@ public class ItemTypes {
         ItemAttribute money = new ItemAttribute("Money");
         money.setPic(0);
         money.setItemClass(0);
-        money.setQuality(1);
+        money.setQuality(0); // nicht zufällig dropbar
         money.setAmount(1);
         itemtypelist.add(money);
 

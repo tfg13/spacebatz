@@ -13,7 +13,6 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
-import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Distance;
@@ -277,7 +276,7 @@ public class CollisionManager {
                             if (item.getItemClass() == 0) {
                                 // stackbares Item
                                 if (item.getName().equals("Money")) {
-                                    collector.setMoney(collector.getMoney() + item.getAmount());
+                                    collector.setMaterial(0, collector.getMaterial(0) + item.getAmount());
                                     iterator.remove();
                                     Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, -616);
                                 } else {

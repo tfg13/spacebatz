@@ -29,7 +29,7 @@ public class STC_GRAB_ITEM_TO_STACK extends FixedSizeSTCCommand {
 
             // Item soll gestackt werden
             if (item.getName().equals("Money")) {
-                Client.addMoney(item.getAmount());
+                Client.setMaterial(0, item.getAmount());
             } else {
                 Item itemStack = Client.getInventoryItems().get(stacknetID);
                 itemStack.setAmount(itemStack.getAmount() + item.getAmount());

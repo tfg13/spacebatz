@@ -59,7 +59,7 @@ public class ServerLevel extends Level {
         String material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
         if (material != null) {
             // Material mit angepasster Position (int -> double) droppen
-            DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, (double) x + 0.5, (double) y + 0.5);
+            DropManager.dropMaterial_old(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, (double) x + 0.5, (double) y + 0.5);
         }
 
         Server.msgSender.broadcastCollisionChange(x, y, false);

@@ -92,9 +92,9 @@ public class Client {
      */
     private static EquippedItems equippedItems;
     /**
-     * Wieviel Geld der Spieler gerade besitzt
+     * Wieviel Materialien der Spieler gerade besitzt
      */
-    private static int money;
+    private static int materials[] = new int[Settings.NUMBER_OF_MATERIALS];
     /**
      * Die Logik-Tickrate in ms Abstand zwischen den Ticks.
      */
@@ -290,12 +290,12 @@ public class Client {
         inventorySlots[slot] = null;
     }
 
-    public static int getMoney() {
-        return money;
+    public static int getMaterial(int material) {
+        return materials[material];
     }
 
-    public static void addMoney(int amount) {
-        money += amount;
+    public static void setMaterial(int material, int amount) {
+        materials[material] = amount;
     }
 
     /**

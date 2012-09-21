@@ -76,22 +76,26 @@ public class ItemCarrier extends EffectCarrier {
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
         if (item.getName().equals("Money")) {
-            setMoney(getMoney() + (int) item.getAmount());
+            setMaterial(0, getMaterial(0) + (int) item.getAmount());
         }
     }
-
+    
     /**
-     * @return the money
+     * Gibt zurück, welche Menge der Spieler von einem Material besitzt
+     * @param material Materialnummer
+     * @return Materialmenge
      */
-    public int getMoney() {
-        return materials[0];
+    public int getMaterial(int material) {
+        return materials[material];
     }
-
+    
     /**
-     * @param money the money to set
+     * Legt fest, welche Menge der Spieler von einem Material besitzt
+     * @param material Materialnummer
+     * @param amount  Materialmenge
      */
-    public void setMoney(int money) {
-        materials[0] = money;
+    public void setMaterial(int material, int amount) {
+        materials[material] = amount;
     }
 
     /**
