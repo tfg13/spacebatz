@@ -138,6 +138,7 @@ public class Entity {
             posY = y;
         }
         movementDirty = true;
+        Server.sync.updateMovement(this);
     }
 
     /**
@@ -150,6 +151,7 @@ public class Entity {
         posY = getY();
         moveStartTick = -1;
         movementDirty = true;
+        Server.sync.updateMovement(this);
     }
 
     /**
@@ -193,6 +195,7 @@ public class Entity {
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
         movementDirty = true;
+        Server.sync.updateMovement(this);
     }
 
     /**
@@ -220,6 +223,7 @@ public class Entity {
             this.speed = speed;
             setVector(vecX, vecY);
             movementDirty = true;
+            Server.sync.updateMovement(this);
         } else {
             this.speed = speed;
         }

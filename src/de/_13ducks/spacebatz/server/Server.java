@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.data.FastFindGrid;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
+import de._13ducks.spacebatz.server.network.AutoSynchronizer;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
 import de._13ducks.spacebatz.server.network.ServerMessageSender;
 import de._13ducks.spacebatz.server.network.ServerNetwork;
@@ -47,6 +48,10 @@ public final class Server {
      * Das neue Netzwerkmodul
      */
     public static ServerNetwork2 serverNetwork2 = new ServerNetwork2();
+    /**
+     * Die automatische Synchronisierung von Entitys und deren Bewegung.
+     */
+    public static AutoSynchronizer sync = new AutoSynchronizer();
     /**
      * Die Sendekomponente des Netzwerkmoduls
      */

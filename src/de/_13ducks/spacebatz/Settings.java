@@ -43,6 +43,10 @@ public final class Settings {
      */
     public static final int NET_FRAGMENTED_MESSAGE = 0x82;
     /**
+     * Update von Bewegungsdaten.
+     */
+    public static final int NET_ENTITY_UPDATE = 0x83;
+    /**
      * Die X-Auflösung der Grafikausgabe.
      */
     public static final int CLIENT_GFX_RES_X = 800;

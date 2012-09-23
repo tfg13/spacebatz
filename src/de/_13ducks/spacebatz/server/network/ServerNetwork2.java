@@ -137,6 +137,9 @@ public class ServerNetwork2 {
      * Muss zum Ende jedes Ticks aufgerufen werden, sendet soebene Berechnete Veränderungen etc an die Clients.
      */
     public void outTick() {
+        // Berechne zu versendende Änderungen:
+        Server.sync.tick();
+
         for (Client c : Server.game.clients.values()) {
             if (c.getNetworkConnection().getPort() != 0) {
                 DatagramPacket dPack = c.getNetworkConnection().craftPacket();

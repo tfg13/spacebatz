@@ -29,7 +29,6 @@ import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_LEVEL;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
-import de._13ducks.spacebatz.shared.network.NetCommand;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
@@ -42,7 +41,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import sun.nio.cs.ext.PCK;
 
 /**
  * Die Client-Seite des neuen Netzwerksystems
@@ -131,6 +129,7 @@ public class ClientNetwork2 {
     public ClientNetwork2() {
         cmdMap[0x80] = new STC_ACK();
         cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
+        cmdMap[Settings.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
         registerSTCCommand(Settings.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());

@@ -123,6 +123,10 @@ public class ServerNetworkConnection {
      * Dieser Wert startet also bei 1, so machen auch sehr früh connectende Clients keine Probleme.
      */
     int nextOutIndex = 1;
+    /**
+     * Der Wissensstand dieses Clients.
+     */
+    ClientContext2 context = new ClientContext2();
 
     /**
      * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
