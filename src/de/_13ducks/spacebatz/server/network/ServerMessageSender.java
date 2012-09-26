@@ -38,19 +38,7 @@ public class ServerMessageSender {
 
     
 
-    /**
-     * Item (nicht Material) wird von Spieler aufgesammelt und kriegt eigenen Itemslot
-     */
-    public void sendItemGrab(int itemnetID, int clientID) {
-        for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[8];
-            Bits.putInt(b, 0, itemnetID);
-            Bits.putInt(b, 4, clientID);
-
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_GRAB_ITEM, b, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_GRAB_ITEM, b), c);
-        }
-    }
+    
 
     /**
      * Item wird von Spieler aufgesammelt und auf ein anderes draufgestackt
