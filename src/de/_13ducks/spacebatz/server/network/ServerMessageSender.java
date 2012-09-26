@@ -62,27 +62,7 @@ public class ServerMessageSender {
 
     
 
-    /**
-     * Sendet eine Veränderung am Boden
-     *
-     * @param x X-Koordinate des geännderten Felds
-     * @param y Y-Koordinate des geännderten Felds
-     * @param newCollision neuer Kollisionswert (true - kollision; false - keine kollision)
-     */
-    public void broadcastCollisionChange(int x, int y, boolean newCollision) {
-        byte[] b = new byte[12];
-        Bits.putInt(b, 0, x);
-        Bits.putInt(b, 4, y);
-        if (newCollision) {
-            Bits.putInt(b, 8, 1);
-        } else {
-            Bits.putInt(b, 8, 0);
-        }
-        for (Client c : Server.game.clients.values()) {
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_COLLISION, b, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_COLLISION, b), c);
-        }
-    }
+   
 
     /**
      * Client wählt andere Waffe aus

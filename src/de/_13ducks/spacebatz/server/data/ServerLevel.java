@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -63,7 +64,7 @@ public class ServerLevel extends Level {
             DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, 1);
         }
 
-        Server.msgSender.broadcastCollisionChange(x, y, false);
+        STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, false);
         STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
         getGround()[x][y] = destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture;
         getCollisionMap()[x][y] = false;
@@ -79,7 +80,7 @@ public class ServerLevel extends Level {
     public void createDestroyableBlock(int x, int y, int texture) {
         getGround()[x][y] = texture;
         getCollisionMap()[x][y] = true;
-        Server.msgSender.broadcastCollisionChange(x, y, true);
+        STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, true);
         STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
     }
 
