@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -22,8 +22,8 @@ public class STC_CHANGE_MATERIAL_AMOUNT extends FixedSizeSTCCommand {
         int material = Bits.getInt(data, 4);
         int amount = Bits.getInt(data, 8);
         // Item ins Client-Inventar verschieben, wenn eigene clientID
-        if (clientID == Client.getClientID()) {
-            Client.setMaterial(material, amount);
+        if (clientID == GameClient.getClientID()) {
+            GameClient.setMaterial(material, amount);
         }
     }
 }

@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.shared.Item;
@@ -24,18 +24,18 @@ public class STC_GRAB_ITEM_TO_STACK extends FixedSizeSTCCommand {
         int stacknetID = Bits.getInt(data, 8); // die netID des Items, auf das gestackt werden soll
 
         // Item ins Client-Inventar verschieben, wenn eigene clientID
-        if (clientID3 == Client.getClientID()) {
-            Item item = Client.getItemMap().get(newnetIDItem3);
+        if (clientID3 == GameClient.getClientID()) {
+            Item item = GameClient.getItemMap().get(newnetIDItem3);
 
             // Item soll gestackt werden
             if (item.getName().equals("Money")) {
-                Client.setMaterial(0, item.getAmount());
+                GameClient.setMaterial(0, item.getAmount());
             } else {
-                Item itemStack = Client.getInventoryItems().get(stacknetID);
+                Item itemStack = GameClient.getInventoryItems().get(stacknetID);
                 itemStack.setAmount(itemStack.getAmount() + item.getAmount());
             }
 
         }
-        Client.getItemMap().remove(newnetIDItem3);
+        GameClient.getItemMap().remove(newnetIDItem3);
     }
 }

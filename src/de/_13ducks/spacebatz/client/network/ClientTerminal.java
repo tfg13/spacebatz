@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class ClientTerminal {
                             outln("usage: net_graph MODE (0=off, 1=on)");
                             break;
                         case "resync":
-                            Client.getMsgSender().sendRequestResync();
+                            GameClient.getMsgSender().sendRequestResync();
                             outln("request for resyncing was sent");
                             break;
                         case "clear":
@@ -124,7 +124,7 @@ public class ClientTerminal {
                                 resetInput();
                             } else {
                                 // Anfragen
-                                Client.getMsgSender().sendRconRequest();
+                                GameClient.getMsgSender().sendRconRequest();
                                 outln("rcon: request sent");
                             }
                             break;
@@ -133,7 +133,7 @@ public class ClientTerminal {
                                 try {
                                     int fact = Integer.parseInt(words[1]);
                                     if (fact > 0) {
-                                        Client.getEngine().setZoomFact(fact);
+                                        GameClient.getEngine().setZoomFact(fact);
                                         break;
                                     }
                                 } catch (NumberFormatException ex) {
@@ -151,7 +151,7 @@ public class ClientTerminal {
                                     msg[i] = (byte) 7;
                                 }
                                 msg[0] = (byte) length;
-                                Client.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_DEBUG, msg));
+                                GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_DEBUG, msg));
                             } catch (Exception ex) {
                                 outln("usage: sendsevens x (100*x sevens will be sent)");
                             }
@@ -270,7 +270,7 @@ public class ClientTerminal {
      */
     void rcon(int port) {
         try {
-            rconSock = new Socket(Client.getNetwork().getServerAdr(), port);
+            rconSock = new Socket(GameClient.getNetwork().getServerAdr(), port);
             rconOut = new PrintStream(rconSock.getOutputStream());
             rconRead = new BufferedReader(new InputStreamReader(rconSock.getInputStream()));
             Thread rconReader = new Thread(new Runnable() {

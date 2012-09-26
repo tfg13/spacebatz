@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 
 /**
  * Ein einzelner grafischer Effekt, z.B. Explosion
@@ -39,7 +39,7 @@ public class Fx {
         this.x = x;
         this.y = y;
         this.lifetime = lifetime;
-        starttick = Client.frozenGametick;
+        starttick = GameClient.frozenGametick;
     }
 
     /**

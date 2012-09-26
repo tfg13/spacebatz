@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
@@ -22,9 +22,9 @@ public class STC_CHANGE_COLLISION extends FixedSizeSTCCommand {
         int ty = Bits.getInt(data, 4);
         int newCollision = Bits.getInt(data, 8);
         if (newCollision == 1) {
-            Client.currentLevel.getCollisionMap()[tx][ty] = true;
+            GameClient.currentLevel.getCollisionMap()[tx][ty] = true;
         } else {
-            Client.currentLevel.getCollisionMap()[tx][ty] = false;
+            GameClient.currentLevel.getCollisionMap()[tx][ty] = false;
         }
     }
 }

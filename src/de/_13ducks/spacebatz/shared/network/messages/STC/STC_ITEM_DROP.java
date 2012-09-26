@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.shared.Item;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class STC_ITEM_DROP extends STCCommand {
         try {
             ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(data));
             Item item = (Item) is.readObject();
-            Client.getItemMap().put(item.getNetID(), item);
+            GameClient.getItemMap().put(item.getNetID(), item);
 
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();

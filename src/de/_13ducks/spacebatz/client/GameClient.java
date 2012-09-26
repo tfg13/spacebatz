@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author michael
  */
-public class Client {
+public class GameClient {
 
     /**
      * Das derzeit laufende Level.
@@ -176,7 +176,7 @@ public class Client {
      * @param clientID die ClientID, die der Client verwenden soll
      */
     public static void setClientID(byte clientID) {
-        Client.clientID = clientID;
+        GameClient.clientID = clientID;
     }
 
     /**
@@ -334,9 +334,9 @@ public class Client {
      * @param aEngine the engine to set
      */
     public static void setEngine(Engine aEngine) {
-        if (Client.engine != null) {
+        if (GameClient.engine != null) {
             throw new IllegalArgumentException("Engine already set!");
         }
-        Client.engine = aEngine;
+        GameClient.engine = aEngine;
     }
 }

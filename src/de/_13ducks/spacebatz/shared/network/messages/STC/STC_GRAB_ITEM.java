@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.shared.Item;
@@ -22,11 +22,11 @@ public class STC_GRAB_ITEM extends FixedSizeSTCCommand {
         int netIDItem2 = Bits.getInt(data, 0); // netID des aufgesammelten Items
         int clientID = Bits.getInt(data, 4); // netID des Spielers, der es aufgesammelt hat
         // Item ins Client-Inventar verschieben, wenn eigene clientID
-        if (clientID == Client.getClientID()) {
-            Item item = Client.getItemMap().get(netIDItem2);
+        if (clientID == GameClient.getClientID()) {
+            Item item = GameClient.getItemMap().get(netIDItem2);
 
-            Client.addToInventory(item);
+            GameClient.addToInventory(item);
         }
-        Client.getItemMap().remove(netIDItem2);
+        GameClient.getItemMap().remove(netIDItem2);
     }
 }

@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Player;
 import de._13ducks.spacebatz.client.graphics.Animation;
@@ -27,10 +27,10 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
 
         byte victimdies = data[8];
 
-        if (Client.netIDMap.get(netIDVictim) instanceof Player) {
+        if (GameClient.netIDMap.get(netIDVictim) instanceof Player) {
             // HP abziehen, wenn eigener Spieler
-            Player p = (Player) Client.netIDMap.get(netIDVictim);
-            if (p == Client.getPlayer()) {
+            Player p = (Player) GameClient.netIDMap.get(netIDVictim);
+            if (p == GameClient.getPlayer()) {
 
                 if (victimdies == 1) {
 
@@ -40,8 +40,8 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
                     p.setHealthpoints(p.getHealthpoints() - damage);
                 }
             }
-        } else if (Client.netIDMap.get(netIDVictim) instanceof Enemy) {
-            Enemy e = (Enemy) Client.netIDMap.get(netIDVictim);
+        } else if (GameClient.netIDMap.get(netIDVictim) instanceof Enemy) {
+            Enemy e = (Enemy) GameClient.netIDMap.get(netIDVictim);
             // Schadenszahl rendern:
             Engine.createDamageNumber(damage, e.getX(), e.getY());
             // Test-Explosion:

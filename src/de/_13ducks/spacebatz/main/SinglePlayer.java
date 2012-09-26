@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.main;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.Server;
 
 /**
@@ -34,7 +34,7 @@ public class SinglePlayer {
 
             @Override
             public void run() {
-                Client.startClient("127.0.0.1");
+                GameClient.startClient("127.0.0.1");
             }
         });
         // Server starten

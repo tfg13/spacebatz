@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.shared.Level;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class STC_TRANSFER_LEVEL extends STCCommand {
         try {
             ObjectInputStream is = new ObjectInputStream(new GZIPInputStream(new java.io.ByteArrayInputStream(data)));
             Level myLevel = (Level) is.readObject();
-            Client.currentLevel = myLevel;
+            GameClient.currentLevel = myLevel;
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.Bits;
@@ -21,15 +21,15 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
         int netIDItem3 = Bits.getInt(data, 0); // netID des  Items
         byte selslot = data[4];
         int clientID4 = Bits.getInt(data, 5); // clientID des Spielers
-        if (clientID4 == Client.getClientID()) {
-            Item item = Client.getInventoryItems().get(netIDItem3);
-            Client.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
-            for (int i = 0; i < Client.getInventorySlots().length; i++) {
-                if (Client.getInventorySlots()[i] != null && Client.getInventorySlots()[i].equals(item.getInventoryslot())) {
-                    Client.getInventorySlots()[i] = null;
+        if (clientID4 == GameClient.getClientID()) {
+            Item item = GameClient.getInventoryItems().get(netIDItem3);
+            GameClient.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
+            for (int i = 0; i < GameClient.getInventorySlots().length; i++) {
+                if (GameClient.getInventorySlots()[i] != null && GameClient.getInventorySlots()[i].equals(item.getInventoryslot())) {
+                    GameClient.getInventorySlots()[i] = null;
                 }
             }
-            Client.getInventoryItems().values().remove(item);
+            GameClient.getInventoryItems().values().remove(item);
         }
     }
 }

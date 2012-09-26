@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 
@@ -20,13 +20,13 @@ public class STC_START_ENGINE extends FixedSizeSTCCommand {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                Client.setEngine(new Engine());
-                Client.getEngine().start();
+                GameClient.setEngine(new Engine());
+                GameClient.getEngine().start();
             }
         });
         t.setName("CLIENT_ENGINE");
         t.setDaemon(false);
         t.start();
-        Client.getInitialMainloop().start();
+        GameClient.getInitialMainloop().start();
     }
 }

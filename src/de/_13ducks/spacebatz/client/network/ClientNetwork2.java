@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
@@ -341,7 +341,7 @@ public class ClientNetwork2 {
      */
     DatagramPacket craftPacket() {
         byte[] buf = new byte[512];
-        buf[0] = Client.getClientID();
+        buf[0] = GameClient.getClientID();
         short idx = getAndIncrementNextIndex();
         Bits.putShort(buf, 1, idx);
         buf[3] = 0; // MAC

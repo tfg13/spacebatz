@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -17,7 +17,7 @@ public class STC_ANSWER_RCON extends FixedSizeSTCCommand {
     public void execute(byte[] data) {
         if (data[0] == 1) {
             // Server erlaubt rcon
-            Client.terminal.rcon(Bits.getInt(data, 1));
+            GameClient.terminal.rcon(Bits.getInt(data, 1));
         }
     }
 }

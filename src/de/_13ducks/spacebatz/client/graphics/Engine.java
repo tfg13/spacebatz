@@ -161,11 +161,11 @@ public class Engine {
         // Render-Mainloop:
         while (!Display.isCloseRequested()) {
             // Gametick updaten:
-            Client.updateGametick();
+            GameClient.updateGametick();
             // UDP-Input verarbeiten:
-            Client.udpTick();
+            GameClient.udpTick();
             // Input neues Netzwerksystem verarbeiten
-            Client.getNetwork2().inTick();
+            GameClient.getNetwork2().inTick();
             // Render-Code
             render();
             // Fertig, Puffer swappen:
@@ -175,12 +175,12 @@ public class Engine {
             // Input verarbeiten:
             directInput();
             // Output neues Netzwerksystem:
-            Client.getNetwork2().outTick();
+            GameClient.getNetwork2().outTick();
             // Frames limitieren:
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
         // Netzwerk abmelden:
-        Client.getMsgSender().sendDisconnect();
+        GameClient.getMsgSender().sendDisconnect();
 
         // Ende der Mainloop.
         Display.destroy();
@@ -192,8 +192,8 @@ public class Engine {
      */
     private void directInput() {
         byte[] udp = new byte[NET_UDP_CTS_SIZE];
-        udp[0] = Client.getClientID();
-        Bits.putInt(udp, 1, Client.frozenGametick);
+        udp[0] = GameClient.getClientID();
+        Bits.putInt(udp, 1, GameClient.frozenGametick);
         udp[5] = NET_UDP_CMD_INPUT;
         if (!terminal) {
             if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
@@ -227,14 +227,14 @@ public class Engine {
                             if (x > 0.4 && x < 0.54) {
                                 // Hut-Slot
                                 if (selecteditemslot != -1) {
-                                    Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
+                                    Item selecteditem = GameClient.getInventorySlots()[selecteditemslot].getItem();
                                     if ((int) selecteditem.getItemClass() == 2) {
-                                        Client.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
+                                        GameClient.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                         selecteditemslot = -1;
                                     }
                                 } else {
-                                    if (Client.getEquippedItems().getEquipslots()[2][0] != null) {
-                                        Client.getMsgSender().sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
+                                    if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
+                                        GameClient.getMsgSender().sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
                                     }
                                 }
                             }
@@ -251,14 +251,14 @@ public class Engine {
                             if (weaponslot != -1) {
                                 // Waffenslot
                                 if (selecteditemslot != -1) {
-                                    Item selecteditem = Client.getInventorySlots()[selecteditemslot].getItem();
+                                    Item selecteditem = GameClient.getInventorySlots()[selecteditemslot].getItem();
                                     if ((int) selecteditem.getItemClass() == 1) {
-                                        Client.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                                        GameClient.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                         selecteditemslot = -1;
                                     }
                                 } else {
-                                    if (Client.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
-                                        Client.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
+                                    if (GameClient.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
+                                        GameClient.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
                                     }
                                 }
                             }
@@ -287,23 +287,23 @@ public class Engine {
 
                             if (selecteditemslot == -1) {
                                 // zur Zeit war kein Slot ausgewählt -> der hier wird
-                                if (Client.getInventorySlots()[slotklicked] != null) {
+                                if (GameClient.getInventorySlots()[slotklicked] != null) {
                                     // nur wenn hier ein item drin ist
                                     selecteditemslot = slotklicked;
                                 }
 
                             } else {
                                 // es war bereits ein Slot ausgewählt
-                                if (Client.getInventorySlots()[slotklicked] == null) {
+                                if (GameClient.getInventorySlots()[slotklicked] == null) {
                                     // angeklickter Slot leer -> Item verschieben
-                                    Client.getInventorySlots()[slotklicked] = Client.getInventorySlots()[selecteditemslot];
-                                    Client.getInventorySlots()[selecteditemslot] = null;
+                                    GameClient.getInventorySlots()[slotklicked] = GameClient.getInventorySlots()[selecteditemslot];
+                                    GameClient.getInventorySlots()[selecteditemslot] = null;
                                     selecteditemslot = -1;
                                 } else {
                                     // angeklickter Slot belegt -> Items tauschen
-                                    InventorySlot swapSlot = Client.getInventorySlots()[slotklicked];
-                                    Client.getInventorySlots()[slotklicked] = Client.getInventorySlots()[selecteditemslot];
-                                    Client.getInventorySlots()[selecteditemslot] = swapSlot;
+                                    InventorySlot swapSlot = GameClient.getInventorySlots()[slotklicked];
+                                    GameClient.getInventorySlots()[slotklicked] = GameClient.getInventorySlots()[selecteditemslot];
+                                    GameClient.getInventorySlots()[selecteditemslot] = swapSlot;
                                     selecteditemslot = -1;
                                 }
                             }
@@ -357,18 +357,18 @@ public class Engine {
                             // Ignorieren
                             break;
                         case Keyboard.KEY_1:
-                            if (Client.getPlayer().getSelectedattack() != 0) {
-                                Client.getMsgSender().sendSwitchWeapon((byte) 0);
+                            if (GameClient.getPlayer().getSelectedattack() != 0) {
+                                GameClient.getMsgSender().sendSwitchWeapon((byte) 0);
                             }
                             break;
                         case Keyboard.KEY_2:
-                            if (Client.getPlayer().getSelectedattack() != 1) {
-                                Client.getMsgSender().sendSwitchWeapon((byte) 1);
+                            if (GameClient.getPlayer().getSelectedattack() != 1) {
+                                GameClient.getMsgSender().sendSwitchWeapon((byte) 1);
                             }
                             break;
                         case Keyboard.KEY_3:
-                            if (Client.getPlayer().getSelectedattack() != 2) {
-                                Client.getMsgSender().sendSwitchWeapon((byte) 2);
+                            if (GameClient.getPlayer().getSelectedattack() != 2) {
+                                GameClient.getMsgSender().sendSwitchWeapon((byte) 2);
                             }
                             break;
                     }
@@ -380,26 +380,26 @@ public class Engine {
                 if (Keyboard.getEventKeyState()) {
                     int key = Keyboard.getEventKey();
                     if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-                        Client.terminal.enter();
+                        GameClient.terminal.enter();
                     } else if (key == Keyboard.KEY_BACK) {
-                        Client.terminal.backspace();
+                        GameClient.terminal.backspace();
                     } else if (key == Keyboard.KEY_UP) {
-                        Client.terminal.scrollBack();
+                        GameClient.terminal.scrollBack();
                     } else if (key == Keyboard.KEY_DOWN) {
-                        Client.terminal.scrollForward();
+                        GameClient.terminal.scrollForward();
                     } else if (key == Keyboard.KEY_F1) {
                         terminal = false;
                         break;
                     } else {
                         char c = Keyboard.getEventCharacter();
                         if (c == ' ' || c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '>')) {
-                            Client.terminal.input(c);
+                            GameClient.terminal.input(c);
                         }
                     }
                 }
             }
         }
-        Client.udpOut(udp);
+        GameClient.udpOut(udp);
     }
 
     /**
@@ -441,13 +441,13 @@ public class Engine {
      */
     private void render() {
 
-        panX = (float) -Client.getPlayer().getX() + tilesX / 2.0f;
-        panY = (float) -Client.getPlayer().getY() + tilesY / 2.0f;
+        panX = (float) -GameClient.getPlayer().getX() + tilesX / 2.0f;
+        panY = (float) -GameClient.getPlayer().getY() + tilesY / 2.0f;
 
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
-                int tex = texAt(Client.currentLevel.getGround(), x, y);
+                int tex = texAt(GameClient.currentLevel.getGround(), x, y);
                 int tx = tex % 16;
                 int ty = tex / 16;
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
@@ -466,7 +466,7 @@ public class Engine {
 
         // Items auf der Map zeichnen
         itemTiles.bind();
-        Iterator<Item> iterator = Client.getItemMap().values().iterator();
+        Iterator<Item> iterator = GameClient.getItemMap().values().iterator();
 
         while (iterator.hasNext()) {
             Item item = iterator.next();
@@ -491,12 +491,12 @@ public class Engine {
 
         // Enemies zeichnen:
         enemyTiles.bind();
-        for (Char c : Client.netIDMap.values()) {
+        for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Enemy) {
                 Enemy enemy = (Enemy) c;
 
                 // Werte fürs Einfärben nehmen und rendern
-                EnemyTypeStats ets = Client.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
+                EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
                 glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
                 glColor3f(1f, 1f, 1f);
@@ -506,7 +506,7 @@ public class Engine {
 
         // Players zeichnen:
         playerTiles.bind();
-        for (Char c : Client.netIDMap.values()) {
+        for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Player) {
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
             }
@@ -514,7 +514,7 @@ public class Engine {
 
         // Bullets zeichnen
         bulletTiles.bind();
-        for (Char c : Client.netIDMap.values()) {
+        for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Bullet) {
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
             }
@@ -525,7 +525,7 @@ public class Engine {
         Iterator<Fx> itera = fx.iterator();
         while (itera.hasNext()) {
             Fx f = itera.next();
-            if (Client.frozenGametick > f.getStarttick() + f.getLifetime()) {
+            if (GameClient.frozenGametick > f.getStarttick() + f.getLifetime()) {
                 itera.remove();
             } else {
                 renderAnim(f.getAnim(), f.getX(), f.getY(), 0.0, f.getStarttick());
@@ -549,8 +549,8 @@ public class Engine {
         }
 
         // Lebensenergie-Balken im HUD zeichnen
-        int maxhp = Math.max(1, Client.getPlayer().getHealthpointsmax());
-        int hp = Math.min(Client.getPlayer().getHealthpoints(), maxhp);
+        int maxhp = Math.max(1, GameClient.getPlayer().getHealthpointsmax());
+        int hp = Math.min(GameClient.getPlayer().getHealthpoints(), maxhp);
         hp = Math.max(hp, 0);
 
         glDisable(GL_TEXTURE_2D);
@@ -581,19 +581,19 @@ public class Engine {
         // Items im Inventory zeichnen
         if (showinventory) {
             // Anzahl der Materialien:
-            renderText(String.valueOf(Client.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
-            renderText(String.valueOf(Client.getMaterial(1)), 0.45f * tilesX, 0.44f * tilesY);
-            renderText(String.valueOf(Client.getMaterial(2)), 0.75f * tilesX, 0.44f * tilesY);
+            renderText(String.valueOf(GameClient.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
+            renderText(String.valueOf(GameClient.getMaterial(1)), 0.45f * tilesX, 0.44f * tilesY);
+            renderText(String.valueOf(GameClient.getMaterial(2)), 0.75f * tilesX, 0.44f * tilesY);
             
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
-                if (Client.getInventorySlots()[i] == null || i == selecteditemslot) {
+                if (GameClient.getInventorySlots()[i] == null || i == selecteditemslot) {
                     // Slot leer oder gerade selected -> nicht zeichnen
                     continue;
                 }
                 itemTiles.bind();
 
-                Item item = Client.getInventorySlots()[i].getItem();
+                Item item = GameClient.getInventorySlots()[i].getItem();
 
                 float x = (0.1075f + 0.133f * (i % 6)) * tilesX;
 
@@ -631,7 +631,7 @@ public class Engine {
         // ausgewählten Waffenslot im Inventar markieren:
         if (showinventory) {
             glDisable(GL_TEXTURE_2D);
-            float wx = 0.227f + 0.172f * Client.getPlayer().getSelectedattack();
+            float wx = 0.227f + 0.172f * GameClient.getPlayer().getSelectedattack();
 
             glColor3f(0.7f, 0.0f, 0.0f);
             glRectf(wx * tilesX, 0.59f * tilesY, (wx + 0.14f) * tilesX, 0.6f * tilesY);
@@ -643,8 +643,8 @@ public class Engine {
         if (showinventory) {
             itemTiles.bind();
             for (int i = 1; i <= 2; i++) {
-                for (int j = 0; j < Client.getEquippedItems().getEquipslots()[i].length; j++) {
-                    Item item = Client.getEquippedItems().getEquipslots()[i][j];
+                for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[i].length; j++) {
+                    Item item = GameClient.getEquippedItems().getEquipslots()[i][j];
                     if (item != null) {
                         // Item zeichnen;
                         float x;
@@ -679,7 +679,7 @@ public class Engine {
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
             itemTiles.bind();
-            Item item = Client.getInventorySlots()[selecteditemslot].getItem();
+            Item item = GameClient.getInventorySlots()[selecteditemslot].getItem();
             float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * tilesX;
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * tilesY;
 
@@ -724,29 +724,29 @@ public class Engine {
             }
             Item item = null;
             if (slothovered != -1 && slothovered != selecteditemslot) {
-                if (Client.getInventorySlots()[slothovered] != null) {
-                    item = Client.getInventorySlots()[slothovered].getItem();
+                if (GameClient.getInventorySlots()[slothovered] != null) {
+                    item = GameClient.getInventorySlots()[slothovered].getItem();
                 }
                 // Einer der Ausrüstungsslots?
             } else if (x > 0.4 && x < 0.54) {
                 if (y > 0.8 && y < 0.92) {
-                    item = Client.getEquippedItems().getEquipslots()[2][0];
+                    item = GameClient.getEquippedItems().getEquipslots()[2][0];
                 } else if (y > 0.61 && y < 0.74) {
-                    item = Client.getEquippedItems().getEquipslots()[1][1];
+                    item = GameClient.getEquippedItems().getEquipslots()[1][1];
                 }
             } else if (y > 0.8 && y < 0.92) {
                 if (x > 0.4 && x < 0.54) {
                     // Hutslot
-                    item = Client.getEquippedItems().getEquipslots()[2][0];
+                    item = GameClient.getEquippedItems().getEquipslots()[2][0];
                 }
             } else if (y > 0.61 && y < 0.74) {
                 // ein Waffenslot?
                 if (x > 0.22 && x < 0.36) {
-                    item = Client.getEquippedItems().getEquipslots()[1][0];
+                    item = GameClient.getEquippedItems().getEquipslots()[1][0];
                 } else if (x > 0.4 && x < 0.54) {
-                    item = Client.getEquippedItems().getEquipslots()[1][1];
+                    item = GameClient.getEquippedItems().getEquipslots()[1][1];
                 } else if (x > 0.58 && x < 0.72) {
-                    item = Client.getEquippedItems().getEquipslots()[1][2];
+                    item = GameClient.getEquippedItems().getEquipslots()[1][2];
                 }
             }
 
@@ -773,13 +773,13 @@ public class Engine {
             glRectf(0, tilesY, 10, NetStats.netGraph == 2 ? tilesY - 2f : tilesY - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText("delay: spec " + (NET_TICKSYNC_MAXPING / Client.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
+            renderText("delay: spec " + (NET_TICKSYNC_MAXPING / GameClient.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
             renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
             renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
             if (NetStats.netGraph == 2) {
                 // Einheitenposition:
-                renderText("playerpos: " + Client.getPlayer().getX(), 0, tilesY - 2f);
-                renderText(String.valueOf(Client.getPlayer().getY()), 6.5f, tilesY - 2f);
+                renderText("playerpos: " + GameClient.getPlayer().getX(), 0, tilesY - 2f);
+                renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, tilesY - 2f);
             }
         }
 
@@ -789,10 +789,10 @@ public class Engine {
             glRectf(tilesX / 3, tilesY / 2, tilesX, 0);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText(Client.terminal.getCurrentLine(), tilesX / 3, 0, true);
+            renderText(GameClient.terminal.getCurrentLine(), tilesX / 3, 0, true);
             int numberoflines = tilesY * zoomFactor;
             for (int i = 0; i < numberoflines - 1; i++) {
-                renderText(Client.terminal.getHistory(i), tilesX / 3, (float) tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
+                renderText(GameClient.terminal.getHistory(i), tilesX / 3, (float) tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
         }
     }
@@ -945,8 +945,8 @@ public class Engine {
      */
     private void sendShootRequest() {
         byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
-        udp2[0] = Client.getClientID();
-        Bits.putInt(udp2, 1, Client.frozenGametick);
+        udp2[0] = GameClient.getClientID();
+        Bits.putInt(udp2, 1, GameClient.frozenGametick);
         udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
         double dx = Mouse.getX() - Display.getWidth() / 2;
         double dy = Mouse.getY() - Display.getHeight() / 2;
@@ -955,7 +955,7 @@ public class Engine {
             dir += 2 * Math.PI;
         }
         Bits.putFloat(udp2, 6, (float) (dir));
-        Client.udpOut(udp2);
+        GameClient.udpOut(udp2);
     }
 
     /**
@@ -993,7 +993,7 @@ public class Engine {
         float picsizex = 0.0625f * animation.getPicsizex();
         float picsizey = 0.0625f * animation.getPicsizey();
 
-        int currentpic = ((Client.frozenGametick - starttick) / animation.getPicduration()) % animation.getNumberofpics();
+        int currentpic = ((GameClient.frozenGametick - starttick) / animation.getPicduration()) % animation.getNumberofpics();
         currentpic += animation.getStartpic();
 
         float v = (currentpic % (16 / animation.getPicsizex())) * picsizex;
