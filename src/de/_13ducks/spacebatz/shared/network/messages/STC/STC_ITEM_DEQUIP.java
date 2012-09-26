@@ -1,9 +1,13 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -29,6 +33,21 @@ public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
             if (droptoground == 0) {
                 GameClient.addToInventory(item);
             }
+        }
+    }
+
+    /**
+     * Item wird von Client abgelegt (zurück ins Inventar)
+     */
+    public static void sendItemDequip(int slottype, byte selslot, byte droptoground, int clientID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[10];
+            Bits.putInt(b, 0, slottype);
+            b[4] = selslot;
+            b[5] = droptoground;
+            Bits.putInt(b, 6, clientID);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_DEQUIP_ITEM, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, b), c);
         }
     }
 }
