@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -165,7 +166,7 @@ public class Player extends ItemCarrier {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                Server.msgSender.sendItemDrop(serializedItem);
+                STC_ITEM_DROP.sendItemDrop(serializedItem);
             }
 
         }

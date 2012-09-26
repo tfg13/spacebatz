@@ -1,8 +1,12 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.STCCommand;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -33,5 +37,15 @@ public class STC_ITEM_DROP extends STCCommand {
     @Override
     public int getSize(byte sizeData) {
         throw new IllegalStateException("STC_ITEM_DROP wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+    }
+
+    /**
+     * Item wird gedroppt
+     */
+    public static void sendItemDrop(byte[] seritem) {
+        for (Client c : Server.game.clients.values()) {
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem), c);
+        }
     }
 }

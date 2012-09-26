@@ -36,15 +36,7 @@ public class ServerMessageSender {
 
    
 
-    /**
-     * Item wird gedroppt
-     */
-    public void sendItemDrop(byte[] seritem) {
-        for (Client c : Server.game.clients.values()) {
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem), c);
-        }
-    }
+    
 
     /**
      * Item (nicht Material) wird von Spieler aufgesammelt und kriegt eigenen Itemslot

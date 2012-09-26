@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.ItemAttribute;
 import de._13ducks.spacebatz.shared.ItemAttributeTypes;
 import de._13ducks.spacebatz.shared.ItemTypes;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -81,7 +82,7 @@ public class DropManager {
             ex.printStackTrace();
         }
 
-        Server.msgSender.sendItemDrop(serializedItem);
+        STC_ITEM_DROP.sendItemDrop(serializedItem);
     }
 
     /**
@@ -140,13 +141,14 @@ public class DropManager {
 
     /**
      * Gibt allen Spielern eine bestimmte Anzahl eines Materials
+     *
      * @param material Materialtyp
      * @param amount Anzahl
      */
     public static void dropMaterial(int material, int amount) {
         for (Client c : Server.game.clients.values()) {
             int newamount = c.getPlayer().getMaterial(material) + amount;
-            
+
             c.getPlayer().setMaterial(material, newamount);
             Server.msgSender.sendMaterialAmountChange(c.clientID, material, newamount);
         }
@@ -177,7 +179,7 @@ public class DropManager {
                     ex.printStackTrace();
                 }
 
-                Server.msgSender.sendItemDrop(serializedItem);
+                STC_ITEM_DROP.sendItemDrop(serializedItem);
             }
         }
     }
