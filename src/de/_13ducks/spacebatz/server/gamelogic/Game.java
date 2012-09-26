@@ -19,6 +19,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
 import java.io.ByteArrayOutputStream;
@@ -132,7 +133,7 @@ public class Game {
             Server.msgSender.sendAllItems(client, getItemMap());
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
-            Server.msgSender.sendSetPlayer(client, player);
+            STC_SET_PLAYER.sendSetPlayer(client, null);
             getEntityManager().addEntity(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
             // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.

@@ -28,20 +28,7 @@ public class ServerMessageSender {
 
    
 
-    /**
-     * Schickt dem Client einen neuen Player.
-     *
-     * @param client der Ziel-Client
-     * @param player der neue Player
-     */
-    public void sendSetPlayer(Client client, Player player) {
-        byte[] b = new byte[12];
-        Bits.putInt(b, 0, player.netID);
-        Bits.putFloat(b, 4, (float) player.getX());
-        Bits.putFloat(b, 8, (float) player.getY());
-        //Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_SET_PLAYER, b, client);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_STC_SET_PLAYER, b), client);
-    }
+    
 
     /**
      * Lässt den Client das Spiel starten.
