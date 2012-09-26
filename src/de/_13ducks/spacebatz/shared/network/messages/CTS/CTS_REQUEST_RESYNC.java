@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.shared.network.messages;
+package de._13ducks.spacebatz.shared.network.messages.CTS;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;

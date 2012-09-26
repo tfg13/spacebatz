@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.shared.network.messages.CTS_REQUEST_RESYNC;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_RESYNC;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.CTS_DISCONNECT;
 import de._13ducks.spacebatz.server.Server;
@@ -18,9 +18,9 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
-import de._13ducks.spacebatz.shared.network.messages.CTS_EQUIP_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.CTS_REQUEST_ITEM_DEQUIP;
-import de._13ducks.spacebatz.shared.network.messages.CTS_REQUEST_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;

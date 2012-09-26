@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.client.network.messages;
+package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.client.Client;
 import de._13ducks.spacebatz.client.graphics.Engine;
