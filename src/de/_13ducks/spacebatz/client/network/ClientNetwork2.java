@@ -423,7 +423,7 @@ public class ClientNetwork2 {
                     next = 0;
                 }
                 // Zweite Bedingung ist Lerp. Verzögern, bis wir lerp Ticks Vorsprung haben
-                if (inputQueue.peek().getIndex() == next && packetServerTick < serverTick + lerp) {
+                if (inputQueue.peek().getIndex() == next && packetServerTick <= serverTick + lerp) {
                     STCPacket packet = inputQueue.poll();
                     packet.compute();
                     lastInIndex = packet.getIndex();
@@ -468,5 +468,14 @@ public class ClientNetwork2 {
             // Es ist hoffnungslos
             System.out.println("ERROR: CNET: Paket output overflow!!!");
         }
+    }
+
+    /**
+     * Liefert den aktuellen Logik-Tick zurück - also den geschätzten Tickwert der Servers.
+     *
+     * @return
+     */
+    public int getLogicTick() {
+        return serverTick;
     }
 }

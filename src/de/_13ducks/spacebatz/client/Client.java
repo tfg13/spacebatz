@@ -217,7 +217,7 @@ public class Client {
     }
 
     public static void updateGametick() {
-        frozenGametick = gametick;
+        frozenGametick = network2.getLogicTick();
     }
 
     public static boolean startTickCounting(int serverStartTick) {
