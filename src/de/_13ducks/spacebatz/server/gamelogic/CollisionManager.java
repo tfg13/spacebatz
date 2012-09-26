@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import de._13ducks.spacebatz.util.Vector;
@@ -279,13 +280,14 @@ public class CollisionManager {
                                 if (item.getName().equals("Money")) {
                                     collector.setMaterial(0, collector.getMaterial(0) + item.getAmount());
                                     iterator.remove();
-                                    Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, -616);
+                                    STC_GRAB_ITEM_TO_STACK.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, -616);
                                 } else {
                                     Item itemStack = collector.tryItemStack(item);
                                     if (itemStack != null) {
                                         // es gibt schon einen Stack von diesem Item
                                         iterator.remove();
-                                        Server.msgSender.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, itemStack.getNetID());
+                                        STC_GRAB_ITEM_TO_STACK.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, itemStack.getNetID());
+
                                     } else if (collector.freeInventorySlot()) {
                                         // neuen Stack anlegen, wenn Platz
                                         collector.putItem(item.getNetID(), item);
