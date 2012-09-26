@@ -27,16 +27,7 @@ public class ClientMessageSender {
 
    
 
-    /**
-     * Client will andere Waffe auswählen
-     */
-    public void sendSwitchWeapon(byte slot) {
-        byte[] b = new byte[1];
-        b[0] = slot;
-        //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, b);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, b));
-
-    }
+   
 
     public void sendDisconnect() {
         //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
