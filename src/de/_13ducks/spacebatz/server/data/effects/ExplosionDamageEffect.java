@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import java.util.Iterator;
 
 /**
@@ -47,7 +48,7 @@ public class ExplosionDamageEffect extends Effect {
          */
         if (hitChar != null) {
             hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
-            Server.msgSender.sendCharHit(hitChar.netID, damage, false);
+            STC_CHAR_HIT.sendCharHit(hitChar.netID, damage, false);
         }
         computeBulletExplosion(damage, x, y, hitChar, radius);
     }
@@ -91,7 +92,7 @@ public class ExplosionDamageEffect extends Effect {
                                 }
                             }
 
-                            Server.msgSender.sendCharHit(c.netID, damagereduced, false);
+                            STC_CHAR_HIT.sendCharHit(c.netID, damagereduced, false);
                         }
                     }
                 }

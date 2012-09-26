@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.PlayerCharakter;
@@ -7,6 +8,9 @@ import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -47,6 +51,28 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
             // Test-Explosion:
             Animation anim = new Animation(0, 2, 2, 3, 4);
             Engine.addFx(new Fx(anim, e.getX(), e.getY(), 12));
+        }
+    }
+
+    /**
+     * Bullet/Mob-Angriff trifft Char
+     *
+     * @param netIDVictim netID des getroffenen Char
+     * @param netIDAttacker netID des Bullets / Enemy
+     * @param killed Ob Char getötet wird
+     */
+    public static void sendCharHit(int netIDVictim, int damage, boolean killed) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[9];
+            Bits.putInt(b, 0, netIDVictim);
+            Bits.putInt(b, 4, damage);
+            if (killed) {
+                b[8] = 1;
+            } else {
+                b[8] = 0;
+            }
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHAR_HIT, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHAR_HIT, b), c);
         }
     }
 }
