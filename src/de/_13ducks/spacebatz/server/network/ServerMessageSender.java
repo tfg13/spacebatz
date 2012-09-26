@@ -26,15 +26,7 @@ import java.util.HashMap;
  */
 public class ServerMessageSender {
 
-    /**
-     * Sendet enemytypes an einen Client
-     *
-     * @param client der Client, an den die enemytypes gesendet werden sollen
-     */
-    public void sendEnemyTypes(Client client) {
-        //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes(), client);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, Server.game.getSerializedEnemyTypes()), client);
-    }
+   
 
     /**
      * Schickt dem Client einen neuen Player.
