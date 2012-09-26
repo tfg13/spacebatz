@@ -23,16 +23,7 @@ import de._13ducks.spacebatz.util.Bits;
  */
 public class ClientMessageSender {
 
-    /**
-     * Client will was anziehen, muss dafür aber erst Server fragen
-     */
-    public void sendEquipItem(Item item, byte selectedslot) {
-        byte[] b = new byte[9];
-        Bits.putInt(b, 0, item.getNetID());
-        b[4] = selectedslot;
-        //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, b));
-    }
+    
 
     /**
      * Client will Item ablegen, muss dafür aber erst Server fragen

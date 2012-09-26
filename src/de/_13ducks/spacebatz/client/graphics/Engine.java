@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.InputStream;
@@ -229,7 +230,7 @@ public class Engine {
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = GameClient.getInventorySlots()[selecteditemslot].getItem();
                                     if ((int) selecteditem.getItemClass() == 2) {
-                                        GameClient.getMsgSender().sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
+                                        CTS_EQUIP_ITEM.sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                         selecteditemslot = -1;
                                     }
                                 } else {
@@ -253,7 +254,7 @@ public class Engine {
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = GameClient.getInventorySlots()[selecteditemslot].getItem();
                                     if ((int) selecteditem.getItemClass() == 1) {
-                                        GameClient.getMsgSender().sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                                        CTS_EQUIP_ITEM.sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                         selecteditemslot = -1;
                                     }
                                 } else {
@@ -584,7 +585,7 @@ public class Engine {
             renderText(String.valueOf(GameClient.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
             renderText(String.valueOf(GameClient.getMaterial(1)), 0.45f * tilesX, 0.44f * tilesY);
             renderText(String.valueOf(GameClient.getMaterial(2)), 0.75f * tilesX, 0.44f * tilesY);
-            
+
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
                 if (GameClient.getInventorySlots()[i] == null || i == selecteditemslot) {
