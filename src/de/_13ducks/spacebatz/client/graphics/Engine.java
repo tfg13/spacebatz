@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.InputStream;
@@ -235,7 +236,7 @@ public class Engine {
                                     }
                                 } else {
                                     if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
-                                        GameClient.getMsgSender().sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
+                                        CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
                                     }
                                 }
                             }
@@ -259,7 +260,7 @@ public class Engine {
                                     }
                                 } else {
                                     if (GameClient.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
-                                        GameClient.getMsgSender().sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
+                                        CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
                                     }
                                 }
                             }
