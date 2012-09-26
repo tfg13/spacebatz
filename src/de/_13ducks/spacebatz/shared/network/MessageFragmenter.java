@@ -46,6 +46,9 @@ public class MessageFragmenter {
             index = 0;
             data = new byte[decoder.readInt()]; //
             messageID = decoder.readByte(); // netID der Nachricht übernehmen
+            if (messageID < 0) {
+                messageID += 256;
+            }
         } else {
             // weitere Fragmente der aktuellen Nachricht empfangen:
             System.arraycopy(messageBytes, 1, data, index, messageBytes.length - 1);
