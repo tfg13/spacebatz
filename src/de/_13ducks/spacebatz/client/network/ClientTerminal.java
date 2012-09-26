@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.server.network.CTS_REQUEST_RCON;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_RESYNC;
 import java.io.BufferedReader;
@@ -125,7 +126,7 @@ public class ClientTerminal {
                                 resetInput();
                             } else {
                                 // Anfragen
-                                GameClient.getMsgSender().sendRconRequest();
+                                CTS_REQUEST_RCON.sendRconRequest();
                                 outln("rcon: request sent");
                             }
                             break;
