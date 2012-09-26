@@ -19,6 +19,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
@@ -128,7 +129,7 @@ public class Game {
      */
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
-            Server.msgSender.sendSetClientID(client);
+            STC_SET_CLIENT.sendSetClientID(client);
             STC_TRANSFER_LEVEL.sendLevel(client);
             Server.msgSender.sendAllItems(client, getItemMap());
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);

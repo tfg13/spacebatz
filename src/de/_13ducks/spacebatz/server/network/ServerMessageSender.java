@@ -32,15 +32,7 @@ public class ServerMessageSender {
 
   
 
-    /**
-     * Setzt die ClientID eines Clients auf dem Client.
-     *
-     * @param client der Client, dessen ID an ihn gesendet wird.
-     */
-    public void sendSetClientID(Client client) {
-        //Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_SET_CLIENT, new byte[]{(byte) client.clientID}, client);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_STC_SET_CLIENT, new byte[]{(byte) client.clientID}), client);
-    }
+   
 
     /**
      * Bullet/Mob-Angriff trifft Char
