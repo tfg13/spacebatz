@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.client.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_RESYNC;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -111,7 +112,7 @@ public class ClientTerminal {
                             outln("usage: net_graph MODE (0=off, 1=on)");
                             break;
                         case "resync":
-                            GameClient.getMsgSender().sendRequestResync();
+                            CTS_REQUEST_RESYNC.sendRequestResync();
                             outln("request for resyncing was sent");
                             break;
                         case "clear":

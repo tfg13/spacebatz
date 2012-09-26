@@ -27,19 +27,15 @@ public class ClientMessageSender {
 
    
 
-   
-
-    public void sendDisconnect() {
+   public void sendDisconnect() {
         //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
         GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[0]));
 
     }
 
-    void sendRequestResync() {
-        // Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_RESYNC, new byte[1]);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_REQUEST_RESYNC, new byte[0]));
+    
 
-    }
+   
 
     void sendRconRequest() {
         //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_RCON, new byte[1]);
