@@ -47,9 +47,7 @@ public class ServerMessageSender {
 
   
 
-    public void sendAllItems(Client client, HashMap<Integer, Item> items) {
-        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
-    }
+    
 
     /**
      * Sendet die Server-Tickrate an den Client.
