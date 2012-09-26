@@ -18,6 +18,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -181,7 +182,7 @@ public class Player extends ItemCarrier {
      */
     public void clientSelectWeapon(byte selectedslot) {
         if (setSelectedweapon(selectedslot)) {
-            Server.msgSender.sendWeaponswitch(this.getClient(), selectedslot);
+            STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
         }
     }
 }

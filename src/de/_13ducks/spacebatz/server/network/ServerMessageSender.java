@@ -64,19 +64,7 @@ public class ServerMessageSender {
 
    
 
-    /**
-     * Client wählt andere Waffe aus
-     */
-    public void sendWeaponswitch(Client client, byte slot) {
-        byte[] b = new byte[5];
-        Bits.putInt(b, 0, client.clientID);
-        b[4] = slot;
-        for (Client c : Server.game.clients.values()) {
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SWITCH_WEAPON, b, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SWITCH_WEAPON, b), c);
-
-        }
-    }
+    
 
     /**
      * Antwortet dem Client mit ja oder nein auf seine rcon-anfrage
