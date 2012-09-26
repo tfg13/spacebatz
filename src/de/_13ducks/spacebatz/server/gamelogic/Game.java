@@ -133,7 +133,7 @@ public class Game {
             Server.msgSender.sendAllItems(client, getItemMap());
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
-            STC_SET_PLAYER.sendSetPlayer(client, null);
+            STC_SET_PLAYER.sendSetPlayer(client, player);
             getEntityManager().addEntity(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
             // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.

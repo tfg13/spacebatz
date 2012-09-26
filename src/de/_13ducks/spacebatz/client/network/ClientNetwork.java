@@ -319,7 +319,7 @@ public class ClientNetwork {
 		    byte type = pack[32];
 		    switch (type) {
 			case 2:
-			    Player pl = new Player(Bits.getInt(pack, 33));
+			    PlayerCharakter pl = new PlayerCharakter(Bits.getInt(pack, 33));
 			    GameClient.netIDMap.put(pl.netID, pl);
 			    break;
 			case 3:

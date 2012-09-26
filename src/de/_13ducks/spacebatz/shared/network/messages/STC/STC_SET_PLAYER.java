@@ -2,10 +2,11 @@ package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.PlayerCharakter;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -22,7 +23,7 @@ public class STC_SET_PLAYER extends FixedSizeSTCCommand {
     @Override
     public void execute(byte[] data) {
         // Player setzen
-        GameClient.player = new Player(Bits.getInt(data, 0));
+        GameClient.player = new PlayerCharakter(Bits.getInt(data, 0));
         GameClient.netIDMap.put(GameClient.player.netID, GameClient.player);
     }
 

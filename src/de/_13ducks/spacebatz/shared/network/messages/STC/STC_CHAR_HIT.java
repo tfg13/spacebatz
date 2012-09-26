@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.Enemy;
-import de._13ducks.spacebatz.client.Player;
+import de._13ducks.spacebatz.client.PlayerCharakter;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.graphics.Fx;
@@ -27,9 +27,9 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
 
         byte victimdies = data[8];
 
-        if (GameClient.netIDMap.get(netIDVictim) instanceof Player) {
+        if (GameClient.netIDMap.get(netIDVictim) instanceof PlayerCharakter) {
             // HP abziehen, wenn eigener Spieler
-            Player p = (Player) GameClient.netIDMap.get(netIDVictim);
+            PlayerCharakter p = (PlayerCharakter) GameClient.netIDMap.get(netIDVictim);
             if (p == GameClient.getPlayer()) {
 
                 if (victimdies == 1) {

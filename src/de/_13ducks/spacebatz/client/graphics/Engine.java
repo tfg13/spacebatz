@@ -507,7 +507,7 @@ public class Engine {
         // Players zeichnen:
         playerTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
-            if (c instanceof Player) {
+            if (c instanceof PlayerCharakter) {
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
             }
         }
