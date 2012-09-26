@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
+import de._13ducks.spacebatz.client.network.CTS_DISCONNECT;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.Item;
@@ -183,7 +184,7 @@ public class Engine {
             Display.sync(CLIENT_GFX_FRAMELIMIT);
         }
         // Netzwerk abmelden:
-        GameClient.getMsgSender().sendDisconnect();
+        CTS_DISCONNECT.sendDisconnect();
 
         // Ende der Mainloop.
         Display.destroy();
