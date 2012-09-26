@@ -104,10 +104,6 @@ public class GameClient {
      */
     private static Timer tickTimer;
     /**
-     * TCP-Sender zum Server
-     */
-    private static ClientMessageSender msgSender;
-    /**
      * Das Client-Terminal.
      */
     public static ClientTerminal terminal = new ClientTerminal();
@@ -119,7 +115,6 @@ public class GameClient {
      */
     public static void startClient(String ip) {
         network = new ClientNetwork();
-        msgSender = new ClientMessageSender();
         network2 = new ClientNetwork2();
         initMainloop = new InitialMainloop();
         initMainloop.stop();
@@ -310,13 +305,6 @@ public class GameClient {
      */
     public static void setEquippedItems(EquippedItems aEquippedItems) {
         equippedItems = aEquippedItems;
-    }
-
-    /**
-     * @return the msgSender
-     */
-    public static ClientMessageSender getMsgSender() {
-        return msgSender;
     }
 
     /**
