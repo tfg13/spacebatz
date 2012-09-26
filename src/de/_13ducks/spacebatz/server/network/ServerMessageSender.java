@@ -60,23 +60,7 @@ public class ServerMessageSender {
         Server.serverNetwork.sendTcpData((byte) 27, b, client);
     }
 
-    /**
-     * Sendet eine Veränderung am Boden
-     *
-     * @param x X-Koordinate des geännderten Felds
-     * @param y Y-Koordinate des geännderten Felds
-     * @param newGround neuer wert des bodens
-     */
-    public void broadcastGroundChange(int x, int y, int newGround) {
-        byte[] b = new byte[12];
-        Bits.putInt(b, 0, x);
-        Bits.putInt(b, 4, y);
-        Bits.putInt(b, 8, newGround);
-        for (Client c : Server.game.clients.values()) {
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_GROUND, b, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_GROUND, b), c);
-        }
-    }
+    
 
     /**
      * Sendet eine Veränderung am Boden

@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -63,7 +64,7 @@ public class ServerLevel extends Level {
         }
 
         Server.msgSender.broadcastCollisionChange(x, y, false);
-        Server.msgSender.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
+        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
         getGround()[x][y] = destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture;
         getCollisionMap()[x][y] = false;
     }
@@ -79,7 +80,7 @@ public class ServerLevel extends Level {
         getGround()[x][y] = texture;
         getCollisionMap()[x][y] = true;
         Server.msgSender.broadcastCollisionChange(x, y, true);
-        Server.msgSender.broadcastGroundChange(x, y, texture);
+        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
     }
 
     /**
