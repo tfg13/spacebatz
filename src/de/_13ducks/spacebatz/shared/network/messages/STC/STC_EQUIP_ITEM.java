@@ -1,8 +1,12 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -30,6 +34,22 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
                 }
             }
             GameClient.getInventoryItems().values().remove(item);
+        }
+ 
+    
+    }
+    
+    /**
+     * Item wird von Client angelegt
+     */
+    public static void sendItemEquip(int itemnetID, byte selslot, int clientID) {
+        for (Client c : Server.game.clients.values()) {
+            byte[] b = new byte[9];
+            Bits.putInt(b, 0, itemnetID);
+            b[4] = selslot;
+            Bits.putInt(b, 5, clientID);
+            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_EQUIP_ITEM, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, b), c);
         }
     }
 }

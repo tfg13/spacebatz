@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import java.util.HashMap;
 
 /**
@@ -79,20 +80,22 @@ public class ItemCarrier extends EffectCarrier {
             setMaterial(0, getMaterial(0) + (int) item.getAmount());
         }
     }
-    
+
     /**
      * Gibt zurück, welche Menge der Spieler von einem Material besitzt
+     *
      * @param material Materialnummer
      * @return Materialmenge
      */
     public int getMaterial(int material) {
         return materials[material];
     }
-    
+
     /**
      * Legt fest, welche Menge der Spieler von einem Material besitzt
+     *
      * @param material Materialnummer
-     * @param amount  Materialmenge
+     * @param amount Materialmenge
      */
     public void setMaterial(int material, int amount) {
         materials[material] = amount;
@@ -125,7 +128,7 @@ public class ItemCarrier extends EffectCarrier {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, netID);
             return true;
         } else {
             return false;

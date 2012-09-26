@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -127,7 +128,7 @@ public class Player extends ItemCarrier {
         // Item anlegen
         if (equipItem(itemnetID, selectedslot)) {
             // Wenn erfolgreich, an Client senden
-            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, getClient().clientID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, getClient().clientID);
         }
     }
 
