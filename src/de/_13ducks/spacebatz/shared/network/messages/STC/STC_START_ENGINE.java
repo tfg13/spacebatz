@@ -1,8 +1,12 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
+import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 
 /**
  *
@@ -28,5 +32,15 @@ public class STC_START_ENGINE extends FixedSizeSTCCommand {
         t.setDaemon(false);
         t.start();
         GameClient.getInitialMainloop().start();
+    }
+
+    /**
+     * Lässt den Client das Spiel starten.
+     *
+     * @param client der Ziel-Client
+     */
+    public static void sendStartGame(Client client) {
+        //Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_START_ENGINE, new byte[1], client);
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_STC_START_ENGINE, new byte[0]), client);
     }
 }

@@ -30,15 +30,7 @@ public class ServerMessageSender {
 
     
 
-    /**
-     * Lässt den Client das Spiel starten.
-     *
-     * @param client der Ziel-Client
-     */
-    public void sendStartGame(Client client) {
-        //Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_START_ENGINE, new byte[1], client);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_STC_START_ENGINE, new byte[0]), client);
-    }
+  
 
     /**
      * Setzt die ClientID eines Clients auf dem Client.
