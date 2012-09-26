@@ -27,16 +27,6 @@ import java.util.HashMap;
 public class ServerMessageSender {
 
     /**
-     * Sendet das Level an einen Client
-     *
-     * @param client der Client, an den gesendet wird
-     */
-    public void sendLevel(Client client) {
-        //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_LEVEL, Server.game.getSerializedLevel(), client);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_TRANSFER_LEVEL, Server.game.getSerializedLevel()), client);
-    }
-
-    /**
      * Sendet enemytypes an einen Client
      *
      * @param client der Client, an den die enemytypes gesendet werden sollen

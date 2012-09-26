@@ -19,6 +19,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -126,7 +127,7 @@ public class Game {
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
             Server.msgSender.sendSetClientID(client);
-            Server.msgSender.sendLevel(client);
+            STC_TRANSFER_LEVEL.sendLevel(client);
             Server.msgSender.sendAllItems(client, getItemMap());
             Server.msgSender.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
