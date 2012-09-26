@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.ItemAttribute;
 import de._13ducks.spacebatz.shared.ItemAttributeTypes;
 import de._13ducks.spacebatz.shared.ItemTypes;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 
 import java.io.ByteArrayOutputStream;
@@ -150,7 +151,7 @@ public class DropManager {
             int newamount = c.getPlayer().getMaterial(material) + amount;
 
             c.getPlayer().setMaterial(material, newamount);
-            Server.msgSender.sendMaterialAmountChange(c.clientID, material, newamount);
+            STC_CHANGE_MATERIAL_AMOUNT.sendMaterialAmountChange(c.clientID, material, newamount);
         }
     }
 
