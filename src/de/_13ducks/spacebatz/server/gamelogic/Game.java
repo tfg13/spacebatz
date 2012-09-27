@@ -131,7 +131,7 @@ public class Game {
      */
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
-            STC_SET_CLIENT.sendSetClientID(client);
+            //STC_SET_CLIENT.sendSetClientID(client);
             STC_TRANSFER_LEVEL.sendLevel(client);
             STC_TRANSFER_ITEMS.sendAllItems(client, getItemMap());
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);

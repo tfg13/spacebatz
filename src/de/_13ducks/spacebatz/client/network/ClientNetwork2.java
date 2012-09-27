@@ -193,7 +193,8 @@ public class ClientNetwork2 {
                     // Verbindung ok, Parameter auslesen.
                     ansData[0] &= 0x3F;
                     int packID = Bits.getShort(ansData, 0);
-                    int clientID = ansData[2];
+                    byte clientID = ansData[2];
+                    GameClient.setClientID(clientID);
                     serverTick = Bits.getInt(ansData, 3);
                     lerpTimer.scheduleAtFixedRate(new TimerTask() {
                         @Override
