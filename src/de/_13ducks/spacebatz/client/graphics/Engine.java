@@ -945,16 +945,10 @@ public class Engine {
      * Sagt dem Server, das geschossen werden soll
      */
     private void sendShootRequest() {
-        byte[] data = new byte[4];
         double dx = Mouse.getX() - Display.getWidth() / 2;
         double dy = Mouse.getY() - Display.getHeight() / 2;
-        double dir = Math.atan2(dy, dx);
-        if (dir < 0) {
-            dir += 2 * Math.PI;
-        }
-        Bits.putFloat(data, 0, (float) (dir));
-        
-        CTS_SHOOT.sendShoot(data);
+
+        CTS_SHOOT.sendShoot(dx, dy);
     }
 
     /**
