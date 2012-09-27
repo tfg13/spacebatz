@@ -34,6 +34,8 @@ public class EntityManager {
      */
     public void addEntity(int netID, Entity entity) {
         netIDMap.put(netID, entity);
+        Server.entityMap.insertEntity(entity);
+        Server.sync.entityCreated(entity);
     }
 
     /**
@@ -43,8 +45,7 @@ public class EntityManager {
         while (!entitiesToRemove.empty()) {
             int netId = entitiesToRemove.pop();
             Server.entityMap.removeEntity(netIDMap.get(netId));
-            netIDMap.remove(netId);
-
+            Server.sync.entityRemoved(netIDMap.remove(netId));
         }
     }
 

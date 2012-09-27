@@ -49,7 +49,7 @@ public class GameClient {
     /**
      * Der Spieler.
      */
-    public static PlayerCharakter player;
+    public static PlayerCharacter player;
     /**
      * Aktuell gültiger Gametick.
      * Heißt frozen, weil er während der Grafikberechnung eingefroren wird.
@@ -143,7 +143,7 @@ public class GameClient {
      *
      * @return der eigene Spieler
      */
-    public static PlayerCharakter getPlayer() {
+    public static PlayerCharacter getPlayer() {
         return player;
     }
 

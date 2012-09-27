@@ -131,6 +131,8 @@ public class ClientNetwork2 {
         cmdMap[0x80] = new STC_ACK();
         cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
         cmdMap[Settings.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
+        cmdMap[Settings.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
+        cmdMap[Settings.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x84
         registerSTCCommand(Settings.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());

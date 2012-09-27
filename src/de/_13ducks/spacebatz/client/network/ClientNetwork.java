@@ -298,49 +298,49 @@ public class ClientNetwork {
 	byte cmd = pack[0];
 	switch (cmd) {
 	    case Settings.NET_UDP_CMD_NORMAL_ENTITY_UPDATE:
-		// Einheitenbewegungen updaten.
-		// Anzahl enthaltener Einheiten holen:
-		byte numberOfCharUpdates = pack[5];
-		for (int i = 0; i < numberOfCharUpdates; i++) {
-		    int netID = Bits.getInt(pack, 32 + (32 * i));
-		    // Diese Einheit bekannt?
-		    Char c = GameClient.netIDMap.get(netID);
-		    if (c != null) {
-			// Bewegung setzen:
-			Movement m = new Movement(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
-			//c.applyMove(m);
-		    } else {
-			System.out.println(System.nanoTime() + "WARNING: Ignoring propably ACK'ed moveupdate! (Char was: " + netID + ")");
-		    }
-		}
-		break;
+//		// Einheitenbewegungen updaten.
+//		// Anzahl enthaltener Einheiten holen:
+//		byte numberOfCharUpdates = pack[5];
+//		for (int i = 0; i < numberOfCharUpdates; i++) {
+//		    int netID = Bits.getInt(pack, 32 + (32 * i));
+//		    // Diese Einheit bekannt?
+//		    Char c = GameClient.netIDMap.get(netID);
+//		    if (c != null) {
+//			// Bewegung setzen:
+//			Movement m = new Movement(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
+//			c.applyMove(m);
+//		    } else {
+//			System.out.println(System.nanoTime() + "WARNING: Ignoring propably ACK'ed moveupdate! (Char was: " + netID + ")");
+//		    }
+//		}
+//		break;
 	    case Settings.NET_UDP_CMD_ADD_ENTITY:
-		if (!GameClient.netIDMap.containsKey(Bits.getInt(pack, 33))) {
-		    byte type = pack[32];
-		    switch (type) {
-			case 2:
-			    PlayerCharakter pl = new PlayerCharakter(Bits.getInt(pack, 33));
-			    GameClient.netIDMap.put(pl.netID, pl);
-			    break;
-			case 3:
-			    Enemy en = new Enemy(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
-			    GameClient.netIDMap.put(en.netID, en);
-			    break;
-			case 4:
-			    Bullet bu = new Bullet(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
-			    GameClient.netIDMap.put(bu.netID, bu);
-			    break;
-			default:
-			    System.out.println("WARN: Unknown charTypeID (was " + type + ")");
-		    }
-		}
-		break;
+//		if (!GameClient.netIDMap.containsKey(Bits.getInt(pack, 33))) {
+//		    byte type = pack[32];
+//		    switch (type) {
+//			case 2:
+//			    PlayerCharacter pl = new PlayerCharacter(Bits.getInt(pack, 33));
+//			    GameClient.netIDMap.put(pl.netID, pl);
+//			    break;
+//			case 3:
+//			    Enemy en = new Enemy(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
+//			    GameClient.netIDMap.put(en.netID, en);
+//			    break;
+//			case 4:
+//			    Bullet bu = new Bullet(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
+//			    GameClient.netIDMap.put(bu.netID, bu);
+//			    break;
+//			default:
+//			    System.out.println("WARN: Unknown charTypeID (was " + type + ")");
+//		    }
+//		}
+//		break;
 	    case Settings.NET_UDP_CMD_DEL_ENTITY:
-		if (GameClient.netIDMap.containsKey(Bits.getInt(pack, 5))) {
-		    // Löschen
-		    GameClient.netIDMap.remove(Bits.getInt(pack, 5));
-		}
-		break;
+//		if (GameClient.netIDMap.containsKey(Bits.getInt(pack, 5))) {
+//		    // Löschen
+//		    GameClient.netIDMap.remove(Bits.getInt(pack, 5));
+//		}
+//		break;
 	    case Settings.NET_UDP_CMD_PONG:
 	    case Settings.NET_UDP_CMD_TICK_SYNC_PING:
 		// Nichts tun.

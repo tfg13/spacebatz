@@ -47,6 +47,14 @@ public final class Settings {
      */
     public static final int NET_ENTITY_UPDATE = 0x83;
     /**
+     * Neues Entity einfügen.
+     */
+    public static final int NET_ENTITY_CREATE = 0x84;
+    /**
+     * Entity entfernen.
+     */
+    public static final int NET_ENTITY_REMOVE = 0x85;
+    /**
      * Die X-Auflösung der Grafikausgabe.
      */
     public static final int CLIENT_GFX_RES_X = 800;

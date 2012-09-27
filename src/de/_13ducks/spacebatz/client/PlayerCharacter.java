@@ -19,14 +19,14 @@ import de._13ducks.spacebatz.client.graphics.RenderObject;
  * 
  * @author JK
  */
-public class PlayerCharakter extends Char {
+public class PlayerCharacter extends Char {
 
     /**
      * Die gerade ausgewählte Waffe
      */
     private int selectedattack;
     
-    public PlayerCharakter(int netID) {
+    public PlayerCharacter(int netID) {
         super(netID, new RenderObject(new Animation(0, 2, 2, 1, 1)));
         selectedattack = 0;
         healthpoints = Settings.CHARHEALTH;

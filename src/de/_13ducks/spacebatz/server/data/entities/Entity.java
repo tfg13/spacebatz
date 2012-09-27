@@ -85,7 +85,6 @@ public class Entity {
         this.posX = x;
         this.posY = y;
         entityMapPos = new int[2];
-        Server.entityMap.insertEntity(this);
         this.netID = netID;
         size = Settings.CHARSIZE;
     }

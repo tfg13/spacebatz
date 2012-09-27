@@ -36,6 +36,14 @@ public class AutoSynchronizer {
      * Speichert Entities, deren Bewegung sich geändert hat, zwischen.
      */
     private HashMap<Entity, Object> updatedEntities = new HashMap<>();
+    /**
+     * Speichert neue angelegte Entities zwischen.
+     */
+    private ArrayList<Entity> createdEntities = new ArrayList<>();
+    /**
+     * Speichert gelöschte Entities zwischen.
+     */
+    private HashMap<Entity, Object> removedEntities = new HashMap<>();
 
     /**
      * Muss von einer Entity immer dann aufgerufen werden, wenn sich ihre Bewegung geändert hat.
@@ -48,17 +56,47 @@ public class AutoSynchronizer {
     }
 
     /**
+     * Muss immer aufgerufen werden, wenn eine neue Entity ins Spiel eingefügt wird.
+     * Informiert Clients in der Nähe
+     * Cached creates zwischen, die Nachricht wird erst am Ende des Ticks verschickt.
+     * Es ist aber problemlos möglich, auch schon Bewegungsdaten für diese Einheit zu deklarieren.
+     *
+     * @param e die neue Entity
+     */
+    public void entityCreated(Entity e) {
+        createdEntities.add(e);
+    }
+
+    /**
+     * Muss immer aufgerufen werden, wenn eine Entity gelöscht wird.
+     * Informiert Clients.
+     * Cached deletes zwischen, verschickt die Information erst am Ende des Ticks.
+     * Es ist in diesem Tick noch ok, wenn die Entity sich noch bewegt.
+     * Diese Information wird dann aber bereits nichtmehr versendet.
+     *
+     * @param e
+     */
+    public void entityRemoved(Entity e) {
+        removedEntities.put(e, null);
+    }
+
+    /**
      * Wird vom Netzwerksystem aufgerufen.
      * In dieser Methode wird berechnet, wer welche Daten (aus updatedEntities) gesendet bekommt.
      */
     void tick() {
         for (Client c : Server.game.clients.values()) {
+            // Neue Entities
+            for (Entity e : createdEntities) {
+                //TODO: Nur einbauen, wenn in Reichweite!
+                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
+            }
+            // Updates
             ArrayList<Entity> updateForClient = new ArrayList<>();
             Iterator<Entity> iter = updatedEntities.keySet().iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
-                iter.remove();
-                if (c.getNetworkConnection().context.tracks(e)) {
+                if (c.getNetworkConnection().context.tracks(e) && !removedEntities.containsKey(e)) {
                     updateForClient.add(e);
                 }
             }
@@ -66,9 +104,25 @@ public class AutoSynchronizer {
                 // Senden
                 Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_UPDATE, craftUpdateCommand(updateForClient)), c);
             }
+            // Removals
+            for (Entity e : removedEntities.keySet()) {
+                if (c.getNetworkConnection().context.tracks(e)) {
+                    Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_REMOVE, craftRemoveCommand(e)), c);
+                }
+            }
         }
+        createdEntities.clear();
+        updatedEntities.clear();
+        removedEntities.clear();
+
     }
 
+    /**
+     * Bastelt ein Update-Command, der alle gegebenen Einheiten enthält.
+     *
+     * @param updateList die Liste der geupdateten Einheiten
+     * @return der update-Befehl
+     */
     private byte[] craftUpdateCommand(ArrayList<Entity> updateList) {
         // Größe in erstes byte schreiben. Egal wenn zu viel für dieses byte - denn dann ist das Paket sowieso Fragmentiert und die Größe wird ignoriert...
         byte[] data = new byte[updateList.size() * 28 + 1];
@@ -86,6 +140,31 @@ public class AutoSynchronizer {
             Bits.putFloat(data, i * 28 + 21, m.vecX);
             Bits.putFloat(data, i * 28 + 25, m.vecY);
         }
+        return data;
+    }
+
+    /**
+     * Bastelt ein Create-Command, das die neue Entity einfügt.
+     *
+     * @param e die neue Entity
+     * @return der create-Befehl
+     */
+    private byte[] craftCreateCommand(Entity e) {
+        byte[] data = new byte[e.byteArraySize() + 1];
+        e.netPack(data, 1);
+        data[0] = (byte) (data.length);
+        return data;
+    }
+
+    /**
+     * Bastelt einen Löschen-Befehl für die gegebene Entity
+     *
+     * @param e die zu löschende Entity
+     * @return der löschen-Befehl
+     */
+    private byte[] craftRemoveCommand(Entity e) {
+        byte[] data = new byte[4];
+        Bits.putInt(data, 0, e.netID);
         return data;
     }
 }
