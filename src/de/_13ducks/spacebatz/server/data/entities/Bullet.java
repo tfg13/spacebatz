@@ -66,8 +66,8 @@ public class Bullet extends Entity {
     }
 
     public void hitChar(Entity hitChar) {
-        if (hitChar instanceof EffectCarrier) {
-            EffectCarrier target = (EffectCarrier) hitChar;
+        if (hitChar instanceof Char) {
+            Char target = (Char) hitChar;
             // Effekte an den getroffenen Char geben:
             for (Effect effect : effects) {
                 effect.applyToChar(target);

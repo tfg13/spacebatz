@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.data.effects;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
+import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 
 /**
@@ -30,13 +29,13 @@ public class TrueDamageEffect extends Effect {
     }
 
     @Override
-    public void applyToChar(EffectCarrier affectedChar) {
+    public void applyToChar(Char affectedChar) {
         affectedChar.getProperties().setHitpoints(affectedChar.getProperties().getHitpoints() - damage);
         STC_CHAR_HIT.sendCharHit(affectedChar.netID, damage, false);
     }
 
     @Override
-    public void applyToPosition(double x, double y, EffectCarrier hitChar) {
+    public void applyToPosition(double x, double y, Char hitChar) {
     }
 
     @Override

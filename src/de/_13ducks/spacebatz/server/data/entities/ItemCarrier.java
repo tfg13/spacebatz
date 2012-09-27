@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import java.util.HashMap;
@@ -11,7 +10,7 @@ import java.util.HashMap;
  *
  * @author michael
  */
-public class ItemCarrier extends EffectCarrier {
+public class ItemCarrier extends Char {
 
     /**
      * Items im Inventar

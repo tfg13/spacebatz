@@ -11,10 +11,13 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.shared.PropertyList;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
- * Chars sind Entities, die eine dynamische Liste von Eigenschaften wie Hitpoints, Rüstung etc haben.
+ * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann vin Effekten beeinflusst werden.
  *
  * @author michael
  */
@@ -25,6 +28,10 @@ public abstract class Char extends Entity {
      */
     private PropertyList properties;
     public int attackCooldownTick;
+    /**
+     * Liste aller Effekte, die der EffectCarrier gerade hat
+     */
+    private ArrayList<Effect> effects;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -39,6 +46,7 @@ public abstract class Char extends Entity {
         properties = new PropertyList();
         properties.setHitpoints(Settings.CHARHEALTH);
         properties.setSightrange(10.0);
+        effects = new ArrayList<>();
     }
 
     /**
@@ -68,5 +76,30 @@ public abstract class Char extends Entity {
      */
     public PropertyList getProperties() {
         return properties;
+    }
+
+    /**
+     * Fügt einen neuen Effekt hinzu.
+     *
+     * @param newEffect der neue Effekt
+     */
+    public final void addTemporaryEffect(Effect newEffect) {
+        effects.add(newEffect);
+    }
+
+    /**
+     * Berechnet alle Effekte und entfernt abgelaufene Effekte.
+     */
+    @Override
+    public final void tick() {
+        super.tick();
+        Iterator<Effect> iter = effects.iterator();
+        while (iter.hasNext()) {
+            Effect effect = iter.next();
+            if (!effect.tick()) {
+                effect.remove();
+                iter.remove();
+            }
+        }
     }
 }
