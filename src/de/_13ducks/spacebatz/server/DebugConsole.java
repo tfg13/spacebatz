@@ -234,7 +234,7 @@ public class DebugConsole {
                     case "list":
                         outStream.println("connected clients:");
                         for (Client c : Server.game.clients.values()) {
-                            outStream.println(c.clientID + ": " + c.getNetworkConnection().getSocket().getInetAddress());
+                            outStream.println(c.clientID + ": " + c.getNetworkConnection().getInetAddress());
                         }
                         break;
 		    case "zone":

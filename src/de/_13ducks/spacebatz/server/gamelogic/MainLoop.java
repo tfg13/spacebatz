@@ -54,7 +54,7 @@ public class MainLoop {
                     Server.msgInterpreter.interpretAllTcpMessages();
 		    Server.serverNetwork2.inTick();
                     // Wartende Clients akzeptieren:
-                    Server.serverNetwork.acceptPendingClients();
+                    Server.serverNetwork2.initNewClients();
                     // Gamelogic berechnen:
                     Server.game.gameTick();
                     // Änderungen an die Clients schicken.

@@ -6,6 +6,8 @@ import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
@@ -19,7 +21,9 @@ public class STC_TRANSFER_ITEMS extends STCCommand {
     @Override
     public void execute(byte[] data) {
         try {
-            ObjectInputStream is = new ObjectInputStream(new java.io.ByteArrayInputStream(data));
+            ByteArrayInputStream byteStream = new ByteArrayInputStream(data);
+            byteStream.read(); // Erstes Byte ignorieren
+            ObjectInputStream is = new ObjectInputStream(byteStream);
             HashMap<Integer, Item> items = (HashMap<Integer, Item>) is.readObject();
             GameClient.setItemMap(items);
         } catch (IOException | ClassNotFoundException ex) {
@@ -29,15 +33,19 @@ public class STC_TRANSFER_ITEMS extends STCCommand {
 
     @Override
     public boolean isVariableSize() {
-        throw new IllegalStateException("STC_TRANSFER_ITEMS wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+        return true;
     }
 
     @Override
     public int getSize(byte sizeData) {
-        throw new IllegalStateException("STC_TRANSFER_ITEMS wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+        return sizeData;
     }
 
     public static void sendAllItems(Client client, HashMap<Integer, Item> items) {
-        Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_TRANSFER_ITEMS, Server.game.getSerializedItems(), client);
+        byte[] data = Server.game.getSerializedItems();
+        byte[] sendData = new byte[data.length + 1];
+        sendData[0] = (byte) sendData.length;
+        System.arraycopy(data, 0, sendData, 1, data.length);
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_TRANSFER_ITEMS, sendData), client);
     }
 }

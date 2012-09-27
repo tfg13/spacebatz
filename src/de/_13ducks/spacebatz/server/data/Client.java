@@ -37,10 +37,6 @@ public class Client {
      * verarbeitet wurde.
      */
     public int lastTick;
-    /**
-     * Der Wissensstand des Clients aus Serversicht.
-     */
-    private ClientContext context;
 
     /**
      * Konstruktor
@@ -50,7 +46,6 @@ public class Client {
     public Client(ServerNetworkConnection connection, byte clientID) {
         this.connection = connection;
         this.clientID = clientID;
-        context = new ClientContext();
 
     }
 
@@ -77,9 +72,5 @@ public class Client {
      */
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    public ClientContext getContext() {
-        return context;
     }
 }

@@ -138,7 +138,6 @@ public class Game {
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             STC_SET_PLAYER.sendSetPlayer(client, player);
             getEntityManager().addEntity(player.netID, player);
-            client.getContext().makeEntityKnown(player.netID);
             // Einfügen und den Client das Spiel starten lassen
             clients.put(new Byte(client.clientID), client);
             STC_START_ENGINE.sendStartGame(client);

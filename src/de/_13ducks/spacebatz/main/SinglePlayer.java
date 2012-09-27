@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.main;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.Server;
+import java.net.UnknownHostException;
 
 /**
  * Enthält main für SinglePlayer, also ein Server, ein verbundener Client.
@@ -34,7 +35,11 @@ public class SinglePlayer {
 
             @Override
             public void run() {
-                GameClient.startClient("127.0.0.1");
+                try {
+                    GameClient.startClient("127.0.0.1");
+                } catch (UnknownHostException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         // Server starten

@@ -10,18 +10,14 @@
  */
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
-import java.net.Socket;
+import java.net.InetAddress;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -38,55 +34,13 @@ public class ServerNetworkConnection {
      */
     private MessageFragmenter fragmenter;
     /**
-     * Der Socket, der mit dem Client verbunden ist
-     */
-    private Socket mySocket;
-    /**
-     * Der Stream zum Senden von Daten
-     */
-    private ObjectOutputStream sendStream;
-    /**
-     * Der Stream zum empfangen von Daten
-     */
-    private ObjectInputStream receiveStream;
-    /**
      * Der Client der zu dieser Verbindung gehört
      */
     private Client myClient;
     /**
-     * Die bytes die für die aktuelle Message noch gelesen werden müssen
+     * Die Adresse dieses Clients.
      */
-    private short messageSize;
-    /**
-     * Die cmdId der message, die gerade empfangen wird
-     */
-    private byte cmdId;
-    /**
-     * Der Puffer, in den die Daten der aktuellen Message gelesen werden
-     */
-    private byte buffer[];
-    /**
-     * Die Zahl der bytes, die bereits in den Puffer gelesen wurden
-     */
-    private int index = 0;
-    /**
-     * Der Status des TCP-Empfangsthreads (cmdId empfangen, PacketLänge empfangen oder Daten empfangen)
-     *
-     * Gültige Werte sind RECEIVE_CMDID, RECEIVE_PACKETSIZE und RECEIVE_PACKET
-     */
-    private int tcpReceiverStatus;
-    /**
-     * 'Status: cmdId empfangen
-     */
-    final static int RECEIVE_CMDID = 0;
-    /**
-     * Status: Packetgröße empfangen
-     */
-    final static int RECEIVE_PACKETSIZE = 1;
-    /**
-     * Status: PacketDaten empfangen
-     */
-    final static int RECEIVE_PACKET = 2;
+    private InetAddress clientAddress;
     /**
      * Die Nummer des letzten von diesem Client empfangenen Netzwerkpakets.
      */
@@ -133,76 +87,12 @@ public class ServerNetworkConnection {
      *
      * @param socket der Socket, der mit dem Client verbunden ist
      */
-    public ServerNetworkConnection(Socket socket) {
+    public ServerNetworkConnection(InetAddress address, int port) {
         fragmenter = new MessageFragmenter();
         inputQueue = new PriorityBlockingQueue<>();
         inputQueue2 = new PriorityBlockingQueue<>();
-        mySocket = socket;
-        tcpReceiverStatus = RECEIVE_CMDID;
-        try {
-            sendStream = new ObjectOutputStream(socket.getOutputStream());
-            receiveStream = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * Empfängt Daten vom Client.
-     *
-     * Liest alle empfangenen Daten ein. Wenn genug Daten für ein Packet da sind wird eine neue ServerTcpMessage erstellt und an den MessageInterpreter weitergeleitet.
-     */
-    public void receiveData() {
-
-        try {
-            while (receiveStream.available() > 0) {
-                switch (tcpReceiverStatus) {
-                    case RECEIVE_CMDID:
-                        if (receiveStream.available() > 0) {
-                            cmdId = receiveStream.readByte();
-                            tcpReceiverStatus = RECEIVE_PACKETSIZE;
-                        } else {
-                            return;
-                        }
-                        break;
-                    case RECEIVE_PACKETSIZE:
-                        if (receiveStream.available() > 1) {
-                            messageSize = receiveStream.readShort();
-                            buffer = new byte[messageSize];
-                            tcpReceiverStatus = RECEIVE_PACKET;
-                        } else {
-                            return;
-                        }
-                        break;
-                    case RECEIVE_PACKET:
-                        if (receiveStream.available() > 0) {
-                            index += receiveStream.read(buffer, index, messageSize - index);
-                            if (index == messageSize) {
-                                tcpReceiverStatus = RECEIVE_CMDID;
-                                Server.msgInterpreter.addTcpMessage(new ServerTcpMessage(cmdId, buffer, myClient));
-                                buffer = null;
-                                cmdId = 0;
-                                index = 0;
-                            }
-
-                        } else {
-                            return;
-                        }
-                        break;
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * Gibt den mit dem Client verbundenen Socket zurück
-     *
-     * @return der Socket
-     */
-    public Socket getSocket() {
-        return mySocket;
+        clientAddress = address;
+        this.port = port;
     }
 
     /**
@@ -212,15 +102,6 @@ public class ServerNetworkConnection {
      */
     public Client getClient() {
         return myClient;
-    }
-
-    /**
-     * Gibt den Sendstream zurück, mit dem Daten gesendet werden können
-     *
-     * @return the sendStream
-     */
-    public ObjectOutputStream getSendStream() {
-        return sendStream;
     }
 
     /**
@@ -303,12 +184,13 @@ public class ServerNetworkConnection {
     int getPort() {
         return port;
     }
-
+    
     /**
-     * @param port the port to set
+     * Liefert die Adresse
+     * @return die Adresse
      */
-    void setPort(int port) {
-        this.port = port;
+    public InetAddress getInetAddress() {
+        return clientAddress;
     }
 
     /**
@@ -379,7 +261,7 @@ public class ServerNetworkConnection {
             // NOOP einbauen
             buf[3] = 0;
         }
-        return new DatagramPacket(buf, pos + 1, mySocket.getInetAddress(), port);
+        return new DatagramPacket(buf, pos + 1, clientAddress, port);
     }
 
     /**

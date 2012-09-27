@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Server-Seite des Netzwerksystems
@@ -50,6 +53,10 @@ public class ServerNetwork2 {
      * Enthält alle bekannten Netzkommandos, die der Server ausführen kann. Enthält sowohl interne, als auch externe Kommandos.
      */
     static CTSCommand[] cmdMap = new CTSCommand[256];
+    /**
+     * Liste mit Clients, die verbunden sind darauf warten, von der GameLogic initialisiert zu werden.
+     */
+    private ConcurrentLinkedQueue<Client> pendingClients = new ConcurrentLinkedQueue<>();
 
     /**
      * Erstellt ein neues Server-Netzwerksystem
@@ -65,6 +72,42 @@ public class ServerNetwork2 {
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
         registerCTSCommand(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new CTS_DISCONNECT());
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
+
+        // RCON
+        if (Settings.SERVER_ENABLE_RCON) {
+            Thread rconThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ServerSocket rs = new ServerSocket(Settings.SERVER_RCONPORT);
+
+                        while (true) {
+                            Socket sock = rs.accept(); // blocks
+                            Client client = findClientByAddress(sock.getInetAddress());
+                            if (client != null) {
+                                Server.debugConsole.addRcon(client, sock.getInputStream(), sock.getOutputStream());
+                            } else {
+                                System.out.println("WARN: NET: Cannot add RCON, unknown Client with address " + sock.getInetAddress());
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            rconThread.setName("SERVER_RCON_ACC");
+            rconThread.setDaemon(true);
+            rconThread.start();
+        }
+    }
+
+    private Client findClientByAddress(InetAddress adr) {
+        for (Client c : Server.game.clients.values()) {
+            if (c.getNetworkConnection().getInetAddress().equals(adr)) {
+                return c;
+            }
+        }
+        return null;
     }
 
     /**
@@ -221,21 +264,17 @@ public class ServerNetwork2 {
         // Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
         connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
         connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
-        // Vorläufig: ClientID aus altem Netzwerksystem holen:
-        //connectAnswer[2] = Server.game.newClientID();
-        boolean found = false;
-        for (Client client : Server.game.clients.values()) {
-            if (client.getNetworkConnection().getSocket().getInetAddress().equals(origin)) {
-                // Gefunden, diese ID nehmen
-                connectAnswer[2] = client.clientID;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            System.out.println("ERROR: NET: Cannot find ClientID for request from " + origin + ", connect via old system first!");
-        }
-        Bits.putShort(connectAnswer, 0, (short) Server.game.clients.get(connectAnswer[2]).getNetworkConnection().nextOutIndex);
+
+        // neue ClientID vergeben:
+        connectAnswer[2] = Server.game.newClientID();
+
+        ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
+        Client newClient = new Client(clientConnection, Server.game.newClientID());
+        clientConnection.setClient(newClient);
+        pendingClients.add(newClient);
+
+
+        Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
         connectAnswer[0] |= 0x40;
         // Aktuellen Tick
         Bits.putInt(connectAnswer, 3, Server.game.getTick());
@@ -243,9 +282,17 @@ public class ServerNetwork2 {
         // Senden
         DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
         socket.send(pack);
-        //TODO: Neuen Client richtig anlegen/einfügen
         System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
-        Server.game.clients.get(connectAnswer[2]).getNetworkConnection().setPort(port);
+    }
+
+    /**
+     * Muss synchron von der Mainloop aufgerufen werden, initialisiert die Clients.
+     */
+    public void initNewClients() {
+        for (Client c : pendingClients) {
+            Server.game.clientJoined(c);
+        }
+        pendingClients.clear();
     }
 
     /**
@@ -254,7 +301,7 @@ public class ServerNetwork2 {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd, Client client) {
-        if (cmd.data.length > 128) {
+        if (cmd.data.length >= 128) {
             byte[][] fragments = MessageFragmenter.fragmentMessage((byte) cmd.cmdID, cmd.data);
             for (int i = 0; i < fragments.length; i++) {
                 client.getNetworkConnection().queueOutgoingCommand(new OutgoingCommand(Settings.NET_FRAGMENTED_MESSAGE, fragments[i]));

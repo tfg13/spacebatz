@@ -10,29 +10,29 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM_TO_STACK;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -160,78 +160,69 @@ public class ClientNetwork2 {
      * @param port der Ziel-Port
      * @return true, wenn erfolgreich, sonst false
      */
-    public synchronized void connect(final InetAddress targetAddress, final int port) {
-        // Vorerst mal einen neuen Thread starten, sollte später nichtmehr möglich sein
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
+    public synchronized boolean connect(final InetAddress targetAddress, final int port) {
+        try {
+            socket = new DatagramSocket();
+        } catch (SocketException ex) {
+            return false;
+        }
+        try {
+            // Initialize-Paket an den Server schicken:
+            byte[] data = new byte[5];
+            Bits.putInt(data, 1, socket.getLocalPort());
+            data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
+            DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
+            // Antwort-Packet
+            byte[] ansData = new byte[8];
+            DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
+            socket.setSoTimeout(50000);
+            socket.send(packet);
+            while (true) {
                 try {
-                    socket = new DatagramSocket();
-                } catch (SocketException ex) {
-                    return;// false;
-                }
-                try {
-                    // Initialize-Paket an den Server schicken:
-                    byte[] data = new byte[5];
-                    Bits.putInt(data, 1, socket.getLocalPort());
-                    data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
-                    DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
-                    // Antwort-Packet
-                    byte[] ansData = new byte[8];
-                    DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
-                    socket.setSoTimeout(50000);
-                    socket.send(packet);
-                    while (true) {
-                        try {
-                            socket.receive(ansPacket);
-                            socket.setSoTimeout(0);
-                        } catch (SocketTimeoutException timeoutEx) {
-                            // Timeout, ging nicht, Ende.
-                            socket.close();
-                            System.out.println("Connecting failed. Request timed out.");
-                            return;// false;
-                        }
-                        // Antwort auswerten (via netmode):
-                        if ((ansData[0] & 0xC0) == 0x40) {
-                            socket.setSoTimeout(0);
-                            // Verbindung ok, Parameter auslesen.
-                            ansData[0] &= 0x3F;
-                            int packID = Bits.getShort(ansData, 0);
-                            int clientID = ansData[2];
-                            serverTick = Bits.getInt(ansData, 3);
-                            lerpTimer.scheduleAtFixedRate(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    serverTick++;
-                                }
-                            }, ansData[7], ansData[7]);
-                            lastInIndex = (short) (packID - 1);
-                            if (lastInIndex < 0) {
-                                lastInIndex = (short) de._13ducks.spacebatz.shared.network.Constants.OVERFLOW_STC_PACK_ID - 1;
-                            }
-                            packZeroServerTick = serverTick - packID;
-                            serverAdr = targetAddress;
-                            serverPort = port;
-                            connected = true;
-                            System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextPackID " + packID);
-                            initializeReceiver();
-                            return;// true;
-                        } else if ((ansData[0] & 0xC0) == 0x80) {
-                            System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x3F));
-                            socket.close();
-                            return;// false;
-                        }
-                    }
-                } catch (IOException ex) {
-                    System.out.println("Connecting failed. IOException: " + ex.getLocalizedMessage() + " reason: " + ex.getCause());
+                    socket.receive(ansPacket);
+                    socket.setSoTimeout(0);
+                } catch (SocketTimeoutException timeoutEx) {
+                    // Timeout, ging nicht, Ende.
                     socket.close();
-                    return;// false;
+                    System.out.println("Connecting failed. Request timed out.");
+                    return false;
+                }
+                // Antwort auswerten (via netmode):
+                if ((ansData[0] & 0xC0) == 0x40) {
+                    socket.setSoTimeout(0);
+                    // Verbindung ok, Parameter auslesen.
+                    ansData[0] &= 0x3F;
+                    int packID = Bits.getShort(ansData, 0);
+                    int clientID = ansData[2];
+                    serverTick = Bits.getInt(ansData, 3);
+                    lerpTimer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            serverTick++;
+                        }
+                    }, ansData[7], ansData[7]);
+                    lastInIndex = (short) (packID - 1);
+                    if (lastInIndex < 0) {
+                        lastInIndex = (short) de._13ducks.spacebatz.shared.network.Constants.OVERFLOW_STC_PACK_ID - 1;
+                    }
+                    packZeroServerTick = serverTick - packID;
+                    serverAdr = targetAddress;
+                    serverPort = port;
+                    connected = true;
+                    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextPackID " + packID);
+                    initializeReceiver();
+                    return true;
+                } else if ((ansData[0] & 0xC0) == 0x80) {
+                    System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x3F));
+                    socket.close();
+                    return false;
                 }
             }
-        });
-        t.setName("NETNET_CONNECT_HELP");
-        t.setDaemon(true);
-        t.start();
+        } catch (IOException ex) {
+            System.out.println("Connecting failed. IOException: " + ex.getLocalizedMessage() + " reason: " + ex.getCause());
+            socket.close();
+            return false;
+        }
     }
 
     /**
@@ -482,5 +473,9 @@ public class ClientNetwork2 {
      */
     public int getLogicTick() {
         return serverTick - lerp;
+    }
+
+    public InetAddress getServerAdr() {
+        return serverAdr;
     }
 }

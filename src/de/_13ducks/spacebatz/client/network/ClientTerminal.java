@@ -266,7 +266,7 @@ public class ClientTerminal {
      */
     void rcon(int port) {
         try {
-            rconSock = new Socket(GameClient.getNetwork().getServerAdr(), port);
+            rconSock = new Socket(GameClient.getNetwork2().getServerAdr(), port);
             rconOut = new PrintStream(rconSock.getOutputStream());
             rconRead = new BufferedReader(new InputStreamReader(rconSock.getInputStream()));
             Thread rconReader = new Thread(new Runnable() {

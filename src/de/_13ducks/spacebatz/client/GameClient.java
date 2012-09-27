@@ -16,6 +16,8 @@ import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -30,10 +32,6 @@ public class GameClient {
      * Das derzeit laufende Level.
      */
     public static Level currentLevel;
-    /**
-     * Das Netzwerksystem.
-     */
-    private static ClientNetwork network;
     /**
      * Das neue Netzwerksystem.
      */
@@ -113,19 +111,15 @@ public class GameClient {
      *
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
-    public static void startClient(String ip) {
-        network = new ClientNetwork();
+    public static void startClient(String ip) throws UnknownHostException {
         network2 = new ClientNetwork2();
         initMainloop = new InitialMainloop();
         initMainloop.start();
         netIDMap = new HashMap<>();
 
         equippedItems = new EquippedItems();
-        if (getNetwork().tryConnect(ip)) {
-            // StartRequest per TCP an Server schicken
-            //player = new Player(30, 30);
-        } else {
-            System.out.println("ERROR: Can't connect!");
+        if (!network2.connect(InetAddress.getByName(ip), Settings.SERVER_UDPPORT2)) {
+            throw new RuntimeException("Cannot connect");
         }
     }
 
@@ -172,15 +166,6 @@ public class GameClient {
      */
     public static void setClientID(byte clientID) {
         GameClient.clientID = clientID;
-    }
-
-    /**
-     * Gibt das Netzwerkmodul zurück
-     *
-     * @return das Netzwerkmodul des Clients
-     */
-    public static ClientNetwork getNetwork() {
-        return network;
     }
 
     /**

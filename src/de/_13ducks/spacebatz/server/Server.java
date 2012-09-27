@@ -17,7 +17,6 @@ import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.AutoSynchronizer;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
-import de._13ducks.spacebatz.server.network.ServerNetwork;
 import de._13ducks.spacebatz.server.network.ServerNetwork2;
 
 /**
@@ -40,10 +39,6 @@ public final class Server {
      */
     public static FastFindGrid entityMap;
     /**
-     * Das Netzwerkmodul des Servers
-     */
-    public static ServerNetwork serverNetwork = new ServerNetwork();
-    /**
      * Das neue Netzwerkmodul
      */
     public static ServerNetwork2 serverNetwork2 = new ServerNetwork2();
@@ -64,7 +59,6 @@ public final class Server {
     public static void startServer() {
         game = new Game();
         entityMap = new FastFindGrid(game.getLevel().getSizeX(), game.getLevel().getSizeY());
-        serverNetwork.startServer();
         serverNetwork2.start();
 
         MainLoop mainLoop = new MainLoop();
