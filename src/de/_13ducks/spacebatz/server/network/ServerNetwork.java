@@ -44,10 +44,6 @@ public class ServerNetwork {
      */
     private Thread clientAcceptorThread;
     /**
-     * Das UDP-Netzwerksystem.
-     */
-    public UDPConnection udp;
-    /**
      * Liste mit Clients, die verbunden sind und auf Bearbeitung durch die GameLogic warten
      */
     private ConcurrentLinkedQueue<Client> pendingClients;
@@ -61,7 +57,6 @@ public class ServerNetwork {
      */
     public ServerNetwork() {
 	connections = new ArrayList<>();
-	udp = new UDPConnection();
 	pendingClients = new ConcurrentLinkedQueue<>();
 	messageSendBuffer = new ConcurrentLinkedQueue<>();
 
@@ -179,7 +174,6 @@ public class ServerNetwork {
      */
     public void startServer() {
 	clientAcceptorThread.start();
-	udp.start();
     }
 
     /**

@@ -82,6 +82,5 @@ public final class Server {
         Player pl = client.getPlayer();
         game.getEntityManager().removeEntity(pl.netID);
         game.clients.remove(client.clientID);
-        serverNetwork.udp.removeClient(client.clientID);
     }
 }

@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_RESYNC;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.network.CTS_DISCONNECT;
 import de._13ducks.spacebatz.server.Server;
@@ -19,8 +18,10 @@ import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -57,11 +58,12 @@ public class ServerNetwork2 {
         cmdMap[0x80] = new CTS_ACK();
         cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new CTS_FRAGMENTED_MESSAGE();
         cmdMap[Settings.NET_CTS_DEBUG] = new CTS_DEBUG();
+        registerCTSCommand(Settings.NET_CTS_MOVE, new CTS_MOVE());
+        registerCTSCommand(Settings.NET_CTS_SHOOT, new CTS_SHOOT());
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_ITEM_EQUIP, new CTS_EQUIP_ITEM());
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, new CTS_REQUEST_ITEM_DEQUIP());
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
         registerCTSCommand(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new CTS_DISCONNECT());
-        registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_RESYNC, new CTS_REQUEST_RESYNC());
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
     }
 

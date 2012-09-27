@@ -35,6 +35,14 @@ public final class Settings {
      */
     public static final byte NET_STC_START_ENGINE = 22;
     /**
+     * Sendet Bewegungsdaten (WASD) an den Server.
+     */
+    public static final byte NET_CTS_MOVE = 49;
+    /**
+     * Sendet Schluss-Request an Server.
+     */
+    public static final byte NET_CTS_SHOOT = 50;
+    /**
      * Debugnachricht, das erste byte ist die länge
      */
     public static final int NET_CTS_DEBUG = 0x81;
@@ -292,7 +300,7 @@ public final class Settings {
     /**
      * Default-Level des netGraphen. 0 - Aus 1 - + Netzwerkdebug 2 - + GameDebug
      */
-    public static final int CLIENT_NETGRAPH_LEVEL = 2;
+    public static final int CLIENT_NETGRAPH_LEVEL = 0;
     /**
      * Abstand bei der double noch als "gleich" gilt.
      */

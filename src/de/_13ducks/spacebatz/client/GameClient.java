@@ -175,25 +175,6 @@ public class GameClient {
     }
 
     /**
-     * Schickt ein vollständiges, gültiges UDP-Paket an den Server.
-     *
-     * @param packet udp-Paket
-     */
-    public static void udpOut(byte[] packet) {
-        if (packet.length != Settings.NET_UDP_CTS_SIZE || packet[0] != clientID) {
-            throw new IllegalArgumentException("Illegal packet!");
-        }
-        getNetwork().udpSend(packet);
-    }
-
-    /**
-     * Leitet UDP-Ticks ans Netzwerksystem weiter.
-     */
-    public static void udpTick() {
-        getNetwork().udpTick();
-    }
-
-    /**
      * Gibt das Netzwerkmodul zurück
      *
      * @return das Netzwerkmodul des Clients

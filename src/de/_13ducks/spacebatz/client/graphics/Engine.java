@@ -17,8 +17,10 @@ import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,8 +168,6 @@ public class Engine {
         while (!Display.isCloseRequested()) {
             // Gametick updaten:
             GameClient.updateGametick();
-            // UDP-Input verarbeiten:
-            GameClient.udpTick();
             // Input neues Netzwerksystem verarbeiten
             GameClient.getNetwork2().inTick();
             // Render-Code
@@ -195,22 +195,19 @@ public class Engine {
      * Verarbeitet den Input, der UDP-Relevant ist.
      */
     private void directInput() {
-        byte[] udp = new byte[NET_UDP_CTS_SIZE];
-        udp[0] = GameClient.getClientID();
-        Bits.putInt(udp, 1, GameClient.frozenGametick);
-        udp[5] = NET_UDP_CMD_INPUT;
+        byte move = 0;
         if (!terminal) {
             if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-                udp[6] |= 0x20;
+                move |= 0x20;
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-                udp[6] |= 0x80;
+                move |= 0x80;
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-                udp[6] |= 0x40;
+                move |= 0x40;
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-                udp[6] |= 0x10;
+                move |= 0x10;
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
                 sendShootRequest();
@@ -403,7 +400,7 @@ public class Engine {
                 }
             }
         }
-        GameClient.udpOut(udp);
+        CTS_MOVE.sendMove(move);
     }
 
     /**
@@ -948,18 +945,16 @@ public class Engine {
      * Sagt dem Server, das geschossen werden soll
      */
     private void sendShootRequest() {
-        byte[] udp2 = new byte[NET_UDP_CTS_SIZE];
-        udp2[0] = GameClient.getClientID();
-        Bits.putInt(udp2, 1, GameClient.frozenGametick);
-        udp2[5] = NET_UDP_CMD_REQUEST_BULLET;
+        byte[] data = new byte[4];
         double dx = Mouse.getX() - Display.getWidth() / 2;
         double dy = Mouse.getY() - Display.getHeight() / 2;
         double dir = Math.atan2(dy, dx);
         if (dir < 0) {
             dir += 2 * Math.PI;
         }
-        Bits.putFloat(udp2, 6, (float) (dir));
-        GameClient.udpOut(udp2);
+        Bits.putFloat(data, 0, (float) (dir));
+        
+        CTS_SHOOT.sendShoot(data);
     }
 
     /**

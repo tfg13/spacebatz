@@ -237,15 +237,6 @@ public class DebugConsole {
                             outStream.println(c.clientID + ": " + c.getNetworkConnection().getSocket().getInetAddress());
                         }
                         break;
-                    case "resync":
-                        if (words.length == 2) {
-                            byte i = Byte.parseByte(words[1]);
-                            Server.serverNetwork.udp.resyncClient(Server.game.clients.get(i));
-                            outStream.println("Resyncing client " + i);
-                        } else {
-                            outStream.println("Usage: resync CLIENTID (use \"list\")");
-                        }
-                        break;
 		    case "zone":
 			Zone zone = Zone.getGlobal();
 			if (words.length >= 3) {
@@ -319,7 +310,6 @@ public class DebugConsole {
                         outStream.println("help                 - prints this help");
                         outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
-                        outStream.println("resync N             - Resync client with id N");
                         outStream.println("spawnitem            - Spawns an item on every player's position");
                         outStream.println("spawnenemy           - Spawns an enemy on every player's position");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");

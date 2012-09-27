@@ -21,6 +21,7 @@ import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
@@ -138,8 +139,9 @@ public class Game {
             STC_SET_PLAYER.sendSetPlayer(client, player);
             getEntityManager().addEntity(player.netID, player);
             client.getContext().makeEntityKnown(player.netID);
-            // Der Client wird erst in die clientMap eingefügt, wenn das Netzwerksystem von der UDPConnection fertig initialisiert wurde.
-            Server.serverNetwork.udp.addClient(client);
+            // Einfügen und den Client das Spiel starten lassen
+            clients.put(new Byte(client.clientID), client);
+            STC_START_ENGINE.sendStartGame(client);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
