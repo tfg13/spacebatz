@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import java.util.HashMap;
 
 /**
@@ -17,9 +18,9 @@ public class ItemCarrier extends EffectCarrier {
      */
     private HashMap<Integer, Item> items;
     /**
-     * Wieviel Geld im Inventar ist
+     * Wieviel Materialien der Spieler hat (Geld, Erze, ...)
      */
-    private int money;
+    private int materials[] = new int[Settings.NUMBER_OF_MATERIALS];
     /**
      * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
      */
@@ -76,22 +77,28 @@ public class ItemCarrier extends EffectCarrier {
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
         if (item.getName().equals("Money")) {
-            setMoney(getMoney() + (int) item.getAmount());
+            setMaterial(0, getMaterial(0) + (int) item.getAmount());
         }
     }
 
     /**
-     * @return the money
+     * Gibt zurück, welche Menge der Spieler von einem Material besitzt
+     *
+     * @param material Materialnummer
+     * @return Materialmenge
      */
-    public int getMoney() {
-        return money;
+    public int getMaterial(int material) {
+        return materials[material];
     }
 
     /**
-     * @param money the money to set
+     * Legt fest, welche Menge der Spieler von einem Material besitzt
+     *
+     * @param material Materialnummer
+     * @param amount Materialmenge
      */
-    public void setMoney(int money) {
-        this.money = money;
+    public void setMaterial(int material, int amount) {
+        materials[material] = amount;
     }
 
     /**
@@ -121,7 +128,7 @@ public class ItemCarrier extends EffectCarrier {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, netID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, netID);
             return true;
         } else {
             return false;

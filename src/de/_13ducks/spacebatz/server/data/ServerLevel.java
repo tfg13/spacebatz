@@ -13,6 +13,8 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,9 +45,9 @@ public class ServerLevel extends Level {
         super(xSize, ySize);
         areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
-        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, null));
-        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, "Iron Ore"));
-        destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, "Gold Ore"));
+        destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, -1)); // -1: droppt nichts
+        destroyableBlockTypes.put(11, new DestroyableBlockType(11, 3, 1));
+        destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, 2));
     }
 
     /**
@@ -56,14 +58,14 @@ public class ServerLevel extends Level {
      */
     public void destroyBlock(int x, int y) {
         // Material droppen
-        String material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
-        if (material != null) {
+        int material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
+        if (material >= 0) {
             // Material mit angepasster Position (int -> double) droppen
-            DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, (double) x + 0.5, (double) y + 0.5);
+            DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, 1);
         }
 
-        Server.msgSender.broadcastCollisionChange(x, y, false);
-        Server.msgSender.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
+        STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, false);
+        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
         getGround()[x][y] = destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture;
         getCollisionMap()[x][y] = false;
     }
@@ -78,8 +80,8 @@ public class ServerLevel extends Level {
     public void createDestroyableBlock(int x, int y, int texture) {
         getGround()[x][y] = texture;
         getCollisionMap()[x][y] = true;
-        Server.msgSender.broadcastCollisionChange(x, y, true);
-        Server.msgSender.broadcastGroundChange(x, y, texture);
+        STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, true);
+        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
     }
 
     /**

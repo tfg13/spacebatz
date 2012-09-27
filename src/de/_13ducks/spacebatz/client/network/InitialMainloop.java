@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 
 /**
  * Temporärer Mainloop der solange läuft, bis die Engine startet.
@@ -39,8 +39,8 @@ public class InitialMainloop {
             public void run() {
                 while (initMainloopRun) {
                     try {
-                        Client.getNetwork2().inTick();
-                        Client.getNetwork2().outTick();
+                        GameClient.getNetwork2().inTick();
+                        GameClient.getNetwork2().outTick();
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();

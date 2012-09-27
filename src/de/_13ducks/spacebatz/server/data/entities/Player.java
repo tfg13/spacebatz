@@ -15,6 +15,10 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -126,7 +130,7 @@ public class Player extends ItemCarrier {
         // Item anlegen
         if (equipItem(itemnetID, selectedslot)) {
             // Wenn erfolgreich, an Client senden
-            Server.msgSender.sendItemEquip(item.getNetID(), selectedslot, getClient().clientID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, getClient().clientID);
         }
     }
 
@@ -140,14 +144,14 @@ public class Player extends ItemCarrier {
         if (freeInventorySlot()) {
             // Item ins Inventar tun:
             if (dequipItemToInventar(slottype, selectedslot)) {
-                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 0, getClient().clientID);
+                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, (byte) 0, getClient().clientID);
             }
         } else {
             // Item zu Poden werfen:
             Item item = dequipItemToGround(slottype, selectedslot);
 
             if (item != null) {
-                Server.msgSender.sendItemDequip(slottype, selectedslot, (byte) 1, getClient().clientID);
+                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, (byte) 1, getClient().clientID);
                 item.setPosX(getX());
                 item.setPosY(getY());
                 Server.game.getItemMap().put(item.getNetID(), item);
@@ -165,7 +169,7 @@ public class Player extends ItemCarrier {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                Server.msgSender.sendItemDrop(serializedItem);
+                STC_ITEM_DROP.sendItemDrop(serializedItem);
             }
 
         }
@@ -178,7 +182,7 @@ public class Player extends ItemCarrier {
      */
     public void clientSelectWeapon(byte selectedslot) {
         if (setSelectedweapon(selectedslot)) {
-            Server.msgSender.sendWeaponswitch(this.getClient(), selectedslot);
+            STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
         }
     }
 }

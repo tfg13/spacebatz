@@ -17,7 +17,6 @@ import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.AutoSynchronizer;
 import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
-import de._13ducks.spacebatz.server.network.ServerMessageSender;
 import de._13ducks.spacebatz.server.network.ServerNetwork;
 import de._13ducks.spacebatz.server.network.ServerNetwork2;
 
@@ -53,10 +52,6 @@ public final class Server {
      */
     public static AutoSynchronizer sync = new AutoSynchronizer();
     /**
-     * Die Sendekomponente des Netzwerkmoduls
-     */
-    public static ServerMessageSender msgSender = new ServerMessageSender();
-    /**
      * Die Debug-Konsole
      */
     public static DebugConsole debugConsole = new DebugConsole();
@@ -70,7 +65,7 @@ public final class Server {
         game = new Game();
         entityMap = new FastFindGrid(game.getLevel().getSizeX(), game.getLevel().getSizeY());
         serverNetwork.startServer();
-	serverNetwork2.start();
+        serverNetwork2.start();
 
         MainLoop mainLoop = new MainLoop();
 

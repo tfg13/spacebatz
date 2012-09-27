@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data.effects;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 
 /**
  * Richtet Truedamage an, dh der Schaden wird ohne berücksichtigung von Rüstung angewandt.
@@ -31,7 +32,7 @@ public class TrueDamageEffect extends Effect {
     @Override
     public void applyToChar(EffectCarrier affectedChar) {
         affectedChar.getProperties().setHitpoints(affectedChar.getProperties().getHitpoints() - damage);
-        Server.msgSender.sendCharHit(affectedChar.netID, damage, false);
+        STC_CHAR_HIT.sendCharHit(affectedChar.netID, damage, false);
     }
 
     @Override

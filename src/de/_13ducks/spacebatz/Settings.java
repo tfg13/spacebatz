@@ -245,6 +245,10 @@ public final class Settings {
      */
     public static final byte NET_TCP_CMD_GRAB_ITEM_TO_STACK = 47;
     /**
+     * Die cmdID um allen Spielern von bestimmtem Material zu geben
+     */
+    public static final byte NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT = 48;
+    /**
      * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene Spielfigur sich auch bei den anderen
      * verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
      */
@@ -289,4 +293,8 @@ public final class Settings {
      * Grundgeschwindigkeit.
      */
     public static final double BASE_MOVESPEED = 0.15;
+    /**
+     * Anzahl der Materialien im Spiel (Geld, Erze, ...)
+     */
+    public static final int NUMBER_OF_MATERIALS = 3;
 }

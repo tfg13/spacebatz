@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.main;
 
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import java.io.IOException;
 
 /**
@@ -35,7 +35,7 @@ public class MultiPlayer {
                 // Versuche als IP zu interpretieren:
                 System.out.println("IP seems valid, starting client...");
                 // Es scheint eine gültige IP zu sein, da hin verbinden!
-                Client.startClient(result);
+                GameClient.startClient(result);
             }
             System.out.println("Enter valid IP-Adress or type \"quit\"!");
         }

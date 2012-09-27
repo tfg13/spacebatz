@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.shared.Movement;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -171,7 +172,7 @@ public class UDPConnection {
             if (!clientMap.containsKey(clientID)) {
                 clientMap.put(clientID, c);
                 Server.game.clients.put(new Byte(clientID), c);
-                Server.msgSender.sendStartGame(c);
+                STC_START_ENGINE.sendStartGame(c);
             }
         }
         System.out.println("client " + clientID + ": (re)sync complete");

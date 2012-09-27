@@ -10,23 +10,24 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ITEMS;
-import de._13ducks.spacebatz.client.network.messages.STC_SET_CLIENT;
-import de._13ducks.spacebatz.client.network.messages.STC_SET_PLAYER;
-import de._13ducks.spacebatz.client.network.messages.STC_START_ENGINE;
-import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DEQUIP;
-import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM;
-import de._13ducks.spacebatz.client.network.messages.STC_GRAB_ITEM_TO_STACK;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.Client;
-import de._13ducks.spacebatz.client.network.messages.STC_BROADCAST_GROUND_CHANGE;
-import de._13ducks.spacebatz.client.network.messages.STC_CHANGE_COLLISION;
-import de._13ducks.spacebatz.client.network.messages.STC_CHAR_HIT;
-import de._13ducks.spacebatz.client.network.messages.STC_EQUIP_ITEM;
-import de._13ducks.spacebatz.client.network.messages.STC_ITEM_DROP;
-import de._13ducks.spacebatz.client.network.messages.STC_SWITCH_WEAPON;
-import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_ENEMYTYPES;
-import de._13ducks.spacebatz.client.network.messages.STC_TRANSFER_LEVEL;
+import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
@@ -146,6 +147,7 @@ public class ClientNetwork2 {
         registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ITEMS, new STC_TRANSFER_ITEMS());
         registerSTCCommand(Settings.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
         registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_LEVEL, new STC_TRANSFER_LEVEL());
+        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
     }
 
     /**
@@ -338,7 +340,7 @@ public class ClientNetwork2 {
      */
     DatagramPacket craftPacket() {
         byte[] buf = new byte[512];
-        buf[0] = Client.getClientID();
+        buf[0] = GameClient.getClientID();
         short idx = getAndIncrementNextIndex();
         Bits.putShort(buf, 1, idx);
         buf[3] = 0; // MAC

@@ -31,15 +31,16 @@ public class DestroyableBlockType implements Serializable {
     /**
      * Name des Items das gedroppt wird, wenn der Block 
      */
-    public String dropMaterial;
+    public int dropMaterial;
 
     /**
      * Erstellt einen neuen zerstörbaren Block
      *
      * @param texture die Textur des Blocks
      * @param backGroundTexture die HintergrundTextur wenn ein Block dieses Typs zerstört wird
+     * @param dropMaterial Nummer des Materials, das man beim Zerstören erhält
      */
-    public DestroyableBlockType(int texture, int backGroundTexture, String dropMaterial) {
+    public DestroyableBlockType(int texture, int backGroundTexture, int dropMaterial) {
         this.backgroundTexture = backGroundTexture;
         this.texture = texture;
         this.dropMaterial = dropMaterial;

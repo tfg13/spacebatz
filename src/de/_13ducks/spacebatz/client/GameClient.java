@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author michael
  */
-public class Client {
+public class GameClient {
 
     /**
      * Das derzeit laufende Level.
@@ -49,7 +49,7 @@ public class Client {
     /**
      * Der Spieler.
      */
-    public static Player player;
+    public static PlayerCharakter player;
     /**
      * Aktuell gültiger Gametick.
      * Heißt frozen, weil er während der Grafikberechnung eingefroren wird.
@@ -92,9 +92,9 @@ public class Client {
      */
     private static EquippedItems equippedItems;
     /**
-     * Wieviel Geld der Spieler gerade besitzt
+     * Wieviel Materialien der Spieler gerade besitzt
      */
-    private static int money;
+    private static int materials[] = new int[Settings.NUMBER_OF_MATERIALS];
     /**
      * Die Logik-Tickrate in ms Abstand zwischen den Ticks.
      */
@@ -103,10 +103,6 @@ public class Client {
      * Der Timer, der die Ticks hochzählt.
      */
     private static Timer tickTimer;
-    /**
-     * TCP-Sender zum Server
-     */
-    private static ClientMessageSender msgSender;
     /**
      * Das Client-Terminal.
      */
@@ -119,7 +115,6 @@ public class Client {
      */
     public static void startClient(String ip) {
         network = new ClientNetwork();
-        msgSender = new ClientMessageSender();
         network2 = new ClientNetwork2();
         initMainloop = new InitialMainloop();
         initMainloop.stop();
@@ -148,7 +143,7 @@ public class Client {
      *
      * @return der eigene Spieler
      */
-    public static Player getPlayer() {
+    public static PlayerCharakter getPlayer() {
         return player;
     }
 
@@ -176,7 +171,7 @@ public class Client {
      * @param clientID die ClientID, die der Client verwenden soll
      */
     public static void setClientID(byte clientID) {
-        Client.clientID = clientID;
+        GameClient.clientID = clientID;
     }
 
     /**
@@ -290,12 +285,12 @@ public class Client {
         inventorySlots[slot] = null;
     }
 
-    public static int getMoney() {
-        return money;
+    public static int getMaterial(int material) {
+        return materials[material];
     }
 
-    public static void addMoney(int amount) {
-        money += amount;
+    public static void setMaterial(int material, int amount) {
+        materials[material] = amount;
     }
 
     /**
@@ -313,13 +308,6 @@ public class Client {
     }
 
     /**
-     * @return the msgSender
-     */
-    public static ClientMessageSender getMsgSender() {
-        return msgSender;
-    }
-
-    /**
      * Liefert die Engine
      *
      * @return the engine
@@ -334,9 +322,9 @@ public class Client {
      * @param aEngine the engine to set
      */
     public static void setEngine(Engine aEngine) {
-        if (Client.engine != null) {
+        if (GameClient.engine != null) {
             throw new IllegalArgumentException("Engine already set!");
         }
-        Client.engine = aEngine;
+        GameClient.engine = aEngine;
     }
 }

@@ -76,7 +76,7 @@ public class ClientNetwork {
 	    udpSocket = new DatagramSocket(Settings.CLIENT_UDPPORT);
 	    serverAdr = serverAddress.getAddress();
 
-	    Client.getNetwork2().connect(serverAdr, Settings.SERVER_UDPPORT2);
+	    GameClient.getNetwork2().connect(serverAdr, Settings.SERVER_UDPPORT2);
 
 	    receiveData();
 	} catch (IOException ex) {
@@ -180,7 +180,7 @@ public class ClientNetwork {
      * @param pack das Datenpaket
      */
     private synchronized void preExecutePacket(DatagramPacket pack) {
-	NetStats.pushTickDelay(Bits.getInt(pack.getData(), 1) - Client.frozenGametick);
+	NetStats.pushTickDelay(Bits.getInt(pack.getData(), 1) - GameClient.frozenGametick);
 	byte[] data = pack.getData();
 	byte cmd = data[0];
 	switch (cmd) {
@@ -208,9 +208,9 @@ public class ClientNetwork {
 		break;
 	    case Settings.NET_UDP_CMD_TICK_SYNC_PING:
 		// Tick syncen:
-		Client.tickrate = Bits.getInt(data, 5);
-		if (Client.startTickCounting(Bits.getInt(data, 1))) {
-		    Client.terminal.info("resync complete");
+		GameClient.tickrate = Bits.getInt(data, 5);
+		if (GameClient.startTickCounting(Bits.getInt(data, 1))) {
+		    GameClient.terminal.info("resync complete");
 		}
 		// Antworten:
 		ackTickSync();
@@ -249,7 +249,7 @@ public class ClientNetwork {
      */
     private synchronized DatagramPacket getNextComputeable() {
 	DatagramPacket p = sortedQueue.peek();
-	if (p != null && Bits.getInt(p.getData(), 1) <= Client.frozenGametick) {
+	if (p != null && Bits.getInt(p.getData(), 1) <= GameClient.frozenGametick) {
 	    sortedQueue.removeFirst();
 	    return p;
 	}
@@ -265,12 +265,12 @@ public class ClientNetwork {
 	    computePacket(p);
 	}
 	// Einmal pro Sekunde:
-	if (Client.frozenGametick % (1000 / Client.tickrate) == 0) {
+	if (GameClient.frozenGametick % (1000 / GameClient.tickrate) == 0) {
 	    lastPingTime = System.currentTimeMillis();
 	    // UDP-Pingpaket schicken
 	    byte[] udp = new byte[6];
-	    udp[0] = Client.getClientID();
-	    Bits.putInt(udp, 1, Client.frozenGametick);
+	    udp[0] = GameClient.getClientID();
+	    Bits.putInt(udp, 1, GameClient.frozenGametick);
 	    udp[5] = Settings.NET_UDP_CMD_PING;
 	    udpSend(udp);
 	}
@@ -304,7 +304,7 @@ public class ClientNetwork {
 		for (int i = 0; i < numberOfCharUpdates; i++) {
 		    int netID = Bits.getInt(pack, 32 + (32 * i));
 		    // Diese Einheit bekannt?
-		    Char c = Client.netIDMap.get(netID);
+		    Char c = GameClient.netIDMap.get(netID);
 		    if (c != null) {
 			// Bewegung setzen:
 			Movement m = new Movement(Bits.getFloat(pack, 36 + (32 * i)), Bits.getFloat(pack, 40 + (32 * i)), Bits.getFloat(pack, 44 + (32 * i)), Bits.getFloat(pack, 48 + (32 * i)), Bits.getInt(pack, 52 + (32 * i)), Bits.getFloat(pack, 56 + (32 * i)));
@@ -315,20 +315,20 @@ public class ClientNetwork {
 		}
 		break;
 	    case Settings.NET_UDP_CMD_ADD_ENTITY:
-		if (!Client.netIDMap.containsKey(Bits.getInt(pack, 33))) {
+		if (!GameClient.netIDMap.containsKey(Bits.getInt(pack, 33))) {
 		    byte type = pack[32];
 		    switch (type) {
 			case 2:
-			    Player pl = new Player(Bits.getInt(pack, 33));
-			    Client.netIDMap.put(pl.netID, pl);
+			    PlayerCharakter pl = new PlayerCharakter(Bits.getInt(pack, 33));
+			    GameClient.netIDMap.put(pl.netID, pl);
 			    break;
 			case 3:
 			    Enemy en = new Enemy(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
-			    Client.netIDMap.put(en.netID, en);
+			    GameClient.netIDMap.put(en.netID, en);
 			    break;
 			case 4:
 			    Bullet bu = new Bullet(Bits.getInt(pack, 33), Bits.getInt(pack, 37));
-			    Client.netIDMap.put(bu.netID, bu);
+			    GameClient.netIDMap.put(bu.netID, bu);
 			    break;
 			default:
 			    System.out.println("WARN: Unknown charTypeID (was " + type + ")");
@@ -336,9 +336,9 @@ public class ClientNetwork {
 		}
 		break;
 	    case Settings.NET_UDP_CMD_DEL_ENTITY:
-		if (Client.netIDMap.containsKey(Bits.getInt(pack, 5))) {
+		if (GameClient.netIDMap.containsKey(Bits.getInt(pack, 5))) {
 		    // Löschen
-		    Client.netIDMap.remove(Bits.getInt(pack, 5));
+		    GameClient.netIDMap.remove(Bits.getInt(pack, 5));
 		}
 		break;
 	    case Settings.NET_UDP_CMD_PONG:
@@ -355,7 +355,7 @@ public class ClientNetwork {
      */
     private void ackTickSync() {
 	byte[] b = new byte[10];
-	b[0] = Client.getClientID();
+	b[0] = GameClient.getClientID();
 	// Tick 0 simulieren
 	Bits.putInt(b, 1, 0);
 	b[5] = Settings.NET_UDP_CMD_TICK_SYNC_PONG;
@@ -368,8 +368,8 @@ public class ClientNetwork {
      * @param m das erhaltene Movement
      */
     private void ackMove(byte[] b) {
-	b[0] = Client.getClientID();
-	Bits.putInt(b, 1, Client.frozenGametick);
+	b[0] = GameClient.getClientID();
+	Bits.putInt(b, 1, GameClient.frozenGametick);
 	b[5] = Settings.NET_UDP_CMD_ACK_MOVE;
 	udpSend(b);
     }
@@ -381,8 +381,8 @@ public class ClientNetwork {
      */
     private void ackNewChar(int netID) {
 	byte[] b = new byte[10];
-	b[0] = Client.getClientID();
-	Bits.putInt(b, 1, Client.frozenGametick);
+	b[0] = GameClient.getClientID();
+	Bits.putInt(b, 1, GameClient.frozenGametick);
 	b[5] = Settings.NET_UDP_CMD_ACK_ADD_ENTITY;
 	Bits.putInt(b, 6, netID);
 	udpSend(b);
@@ -395,8 +395,8 @@ public class ClientNetwork {
      */
     private void ackDelChar(int netID) {
 	byte[] b = new byte[10];
-	b[0] = Client.getClientID();
-	Bits.putInt(b, 1, Client.frozenGametick);
+	b[0] = GameClient.getClientID();
+	Bits.putInt(b, 1, GameClient.frozenGametick);
 	b[5] = Settings.NET_UDP_CMD_ACK_DEL_ENTITY;
 	Bits.putInt(b, 6, netID);
 	udpSend(b);

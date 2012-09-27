@@ -75,7 +75,7 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
-        return ((int) (16f * (x + ((Client.frozenGametick - startTick) * speed * vX)))) / 16f;
+        return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
     }
 
     /**
@@ -84,7 +84,7 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
-        return ((int) (16f * (y + ((Client.frozenGametick - startTick) * speed * vY)))) / 16f;
+        return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
     }
 
     /**
