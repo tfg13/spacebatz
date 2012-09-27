@@ -117,7 +117,7 @@ public class GameClient {
         network = new ClientNetwork();
         network2 = new ClientNetwork2();
         initMainloop = new InitialMainloop();
-        initMainloop.stop();
+        initMainloop.start();
         netIDMap = new HashMap<>();
 
         equippedItems = new EquippedItems();

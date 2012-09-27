@@ -56,14 +56,14 @@ public class InitialMainloop {
     /**
      * Stoppt den InitialMainloop, so dass der der Engine übernehmen kann.
      */
-    public void start() {
+    public void stop() {
         initMainloopRun = false;
     }
 
     /**
      * Startet den InitialMainloop.
      */
-    public void stop() {
+    public void start() {
         initMainloopRun = true;
         initMainloop.start();
     }

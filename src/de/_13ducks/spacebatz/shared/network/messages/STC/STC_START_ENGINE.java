@@ -31,7 +31,7 @@ public class STC_START_ENGINE extends FixedSizeSTCCommand {
         t.setName("CLIENT_ENGINE");
         t.setDaemon(false);
         t.start();
-        GameClient.getInitialMainloop().start();
+        GameClient.getInitialMainloop().stop();
     }
 
     /**
