@@ -947,8 +947,13 @@ public class Engine {
     private void sendShootRequest() {
         double dx = Mouse.getX() - Display.getWidth() / 2;
         double dy = Mouse.getY() - Display.getHeight() / 2;
-
-        CTS_SHOOT.sendShoot(dx, dy);
+        double dir = Math.atan2(dy, dx);
+        if (dir < 0) {
+            dir += 2 * Math.PI;
+        }
+        // Fragwürdige Berechnung der Distanz:
+        float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * GameClient.getEngine().tilesX / Display.getWidth();
+        CTS_SHOOT.sendShoot(dir, distance);
     }
 
     /**
