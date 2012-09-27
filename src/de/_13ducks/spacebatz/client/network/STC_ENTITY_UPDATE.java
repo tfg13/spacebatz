@@ -11,7 +11,7 @@
 package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.Char;
-import de._13ducks.spacebatz.client.Client;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -27,7 +27,7 @@ public class STC_ENTITY_UPDATE extends STCCommand {
         int numberOfUpdates = (data.length - 1) / 28;
         for (int i = 0; i < numberOfUpdates; i++) {
             int netID = Bits.getInt(data, i * 28 + 1);
-            Char c = Client.netIDMap.get(netID);
+            Char c = GameClient.netIDMap.get(netID);
             if (c == null) {
                 System.out.println("WARNING: CNET: MOVESYNC: Skipping unknown Char " + netID);
                 continue;
