@@ -127,7 +127,7 @@ public class ItemCarrier extends Char {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, netID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, ((Player) this).getClient().clientID);
             return true;
         } else {
             return false;
