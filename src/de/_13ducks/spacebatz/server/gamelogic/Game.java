@@ -163,23 +163,20 @@ public class Game {
      * Berechnet die GameLogic für einen Tick.
      */
     public void gameTick() {
-        // KI berechnen:
-        AIManager.computeMobBehavior(getEntityManager().getValues());
-        // Kollision berechnen:
-        CollisionManager.computeCollision();
-        // EinheitenPositionen neue berechnen:
-        Server.entityMap.calculateEntityPositions();
-        // Gegner Spawnen:
-        EnemySpawner.tick();
         // den tick für alle Entities berechnen:
         Iterator<Entity> iter = getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity entity = iter.next();
             entity.tick(getTick());
         }
+        // EinheitenPositionen neue berechnen:
+        Server.entityMap.calculateEntityPositions();
+        // Gegner Spawnen:
+        EnemySpawner.tick();
         //Tote Entities aufräumen:
         entityManager.removeDisposableEntities();
-
+        // Kollision berechnen: (Muss zuletzt berechnet werden, da sonst Gegner durch Wände laufen können)
+        CollisionManager.computeCollision();
     }
 
     /**

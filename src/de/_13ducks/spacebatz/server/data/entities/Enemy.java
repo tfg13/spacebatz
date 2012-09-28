@@ -11,7 +11,9 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.gamelogic.AIManager;
+import de._13ducks.spacebatz.server.ai.Behaviour;
+import de._13ducks.spacebatz.server.ai.StandardMobBehaviour;
+
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -31,10 +33,7 @@ public class Enemy extends Char {
      */
     private Char myTarget;
     private int enemylevel;
-    /**
-     * Der KI-Typ des Gegners gibt an wie sich der Gegener verhält
-     */
-    private int AiType;
+    private Behaviour behaviour;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -46,19 +45,20 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
-        AiType = AIManager.AITYPE_STANDARD; // Standard-KI
+
+        behaviour = new StandardMobBehaviour(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
-        
+
         getProperties().setHitpoints(estats.getHealthpoints());
         //getProperties().setDamage(estats.getDamage());
         getProperties().setSightrange(estats.getSightrange());
         //getProperties().setPictureId(estats.getPicture());
-        
-        
+
+
         speed = estats.getSpeed();
         this.enemylevel = estats.getEnemylevel();
-        
+
     }
 
     /**
@@ -93,25 +93,16 @@ public class Enemy extends Char {
      */
     public void attack(Char c) {
     }
-    
+
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 4;
     }
-    
+
     @Override
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
         Bits.putInt(b, super.byteArraySize() + offset, enemytypeID);
-    }
-
-    /**
-     * Gibt den KI-Typ dieses Gegners zurück
-     *
-     * @return der KI-Typ des GEgners
-     */
-    public int getAiType() {
-        return AiType;
     }
 
     /**
@@ -120,9 +111,10 @@ public class Enemy extends Char {
     public int getEnemylevel() {
         return enemylevel;
     }
-    
+
     @Override
     public void tick(int gameTick) {
         super.tick(gameTick);
+        behaviour.tick(gameTick);
     }
 }
