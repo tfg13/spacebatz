@@ -368,6 +368,6 @@ public class Entity {
     /**
      * Berechnet einen gameTick für die Entity.
      */
-    public void tick() {
+    public void tick(int gameTick) {
     }
 }

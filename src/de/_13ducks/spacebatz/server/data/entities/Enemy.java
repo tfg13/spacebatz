@@ -49,16 +49,16 @@ public class Enemy extends Char {
         AiType = AIManager.AITYPE_STANDARD; // Standard-KI
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
-
+        
         getProperties().setHitpoints(estats.getHealthpoints());
         //getProperties().setDamage(estats.getDamage());
         getProperties().setSightrange(estats.getSightrange());
         //getProperties().setPictureId(estats.getPicture());
         
-
+        
         speed = estats.getSpeed();
         this.enemylevel = estats.getEnemylevel();
-
+        
     }
 
     /**
@@ -93,12 +93,12 @@ public class Enemy extends Char {
      */
     public void attack(Char c) {
     }
-
+    
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 4;
     }
-
+    
     @Override
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
@@ -119,5 +119,10 @@ public class Enemy extends Char {
      */
     public int getEnemylevel() {
         return enemylevel;
+    }
+    
+    @Override
+    public void tick(int gameTick) {
+        super.tick(gameTick);
     }
 }

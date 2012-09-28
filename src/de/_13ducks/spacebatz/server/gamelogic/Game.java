@@ -175,7 +175,7 @@ public class Game {
         Iterator<Entity> iter = getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
             Entity entity = iter.next();
-            entity.tick();
+            entity.tick(getTick());
         }
         //Tote Entities aufräumen:
         entityManager.removeDisposableEntities();

@@ -93,8 +93,8 @@ public abstract class Char extends Entity {
      * Berechnet alle Effekte und entfernt abgelaufene Effekte.
      */
     @Override
-    public final void tick() {
-        super.tick();
+    public void tick(int gametick) {
+        super.tick(gametick);
         Iterator<Effect> iter = effects.iterator();
         while (iter.hasNext()) {
             Effect effect = iter.next();
