@@ -29,6 +29,10 @@ import java.util.LinkedList;
  * Dabei wird grundsätzlich das ältere System mit der "Movement"-Klasse weiter verwendet, allerdings werden Entitys nicht mehr gepollt, sondern benachrichtigen
  * diesen Synchronisierer von sich aus. Hier wird dann entschieden, wem die Änderungen mitgeteilt werden müssen und wem nicht.
  *
+ * Weiter wird auch die Map (das Level) auf diese Weise übertragen: Der Client bekommt die Texturdaten erst, wenn er in der Nähe ist.
+ * Das beschleunigt den Spielstart massiv und entlastet das Netzwerksystem zu Beginn.
+ * Änderungen an der Map werden derzeit aber noch manuell übertragen.
+ *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class AutoSynchronizer {
@@ -37,12 +41,16 @@ public class AutoSynchronizer {
      * Wie weit in Client in X-Richtung sehen kann.
      * Denn so weit wird dann auch synchronisiert.
      */
-    private static final int UPDATE_AREA_X_HALF = 20;
+    private static final int UPDATE_AREA_X_DIST = 20;
     /**
      * Wie weit in Client in Y-Richtung sehen kann.
      * Denn so weit wird dann auch synchronisiert.
      */
-    private static final int UPDATE_AREA_Y_HALF = 15;
+    private static final int UPDATE_AREA_Y_DIST = 15;
+    /**
+     * Wieviele Chunks des Levels in jede Richtung geupdated werden.
+     */
+    private static final int UPDATE_LEVEL_DIST = 2;
     /**
      * Speichert Entities, deren Bewegung sich geändert hat, zwischen.
      */
@@ -80,10 +88,11 @@ public class AutoSynchronizer {
      * In dieser Methode wird berechnet, wer welche Daten (aus updatedEntities) gesendet bekommt.
      */
     void tick() {
+        // Berechnung der Einheitenbewegungen für alle Clients
         for (Client c : Server.game.clients.values()) {
             ClientContext2 context = c.getNetworkConnection().context;
             // Entities, die jetzt neu in Reichweite des Clients sind:
-            LinkedList<Entity> entitiesInArea = Server.entityMap.getEntitiesInArea((int) c.getPlayer().getX() - UPDATE_AREA_X_HALF, (int) c.getPlayer().getY() - UPDATE_AREA_Y_HALF, (int) c.getPlayer().getX() + UPDATE_AREA_X_HALF, (int) c.getPlayer().getY() + UPDATE_AREA_Y_HALF);
+            LinkedList<Entity> entitiesInArea = Server.entityMap.getEntitiesInArea((int) c.getPlayer().getX() - UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() - UPDATE_AREA_Y_DIST, (int) c.getPlayer().getX() + UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() + UPDATE_AREA_Y_DIST);
             for (Entity e : entitiesInArea) {
                 if (!context.tracks(e) && !removedEntities.containsKey(e)) {
                     context.track(e);
@@ -114,6 +123,31 @@ public class AutoSynchronizer {
         updatedEntities.clear();
         removedEntities.clear();
 
+        // Neue Mapbereiche?
+        for (Client c : Server.game.clients.values()) {
+            ClientContext2 context = c.getNetworkConnection().context;
+
+            int playerX = ((int) c.getPlayer().getX()) / 8;
+            int playerY = ((int) c.getPlayer().getY()) / 8;
+            playerX -= UPDATE_LEVEL_DIST;
+            playerY -= UPDATE_LEVEL_DIST;
+            if (playerX < 0) {
+                playerX = 0;
+            }
+            if (playerY < 0) {
+                playerY = 0;
+            }
+
+            for (int x = playerX; x < playerX + UPDATE_LEVEL_DIST * 2 + 1; x++) {
+                for (int y = playerY; y < playerY + UPDATE_LEVEL_DIST * 2 + 1; y++) {
+                    if (!context.chunkLoaded(x, y)) {
+                        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TRANSFER_CHUNK, craftTransferChunkCommand(x, y)), c);
+                        context.setChunkLoaded(x, y);
+                    }
+                }
+            }
+
+        }
     }
 
     /**
@@ -164,6 +198,40 @@ public class AutoSynchronizer {
     private byte[] craftRemoveCommand(Entity e) {
         byte[] data = new byte[4];
         Bits.putInt(data, 0, e.netID);
+        return data;
+    }
+
+    /**
+     * Bastelt ein Chunk-Transfer für den gegebenen Chunk
+     *
+     * @param x x-Koordinate des Chunks
+     * @param y y-Koordinate des Chunks
+     * @return die transfer-Daten
+     */
+    private byte[] craftTransferChunkCommand(int x, int y) {
+        int[][] ground = Server.game.getLevel().getGround();
+        boolean[][] col = Server.game.getLevel().getCollisionMap();
+        byte[] data = new byte[8 * 8 * 4 + 8 + 8];
+        Bits.putInt(data, 0, x);
+        Bits.putInt(data, 4, y);
+        int dataIndex = 8;
+        // Boden
+        for (int gx = 0; gx < 8; gx++) {
+            for (int gy = 0; gy < 8; gy++) {
+                Bits.putInt(data, dataIndex, ground[x * 8 + gx][y * 8 + gy]);
+                dataIndex += 4;
+            }
+        }
+        // Col
+        for (int gx = 0; gx < 8; gx++) {
+            byte row = 0;
+            for (int gy = 0; gy < 8; gy++) {
+                if (col[x][y]) {
+                    row |= 1 << gy;
+                }
+            }
+            data[dataIndex++] = row;
+        }
         return data;
     }
 }

@@ -7,36 +7,32 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
+ * Setzt die Größe eines neuen Levels.
+ * Der Inhalt des Levels wird dynamisch nachgeladen
  *
  * @author michael
  */
-public class STC_TRANSFER_LEVEL extends STCCommand {
+public class STC_CHANGE_LEVEL extends STCCommand {
 
     @Override
     public void execute(byte[] data) {
-        try {
-            ObjectInputStream is = new ObjectInputStream(new GZIPInputStream(new java.io.ByteArrayInputStream(data)));
-            Level myLevel = (Level) is.readObject();
-            GameClient.currentLevel = myLevel;
-        } catch (IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
+        GameClient.currentLevel = new Level(Bits.getInt(data, 0), Bits.getInt(data, 4));
     }
 
     @Override
     public boolean isVariableSize() {
-        throw new IllegalStateException("STC_TRANSFER_LEVEL wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+        return false;
     }
 
     @Override
     public int getSize(byte sizeData) {
-        throw new IllegalStateException("STC_TRANSFER_LEVEL wird nie als einzelpacket gesendet, also muss es seine Größe nicht wissen.");
+        return 8;
     }
 
     /**
@@ -45,6 +41,9 @@ public class STC_TRANSFER_LEVEL extends STCCommand {
      * @param client der Client, an den gesendet wird
      */
     public static void sendLevel(Client client) {
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_TRANSFER_LEVEL, Server.game.getSerializedLevel()), client);
+        byte[] data = new byte[8];
+        Bits.putInt(data, 0, Server.game.getLevel().getSizeX());
+        Bits.putInt(data, 4, Server.game.getLevel().getSizeY());
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_CHANGE_LEVEL, data), client);
     }
 }

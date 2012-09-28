@@ -32,7 +32,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -132,7 +132,8 @@ public class ClientNetwork2 {
         cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
         cmdMap[Settings.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
         cmdMap[Settings.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
-        cmdMap[Settings.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x84
+        cmdMap[Settings.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
+        cmdMap[Settings.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
         registerSTCCommand(Settings.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
@@ -148,7 +149,7 @@ public class ClientNetwork2 {
         registerSTCCommand(Settings.NET_STC_START_ENGINE, new STC_START_ENGINE());
         registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ITEMS, new STC_TRANSFER_ITEMS());
         registerSTCCommand(Settings.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
-        registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_LEVEL, new STC_TRANSFER_LEVEL());
+        registerSTCCommand(Settings.NET_CHANGE_LEVEL, new STC_CHANGE_LEVEL());
         registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
     }
 

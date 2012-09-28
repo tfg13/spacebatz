@@ -45,7 +45,7 @@ public class LevelGenerator {
         ArrayList<Circle> circleList = new ArrayList<>();
         ArrayList<Bridge> bridgeList;
 
-        level = new ServerLevel(1000, 1000);
+        level = new ServerLevel(1024, 1024);
         ground = level.getGround();
 
         random = new Random(System.nanoTime());
