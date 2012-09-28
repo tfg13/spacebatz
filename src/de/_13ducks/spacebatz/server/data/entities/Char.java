@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.shared.PropertyList;
 import java.util.ArrayList;

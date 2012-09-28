@@ -1,13 +1,14 @@
-package de._13ducks.spacebatz.server.data.entities;
+package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.entities.Char;
 import java.util.HashMap;
 
 /**
  *
  * @author michael
  */
-class SpellBook {
+public class SpellBook {
 
     private HashMap<Byte, Ability> abilities;
 
