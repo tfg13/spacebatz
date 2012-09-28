@@ -37,12 +37,12 @@ public class AutoSynchronizer {
      * Wie weit in Client in X-Richtung sehen kann.
      * Denn so weit wird dann auch synchronisiert.
      */
-    private static final int UPDATE_AREA_X_HALF = 10;
+    private static final int UPDATE_AREA_X_HALF = 20;
     /**
      * Wie weit in Client in Y-Richtung sehen kann.
      * Denn so weit wird dann auch synchronisiert.
      */
-    private static final int UPDATE_AREA_Y_HALF = 10;
+    private static final int UPDATE_AREA_Y_HALF = 15;
     /**
      * Speichert Entities, deren Bewegung sich geändert hat, zwischen.
      */
