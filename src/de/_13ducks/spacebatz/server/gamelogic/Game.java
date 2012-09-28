@@ -19,19 +19,17 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_LEVEL;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -62,10 +60,6 @@ public class Game {
      */
     private ServerLevel level;
     /**
-     * Das Serialisierte Level
-     */
-    private byte[] serializedLevel;
-    /**
      * Die serialistierten enemytypes
      */
     private byte[] serializedEnemyTypes;
@@ -87,24 +81,6 @@ public class Game {
         level = LevelGenerator.generateLevel();
         itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
-
-        // Level serialisieren, damit es später schnell an Clients gesendet werden kann:
-
-        try {
-            ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            GZIPOutputStream zipOut = new GZIPOutputStream(bs);
-            ObjectOutputStream os = new ObjectOutputStream(zipOut);
-            os.writeObject(level);
-            os.flush();
-            bs.flush();
-            bs.close();
-            os.close();
-            serializedLevel = bs.toByteArray();
-            System.out.println("Levelsize after GZIP compression: " + serializedLevel.length);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
 
         // Enemytypes serialisieren, damit es später schnell an Clients gesendet werden kann:
         try {
@@ -131,8 +107,7 @@ public class Game {
      */
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
-            //STC_SET_CLIENT.sendSetClientID(client);
-            STC_TRANSFER_LEVEL.sendLevel(client);
+            STC_CHANGE_LEVEL.sendLevel(client);
             STC_TRANSFER_ITEMS.sendAllItems(client, getItemMap());
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
@@ -144,15 +119,6 @@ public class Game {
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
-    }
-
-    /**
-     * Gibt die bytes des serialisierten Levels zurück
-     *
-     * @return die bytes des serialisierten levels
-     */
-    public byte[] getSerializedLevel() {
-        return serializedLevel;
     }
 
     /**

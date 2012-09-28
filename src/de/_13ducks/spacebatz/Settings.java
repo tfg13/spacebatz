@@ -68,6 +68,10 @@ public final class Settings {
      */
     public static final int NET_ENTITY_REMOVE = 0x85;
     /**
+     * Ein noch unbekannter Chunk wird übertragen.
+     */
+    public static final int NET_TRANSFER_CHUNK = 0x86;
+    /**
      * Die X-Auflösung der Grafikausgabe.
      */
     public static final int CLIENT_GFX_RES_X = 800;
@@ -180,7 +184,7 @@ public final class Settings {
     /**
      * Die cmdID für Level-senden
      */
-    public static final byte NET_TCP_CMD_TRANSFER_LEVEL = 20;
+    public static final byte NET_CHANGE_LEVEL = 20;
     /**
      * Die cmdID für Char mit Angriff / Bullet treffen
      */

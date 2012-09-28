@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.network;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import java.util.HashMap;
 
@@ -24,6 +25,7 @@ class ClientContext2 {
      * Alle Entities, die derzeit getrackt werden.
      */
     private HashMap<Entity, Object> trackedEntities = new HashMap<>();
+    private boolean[][] loadedChunks = new boolean[Server.game.getLevel().getSizeX() / 8][Server.game.getLevel().getSizeY() / 8];
 
     /**
      * Aufrufen, um herauszufinden, ob ein Client eine bestimmte Entity gerade trackt.
@@ -43,5 +45,26 @@ class ClientContext2 {
      */
     void track(Entity e) {
         trackedEntities.put(e, null);
+    }
+
+    /**
+     * Findet heraus, ob der gegebene Chunk dem Client bereits gesendet wurde.
+     *
+     * @param x x-Koordinate des Chunks
+     * @param y y-Koordinate des Chunks
+     * @return true, wenn geladen (bekannt)
+     */
+    boolean chunkLoaded(int x, int y) {
+        return loadedChunks[x][y];
+    }
+
+    /**
+     * Aufrufen, wenn dem Client ein Chunk geschickt wurde, der fortan auf Änderungen gecheckt werden muss.
+     *
+     * @param x x-Koordinate des Chunks
+     * @param y y-Koordinate des Chunks
+     */
+    void setChunkLoaded(int x, int y) {
+        loadedChunks[x][y] = true;
     }
 }

@@ -39,6 +39,9 @@ public class Level implements java.io.Serializable {
      * Konstruktor, wird vom Levelgenerator augerufen
      */
     public Level(int xSize, int ySize) {
+        if (xSize % 8 != 0 || ySize % 8 != 0) {
+            throw new IllegalArgumentException("Level size must be a multiple of 8");
+        }
         this.sizeX = xSize;
         this.sizeY = ySize;
         ground = new int[xSize][ySize];
