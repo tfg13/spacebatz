@@ -265,9 +265,6 @@ public class ServerNetwork2 {
         ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
         Client newClient = new Client(clientConnection, Server.game.newClientID());
         clientConnection.setClient(newClient);
-        pendingClients.add(newClient);
-
-
         Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
         connectAnswer[0] |= 0x40;
         // Aktuellen Tick
@@ -276,6 +273,7 @@ public class ServerNetwork2 {
         // Senden
         DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
         socket.send(pack);
+        pendingClients.add(newClient);
         System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
     }
 
