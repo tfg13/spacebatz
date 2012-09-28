@@ -33,6 +33,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -129,28 +130,28 @@ public class ClientNetwork2 {
      */
     public ClientNetwork2() {
         cmdMap[0x80] = new STC_ACK();
-        cmdMap[Settings.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
-        cmdMap[Settings.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
-        cmdMap[Settings.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
-        cmdMap[Settings.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
-        cmdMap[Settings.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
-        registerSTCCommand(Settings.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
-        registerSTCCommand(Settings.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
-        registerSTCCommand(Settings.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
-        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_GROUND, new STC_BROADCAST_GROUND_CHANGE());
-        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_COLLISION, new STC_CHANGE_COLLISION());
-        registerSTCCommand(Settings.NET_TCP_CMD_SWITCH_WEAPON, new STC_SWITCH_WEAPON());
-        registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM, new STC_GRAB_ITEM());
-        registerSTCCommand(Settings.NET_TCP_CMD_GRAB_ITEM_TO_STACK, new STC_GRAB_ITEM_TO_STACK());
-        registerSTCCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, new STC_ITEM_DROP());
-        registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ENEMYTYPES, new STC_TRANSFER_ENEMYTYPES());
-        registerSTCCommand(Settings.NET_STC_SET_CLIENT, new STC_SET_CLIENT());
-        registerSTCCommand(Settings.NET_STC_SET_PLAYER, new STC_SET_PLAYER());
-        registerSTCCommand(Settings.NET_STC_START_ENGINE, new STC_START_ENGINE());
-        registerSTCCommand(Settings.NET_TCP_CMD_TRANSFER_ITEMS, new STC_TRANSFER_ITEMS());
-        registerSTCCommand(Settings.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
-        registerSTCCommand(Settings.NET_CHANGE_LEVEL, new STC_CHANGE_LEVEL());
-        registerSTCCommand(Settings.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
+        cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
+        cmdMap[MessageIDs.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
+        cmdMap[MessageIDs.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
+        cmdMap[MessageIDs.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
+        cmdMap[MessageIDs.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_GROUND, new STC_BROADCAST_GROUND_CHANGE());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_COLLISION, new STC_CHANGE_COLLISION());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_SWITCH_WEAPON, new STC_SWITCH_WEAPON());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_GRAB_ITEM, new STC_GRAB_ITEM());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_GRAB_ITEM_TO_STACK, new STC_GRAB_ITEM_TO_STACK());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_SPAWN_ITEM, new STC_ITEM_DROP());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_TRANSFER_ENEMYTYPES, new STC_TRANSFER_ENEMYTYPES());
+        registerSTCCommand(MessageIDs.NET_STC_SET_CLIENT, new STC_SET_CLIENT());
+        registerSTCCommand(MessageIDs.NET_STC_SET_PLAYER, new STC_SET_PLAYER());
+        registerSTCCommand(MessageIDs.NET_STC_START_ENGINE, new STC_START_ENGINE());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_TRANSFER_ITEMS, new STC_TRANSFER_ITEMS());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
+        registerSTCCommand(MessageIDs.NET_CHANGE_LEVEL, new STC_CHANGE_LEVEL());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
     }
 
     /**
@@ -320,7 +321,7 @@ public class ClientNetwork2 {
             if (cmd.data.length > 128) {
                 byte[][] fragments = MessageFragmenter.fragmentMessage((byte) cmd.cmdID, cmd.data);
                 for (int i = 0; i < fragments.length; i++) {
-                    cmdOutQueue.add(new OutgoingCommand(Settings.NET_FRAGMENTED_MESSAGE, fragments[i]));
+                    cmdOutQueue.add(new OutgoingCommand(MessageIDs.NET_FRAGMENTED_MESSAGE, fragments[i]));
                 }
             } else {
                 cmdOutQueue.add(cmd);

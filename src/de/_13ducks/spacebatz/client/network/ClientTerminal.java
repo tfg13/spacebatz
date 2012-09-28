@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.client.network;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.network.CTS_REQUEST_RCON;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -157,7 +158,7 @@ public class ClientTerminal {
                                     msg[i] = (byte) 7;
                                 }
                                 msg[0] = (byte) length;
-                                GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_DEBUG, msg));
+                                GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_DEBUG, msg));
                             } catch (Exception ex) {
                                 outln("usage: sendsevens x (100*x sevens will be sent)");
                             }
@@ -279,7 +280,6 @@ public class ClientTerminal {
             rconOut = new PrintStream(rconSock.getOutputStream());
             rconRead = new BufferedReader(new InputStreamReader(rconSock.getInputStream()));
             Thread rconReader = new Thread(new Runnable() {
-
                 @Override
                 public void run() {
                     try {

@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,8 +44,8 @@ public class STC_ITEM_DROP extends STCCommand {
      */
     public static void sendItemDrop(byte[] seritem) {
         for (Client c : Server.game.clients.values()) {
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_SPAWN_ITEM, seritem), c);
+            //Server.serverNetwork.sendTcpData(MessageIDs.NET_TCP_CMD_SPAWN_ITEM, seritem, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_SPAWN_ITEM, seritem), c);
         }
     }
 }

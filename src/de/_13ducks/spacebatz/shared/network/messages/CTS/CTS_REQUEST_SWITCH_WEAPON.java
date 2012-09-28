@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 
 /**
@@ -29,6 +30,6 @@ public class CTS_REQUEST_SWITCH_WEAPON extends FixedSizeCTSCommand {
         byte[] b = new byte[1];
         b[0] = slot;
         //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, b);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, b));
+        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_REQUEST_WEAPONSWITCH, b));
     }
 }

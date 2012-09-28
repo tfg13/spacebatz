@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.shared.Movement;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class AutoSynchronizer {
                 if (!context.tracks(e) && !removedEntities.containsKey(e)) {
                     context.track(e);
                     // Einheit bekannt machen:
-                    Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
+                    Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
                 }
             }
             // Updates
@@ -111,12 +112,12 @@ public class AutoSynchronizer {
             }
             if (!updateForClient.isEmpty()) {
                 // Senden
-                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_UPDATE, craftUpdateCommand(updateForClient)), c);
+                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_UPDATE, craftUpdateCommand(updateForClient)), c);
             }
             // Removals
             for (Entity e : removedEntities.keySet()) {
                 if (context.tracks(e)) {
-                    Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_REMOVE, craftRemoveCommand(e)), c);
+                    Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_REMOVE, craftRemoveCommand(e)), c);
                 }
             }
         }
@@ -141,7 +142,7 @@ public class AutoSynchronizer {
             for (int x = playerX; x < playerX + UPDATE_LEVEL_DIST * 2 + 1; x++) {
                 for (int y = playerY; y < playerY + UPDATE_LEVEL_DIST * 2 + 1; y++) {
                     if (!context.chunkLoaded(x, y)) {
-                        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TRANSFER_CHUNK, craftTransferChunkCommand(x, y)), c);
+                        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TRANSFER_CHUNK, craftTransferChunkCommand(x, y)), c);
                         context.setChunkLoaded(x, y);
                     }
                 }

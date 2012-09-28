@@ -1,12 +1,12 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -38,7 +38,7 @@ public class STC_SET_PLAYER extends FixedSizeSTCCommand {
         Bits.putInt(b, 0, player.netID);
         Bits.putFloat(b, 4, (float) player.getX());
         Bits.putFloat(b, 8, (float) player.getY());
-        //Server.serverNetwork.sendTcpData((byte) Settings.NET_STC_SET_PLAYER, b, client);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_STC_SET_PLAYER, b), client);
+        //Server.serverNetwork.sendTcpData((byte) MessageIDs.NET_STC_SET_PLAYER, b, client);
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_SET_PLAYER, b), client);
     }
 }

@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 
 /**
  *
@@ -24,7 +25,7 @@ public class CTS_DISCONNECT extends FixedSizeCTSCommand {
 
     public static void sendDisconnect() {
         //Client.getNetwork().sendTcpData(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[1]);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[0]));
+        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_CLIENT_DISCONNECT, new byte[0]));
 
     }
 }

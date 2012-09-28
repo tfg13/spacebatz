@@ -1,8 +1,7 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.Enemy;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.Engine;
@@ -10,6 +9,7 @@ import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -71,8 +71,8 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
             } else {
                 b[8] = 0;
             }
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHAR_HIT, b, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHAR_HIT, b), c);
+            //Server.serverNetwork.sendTcpData(MessageIDs.NET_TCP_CMD_CHAR_HIT, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, b), c);
         }
     }
 }

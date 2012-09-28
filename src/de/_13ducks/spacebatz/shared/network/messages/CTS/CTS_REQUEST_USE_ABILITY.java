@@ -10,6 +10,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
 import de._13ducks.spacebatz.shared.network.BitDecoder;
 import de._13ducks.spacebatz.shared.network.BitEncoder;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 
 /**
@@ -39,7 +40,7 @@ public class CTS_REQUEST_USE_ABILITY extends FixedSizeCTSCommand {
         encoder.writeByte(ability);
         encoder.writeFloat((float) angle);
         encoder.writeFloat(distance);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_USE_ABILITY, encoder.getBytes()));
+        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_USE_ABILITY, encoder.getBytes()));
 
     }
 }

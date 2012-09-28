@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 
 /**
@@ -22,7 +23,7 @@ public class CTS_MOVE extends FixedSizeCTSCommand {
     }
     
     public static void sendMove(byte dir) {
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_MOVE, new byte[]{dir}));
+        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_MOVE, new byte[]{dir}));
     }
 
 }

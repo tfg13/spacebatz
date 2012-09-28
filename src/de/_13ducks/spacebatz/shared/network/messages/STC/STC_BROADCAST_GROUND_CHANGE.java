@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -41,8 +41,8 @@ public class STC_BROADCAST_GROUND_CHANGE extends FixedSizeSTCCommand {
         Bits.putInt(b, 4, y);
         Bits.putInt(b, 8, newGround);
         for (Client c : Server.game.clients.values()) {
-            //Server.serverNetwork.sendTcpData(Settings.NET_TCP_CMD_CHANGE_GROUND, b, c);
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_GROUND, b), c);
+            //Server.serverNetwork.sendTcpData(MessageIDs.NET_TCP_CMD_CHANGE_GROUND, b, c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_CHANGE_GROUND, b), c);
         }
     }
 }

@@ -1,10 +1,10 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
@@ -46,7 +46,7 @@ public class STC_CHANGE_MATERIAL_AMOUNT extends FixedSizeSTCCommand {
             Bits.putInt(b, 4, material);
             Bits.putInt(b, 8, amount);
 
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, b), c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, b), c);
         }
     }
 }

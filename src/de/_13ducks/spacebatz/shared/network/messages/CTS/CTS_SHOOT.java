@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
 import de._13ducks.spacebatz.shared.network.BitDecoder;
 import de._13ducks.spacebatz.shared.network.BitEncoder;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 
 /**
@@ -41,6 +42,6 @@ public class CTS_SHOOT extends FixedSizeCTSCommand {
         BitEncoder encoder = new BitEncoder();
         encoder.writeFloat((float) dir);
         encoder.writeFloat(distance);
-        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(Settings.NET_CTS_SHOOT, encoder.getBytes()));
+        GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_SHOOT, encoder.getBytes()));
     }
 }

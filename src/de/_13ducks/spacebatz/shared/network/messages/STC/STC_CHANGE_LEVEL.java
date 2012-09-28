@@ -1,16 +1,13 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Setzt die Größe eines neuen Levels.
@@ -44,6 +41,6 @@ public class STC_CHANGE_LEVEL extends STCCommand {
         byte[] data = new byte[8];
         Bits.putInt(data, 0, Server.game.getLevel().getSizeX());
         Bits.putInt(data, 4, Server.game.getLevel().getSizeY());
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_CHANGE_LEVEL, data), client);
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CHANGE_LEVEL, data), client);
     }
 }
