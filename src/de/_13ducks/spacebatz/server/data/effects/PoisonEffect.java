@@ -6,7 +6,6 @@ package de._13ducks.spacebatz.server.data.effects;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Char;
-import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 
 /**
  *
@@ -35,14 +34,14 @@ public class PoisonEffect extends Effect {
     }
 
     @Override
-    public void applyToChar(EffectCarrier affectedChar) {
+    public void applyToChar(Char affectedChar) {
         affectedChar.addTemporaryEffect(this);
         this.affectedChar = affectedChar;
 
     }
 
     @Override
-    public void applyToPosition(double x, double y, EffectCarrier hitChar) {
+    public void applyToPosition(double x, double y, Char hitChar) {
     }
 
     @Override

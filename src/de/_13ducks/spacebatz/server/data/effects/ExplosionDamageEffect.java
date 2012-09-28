@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.server.data.effects;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Char;
-import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
@@ -37,12 +36,12 @@ public class ExplosionDamageEffect extends Effect {
     }
 
     @Override
-    public void applyToChar(EffectCarrier affectedChar) {
+    public void applyToChar(Char affectedChar) {
         // Dieser Effekt wird nicht direkt auf Chars angewandt
     }
 
     @Override
-    public void applyToPosition(double x, double y, EffectCarrier hitChar) {
+    public void applyToPosition(double x, double y, Char hitChar) {
         /**
          * Hier wird der Flächenschaden berechnet und ausgeteilt. hitChar ist der Char der direkt getroffen wurde.
          */

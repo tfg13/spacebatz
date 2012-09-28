@@ -945,16 +945,15 @@ public class Engine {
      * Sagt dem Server, das geschossen werden soll
      */
     private void sendShootRequest() {
-        byte[] data = new byte[4];
         double dx = Mouse.getX() - Display.getWidth() / 2;
         double dy = Mouse.getY() - Display.getHeight() / 2;
         double dir = Math.atan2(dy, dx);
         if (dir < 0) {
             dir += 2 * Math.PI;
         }
-        Bits.putFloat(data, 0, (float) (dir));
-        
-        CTS_SHOOT.sendShoot(data);
+        // Fragwürdige Berechnung der Distanz:
+        float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * GameClient.getEngine().tilesX / Display.getWidth();
+        CTS_SHOOT.sendShoot(dir, distance);
     }
 
     /**

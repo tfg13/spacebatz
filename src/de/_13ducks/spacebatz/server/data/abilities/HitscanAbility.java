@@ -4,7 +4,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
-import de._13ducks.spacebatz.server.data.entities.EffectCarrier;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
@@ -53,7 +52,7 @@ public class HitscanAbility extends WeaponAbility {
 
             for (Char character : charsHit) {
                 for (Effect effect : effects) {
-                    effect.applyToChar((EffectCarrier) character);
+                    effect.applyToChar((Char) character);
                 }
 
                 if (character.getProperties().getHitpoints() <= 0) {
