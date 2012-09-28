@@ -51,7 +51,6 @@ public class MainLoop {
                     Server.debugConsole.executeCommands();
 
                     // Input vom Client holen:
-                    Server.msgInterpreter.interpretAllTcpMessages();
 		    Server.serverNetwork2.inTick();
                     // Wartende Clients akzeptieren:
                     Server.serverNetwork2.initNewClients();

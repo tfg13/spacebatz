@@ -16,7 +16,6 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.Game;
 import de._13ducks.spacebatz.server.gamelogic.MainLoop;
 import de._13ducks.spacebatz.server.network.AutoSynchronizer;
-import de._13ducks.spacebatz.server.network.ServerMessageInterpreter;
 import de._13ducks.spacebatz.server.network.ServerNetwork2;
 
 /**
@@ -26,10 +25,6 @@ import de._13ducks.spacebatz.server.network.ServerNetwork2;
  */
 public final class Server {
 
-    /**
-     * Globale Referenz auf den MessageInterpreter
-     */
-    public static ServerMessageInterpreter msgInterpreter = new ServerMessageInterpreter();
     /**
      * Das laufende Spiel
      */
