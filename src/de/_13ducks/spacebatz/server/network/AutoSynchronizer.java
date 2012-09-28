@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Verwaltet zusammen mit dem neuen ClientContext die Synchronisierung von Entitys mit allen Clients.
@@ -33,13 +34,19 @@ import java.util.Iterator;
 public class AutoSynchronizer {
 
     /**
+     * Wie weit in Client in X-Richtung sehen kann.
+     * Denn so weit wird dann auch synchronisiert.
+     */
+    private static final int UPDATE_AREA_X_HALF = 10;
+    /**
+     * Wie weit in Client in Y-Richtung sehen kann.
+     * Denn so weit wird dann auch synchronisiert.
+     */
+    private static final int UPDATE_AREA_Y_HALF = 10;
+    /**
      * Speichert Entities, deren Bewegung sich geändert hat, zwischen.
      */
     private HashMap<Entity, Object> updatedEntities = new HashMap<>();
-    /**
-     * Speichert neue angelegte Entities zwischen.
-     */
-    private ArrayList<Entity> createdEntities = new ArrayList<>();
     /**
      * Speichert gelöschte Entities zwischen.
      */
@@ -53,18 +60,6 @@ public class AutoSynchronizer {
      */
     public void updateMovement(Entity e) {
         updatedEntities.put(e, null);
-    }
-
-    /**
-     * Muss immer aufgerufen werden, wenn eine neue Entity ins Spiel eingefügt wird.
-     * Informiert Clients in der Nähe
-     * Cached creates zwischen, die Nachricht wird erst am Ende des Ticks verschickt.
-     * Es ist aber problemlos möglich, auch schon Bewegungsdaten für diese Einheit zu deklarieren.
-     *
-     * @param e die neue Entity
-     */
-    public void entityCreated(Entity e) {
-        createdEntities.add(e);
     }
 
     /**
@@ -86,17 +81,22 @@ public class AutoSynchronizer {
      */
     void tick() {
         for (Client c : Server.game.clients.values()) {
-            // Neue Entities
-            for (Entity e : createdEntities) {
-                //TODO: Nur einbauen, wenn in Reichweite!
-                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
+            ClientContext2 context = c.getNetworkConnection().context;
+            // Entities, die jetzt neu in Reichweite des Clients sind:
+            LinkedList<Entity> entitiesInArea = Server.entityMap.getEntitiesInArea((int) c.getPlayer().getX() - UPDATE_AREA_X_HALF, (int) c.getPlayer().getY() - UPDATE_AREA_Y_HALF, (int) c.getPlayer().getX() + UPDATE_AREA_X_HALF, (int) c.getPlayer().getY() + UPDATE_AREA_Y_HALF);
+            for (Entity e : entitiesInArea) {
+                if (!context.tracks(e) && !removedEntities.containsKey(e)) {
+                    context.track(e);
+                    // Einheit bekannt machen:
+                    Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
+                }
             }
             // Updates
             ArrayList<Entity> updateForClient = new ArrayList<>();
             Iterator<Entity> iter = updatedEntities.keySet().iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
-                if (c.getNetworkConnection().context.tracks(e) && !removedEntities.containsKey(e)) {
+                if (context.tracks(e) && !removedEntities.containsKey(e)) {
                     updateForClient.add(e);
                 }
             }
@@ -106,12 +106,11 @@ public class AutoSynchronizer {
             }
             // Removals
             for (Entity e : removedEntities.keySet()) {
-                if (c.getNetworkConnection().context.tracks(e)) {
+                if (context.tracks(e)) {
                     Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(Settings.NET_ENTITY_REMOVE, craftRemoveCommand(e)), c);
                 }
             }
         }
-        createdEntities.clear();
         updatedEntities.clear();
         removedEntities.clear();
 

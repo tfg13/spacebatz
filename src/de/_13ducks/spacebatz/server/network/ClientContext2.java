@@ -32,7 +32,16 @@ class ClientContext2 {
      * @return true, wenn getrackt, false, wenn unbekannt
      */
     boolean tracks(Entity e) {
-        //return trackedEntities.containsKey(e);
-        return true;
+        return trackedEntities.containsKey(e);
+    }
+
+    /**
+     * Aufrufen, um eine Entity einzufügen.
+     * Wenn die Entity bereits getrackt wird passiert nichts.
+     *
+     * @param e die Entity
+     */
+    void track(Entity e) {
+        trackedEntities.put(e, null);
     }
 }
