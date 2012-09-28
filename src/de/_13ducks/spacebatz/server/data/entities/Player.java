@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.server.data.abilities.SummonEnemyAbility;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
@@ -49,7 +50,7 @@ public class Player extends ItemCarrier {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
-
+        getAbilities().setAbility((byte) 0, new SummonEnemyAbility());
     }
 
     /**
@@ -184,5 +185,9 @@ public class Player extends ItemCarrier {
         if (setSelectedweapon(selectedslot)) {
             STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
         }
+    }
+
+    public void useAbility(byte ability, double x, double y) {
+        getAbilities().useAbility(ability, x, y, this);
     }
 }

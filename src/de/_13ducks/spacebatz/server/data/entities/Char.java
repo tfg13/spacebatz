@@ -28,6 +28,7 @@ public abstract class Char extends Entity {
      */
     private PropertyList properties;
     public int attackCooldownTick;
+    private SpellBook abilities;
     /**
      * Liste aller Effekte, die der EffectCarrier gerade hat
      */
@@ -44,6 +45,7 @@ public abstract class Char extends Entity {
     public Char(double x, double y, int netID, byte entityTypeID) {
         super(x, y, netID, entityTypeID);
         properties = new PropertyList();
+        abilities = new SpellBook();
         properties.setHitpoints(Settings.CHARHEALTH);
         properties.setSightrange(10.0);
         effects = new ArrayList<>();
@@ -101,5 +103,12 @@ public abstract class Char extends Entity {
                 iter.remove();
             }
         }
+    }
+
+    /**
+     * @return the abilities
+     */
+    public SpellBook getAbilities() {
+        return abilities;
     }
 }

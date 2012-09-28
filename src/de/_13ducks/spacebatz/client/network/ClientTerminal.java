@@ -138,7 +138,16 @@ public class ClientTerminal {
                             }
                             outln("usage: zoom (>0)");
                             break;
-
+                        case "mobmaster":
+                            try {
+                                int count = Integer.parseInt(words[1]);
+                                for (int i = 0; i < count; i++) {
+                                    GameClient.getEngine().sendAbilityRequest();
+                                }
+                            } catch (Exception ex) {
+                                outln("usage: mobmaster [count] (Will spawn [count] mobs at the cursor)");
+                            }
+                            break;
                         case "sendsevens":
                             try {
                                 int length = Integer.parseInt(words[1]);
@@ -270,6 +279,7 @@ public class ClientTerminal {
             rconOut = new PrintStream(rconSock.getOutputStream());
             rconRead = new BufferedReader(new InputStreamReader(rconSock.getInputStream()));
             Thread rconReader = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     try {

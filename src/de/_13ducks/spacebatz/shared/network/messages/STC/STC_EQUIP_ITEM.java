@@ -35,10 +35,10 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
             }
             GameClient.getInventoryItems().values().remove(item);
         }
- 
-    
+
+
     }
-    
+
     /**
      * Item wird von Client angelegt
      */

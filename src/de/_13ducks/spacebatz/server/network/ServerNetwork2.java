@@ -21,6 +21,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -72,10 +73,12 @@ public class ServerNetwork2 {
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
         registerCTSCommand(Settings.NET_TCP_CMD_CLIENT_DISCONNECT, new CTS_DISCONNECT());
         registerCTSCommand(Settings.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
+        registerCTSCommand(Settings.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
 
         // RCON
         if (Settings.SERVER_ENABLE_RCON) {
             Thread rconThread = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -124,6 +127,7 @@ public class ServerNetwork2 {
         }
         // Listener-Thread starten
         thread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 try {

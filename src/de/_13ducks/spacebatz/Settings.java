@@ -17,6 +17,11 @@ package de._13ducks.spacebatz;
  */
 public final class Settings {
 
+    /***
+     * Fähigkeitsbenutzungsanforderung vom Client
+     */
+    public static final byte NET_CTS_USE_ABILITY = 38;
+
     /**
      * Private, da Utility-Class
      */

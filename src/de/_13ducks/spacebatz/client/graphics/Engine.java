@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -213,6 +214,7 @@ public class Engine {
                 sendShootRequest();
             }
 
+           
             // Mausklick suchen
             if (Mouse.isButtonDown(0)) {
                 if (showinventory) {
@@ -332,6 +334,7 @@ public class Engine {
                 }
             } else {
                 lmbpressed = false;
+                
             }
 
             outer:
@@ -1012,5 +1015,17 @@ public class Engine {
         glVertex3f((float) x + panX - 1, (float) y + panY - 1, 0);
         glEnd();
         glPopMatrix();
+    }
+
+    public void sendAbilityRequest() {
+        double dx = Mouse.getX() - Display.getWidth() / 2;
+        double dy = Mouse.getY() - Display.getHeight() / 2;
+        double dir = Math.atan2(dy, dx);
+        if (dir < 0) {
+            dir += 2 * Math.PI;
+        }
+        // Fragwürdige Berechnung der Distanz:
+        float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * GameClient.getEngine().tilesX / Display.getWidth();
+        CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest((byte) 0, (float) dir, distance);
     }
 }
