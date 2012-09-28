@@ -283,10 +283,12 @@ public class ServerNetwork2 {
      * Muss synchron von der Mainloop aufgerufen werden, initialisiert die Clients.
      */
     public void initNewClients() {
-        for (Client c : pendingClients) {
+        Iterator<Client> iter = pendingClients.iterator();
+        while (iter.hasNext()) {
+            Client c = iter.next();
             Server.game.clientJoined(c);
+            iter.remove();
         }
-        pendingClients.clear();
     }
 
     /**
