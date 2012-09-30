@@ -51,25 +51,13 @@ public final class Settings {
      */
     public static final boolean CLIENT_GFX_VSYNC = true;
     /**
-     * Der Port auf dem der Server auf TCP-Verbindugen wartet.
-     */
-    public static final int SERVER_TCPPORT = 10000;
-    /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */
     public static final int SERVER_RCONPORT = 13946;
     /**
-     * Auf diesem Port ist der Server per UDP zu erreichen. Darf nicht der gleiche sein, wie CLIENT_UDPPORT
-     */
-    public static final int SERVER_UDPPORT = 13947;
-    /**
      * Der primäre UDP-Port des neuen Server-Netzwerksystems. Das neue System benötigt keine festen Ports beim Client mehr.
      */
     public static final int SERVER_UDPPORT2 = 13949;
-    /**
-     * Auf diesem Port ist der Client per UDP zu erreichen. Darf nicht der gleiche sein, wie SERVER_UDPPORT
-     */
-    public static final int CLIENT_UDPPORT = 13948;
     /**
      * Die Server-Tickrate in default-Delay zwischen Ticks. 15 entspricht also einer Tickrate von 66,66666666...
      * Wert darf nicht negativ sein, also nicht über 127 steigen. Die minimal mögliche Server-Tickrate ist also etwa 8 Ticks/s
@@ -79,24 +67,6 @@ public final class Settings {
      * Ob der Server eingehende rcon-Verbindungen akzeptiert.
      */
     public static final boolean SERVER_ENABLE_RCON = true;
-    /**
-     * Wieviel der Server maximal hinter seiner Target-Tickrate sein darf, bevor eine Warnung ausgespuckt wird.
-     */
-    public static final int SERVER_TICKMISS_MAX_NANOS = 125000000;
-    /**
-     * Größe des Empfangspuffers für ein Clientpacket auf Serverseite. NICHT EINFACH VERÄNDERN!
-     */
-    public static final int NET_UDP_CTS_SIZE = 512;
-    /**
-     * Größe des Empfangspuffers für ein Serverpacket auf Clientseite. NICHT EINFACH VERÄNDERN!
-     */
-    public static final int NET_UDP_STC_MAX_SIZE = 512;
-   
-    /**
-     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene Spielfigur sich auch bei den anderen
-     * verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
-     */
-    public static final int NET_TICKSYNC_MAXPING = 100;
     /**
      * Maximale Anzahl Spieler gleichzeitig auf einem Server. Darf ohne Änderungen am Code 127 nicht übersteigen!
      */
@@ -117,10 +87,6 @@ public final class Settings {
      * Die Größe der Chars für Kollision
      */
     public static final double CHARSIZE = 1.8;
-    /**
-     * Die Geschwindigkeit der Chars
-     */
-    public static final double CHARSPEED = 0.16;
     /**
      * Die HP der Chars
      */

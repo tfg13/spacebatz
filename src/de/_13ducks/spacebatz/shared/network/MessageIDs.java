@@ -191,9 +191,4 @@ public class MessageIDs {
      * Die cmdID um allen Spielern von bestimmtem Material zu geben
      */
     public static final byte NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT = 48;
-    /**
-     * Die maximale Ping, für die das Spiel noch flüssig läuft. Eine höhere Einstellung führt dazu, der Spieler alles stärker verzögert sieht, und die eigene Spielfigur sich auch bei den anderen
-     * verzögert bewegt. Eine kleinere Zeit minimiert dieses Problem, wenn aber Pakete länger laufen, kommt es zu lags.
-     */
-    public static final int NET_TICKSYNC_MAXPING = 100;
 }
