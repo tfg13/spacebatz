@@ -160,10 +160,6 @@ public class MessageIDs {
      */
     public static final byte NET_TCP_CMD_DEQUIP_ITEM = 39;
     /**
-     * Client geht offline und meldet sich ab.
-     */
-    public static final byte NET_TCP_CMD_CLIENT_DISCONNECT = 40;
-    /**
      * Client will andere Waffe auswählen
      */
     public static final byte NET_TCP_CMD_REQUEST_WEAPONSWITCH = 41;

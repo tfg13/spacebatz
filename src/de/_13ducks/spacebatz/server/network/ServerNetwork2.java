@@ -11,7 +11,6 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.network.CTS_DISCONNECT;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
@@ -72,7 +71,6 @@ public class ServerNetwork2 {
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_EQUIP, new CTS_EQUIP_ITEM());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, new CTS_REQUEST_ITEM_DEQUIP());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_CLIENT_DISCONNECT, new CTS_DISCONNECT());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
         registerCTSCommand(MessageIDs.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
 
@@ -174,6 +172,10 @@ public class ServerNetwork2 {
                                         byte[] pongData = new byte[]{(byte) 0x80};
                                         DatagramPacket pongPack = new DatagramPacket(pongData, pongData.length, rtClient.getNetworkConnection().getInetAddress(), rtClient.getNetworkConnection().getPort());
                                         socket.send(pongPack);
+                                        break;
+                                    case 1:
+                                        // Regulärer Client-Disconnect
+                                        Server.disconnectClient(rtClient);
                                         break;
                                 }
                                 break;

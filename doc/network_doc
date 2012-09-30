@@ -84,7 +84,13 @@ Connecting to server:
 
 Special modes/Packets:
 BTB:
+    PING:
 	byte 1: NETMODE = 10 (realTime)
 		RT_MODE = 0 (ping)
 			Ping-Packet. CTS is request, STC is answer (PONG)
-	byte 2: clientID (CTS only)
+	byte 2: clientID (CTS only);
+CTS:
+    DISCONNECT:
+    	byte 1: NETMODE = 10 (realTime)
+		RT_MODE = 1 (dc)
+	byte 2: clientID

@@ -533,10 +533,27 @@ public class ClientNetwork2 {
      * Derzeit nur per Terminal erreichbar und auch dort mit Vorsicht zu genießen.
      * Eine Änderungen dieses Wertes wird im Normalfall von kurzen Rucklern/Sprüngen begleitet, bis die Pakete aufgeholt / die Puffer gefüllt sind.
      * Negative Werte sind nicht explizit verboten, sollten aber keinerlei Sinn machen.
+     *
      * @param lerp der neue Lerp-Wert
      */
     void setLerp(int lerp) {
         System.out.println("INFO: NET: Changed lerp to " + lerp + " upon user request");
         this.lerp = lerp;
+    }
+
+    /**
+     * Beendet die Verbindung zum Server auf normale Art und Weise.
+     * Dieses Paket wird besonders priorisiert und kann noch vor alten Datenpaketen ankommen und diese damit verwerfen lassen!
+     */
+    public void disconnect() {
+        try {
+            byte[] dcData = new byte[2];
+            dcData[0] = (byte) 0x81;
+            dcData[1] = GameClient.getClientID();
+            DatagramPacket dcPacket = new DatagramPacket(dcData, dcData.length, serverAdr, serverPort);
+            socket.send(dcPacket);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
