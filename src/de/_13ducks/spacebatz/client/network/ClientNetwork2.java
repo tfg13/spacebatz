@@ -527,4 +527,16 @@ public class ClientNetwork2 {
     public int getLerp() {
         return lerp;
     }
+
+    /**
+     * Setzt einen neuen Lerp-Wert. (in Ticks)
+     * Derzeit nur per Terminal erreichbar und auch dort mit Vorsicht zu genießen.
+     * Eine Änderungen dieses Wertes wird im Normalfall von kurzen Rucklern/Sprüngen begleitet, bis die Pakete aufgeholt / die Puffer gefüllt sind.
+     * Negative Werte sind nicht explizit verboten, sollten aber keinerlei Sinn machen.
+     * @param lerp der neue Lerp-Wert
+     */
+    void setLerp(int lerp) {
+        System.out.println("INFO: NET: Changed lerp to " + lerp + " upon user request");
+        this.lerp = lerp;
+    }
 }

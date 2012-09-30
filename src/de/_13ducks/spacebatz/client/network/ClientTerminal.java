@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.network.CTS_REQUEST_RCON;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -163,6 +162,14 @@ public class ClientTerminal {
                                 outln("usage: sendsevens x (100*x sevens will be sent)");
                             }
                             break;
+                        case "lerp":
+                            try {
+                                int lerp = Integer.parseInt(words[1]);
+                                GameClient.getNetwork2().setLerp(lerp);
+                            } catch (NumberFormatException ex) {
+                                outln("usage: lerp [int] (sets client-lerp (in serverticks) to given value)");
+                            }
+                            break;
                         case "about":
                             outln("spacebatz aurora");
                             outln("13ducks PROPRIETARY/CONFIDENTIAL");
@@ -177,9 +184,11 @@ public class ClientTerminal {
                             outln("about");
                             outln("clear");
                             outln("help");
+                            outln("lerp");
                             outln("net_graph");
                             outln("rcon");
                             outln("sendsevens");
+                            outln("zoom");
                             outln("-------------------");
                             break;
                         default:
