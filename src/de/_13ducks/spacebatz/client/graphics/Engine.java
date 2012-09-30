@@ -777,8 +777,8 @@ public class Engine {
             glRectf(0, tilesY, 10, NetStats.netGraph == 2 ? tilesY - 2f : tilesY - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText("delay: spec " + (NET_TICKSYNC_MAXPING / GameClient.tickrate) + " real " + NetStats.getLastTickDelay() + " avg " + NetStats.getAvgTickDelay(), 0, tilesY - .5f);
-            renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
+            renderText("lerp: " + GameClient.getNetwork2().getLerp(), 0, tilesY - .5f);
+            //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
             renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
             if (NetStats.netGraph == 2) {
                 // Einheitenposition:

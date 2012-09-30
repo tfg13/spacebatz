@@ -128,7 +128,7 @@ public final class Settings {
     /**
      * Default-Level des netGraphen. 0 - Aus 1 - + Netzwerkdebug 2 - + GameDebug
      */
-    public static final int CLIENT_NETGRAPH_LEVEL = 0;
+    public static final int CLIENT_NETGRAPH_LEVEL = 2;
     /**
      * Abstand bei der double noch als "gleich" gilt.
      */
