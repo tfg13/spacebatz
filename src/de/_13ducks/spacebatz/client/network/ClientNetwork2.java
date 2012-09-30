@@ -398,7 +398,7 @@ public class ClientNetwork2 {
      * @param cmdID die BefehlsID
      * @param cmd der Befehl selber
      */
-    public void registerSTCCommand(byte cmdID, STCCommand cmd) {
+    public final void registerSTCCommand(byte cmdID, STCCommand cmd) {
         if (cmd == null) {
             throw new IllegalArgumentException("STCCommand must not be null!");
         }
