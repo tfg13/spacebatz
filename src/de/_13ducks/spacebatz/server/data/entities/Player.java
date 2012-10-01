@@ -120,22 +120,6 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Item in leeren Slot anlegen
-     *
-     * @param itemnetID NetID des Items
-     * @param selectedslot ausgewählter Slot
-     */
-    public void clientEquipItem(int itemnetID, byte selectedslot) {
-        Item item = getItems().get(itemnetID);
-        standardAttack.useInAngle(this, speed);
-        // Item anlegen
-        if (equipItem(itemnetID, selectedslot)) {
-            // Wenn erfolgreich, an Client senden
-            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, getClient().clientID);
-        }
-    }
-
-    /**
      * Item ablegen
      *
      * @param slottype Slotart (Waffe, Hut, ...)

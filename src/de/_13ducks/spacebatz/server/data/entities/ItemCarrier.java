@@ -106,7 +106,7 @@ public class ItemCarrier extends Char {
      * @param itemnetID NetID des Items
      * @param selectedslot ausgewählter Slot
      */
-    public boolean equipItem(int itemnetID, byte selectedslot) {
+    public void equipItem(int itemnetID, byte selectedslot) {
         Item item = getItems().get(itemnetID);
         // richtiger Itemtyp für diesen Slot?
         int slottype = (int) item.getItemClass();
@@ -128,9 +128,6 @@ public class ItemCarrier extends Char {
 
             // Item-Anleg-Befehl zum Client senden
             STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, ((Player) this).getClient().clientID);
-            return true;
-        } else {
-            return false;
         }
     }
 
