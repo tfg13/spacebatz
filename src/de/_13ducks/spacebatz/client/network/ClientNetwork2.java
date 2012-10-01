@@ -14,11 +14,13 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
@@ -32,8 +34,6 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
-import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -124,6 +124,10 @@ public class ClientNetwork2 {
      * @todo: änderbar machen.
      */
     private int lerp = 10;
+    /**
+     * Der Zeitpunkt, zu dem der letzte Ping-Request an den Server geschickt wurde.
+     */
+    private long lastPingOut;
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -248,7 +252,7 @@ public class ClientNetwork2 {
                         // blockt
                         socket.receive(pack);
                         byte[] data = Utilities.extractData(pack);
-                        byte mode = data[0];
+                        int mode = data[0] & 0xFF;
                         // NETMODE auswerten:
                         switch (mode >>> 6) {
                             case 0:
@@ -256,6 +260,21 @@ public class ClientNetwork2 {
                                 STCPacket stc = new STCPacket(data);
                                 stc.preCompute();
                                 enqueuePacket(stc);
+                                break;
+                            case 2:
+                                // Realtime
+                                // Mode?
+                                int rtMode = mode & 0x3F;
+                                switch (rtMode) {
+                                    case 0:
+                                        // Ping-Messung abgeschlossen:
+                                        NetStats.ping = (int) (System.currentTimeMillis() - lastPingOut);
+                                        lastPingOut = 0;
+                                        break;
+                                    default:
+                                        System.out.println("WARNING: CNET: Packet with unknown RT-Mode (" + rtMode + ")");
+                                        break;
+                                }
                                 break;
                             default:
                                 System.out.println("WARNING: NET: Ignoring packet with unknown netmode (" + (mode >>> 6) + ")");
@@ -379,7 +398,7 @@ public class ClientNetwork2 {
      * @param cmdID die BefehlsID
      * @param cmd der Befehl selber
      */
-    public void registerSTCCommand(byte cmdID, STCCommand cmd) {
+    public final void registerSTCCommand(byte cmdID, STCCommand cmd) {
         if (cmd == null) {
             throw new IllegalArgumentException("STCCommand must not be null!");
         }
@@ -439,6 +458,19 @@ public class ClientNetwork2 {
      */
     public void outTick() {
         if (connected) {
+            // Bis zu ein Mal pro Sekunde Ping messen:
+            if (serverTick % (1000 / Settings.SERVER_TICKRATE) == 0 && lastPingOut == 0) {
+                try {
+                    byte[] pingData = new byte[2];
+                    pingData[0] = (byte) 0x80;
+                    pingData[1] = GameClient.getClientID();
+                    DatagramPacket pingPacket = new DatagramPacket(pingData, pingData.length, serverAdr, serverPort);
+                    lastPingOut = System.currentTimeMillis();
+                    socket.send(pingPacket);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
             try {
                 DatagramPacket dPack = craftPacket();
                 schedulePacket(dPack, Bits.getShort(dPack.getData(), 1));
@@ -478,7 +510,50 @@ public class ClientNetwork2 {
         return serverTick - lerp;
     }
 
+    /**
+     * Liefert die Adresse des Servers
+     *
+     * @return die Adresse des Servers
+     */
     public InetAddress getServerAdr() {
         return serverAdr;
+    }
+
+    /**
+     * Liefert den aktuellen Lerp-Wert zurück
+     *
+     * @return den akteullen Lerp-Wert
+     */
+    public int getLerp() {
+        return lerp;
+    }
+
+    /**
+     * Setzt einen neuen Lerp-Wert. (in Ticks)
+     * Derzeit nur per Terminal erreichbar und auch dort mit Vorsicht zu genießen.
+     * Eine Änderungen dieses Wertes wird im Normalfall von kurzen Rucklern/Sprüngen begleitet, bis die Pakete aufgeholt / die Puffer gefüllt sind.
+     * Negative Werte sind nicht explizit verboten, sollten aber keinerlei Sinn machen.
+     *
+     * @param lerp der neue Lerp-Wert
+     */
+    void setLerp(int lerp) {
+        System.out.println("INFO: NET: Changed lerp to " + lerp + " upon user request");
+        this.lerp = lerp;
+    }
+
+    /**
+     * Beendet die Verbindung zum Server auf normale Art und Weise.
+     * Dieses Paket wird besonders priorisiert und kann noch vor alten Datenpaketen ankommen und diese damit verwerfen lassen!
+     */
+    public void disconnect() {
+        try {
+            byte[] dcData = new byte[2];
+            dcData[0] = (byte) 0x81;
+            dcData[1] = GameClient.getClientID();
+            DatagramPacket dcPacket = new DatagramPacket(dcData, dcData.length, serverAdr, serverPort);
+            socket.send(dcPacket);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

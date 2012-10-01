@@ -79,3 +79,18 @@ Connecting to server:
 		byte 4-7: signed int serverTick - the current server tick, for lerp-timings
 		byte 8: signed byte server-tickdelay. Time between two server ticks
 
+
+
+
+Special modes/Packets:
+BTB:
+    PING:
+	byte 1: NETMODE = 10 (realTime)
+		RT_MODE = 0 (ping)
+			Ping-Packet. CTS is request, STC is answer (PONG)
+	byte 2: clientID (CTS only);
+CTS:
+    DISCONNECT:
+    	byte 1: NETMODE = 10 (realTime)
+		RT_MODE = 1 (dc)
+	byte 2: clientID

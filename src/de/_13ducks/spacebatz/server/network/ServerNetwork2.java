@@ -10,9 +10,7 @@
  */
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.network.CTS_DISCONNECT;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
@@ -73,7 +71,6 @@ public class ServerNetwork2 {
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_EQUIP, new CTS_EQUIP_ITEM());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, new CTS_REQUEST_ITEM_DEQUIP());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_CLIENT_DISCONNECT, new CTS_DISCONNECT());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
         registerCTSCommand(MessageIDs.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
 
@@ -136,12 +133,12 @@ public class ServerNetwork2 {
                         // Blocken, bis Paket empfangen
                         socket.receive(inputPacket);
                         byte[] data = Utilities.extractData(inputPacket);
-                        byte mode = data[0];
+                        int mode = data[0] & 0xFF;
                         // NETMODE auswerten:
                         switch (mode >>> 6) {
                             case 0:
                                 // Normales Datenpaket
-                                Client client = Server.game.clients.get(mode);
+                                Client client = Server.game.clients.get((byte) mode); // Der byte-cast darf auf keinen Fall wegfallen
                                 if (client == null) {
                                     System.out.println("NET: ignoring packet from unknown client (id: " + mode);
                                     continue;
@@ -157,6 +154,28 @@ public class ServerNetwork2 {
                                     case 0:
                                         // Connect
                                         clientRequest(data, inputPacket.getAddress());
+                                        break;
+                                }
+                                break;
+                            case 2:
+                                // RealTime
+                                int rtMode = mode & 0x3F;
+                                byte clientID = data[1];
+                                Client rtClient = Server.game.clients.get(clientID);
+                                if (rtClient == null) {
+                                    System.out.println("NET: ignoring RT packet from unknown client (id: " + clientID);
+                                    continue;
+                                }
+                                switch (rtMode) {
+                                    case 0:
+                                        // Ping-Request. Sofort antworten.
+                                        byte[] pongData = new byte[]{(byte) 0x80};
+                                        DatagramPacket pongPack = new DatagramPacket(pongData, pongData.length, rtClient.getNetworkConnection().getInetAddress(), rtClient.getNetworkConnection().getPort());
+                                        socket.send(pongPack);
+                                        break;
+                                    case 1:
+                                        // Regulärer Client-Disconnect
+                                        Server.disconnectClient(rtClient);
                                         break;
                                 }
                                 break;
@@ -215,7 +234,7 @@ public class ServerNetwork2 {
      * @param cmdID die BefehlsID
      * @param cmd der Befehl selber
      */
-    public void registerCTSCommand(byte cmdID, CTSCommand cmd) {
+    public final void registerCTSCommand(byte cmdID, CTSCommand cmd) {
         if (cmd == null) {
             throw new IllegalArgumentException("CTSCommand must not be null!");
         }

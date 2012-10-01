@@ -54,10 +54,6 @@ public class GameClient {
      */
     public static int frozenGametick;
     /**
-     * Interner (nur diese Klasse) Gametick, der niemals eingefroren wird.
-     */
-    private static int gametick;
-    /**
      * Die clientID, die uns der Server zugewiesen hat.
      */
     private static byte clientID;
@@ -179,21 +175,6 @@ public class GameClient {
 
     public static void updateGametick() {
         frozenGametick = network2.getLogicTick();
-    }
-
-    public static boolean startTickCounting(int serverStartTick) {
-        gametick = serverStartTick - (Settings.NET_TICKSYNC_MAXPING / tickrate);
-        if (tickTimer == null) {
-            tickTimer = new Timer("Client_tickcounter", true);
-            tickTimer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    gametick++;
-                }
-            }, 0, tickrate);
-            return false;
-        }
-        return true;
     }
 
     public static HashMap<Integer, Item> getItemMap() {
