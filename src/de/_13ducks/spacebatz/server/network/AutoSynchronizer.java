@@ -92,6 +92,7 @@ public class AutoSynchronizer {
         // Berechnung der Einheitenbewegungen für alle Clients
         for (Client c : Server.game.clients.values()) {
             ClientContext2 context = c.getNetworkConnection().context;
+            ArrayList<Entity> updateForClient = new ArrayList<>();
             // Entities, die jetzt neu in Reichweite des Clients sind:
             LinkedList<Entity> entitiesInArea = Server.entityMap.getEntitiesInArea((int) c.getPlayer().getX() - UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() - UPDATE_AREA_Y_DIST, (int) c.getPlayer().getX() + UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() + UPDATE_AREA_Y_DIST);
             for (Entity e : entitiesInArea) {
@@ -99,10 +100,10 @@ public class AutoSynchronizer {
                     context.track(e);
                     // Einheit bekannt machen:
                     Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
+                    updateForClient.add(e);
                 }
             }
             // Updates
-            ArrayList<Entity> updateForClient = new ArrayList<>();
             Iterator<Entity> iter = updatedEntities.keySet().iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
