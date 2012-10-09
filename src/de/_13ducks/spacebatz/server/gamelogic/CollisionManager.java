@@ -90,7 +90,7 @@ public class CollisionManager {
                     if (Math.abs(x - c.getX()) < 0.7 && Math.abs(y - c.getY()) < 0.7) {
                         // Wenn der Char das Bullet nicht selber erzeugt hat:
                         if (!bullet.getOwner().equals(c)) {
-                            bullet.hitChar(c);
+                            bullet.onCollision(c);
                             break;
                         }
 

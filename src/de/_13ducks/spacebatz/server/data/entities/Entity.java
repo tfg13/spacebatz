@@ -370,4 +370,11 @@ public class Entity {
      */
     public void tick(int gameTick) {
     }
+
+    /**
+     * Wird aufgerufen, wenn diese Entity sich in eine andere bewegt.
+     * @param other  die Entity, in die diese sich hineinbewegt hat
+     */
+    public void onCollision(Entity other) {
+    }
 }

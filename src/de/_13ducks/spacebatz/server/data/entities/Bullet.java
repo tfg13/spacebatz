@@ -64,7 +64,7 @@ public class Bullet extends Entity {
         this.deletetick = spawntick + lifetime;
         effects = new ArrayList<>();
     }
-
+    
     public void hitChar(Entity hitChar) {
         if (hitChar instanceof Char) {
             Char target = (Char) hitChar;
@@ -88,7 +88,7 @@ public class Bullet extends Entity {
             Server.game.getEntityManager().removeEntity(netID);
         }
     }
-
+    
     public void hitGround(double x, double y) {
         for (Effect effect : effects) {
             effect.applyToPosition(getX(), getY(), null);
@@ -121,15 +121,21 @@ public class Bullet extends Entity {
     public void addEffect(Effect effect) {
         effects.add(effect);
     }
-
+    
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 4;
     }
-
+    
     @Override
     public void netPack(byte[] pack, int offset) {
         super.netPack(pack, offset);
         Bits.putInt(pack, super.byteArraySize() + offset, bulletpic);
+    }
+
+   @Override
+    public void onCollision(Entity other) {
+        super.onCollision(other);
+        hitChar(other);
     }
 }

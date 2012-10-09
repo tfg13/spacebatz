@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.Behaviour;
+import de._13ducks.spacebatz.server.ai.NeutralMobBehaviour;
 import de._13ducks.spacebatz.server.ai.StandardMobBehaviour;
 
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
@@ -46,6 +47,11 @@ public class Enemy extends Char {
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
 
+//        if (enemytypeID == 1) {
+//            behaviour = new StandardMobBehaviour(this);
+//        } else {
+//            behaviour = new NeutralMobBehaviour(this);
+//        }
         behaviour = new StandardMobBehaviour(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
@@ -116,5 +122,10 @@ public class Enemy extends Char {
     public void tick(int gameTick) {
         super.tick(gameTick);
         behaviour.tick(gameTick);
+    }
+
+    public void onCollision(Entity other) {
+        super.onCollision(other);
+        behaviour.onCollision(other);
     }
 }

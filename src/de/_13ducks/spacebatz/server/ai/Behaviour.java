@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.ai;
 
+import de._13ducks.spacebatz.server.data.entities.Entity;
+
 /**
  * Ein Gegnerverhalten, dass alle X gameticks ausgeführt wird.
  *
@@ -20,4 +22,11 @@ public abstract class Behaviour {
     }
 
     protected abstract void onTick(int gameTick);
+
+    /**
+     * Wird gerufen wenn der Besitzer des Behaviours mit etwas kollidiert
+     * @param other 
+     */
+    public void onCollision(Entity other) {
+    }
 }
