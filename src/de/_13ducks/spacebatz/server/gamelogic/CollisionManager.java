@@ -51,9 +51,9 @@ public class CollisionManager {
      * Berechnet Kollisionen zwischen Bullets und Chars
      */
     private static void computeBulletCollision() {
-
+        
         Iterator<Entity> listIterator = Server.game.getEntityManager().getEntityIterator();
-
+        
         while (listIterator.hasNext()) {
             Bullet bullet;
             Entity entity = listIterator.next();
@@ -68,20 +68,20 @@ public class CollisionManager {
                 Server.game.getEntityManager().removeEntity(bullet.netID);
                 continue;
             }
-
+            
             double x = bullet.getX();
             double y = bullet.getY();
 
             // Provisorische Kollision von Bullets mit zerstörbaren Blöcken:
             if (Server.game.getLevel().isBlockDestroyable((int) x, (int) y)) {
                 Server.game.getLevel().destroyBlock((int) x, (int) y);
-
+                
                 Server.game.getEntityManager().removeEntity(bullet.netID);
 
                 // Flächenschaden machen
                 bullet.hitGround(x, y);
             }
-
+            
             Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, HARDCODEDCOLLISIONAROUNDMERADIUS).iterator();
             while (iter.hasNext()) {
                 Entity e = iter.next();
@@ -91,9 +91,10 @@ public class CollisionManager {
                         // Wenn der Char das Bullet nicht selber erzeugt hat:
                         if (!bullet.getOwner().equals(c)) {
                             bullet.onCollision(c);
+                            c.onCollision(bullet);
                             break;
                         }
-
+                        
                     }
                 }
             }
@@ -118,13 +119,13 @@ public class CollisionManager {
                     double toX = mover.extrapolateX(1);
                     double toY = mover.extrapolateY(1);
                     computeCharCollision(fromX, fromY, toX, toY, mover);
-
-
+                    
+                    
                 }
             }
         }
     }
-
+    
     private static void computeCharCollision(double fromX, double fromY, double toX, double toY, Char mover) {
         // Wert cachen:
         double size = mover.getSize();
@@ -160,14 +161,14 @@ public class CollisionManager {
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
-
+                    
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
 
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
-
+                    
                     if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -202,13 +203,13 @@ public class CollisionManager {
                     d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
-
+                    
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
-
+                    
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-
+                    
                     if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((mover.getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -274,7 +275,7 @@ public class CollisionManager {
                     double distance = Distance.getDistance(collector.getX(), collector.getY(), item.getPosX(), item.getPosY());
                     if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                         if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-
+                            
                             if (item.getItemClass() == 0) {
                                 // stackbares Item
                                 if (item.getName().equals("Money")) {
@@ -287,7 +288,7 @@ public class CollisionManager {
                                         // es gibt schon einen Stack von diesem Item
                                         iterator.remove();
                                         STC_GRAB_ITEM_TO_STACK.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, itemStack.getNetID());
-
+                                        
                                     } else if (collector.freeInventorySlot()) {
                                         // neuen Stack anlegen, wenn Platz
                                         collector.putItem(item.getNetID(), item);
@@ -295,14 +296,14 @@ public class CollisionManager {
                                         STC_GRAB_ITEM.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                                     }
                                 }
-
+                                
                             } else if (collector.freeInventorySlot()) {
                                 // nicht-stackbares Item
                                 collector.putItem(item.getNetID(), item);
                                 iterator.remove();
                                 STC_GRAB_ITEM.sendItemGrab(item.getNetID(), collector.getClient().clientID);
                             }
-
+                            
                         }
                     }
                 }
@@ -319,34 +320,34 @@ public class CollisionManager {
      */
     public static ArrayList<Char> computeHitscanOnChars(Char owner, double angle, double range, HitscanAbility hitscanAbility) {
         ArrayList<Char> charsHit = new ArrayList<>();
-
+        
         double x = owner.getX();
         double y = owner.getY();
-
+        
         double otherangle = angle - (Math.PI / 2);
         if (otherangle < 0) {
             otherangle += 2 * Math.PI;
         }
-
+        
         Vector apos = new Vector(x, y);
         Vector adir = new Vector(Math.cos(angle), Math.sin(angle));
         Vector bdir = new Vector(Math.cos(otherangle), Math.sin(otherangle));
-
+        
         Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, range).iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
                 Char c = (Char) e;
-
+                
                 if (c.equals(owner)) {
                     continue;
                 }
-
+                
                 Vector bpos = new Vector(c.getX(), c.getY());
 
                 // Schnittpunkt der 2 Geraden
                 Vector s = adir.intersectionWith(apos, bpos, bdir);
-
+                
                 double distance = Math.sqrt((s.getX() - c.getX()) * (s.getX() - c.getX()) + (s.getY() - c.getY()) * (s.getY() - c.getY()));
 
                 // Hitscan-Gerade nah genug am Gegner?
@@ -358,7 +359,7 @@ public class CollisionManager {
                     if (testangle < 0) {
                         testangle += 2 * Math.PI;
                     }
-
+                    
                     if (testangle < angle + Math.PI / 2 && testangle > angle - Math.PI / 2) {
                         charsHit.add(c);
                     }
@@ -378,10 +379,10 @@ public class CollisionManager {
      */
     public static Position computeHitscanOnBlocks(Char owner, double angle, double range) {
         ArrayList<Position> positionsInHitscan = new ArrayList<>();
-
+        
         double betaX = owner.getX() + range * Math.cos(angle);
         double betaY = owner.getY() + range * Math.sin(angle);
-
+        
         double vX = betaX - owner.getX();
         double vY = betaY - owner.getY();
         if (Math.abs(vX) >= Math.abs(vY)) {
@@ -409,11 +410,11 @@ public class CollisionManager {
                 }
             }
         }
-
+        
         double mindistance = Double.MAX_VALUE;
         int nearestblock = -1;
         for (int i = 0; i < positionsInHitscan.size(); i++) {
-
+            
             int bx = positionsInHitscan.get(i).getX();
             int by = positionsInHitscan.get(i).getY();
             if (Server.game.getLevel().getCollisionMap()[bx][by]) {
@@ -424,7 +425,7 @@ public class CollisionManager {
                 }
             }
         }
-
+        
         if (nearestblock > -1) {
             return positionsInHitscan.get(nearestblock);
         } else {
