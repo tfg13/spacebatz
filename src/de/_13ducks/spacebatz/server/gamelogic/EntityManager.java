@@ -62,7 +62,11 @@ public class EntityManager {
     }
 
     public void removeEntity(int netID) {
-        entitiesToRemove.add(netID);
+        if (!entitiesToRemove.contains(netID)) {
+            entitiesToRemove.add(netID);
+        } else {
+            throw new IllegalArgumentException("Entity soll doppelt gelöscht werden!");
+        }
     }
 
     public boolean containsEntity(int netID) {
