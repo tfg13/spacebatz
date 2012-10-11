@@ -68,7 +68,7 @@ public class ExplosionDamageEffect extends Effect {
      * @param radius der Explosionsradius
      */
     public static void computeBulletExplosion(int damage, double x, double y, Char charhit, double radius) {
-        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
+        Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, radius).iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
@@ -76,23 +76,21 @@ public class ExplosionDamageEffect extends Effect {
                 // Nicht für den direkt getroffenen durchführen
                 if (!c.equals(charhit)) {
                     double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
-                    if (distance < radius) {
-                        // Zurzeit nur Gegnern Schaden machen
-                        if (c instanceof Enemy) {
-                            int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
+                    // Zurzeit nur Gegnern Schaden machen
+                    if (c instanceof Enemy) {
+                        int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
 
-                            c.getProperties().setHitpoints(c.getProperties().getHitpoints() - damagereduced);
+                        c.getProperties().setHitpoints(c.getProperties().getHitpoints() - damagereduced);
 
-                            if (c.getProperties().getHitpoints() <= 0) {
-                                Server.game.getEntityManager().removeEntity(c.netID);
-                                if (c instanceof Enemy) {
-                                    Enemy enemy = (Enemy) c;
-                                    DropManager.dropItem(enemy.getX(), enemy.getY(), enemy.getEnemylevel());
-                                }
+                        if (c.getProperties().getHitpoints() <= 0) {
+                            Server.game.getEntityManager().removeEntity(c.netID);
+                            if (c instanceof Enemy) {
+                                Enemy enemy = (Enemy) c;
+                                DropManager.dropItem(enemy.getX(), enemy.getY(), enemy.getEnemylevel());
                             }
-
-                            STC_CHAR_HIT.sendCharHit(c.netID, damagereduced, false);
                         }
+
+                        STC_CHAR_HIT.sendCharHit(c.netID, damagereduced, false);
                     }
                 }
             }
