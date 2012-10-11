@@ -71,7 +71,6 @@ public class Entity {
      * Die Größe der Entity für Kollisionsberechnung.
      */
     private double size;
-    private boolean isDisposable;
 
     /**
      * Konstruktor, erstellt eine neue Entity
@@ -348,24 +347,6 @@ public class Entity {
     }
 
     /**
-     * Gibt an, ob die Entity gelöscht werden darf
-     *
-     * @return the isDisposable
-     */
-    public boolean isDisposable() {
-        return isDisposable;
-    }
-
-    /**
-     * Markiert die Entity zum Löschen
-     *
-     * @param isDisposable the isDisposable to set
-     */
-    public void dispose() {
-        this.isDisposable = true;
-    }
-
-    /**
      * Berechnet einen gameTick für die Entity.
      */
     public void tick(int gameTick) {
@@ -373,7 +354,8 @@ public class Entity {
 
     /**
      * Wird aufgerufen, wenn diese Entity sich in eine andere bewegt.
-     * @param other  die Entity, in die diese sich hineinbewegt hat
+     *
+     * @param other die Entity, in die diese sich hineinbewegt hat
      */
     public void onCollision(Entity other) {
     }
