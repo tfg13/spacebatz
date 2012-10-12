@@ -29,7 +29,7 @@ public class ItemAttributeTypes {
         ItemAttribute moreDamage = new ItemAttribute("50% More Damage For This Weapon");
         moreDamage.setQuality(1);
         moreDamage.weaponStats.setDamagemultiplicator(0.5);
-        
+        moreDamage.setIsWeaponAttribute(true);
         attributelist.add(moreDamage);
 
         ItemAttribute evenMoreDamage = new ItemAttribute("50% More Damage For Every Weapon");

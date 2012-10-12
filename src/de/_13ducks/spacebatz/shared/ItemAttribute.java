@@ -43,6 +43,7 @@ public class ItemAttribute implements Serializable {
      * Die Fähigkeit, die dieses ItemAttribut gibt (null wenn das Item keine Fähigkeiten gibt)
      */
     private transient WeaponAbility weaponAbility;
+    private boolean isWeaponAttribute;
 
     /**
      * Erstellt ein neues Attribut mit Bonuswerten.
@@ -57,6 +58,14 @@ public class ItemAttribute implements Serializable {
         bonusStats = new PropertyList();
 
         weaponStats = new WeaponStats();
+    }
+
+    public void setIsWeaponAttribute(boolean isWA) {
+        isWeaponAttribute = isWA;
+    }
+
+    public boolean isWeaponAttribute() {
+        return isWeaponAttribute;
     }
 
     /**

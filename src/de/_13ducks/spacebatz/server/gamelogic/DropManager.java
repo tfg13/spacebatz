@@ -129,6 +129,10 @@ public class DropManager {
         for (int i = 0; i < maxatt; i++) {
             ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
             if (!item.getItemAttributes().contains(randomatt)) {
+                if (item.getWeaponAbility() == null && randomatt.isWeaponAttribute()) {
+                    // Überspringen, wenn einem Hut ein Waffenattribut gegeben werden soll.
+                    continue;
+                }
                 item.addAttribute(randomatt);
             }
         }
