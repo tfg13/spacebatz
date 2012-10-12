@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import java.util.HashMap;
@@ -249,4 +250,4 @@ public class ItemCarrier extends Char {
         }
         return returnItem;
     }
-}
+    }

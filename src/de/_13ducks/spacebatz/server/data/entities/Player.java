@@ -12,11 +12,12 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
+import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
-import de._13ducks.spacebatz.server.data.abilities.SummonEnemyAbility;
+import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
+import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
+import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
@@ -36,6 +37,14 @@ public class Player extends ItemCarrier {
      */
     private Client client;
     private WeaponAbility standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0);
+    /**
+     * Die Fähigkeiten mit Zuordnung.
+     */
+    private SpellBook abilities;
+    /**
+     * Der Skilltree, der bestimmt welche Fähigkeiten verfügbar sind.
+     */
+    private SkillTree skillTree;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann
@@ -50,7 +59,7 @@ public class Player extends ItemCarrier {
         super(x, y, id, (byte) 2);
         client.setPlayer(this);
         this.client = client;
-        getAbilities().setAbility((byte) 0, new SummonEnemyAbility());
+        skillTree = new MarsroverSkilltree();
     }
 
     /**
@@ -172,6 +181,6 @@ public class Player extends ItemCarrier {
     }
 
     public void useAbility(byte ability, double x, double y) {
-        getAbilities().useAbility(ability, x, y, this);
+        abilities.useAbility(ability, x, y, this);
     }
 }
