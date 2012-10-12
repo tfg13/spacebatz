@@ -20,6 +20,7 @@ public class SkillTree {
     private HashMap<String, SkillTreeEntry> skills;
 
     public SkillTree() {
+        availablePoints = 10;
         skills = new HashMap<>();
     }
 

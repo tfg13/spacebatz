@@ -18,6 +18,7 @@ import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
@@ -75,6 +76,7 @@ public class ServerNetwork2 {
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
         registerCTSCommand(MessageIDs.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
         registerCTSCommand(MessageIDs.NET_CTS_MAP_ABILITY, new CTS_REQUEST_MAP_ABILITY());
+        registerCTSCommand(MessageIDs.NET_CTS_INVEST_SKILLPOINT, new CTS_INVEST_SKILLPOINT());
 
         // RCON
         if (Settings.SERVER_ENABLE_RCON) {

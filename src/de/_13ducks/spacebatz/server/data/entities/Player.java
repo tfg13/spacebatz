@@ -194,4 +194,8 @@ public class Player extends ItemCarrier {
     public void mapAbility(byte slot, String ability) {
         abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
     }
+
+    public void investSkillpoint(String ability) {
+        skillTree.investPoint(ability);
+    }
 }

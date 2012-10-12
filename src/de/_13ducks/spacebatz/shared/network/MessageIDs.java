@@ -19,6 +19,10 @@ public class MessageIDs {
      * Fähigkeit auf anderen Fähigkeitenslot legen:
      */
     public static final byte NET_CTS_MAP_ABILITY = 50;
+    /** *
+     * Einen Skillpunkt auf einen Skill setzen
+     */
+    public static final byte NET_CTS_INVEST_SKILLPOINT = 51;
     /**
      * Teilt dem Spieler mit welchen Char er kontrolliert
      */

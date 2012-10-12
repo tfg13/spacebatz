@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.network.CTS_REQUEST_RCON;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -171,6 +172,14 @@ public class ClientTerminal {
 
                             } catch (Exception ex) {
                                 outln("usage: mapskill slot ability (slot is 0,1,2,... and ability is the abilityname.)");
+                            }
+                            break;
+                        case "skill":
+                            try {
+                                String ability = words[1];
+                                CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(ability);
+                            } catch (Exception ex) {
+                                outln("usage: skill skillname (skillname is the name of the skill to skill to kill)");
                             }
                             break;
                         case "lerp":
