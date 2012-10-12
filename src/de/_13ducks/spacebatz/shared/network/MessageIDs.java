@@ -15,6 +15,10 @@ public class MessageIDs {
      * Fähigkeitsbenutzungsanforderung vom Client
      */
     public static final byte NET_CTS_USE_ABILITY = 38;
+    /** *
+     * Fähigkeit auf anderen Fähigkeitenslot legen:
+     */
+    public static final byte NET_CTS_MAP_ABILITY = 50;
     /**
      * Teilt dem Spieler mit welchen Char er kontrolliert
      */

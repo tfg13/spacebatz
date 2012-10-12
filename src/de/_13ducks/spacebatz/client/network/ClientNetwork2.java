@@ -18,6 +18,7 @@ import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;

@@ -60,6 +60,7 @@ public class Player extends ItemCarrier {
         client.setPlayer(this);
         this.client = client;
         skillTree = new MarsroverSkilltree();
+        abilities = new SpellBook();
     }
 
     /**
@@ -182,5 +183,15 @@ public class Player extends ItemCarrier {
 
     public void useAbility(byte ability, double x, double y) {
         abilities.useAbility(ability, x, y, this);
+    }
+
+    /**
+     * Legt eine Fähigkeit auf den gewählten Slot
+     *
+     * @param slot
+     * @param ability
+     */
+    public void mapAbility(byte slot, String ability) {
+        abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
     }
 }

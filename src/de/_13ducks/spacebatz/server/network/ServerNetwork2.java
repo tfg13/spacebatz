@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.shared.network.Utilities;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
@@ -73,6 +74,7 @@ public class ServerNetwork2 {
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
         registerCTSCommand(MessageIDs.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
+        registerCTSCommand(MessageIDs.NET_CTS_MAP_ABILITY, new CTS_REQUEST_MAP_ABILITY());
 
         // RCON
         if (Settings.SERVER_ENABLE_RCON) {

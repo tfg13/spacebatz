@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.network.CTS_REQUEST_RCON;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -160,6 +161,16 @@ public class ClientTerminal {
                                 GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_DEBUG, msg));
                             } catch (Exception ex) {
                                 outln("usage: sendsevens x (100*x sevens will be sent)");
+                            }
+                            break;
+                        case "mapskill":
+                            try {
+                                byte slot = Byte.parseByte(words[1]);
+                                String ability = words[2];
+                                CTS_REQUEST_MAP_ABILITY.sendMapAbility(slot, ability);
+
+                            } catch (Exception ex) {
+                                outln("usage: mapskill slot ability (slot is 0,1,2,... and ability is the abilityname.)");
                             }
                             break;
                         case "lerp":
