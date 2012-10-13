@@ -18,7 +18,7 @@ public class MessageIDs {
     /** *
      * Fähigkeit auf anderen Fähigkeitenslot legen:
      */
-    public static final byte NET_CTS_MAP_ABILITY = 50;
+    public static final byte NET_CTS_MAP_ABILITY = 52;
     /** *
      * Einen Skillpunkt auf einen Skill setzen
      */

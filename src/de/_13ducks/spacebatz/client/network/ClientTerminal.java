@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -180,6 +181,14 @@ public class ClientTerminal {
                                 CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(ability);
                             } catch (Exception ex) {
                                 outln("usage: skill skillname (skillname is the name of the skill to skill to kill)");
+                            }
+                            break;
+                        case "cast":
+                            try {
+                                Byte ability = Byte.parseByte(words[1]);
+                                CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, 0, 1);
+                            } catch (Exception ex) {
+                                outln("usage: cast skill (skillname is the skill ocnstant, e.g. 0 for shiftskill)");
                             }
                             break;
                         case "lerp":
