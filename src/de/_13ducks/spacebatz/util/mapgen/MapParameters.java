@@ -81,13 +81,14 @@ public class MapParameters {
         // In Reihenfolge bringen:
         ArrayList<String> polyModules = new ArrayList<>();
         ArrayList<String> rasterModules = new ArrayList<>();
+        moduleLoop:
         for (String moduleName: settings.keySet()) {
             Module module = modules.get(moduleName);
             // Hat das RASTERIZE?
             for (String var: module.provides()) {
                 if (var.equals("RASTERIZE")) {
                     // Dann nicht einsortieren
-                    continue;
+                    continue moduleLoop;
                 }
             }
             // Sonst einsortieren
@@ -201,9 +202,14 @@ public class MapParameters {
      * Die defaultEinstellungen
      */
     private void loadDefaults() {
-        HashMap<String, String> modSettings = new HashMap<>();
-        modSettings.put("PRIO", String.valueOf(0));
-        settings.put("oldmapgen", modSettings);
+        HashMap<String, String> polySettings = new HashMap<>();
+        polySettings.put("PRIORITY", String.valueOf(0));
+        polySettings.put("polynumber", String.valueOf(1000));
+        settings.put("polymapgen", polySettings);
+        HashMap<String, String> polyVisSettings = new HashMap<>();
+        polyVisSettings.put("PRIORITY", String.valueOf(1));
+        settings.put("polyVisualizer", polyVisSettings);
+        settings.put("rasterizer", new HashMap<String, String>());
         masterSeed = new Random().nextLong();
     }
 

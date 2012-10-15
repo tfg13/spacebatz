@@ -39,6 +39,8 @@ public class Rasterizer extends Module {
 
     @Override
     public void computeMap(InternalMap map, HashMap<String, String> parameters) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("RASTERIZE: Debug, creating empty raster...");
+        map.groundTex = new int[100][100];
+        map.collision = new boolean[100][100];
     }
 }

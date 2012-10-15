@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class InternalMap {
 
     public GeometryCollection polygons;
-    public HashMap<String, Object> metadata;
+    public HashMap<String, Object> metadata = new HashMap<>();
     public int[][] groundTex;
     public boolean[][] collision;
 

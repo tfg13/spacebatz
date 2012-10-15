@@ -57,6 +57,7 @@ public class MapGen {
         ArrayList<String> polyModules = new ArrayList<>();
         ArrayList<String> rasterModules = new ArrayList<>();
         String rasterize = null;
+        moduleLoop:
         for (String moduleName : params.getModules()) {
             Module module = modules.get(moduleName);
             // Hat das RASTERIZE?
@@ -64,7 +65,7 @@ public class MapGen {
                 if (var.equals("RASTERIZE")) {
                     rasterize = moduleName;
                     // Dann nicht einsortieren
-                    continue;
+                    continue moduleLoop;
                 }
             }
             // Sonst einsortieren
