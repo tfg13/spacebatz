@@ -17,6 +17,11 @@ public class Rasterizer extends Module {
     }
 
     @Override
+    public boolean requiresSeed() {
+        return false;
+    }
+
+    @Override
     public String[] provides() {
         return new String[]{"RASTERIZE"};
     }

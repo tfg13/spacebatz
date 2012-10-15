@@ -17,6 +17,11 @@ public class PolygonMapGenerator extends Module {
     }
 
     @Override
+    public boolean requiresSeed() {
+        return true;
+    }
+
+    @Override
     public String[] provides() {
         return new String[]{"CREATE_POLY"};
     }
