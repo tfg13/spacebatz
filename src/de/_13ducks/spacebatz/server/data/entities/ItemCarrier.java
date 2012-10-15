@@ -76,9 +76,6 @@ public class ItemCarrier extends Char {
      */
     public void putItem(int netID, Item item) {
         this.items.put(netID, item);
-        if (item.getName().equals("Money")) {
-            setMaterial(0, getMaterial(0) + (int) item.getAmount());
-        }
     }
 
     /**
@@ -232,22 +229,4 @@ public class ItemCarrier extends Char {
     public Item getActiveWeapon() {
         return equipslots[1][selectedweapon];
     }
-
-    /**
-     * Stackt das Item auf eins das schon im Inventar ist
-     *
-     * @param newitem das zu stackende Items
-     * @return das Item auf das gestackt wird oder null
-     */
-    public Item tryItemStack(Item newitem) {
-        Item returnItem = null;
-        for (Item bla : items.values()) {
-            if (bla.getName().equals(newitem.getName())) {
-                bla.setAmount(bla.getAmount() + newitem.getAmount());
-                returnItem = bla;
-                break;
-            }
-        }
-        return returnItem;
-    }
-    }
+}

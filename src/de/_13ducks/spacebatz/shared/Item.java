@@ -28,15 +28,6 @@ public class Item implements Serializable {
      */
     private int netID;
     /**
-     * Menge des Items, wichtig bei stackbaren Materialien / Geld
-     */
-    private int amount;
-    /*
-     * Ort, an dem das Item erstellt wurde
-     */
-    private double posX;
-    private double posY;
-    /**
      * Attribute des Items
      */
     private ArrayList<ItemAttribute> itemAttributes;
@@ -69,20 +60,15 @@ public class Item implements Serializable {
      * @param baseAttribute
      * @param netID
      */
-    public Item(String name, ItemAttribute baseAttribute, double posX, double posY, int netID) {
+    public Item(String name, ItemAttribute baseAttribute, int netID) {
         this.name = name;
-        this.posX = posX;
-        this.posY = posY;
         this.netID = netID;
-        this.amount = 1;
         bonusProperties = new PropertyList();
         itemAttributes = new ArrayList<>();
         weaponAbility = baseAttribute.getNewWeaponAbilityInstance();
 
         // die boni des Grundattributs addieren:
         addAttribute(baseAttribute);
-
-
     }
 
     /**
@@ -98,55 +84,12 @@ public class Item implements Serializable {
         quality += itemAttribute.getQuality();
         itemClass += itemAttribute.getItemClass();
         pic += itemAttribute.getPic();
-        amount += itemAttribute.getAmount();
         if (weaponAbility != null) {
             // Die Waffenstats der Waffenfähigkeit geben, wenn dies eine Waffe ist:
             weaponAbility.addWeaponStats(itemAttribute.getWeaponStats());
 
         }
 
-    }
-
-    /**
-     * @return the posX
-     */
-    public double getPosX() {
-        return posX;
-    }
-
-    /**
-     * @return the posY
-     */
-    public double getPosY() {
-        return posY;
-    }
-
-    /**
-     * @param posX the posX to set
-     */
-    public void setPosX(double posX) {
-        this.posX = posX;
-    }
-
-    /**
-     * @param posY the posY to set
-     */
-    public void setPosY(double posY) {
-        this.posY = posY;
-    }
-
-    /**
-     * @return the amount
-     */
-    public int getAmount() {
-        return amount;
-    }
-
-    /**
-     * @param amount the amount to set
-     */
-    public void setAmount(int amount) {
-        this.amount = amount;
     }
 
     /**

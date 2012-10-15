@@ -14,9 +14,6 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
-import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_GRAB_ITEM_TO_STACK;
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import de._13ducks.spacebatz.util.Vector;
@@ -44,7 +41,6 @@ public class CollisionManager {
         computeBulletCollision();
         computeWallCollision();
         computeMobCollission();
-        computeItemCollission();
     }
 
     /**
@@ -253,57 +249,6 @@ public class CollisionManager {
                             if (distance < Settings.SERVER_COLLISION_DISTANCE) {
                                 mob.attack(mover);
                             }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Berechnet Kollision mit Items
-     */
-    private static void computeItemCollission() {
-        Iterator<Entity> iter = Server.game.getEntityManager().getEntityIterator();
-        while (iter.hasNext()) {
-            Entity e = iter.next();
-            if (e instanceof Player) {
-                Player collector = (Player) e;
-                Iterator<Item> iterator = Server.game.getItemMap().values().iterator();
-                while (iterator.hasNext()) {
-                    Item item = iterator.next();
-                    double distance = Distance.getDistance(collector.getX(), collector.getY(), item.getPosX(), item.getPosY());
-                    if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                        if (distance < Settings.SERVER_COLLISION_DISTANCE) {
-                            
-                            if (item.getItemClass() == 0) {
-                                // stackbares Item
-                                if (item.getName().equals("Money")) {
-                                    collector.setMaterial(0, collector.getMaterial(0) + item.getAmount());
-                                    iterator.remove();
-                                    STC_GRAB_ITEM_TO_STACK.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, -616);
-                                } else {
-                                    Item itemStack = collector.tryItemStack(item);
-                                    if (itemStack != null) {
-                                        // es gibt schon einen Stack von diesem Item
-                                        iterator.remove();
-                                        STC_GRAB_ITEM_TO_STACK.sendItemGrabToStack(item.getNetID(), collector.getClient().clientID, itemStack.getNetID());
-                                        
-                                    } else if (collector.freeInventorySlot()) {
-                                        // neuen Stack anlegen, wenn Platz
-                                        collector.putItem(item.getNetID(), item);
-                                        iterator.remove();
-                                        STC_GRAB_ITEM.sendItemGrab(item.getNetID(), collector.getClient().clientID);
-                                    }
-                                }
-                                
-                            } else if (collector.freeInventorySlot()) {
-                                // nicht-stackbares Item
-                                collector.putItem(item.getNetID(), item);
-                                iterator.remove();
-                                STC_GRAB_ITEM.sendItemGrab(item.getNetID(), collector.getClient().clientID);
-                            }
-                            
                         }
                     }
                 }

@@ -10,20 +10,15 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
-import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+
 
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
@@ -141,32 +136,6 @@ public class Player extends ItemCarrier {
             if (dequipItemToInventar(slottype, selectedslot)) {
                 STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, (byte) 0, getClient().clientID);
             }
-        } else {
-            // Item zu Poden werfen:
-            Item item = dequipItemToGround(slottype, selectedslot);
-
-            if (item != null) {
-                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, (byte) 1, getClient().clientID);
-                item.setPosX(getX());
-                item.setPosY(getY());
-                Server.game.getItemMap().put(item.getNetID(), item);
-                byte[] serializedItem = null;
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                ObjectOutputStream os;
-                try {
-                    os = new ObjectOutputStream(bs);
-                    os.writeObject(item);
-                    os.flush();
-                    bs.flush();
-                    bs.close();
-                    os.close();
-                    serializedItem = bs.toByteArray();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                STC_ITEM_DROP.sendItemDrop(serializedItem);
-            }
-
         }
     }
 

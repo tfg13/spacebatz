@@ -18,12 +18,10 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.EnemyTypes;
-import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ITEMS;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -47,10 +45,6 @@ public class Game {
      * Der EntityManager
      */
     private EntityManager entityManager;
-    /**
-     * HashMap ordnet netID Items zu
-     */
-    private HashMap<Integer, Item> itemMap;
     /**
      * Liste aller Gegnertypen
      */
@@ -79,7 +73,6 @@ public class Game {
         entityManager = new EntityManager();
         clients = new HashMap<>();
         level = LevelGenerator.generateLevel();
-        itemMap = new HashMap<>();
         enemytypes = new EnemyTypes();
 
         // Enemytypes serialisieren, damit es später schnell an Clients gesendet werden kann:
@@ -108,7 +101,6 @@ public class Game {
     public void clientJoined(Client client) {
         if (client.clientID != -1) {
             STC_CHANGE_LEVEL.sendLevel(client);
-            STC_TRANSFER_ITEMS.sendAllItems(client, getItemMap());
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);
             Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
             STC_SET_PLAYER.sendSetPlayer(client, player);
@@ -119,31 +111,6 @@ public class Game {
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
-    }
-
-    /**
-     * Gibt die bytes der serialisierten Itemliste zurück
-     *
-     * @return die bytes des serialisierten levels
-     */
-    public byte[] getSerializedItems() {
-        byte[] serializedItems;
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        ObjectOutputStream os;
-        try {
-            os = new ObjectOutputStream(bs);
-            os.writeObject(getItemMap());
-            os.flush();
-            bs.flush();
-            bs.close();
-            os.close();
-            serializedItems = bs.toByteArray();
-            return serializedItems;
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
 
     /**
@@ -212,13 +179,6 @@ public class Game {
      */
     public ServerLevel getLevel() {
         return level;
-    }
-
-    /**
-     * @return the itemMap
-     */
-    public HashMap<Integer, Item> getItemMap() {
-        return itemMap;
     }
 
     /**

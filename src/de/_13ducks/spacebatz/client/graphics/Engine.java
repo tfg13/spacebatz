@@ -467,31 +467,6 @@ public class Engine {
             }
         }
 
-        // Items auf der Map zeichnen
-        itemTiles.bind();
-        Iterator<Item> iterator = GameClient.getItemMap().values().iterator();
-
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-
-            float x = (float) item.getPosX();
-            float y = (float) item.getPosY();
-
-            float v = 0.0625f * (int) item.getPic();
-            float w = 0.0625f * ((int) item.getPic() / 16);
-
-            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(v, w + 0.0625f);
-            glVertex3f(x + panX - 0.75f, y + panY - 0.75f, 0.0f);
-            glTexCoord2f(v + 0.0625f, w + 0.0625f);
-            glVertex3f(x + panX + 0.75f, y + panY - 0.75f, 0.0f);
-            glTexCoord2f(v + 0.0625f, w);
-            glVertex3f(x + panX + 0.75f, y + panY + 0.75f, 0.0f);
-            glTexCoord2f(v, w);
-            glVertex3f(x + panX - 0.75f, y + panY + 0.75f, 0.0f);
-            glEnd(); // Zeichnen des QUADs fertig } }
-        }
-
         // Enemies zeichnen:
         enemyTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
@@ -623,11 +598,6 @@ public class Engine {
                 glTexCoord2f(v, w);
                 glVertex3f(x, y + height, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
-
-                if (item.getAmount() > 1) {
-                    // Amount hinschreiben
-                    renderText(String.valueOf(item.getAmount()), x, y);
-                }
             }
         }
 
