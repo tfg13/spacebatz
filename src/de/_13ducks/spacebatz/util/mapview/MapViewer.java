@@ -2,8 +2,12 @@ package de._13ducks.spacebatz.util.mapview;
 
 import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
 import de._13ducks.spacebatz.shared.Level;
+import de._13ducks.spacebatz.util.mapgen.InternalMap;
+import de._13ducks.spacebatz.util.mapgen.MapGen;
+import de._13ducks.spacebatz.util.mapgen.MapParameters;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -22,7 +26,9 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class MapViewer {
 
-    private final Level level;
+    private final int[][] ground;
+    private final boolean[][] col;
+    private final HashMap<String, Object> metadata;
     boolean renderFrame = false;
     boolean dragging = false;
     float panX = 0;
@@ -52,7 +58,16 @@ public class MapViewer {
      * @param level
      */
     public MapViewer(Level level) {
-        this.level = level;
+        ground = level.getGround();
+        col = level.getCollisionMap();
+        metadata = new HashMap<>();
+        startRendering();
+    }
+
+    public MapViewer(InternalMap map) {
+        ground = map.groundTex;
+        col = map.collision;
+        metadata = map.metadata;
         startRendering();
     }
 
@@ -178,14 +193,14 @@ public class MapViewer {
         glDisable(GL_TEXTURE_2D);
         glColor3f(1f, 0, 1f);
         glRectf(0, 0, 1, 1);
-        glColor3f(1f,1f,1f);
+        glColor3f(1f, 1f, 1f);
         glEnable(GL_TEXTURE_2D);
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
-        float oneX = 1f / level.getSizeX();
-        float oneY = 1f / level.getSizeY();
-        for (int x = 0; x < level.getSizeX(); x++) {
-            for (int y = 0; y < level.getSizeY(); y++) {
-                int tex = texAt(level.getGround(), x, y);
+        float oneX = 1f / ground.length;
+        float oneY = 1f / ground[0].length;
+        for (int x = 0; x < ground.length; x++) {
+            for (int y = 0; y < ground[0].length; y++) {
+                int tex = texAt(ground, x, y);
                 int tx = tex % 16;
                 int ty = tex / 16;
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
@@ -212,7 +227,11 @@ public class MapViewer {
     }
 
     public static void main(String[] args) {
-        Level level = LevelGenerator.generateLevel();
-        new MapViewer(level);
+        MapParameters params = new MapParameters();
+        // apply settings here
+
+        // Generate Map
+        InternalMap map = MapGen.generateInternal(params);
+        new MapViewer(map);
     }
 }

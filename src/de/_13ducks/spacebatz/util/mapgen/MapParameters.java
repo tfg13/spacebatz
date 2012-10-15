@@ -1,11 +1,10 @@
 package de._13ducks.spacebatz.util.mapgen;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -22,11 +21,15 @@ public class MapParameters {
     /**
      * Die verwendeten Module und deren Parameter
      */
-    private HashMap<String, HashMap<String, String>> settings;
+    private HashMap<String, HashMap<String, String>> settings = new HashMap<>();
     /**
      * Alle bekannten Module
      */
     private HashMap<String, Module> modules;
+    /**
+     * Aus diesem Seed werden die Seeds für die Module berechnet.
+     */
+    long masterSeed;
     
     /**
      * Erstellt neue MapParameter mit default-Einstellungen.
@@ -138,7 +141,7 @@ public class MapParameters {
      * @param params das modul
      * @return die gelesenen prio
      */
-    private int getPriority(String module) {
+    int getPriority(String module) {
         HashMap<String, String> params = settings.get(module);
         for (String var: params.keySet()) {
             if (var.equals("PRIORITY")) {
@@ -199,9 +202,9 @@ public class MapParameters {
      */
     private void loadDefaults() {
         HashMap<String, String> modSettings = new HashMap<>();
-        modSettings.put("SIZEX", String.valueOf(1024));
-        modSettings.put("SIZEY", String.valueOf(1024));
+        modSettings.put("PRIO", String.valueOf(0));
         settings.put("oldmapgen", modSettings);
+        masterSeed = new Random().nextLong();
     }
 
 }
