@@ -133,7 +133,7 @@ public class ClientTerminal {
                                 try {
                                     int fact = Integer.parseInt(words[1]);
                                     if (fact > 0) {
-                                        GameClient.getEngine().setZoomFact(fact);
+                                        GameClient.getEngine().getGraphics().getCamera().setZoomFact(fact);
                                         break;
                                     }
                                 } catch (NumberFormatException ex) {
@@ -145,7 +145,7 @@ public class ClientTerminal {
                             try {
                                 int count = Integer.parseInt(words[1]);
                                 for (int i = 0; i < count; i++) {
-                                    GameClient.getEngine().sendAbilityRequest();
+                                    CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest((byte) 0, (float) 0, 1);
                                 }
                             } catch (Exception ex) {
                                 outln("usage: mobmaster [count] (Will spawn [count] mobs at the cursor)");

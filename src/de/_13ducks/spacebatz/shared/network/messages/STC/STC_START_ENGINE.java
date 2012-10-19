@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.Engine;
+import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;

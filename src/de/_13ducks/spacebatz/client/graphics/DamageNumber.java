@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 /**
  * Schadenszahl auf der Map, wenn ein Gegner getroffen wird
+ *
  * @author Jojo
  */
 public class DamageNumber {
@@ -23,7 +24,7 @@ public class DamageNumber {
      */
     private long spawntime;
 
-    protected DamageNumber(int damage, double x, double y, long spawntime) {
+    public DamageNumber(int damage, double x, double y, long spawntime) {
         this.damage = damage;
         this.x = x;
         this.y = y;

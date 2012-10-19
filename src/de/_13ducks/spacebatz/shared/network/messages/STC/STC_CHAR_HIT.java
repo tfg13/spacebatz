@@ -4,7 +4,8 @@ import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
-import de._13ducks.spacebatz.client.graphics.Engine;
+import de._13ducks.spacebatz.client.Engine;
+import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
@@ -47,10 +48,11 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
         } else if (GameClient.netIDMap.get(netIDVictim) instanceof Enemy) {
             Enemy e = (Enemy) GameClient.netIDMap.get(netIDVictim);
             // Schadenszahl rendern:
-            Engine.createDamageNumber(damage, e.getX(), e.getY());
+            GameClient.getEngine().getGraphics().createDamageNumber(damage, e.getX(), e.getY());
+
             // Test-Explosion:
             Animation anim = new Animation(0, 2, 2, 3, 4);
-            Engine.addFx(new Fx(anim, e.getX(), e.getY(), 12));
+            GameClient.getEngine().getGraphics().addFx(new Fx(anim, e.getX(), e.getY(), 12));
         }
     }
 
