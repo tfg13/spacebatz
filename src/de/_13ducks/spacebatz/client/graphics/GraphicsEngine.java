@@ -1,11 +1,5 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.client.GameClient;
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-import java.util.LinkedList;
-import org.newdawn.slick.opengl.Texture;
-
 import de._13ducks.spacebatz.Settings;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
@@ -64,31 +58,10 @@ public class GraphicsEngine {
     private Texture itemTiles;
     private Texture inventoryPic;
     private Texture fxTiles;
-    private Texture font[] = new Texture[2];
-    /**
-     * Charset, zum Textoutput-Encoding
-     */
-    private Charset charset;
-    /**
-     * Wieviel Platz die einzelnen Buchstaben brauchen.
-     */
-    private byte[] spaceing;
     /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
     private int tilesX, tilesY;
-    /**
-     * Der fps-Counter.
-     */
-    private int fpsCount;
-    /**
-     * Die aktuelle FPS-Zahl.
-     */
-    private int fps;
-    /**
-     * Zeitpunkt der letzten FPS-Messung.
-     */
-    private long lastFPS;
     /**
      * Scrollen des Bildschirms, in Feldern.
      */
@@ -124,11 +97,11 @@ public class GraphicsEngine {
      * Array mit allen Tilemaps
      */
     private Texture[] tilemaps;
+    TextWriter textWriter;
 
     public GraphicsEngine() {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
-        charset = Charset.forName("cp437");
         tilemaps = new Texture[10];
         selecteditemslot = -1;
     }
@@ -136,33 +109,24 @@ public class GraphicsEngine {
     /**
      * Erzeugt ein Fenster und initialisiert die Grafik.
      */
-    public void start() {
+    public void initialise() {
         // Fenster aufmachen:
         try {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
-            Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
+            Display.setVSyncEnabled(CLIENT_GFX_VSYNC); // OpenGL-Init
+            initGL();
+            // Daten laden 
+            loadTex();
+            textWriter = new TextWriter();
         } catch (LWJGLException ex) {
             ex.printStackTrace();
             return;
-        }
-        // OpenGL-Init
-        initGL();
-        // Daten laden
-        try {
-            loadTex();
-            loadBin();
         } catch (IOException ex) {
             ex.printStackTrace();
             Display.destroy();
             return;
         }
-
-        lastFPS = getTime();
-        // Render-Mainloop:
-
-
-
 
     }
 
@@ -172,15 +136,6 @@ public class GraphicsEngine {
     public void shutDown() {
         // Ende der Mainloop.
         Display.destroy();
-    }
-
-    /**
-     * Liefert eine wirklich aktuelle Zeit. Nicht so gammlig wie System.currentTimeMillis();
-     *
-     * @return eine wirklich aktuelle Zeit.
-     */
-    public static long getTime() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
     /**
@@ -416,7 +371,7 @@ public class GraphicsEngine {
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
-                int tex = texAt(GameClient.currentLevel.getGround(), x, y);
+                int tex = textWriter.texAt(GameClient.currentLevel.getGround(), x, y);
                 int tx = tex % 16;
                 int ty = tex / 16;
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
@@ -480,15 +435,15 @@ public class GraphicsEngine {
         Iterator<DamageNumber> iter = damageNumbers.iterator();
         while (iter.hasNext()) {
             DamageNumber d = iter.next();
-            if (getTime() > d.getSpawntime() + DAMAGENUMBER_LIFETIME) {
+            if (GameClient.getEngine().getTime() > d.getSpawntime() + DAMAGENUMBER_LIFETIME) {
                 // alt - > löschen
                 iter.remove();
             } else {
                 //rendern:
-                float height = (getTime() - d.getSpawntime()) / 250.0f;
-                float visibility = 1 - ((float) (getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
+                float height = (GameClient.getEngine().getTime() - d.getSpawntime()) / 250.0f;
+                float visibility = 1 - ((float) (GameClient.getEngine().getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
                 visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
-                renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f, visibility);
+                textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f, visibility);
             }
         }
 
@@ -525,9 +480,9 @@ public class GraphicsEngine {
         // Items im Inventory zeichnen
         if (showinventory) {
             // Anzahl der Materialien:
-            renderText(String.valueOf(GameClient.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
-            renderText(String.valueOf(GameClient.getMaterial(1)), 0.45f * tilesX, 0.44f * tilesY);
-            renderText(String.valueOf(GameClient.getMaterial(2)), 0.75f * tilesX, 0.44f * tilesY);
+            textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.12f * tilesX, 0.44f * tilesY);
+            textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.45f * tilesX, 0.44f * tilesY);
+            textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.75f * tilesX, 0.44f * tilesY);
 
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
@@ -699,7 +654,7 @@ public class GraphicsEngine {
                 // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
                 float yadd = 0.0f;
                 for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
-                    renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * tilesX, (y + yadd) * tilesY);
+                    textWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * tilesX, (y + yadd) * tilesY);
                     yadd += 0.05f;
                 }
             }
@@ -712,13 +667,13 @@ public class GraphicsEngine {
             glRectf(0, tilesY, 10, NetStats.netGraph == 2 ? tilesY - 2f : tilesY - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText("lerp: " + GameClient.getNetwork2().getLerp() + " (~" + (Settings.SERVER_TICKRATE * GameClient.getNetwork2().getLerp() + "ms)"), 0, tilesY - .5f);
+            textWriter.renderText("lerp: " + GameClient.getNetwork2().getLerp() + " (~" + (Settings.SERVER_TICKRATE * GameClient.getNetwork2().getLerp() + "ms)"), 0, tilesY - .5f);
             //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
-            renderText("fps: " + fps + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
+            textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, tilesY - 1.5f);
             if (NetStats.netGraph == 2) {
                 // Einheitenposition:
-                renderText("playerpos: " + GameClient.getPlayer().getX(), 0, tilesY - 2f);
-                renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, tilesY - 2f);
+                textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, tilesY - 2f);
+                textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, tilesY - 2f);
             }
         }
 
@@ -728,30 +683,17 @@ public class GraphicsEngine {
             glRectf(tilesX / 3, tilesY / 2, tilesX, 0);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            renderText(GameClient.terminal.getCurrentLine(), tilesX / 3, 0, true);
+            textWriter.renderText(GameClient.terminal.getCurrentLine(), tilesX / 3, 0, true);
             int numberoflines = tilesY * zoomFactor;
             for (int i = 0; i < numberoflines - 1; i++) {
-                renderText(GameClient.terminal.getHistory(i), tilesX / 3, (float) tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
+                textWriter.renderText(GameClient.terminal.getHistory(i), tilesX / 3, (float) tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
         }
         // Fertig, Puffer swappen:
         Display.update();
-        // Frames messen:
-        updateFPS();
+
         // Frames limitieren:
         Display.sync(CLIENT_GFX_FRAMELIMIT);
-    }
-
-    /**
-     * Aktualisiert die FPS-Daten. Muss bei jedem Frame aufgerufen werden.
-     */
-    private void updateFPS() {
-        if (getTime() - lastFPS > 1000) {
-            fps = fpsCount;
-            fpsCount = 0;
-            lastFPS += 1000;
-        }
-        fpsCount++;
     }
 
     /**
@@ -773,99 +715,6 @@ public class GraphicsEngine {
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
         zoomFactor = zoomFact;
-    }
-
-    /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
-     * selber rebinden!
-     *
-     * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
-     */
-    private void renderText(String text, float x, float y) {
-        renderText(text, x, y, false, 0f, 0f, 0f, 1f);
-    }
-
-    /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
-     * selber rebinden!
-     *
-     * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
-     * @param mono Monospace-Font und (!) klein?
-     */
-    private void renderText(String text, float x, float y, boolean mono) {
-        renderText(text, x, y, mono, 0f, 0f, 0f, 1f);
-    }
-
-    /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
-     * selber rebinden!
-     *
-     * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
-     * @param red_color Textfarbe Rotanteil
-     * @param blue_color Textfarbe Blauanteil
-     * @param green_color Textfarbe Grünanteil
-     * @param green_color Textfarbe Alpha-anteil
-     */
-    private void renderText(String text, float x, float y, float red_color, float blue_color, float green_color, float alpha_color) {
-        renderText(text, x, y, false, red_color, blue_color, green_color, alpha_color);
-    }
-
-    /**
-     * Rendert den gegebenen Text an die angegebenen Position. Vorsicht: Bindet seine eigene Textur, man muss danach
-     * selber rebinden!
-     *
-     * @param text Der zu zeichnende Text
-     * @param x Relative X-Position (0-1)
-     * @param y Relative Y-Position (0-1)
-     * @param mono Monospace-Font und (!) klein?
-     * @param red_color Textfarbe Rotanteil
-     * @param blue_color Textfarbe Blauanteil
-     * @param green_color Textfarbe Grünanteil
-     * @param green_color Textfarbe Alpha-anteil
-     */
-    private void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color, float alpha_color) {
-        glColor4f(red_color, blue_color, green_color, alpha_color);
-        float next = 0;
-        byte[] chars = text.getBytes(charset);
-        font[mono ? 1 : 0].bind();
-        float size = .5f;
-        if (mono) {
-            size /= zoomFactor;
-        }
-        for (int i = 0; i < chars.length; i++) {
-            byte c = chars[i];
-            int tileX = c % 16;
-            int tileY = c / 16;
-            float tx = tileX / 16f;
-            float ty = tileY / 16f;
-            glBegin(GL_QUADS);
-            glTexCoord2f(tx, ty);
-            glVertex3f(x + next, y + size, 0.0f);
-            glTexCoord2f(tx + .0625f, ty);
-            glVertex3f(x + next + size, y + size, 0.0f);
-            glTexCoord2f(tx + .0625f, ty + .0625f);
-            glVertex3f(x + next + size, y, 0.0f);
-            glTexCoord2f(tx, ty + .0625f);
-            glVertex3f(x + next, y, 0.0f);
-            glEnd();
-            // Spacing dieses chars weiter gehen:
-            next += (mono ? 6 / 16f / zoomFactor : spaceing[c] / 16f);
-        }
-        glColor3f(1f, 1f, 1f);
-    }
-
-    private int texAt(int[][] layer, int x, int y) {
-        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
-            return 0;
-        } else {
-            return layer[x][y];
-        }
     }
 
     /**
@@ -891,23 +740,7 @@ public class GraphicsEngine {
         fxTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/fx.png"), GL_NEAREST);
         tilemaps[6] = fxTiles;
 
-        font[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font.png"), GL_NEAREST);
-        font[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/font_mono.png"), GL_NEAREST);
-    }
 
-    /**
-     * Läd alle benötigten Binärdateien, die keine Bilder sind.
-     *
-     * @throws IOException Wenn was schief geht
-     */
-    private void loadBin() throws IOException {
-        spaceing = new byte[256];
-        InputStream r = ResourceLoader.getResourceAsStream("tex/font_spacing.bin");
-        int b;
-        int i = 0;
-        while ((b = r.read()) != -1) {
-            spaceing[i++] = (byte) b;
-        }
     }
 
     /**
@@ -933,7 +766,7 @@ public class GraphicsEngine {
      * @param y y-Position
      */
     public static void createDamageNumber(int damage, double x, double y) {
-        DamageNumber d = new DamageNumber(damage, x, y, getTime());
+        DamageNumber d = new DamageNumber(damage, x, y, GameClient.getEngine().getTime());
         damageNumbers.add(d);
     }
 
@@ -993,5 +826,9 @@ public class GraphicsEngine {
         // Fragwürdige Berechnung der Distanz:
         float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * tilesX / Display.getWidth();
         CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest((byte) 0, (float) dir, distance);
+    }
+
+    float getZoomFactor() {
+        return zoomFactor;
     }
 }

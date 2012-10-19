@@ -11,28 +11,50 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import de._13ducks.spacebatz.client.*;
+import org.lwjgl.Sys;
 
 /**
- * Kern der Grafikengine. Startet die Grafikausgabe
+ * Die ClientEngine. Läßt Netzwerk und Grafik in einer Endlosschleife laufen.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Engine {
 
+    /**
+     * Die Grafik-Engine.
+     */
     private GraphicsEngine graphics;
+    /**
+     * Gibt an ob der Mainloop läuft.
+     */
     private boolean run;
+    /**
+     * Der fps-Counter.
+     */
+    private int fpsCount;
+    /**
+     * Die aktuelle FPS-Zahl.
+     */
+    private int fps;
+    /**
+     * Zeitpunkt der letzten FPS-Messung.
+     */
+    private long lastFPS;
 
+    /**
+     * Initialisiert die Engine.
+     */
     public Engine() {
         run = true;
         graphics = new GraphicsEngine();
-
     }
 
     /**
      * Startet die Grafik. Verwendet den gegebenen Thread (forkt *nicht* selbstständig!).
      */
     public void start() {
-        graphics.start();
+        graphics.initialise();
+        lastFPS = getTime();
         while (run) {
             // Gametick updaten:
             GameClient.updateGametick();
@@ -42,7 +64,12 @@ public class Engine {
             graphics.tick();
             // Output neues Netzwerksystem:
             GameClient.getNetwork2().outTick();
-
+            if (getTime() - lastFPS > 1000) {
+                fps = fpsCount;
+                fpsCount = 0;
+                lastFPS += 1000;
+            }
+            fpsCount++;
         }
         // Netzwerk abmelden:
         GameClient.getNetwork2().disconnect();
@@ -50,7 +77,30 @@ public class Engine {
 
     }
 
+    /**
+     * Gibt die GrafikEngine zurück.
+     *
+     * @return
+     */
     public GraphicsEngine getGraphics() {
         return graphics;
+    }
+
+    /**
+     * Liefert eine wirklich aktuelle Zeit. Nicht so gammlig wie System.currentTimeMillis();
+     *
+     * @return eine wirklich aktuelle Zeit.
+     */
+    public static long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
+    /**
+     * Gibt die aktuellen FPS zurück.
+     *
+     * @return
+     */
+    public int getFps() {
+        return fps;
     }
 }
