@@ -13,13 +13,10 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAP
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -31,6 +28,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 /**
+ * Die GrafikEngine. Zeichnet den Bildschirm und verarbeitet Eingaben.
  *
  * @author michael
  */
@@ -115,7 +113,13 @@ public class GraphicsEngine {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC); // OpenGL-Init
-            initGL();
+            // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
+            GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+            glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
+            //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
+            glEnable(GL_BLEND); // Transparenz in Texturen erlauben
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
+            Keyboard.enableRepeatEvents(true);
             // Daten laden 
             loadTex();
             textWriter = new TextWriter();
@@ -694,19 +698,6 @@ public class GraphicsEngine {
 
         // Frames limitieren:
         Display.sync(CLIENT_GFX_FRAMELIMIT);
-    }
-
-    /**
-     * OpenGL initialisieren
-     */
-    private void initGL() {
-        // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
-        GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
-        glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
-        glEnable(GL_BLEND); // Transparenz in Texturen erlauben
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
-        Keyboard.enableRepeatEvents(true);
     }
 
     public void setZoomFact(int zoomFact) {

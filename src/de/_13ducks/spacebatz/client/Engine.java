@@ -8,9 +8,10 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.client.graphics;
+package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.*;
+import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import org.lwjgl.Sys;
 
 /**

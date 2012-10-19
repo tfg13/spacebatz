@@ -11,7 +11,6 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.client.graphics.Engine;
 import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
