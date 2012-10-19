@@ -1,33 +1,14 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.Settings;
 import static de._13ducks.spacebatz.Settings.*;
-import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
-import de._13ducks.spacebatz.client.network.NetStats;
-import de._13ducks.spacebatz.shared.EnemyTypeStats;
-import de._13ducks.spacebatz.shared.Item;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 
 /**
  * Die GrafikEngine. Zeichnet den Bildschirm und verarbeitet Eingaben.
@@ -48,14 +29,28 @@ public class GraphicsEngine {
             ex.printStackTrace();
         }
     }
+    /**
+     * Zeichnet Text.
+     */
     TextWriter textWriter;
+    /**
+     * Die Kamera mit Position und Zoom.
+     */
     Camera camera;
+    /**
+     * Die Liste der Controls (z.B. Inventar, HUD, ...).
+     */
     private ArrayList<Control> controls;
+    /**
+     * Das God-Control, das auch Effekte und FX zeichent.
+     */
     private GodControl godControl;
 
+    /**
+     * Initialisiert die GrafikEngine.
+     */
     public GraphicsEngine() {
         controls = new ArrayList<>();
-
     }
 
     /**
@@ -90,12 +85,6 @@ public class GraphicsEngine {
             godControl.setActive(true);
             controls.add(godControl);
 
-            // Die Controls initialisierne (achtung, wird warscheinlich entfernt werden!)
-            for (Control c : controls) {
-                c.initialise();
-            }
-
-
         } catch (Exception ex) {
             ex.printStackTrace();
             Display.destroy();
@@ -123,14 +112,31 @@ public class GraphicsEngine {
         }
     }
 
+    /**
+     * Gibt die Kamera zurück.
+     *
+     * @return
+     */
     public Camera getCamera() {
         return camera;
     }
 
+    /**
+     * Erzeugt eine Schadenszahl.
+     *
+     * @param damage
+     * @param x
+     * @param y
+     */
     public void createDamageNumber(int damage, double x, double y) {
         godControl.createDamageNumber(damage, x, y);
     }
 
+    /**
+     * Erzeugt einen Effekt.
+     *
+     * @param fx
+     */
     public void addFx(Fx fx) {
         godControl.addFx(fx);
     }

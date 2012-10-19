@@ -26,6 +26,8 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -85,20 +87,10 @@ public class GodControl extends Control {
     public GodControl() {
         tilemaps = new Texture[10];
         selecteditemslot = -1;
-    }
-
-    /**
-     * Erzeugt ein Fenster und initialisiert die Grafik.
-     */
-    @Override
-    public void initialise() {
-        // Fenster aufmachen:
         try {
             loadTex();
         } catch (IOException ex) {
-            ex.printStackTrace();
-            Display.destroy();
-            return;
+            Logger.getLogger(GodControl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

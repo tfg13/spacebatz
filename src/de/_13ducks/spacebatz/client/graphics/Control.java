@@ -1,8 +1,5 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
 /**
  * Ein Steuerelement, das gerendert wird und Eingaben verarbeiten kann.
  *
@@ -10,6 +7,9 @@ import org.lwjgl.input.Mouse;
  */
 public abstract class Control {
 
+    /**
+     * Gibt an ob das Control aktiv ist.
+     */
     private boolean active;
 
     public Control() {
@@ -36,9 +36,4 @@ public abstract class Control {
      * @param keyboard
      */
     public abstract void input();
-
-    /**
-     * Initialisiert das COntrol.
-     */
-    public abstract void initialise();
 }
