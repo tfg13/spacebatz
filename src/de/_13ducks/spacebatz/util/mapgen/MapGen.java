@@ -50,6 +50,7 @@ public class MapGen {
      * @param params
      */
     public static InternalMap generateInternal(final MapParameters params) {
+        long startTime = System.currentTimeMillis();
         if (!params.check()) {
             throw new IllegalArgumentException("Invalid params!");
         }
@@ -101,7 +102,7 @@ public class MapGen {
         for (String rasterModuleName : rasterModules) {
             runModule(rasterModuleName, params);
         }
-
+        System.out.println("INFO: MapGen: Generation took " + (System.currentTimeMillis() - startTime) + "ms");
         return currentMap;
     }
 
