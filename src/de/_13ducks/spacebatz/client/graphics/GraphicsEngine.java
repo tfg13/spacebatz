@@ -45,6 +45,9 @@ public class GraphicsEngine {
      * Das God-Control, das auch Effekte und FX zeichent.
      */
     private GodControl godControl;
+    /**
+     * Der Renderer, der Geometrie und Texturen zeichnet.
+     */
     private Renderer renderer;
 
     /**
@@ -85,7 +88,7 @@ public class GraphicsEngine {
             textWriter = new TextWriter();
 
             // Controls erzeugen:
-            godControl = new GodControl();
+            godControl = new GodControl(renderer);
             godControl.setActive(true);
             controls.add(godControl);
 

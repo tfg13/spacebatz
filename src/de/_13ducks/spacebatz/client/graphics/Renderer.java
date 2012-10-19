@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import java.io.File;
+
 /**
  * Rendert einfache Geometrie, Text und Bilder.
  *
@@ -15,6 +17,10 @@ public class Renderer {
      * Die Kamera der Engine.
      */
     private Camera camera;
+    /**
+     * Lädt Texturen und erzeugt Bilder.
+     */
+    private ImageLoader imageLoader;
 
     /**
      * Erzeugt einen neuen Renderer.
@@ -24,6 +30,7 @@ public class Renderer {
     Renderer(Camera camera) {
         this.camera = camera;
         textWriter = new TextWriter();
+        imageLoader = new ImageLoader(new File("").getAbsolutePath() + "/tex");
     }
 
     /**
@@ -38,5 +45,12 @@ public class Renderer {
      */
     public Camera getCamera() {
         return camera;
+    }
+
+    /**
+     * @return the imageLoader
+     */
+    public ImageLoader getImageLoader() {
+        return imageLoader;
     }
 }

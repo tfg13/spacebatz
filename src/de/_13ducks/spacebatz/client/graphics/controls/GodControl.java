@@ -85,14 +85,27 @@ public class GodControl extends Control {
      */
     private Texture[] tilemaps;
 
-    public GodControl() {
+    public GodControl(Renderer renderer) {
         tilemaps = new Texture[10];
         selecteditemslot = -1;
-        try {
-            loadTex();
-        } catch (IOException ex) {
-            Logger.getLogger(GodControl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
+        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
+        groundTiles = renderer.getImageLoader().getTexture("ground.png");
+        playerTiles = renderer.getImageLoader().getTexture("player.png");
+        enemyTiles = renderer.getImageLoader().getTexture("enemy.png");
+        bulletTiles = renderer.getImageLoader().getTexture("bullet.png");
+        itemTiles = renderer.getImageLoader().getTexture("item.png");
+        inventoryPic = renderer.getImageLoader().getTexture("inventory2.png");
+        fxTiles = renderer.getImageLoader().getTexture("fx.png");
+        tilemaps[0] = groundTiles;
+        tilemaps[1] = playerTiles;
+        tilemaps[2] = enemyTiles;
+        tilemaps[3] = bulletTiles;
+        tilemaps[4] = itemTiles;
+        tilemaps[5] = inventoryPic;
+        tilemaps[6] = fxTiles;
+
     }
 
     /**
@@ -656,24 +669,6 @@ public class GodControl extends Control {
      * @throws IOException Wenn was schief geht
      */
     private void loadTex() throws IOException {
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
-        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
-        groundTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/ground.png"), GL_NEAREST);
-        tilemaps[0] = groundTiles;
-        playerTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/player.png"), GL_NEAREST);
-        tilemaps[1] = playerTiles;
-        enemyTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/enemy.png"), GL_NEAREST);
-        tilemaps[2] = enemyTiles;
-        bulletTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/bullet.png"), GL_NEAREST);
-        tilemaps[3] = bulletTiles;
-        itemTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/item.png"), GL_NEAREST);
-        tilemaps[4] = itemTiles;
-        inventoryPic = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/inventory2.png"), GL_NEAREST);
-        tilemaps[5] = inventoryPic;
-        fxTiles = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tex/fx.png"), GL_NEAREST);
-        tilemaps[6] = fxTiles;
-
-
     }
 
     /**
