@@ -110,7 +110,7 @@ public class TextWriter {
         font[mono ? 1 : 0].bind();
         float size = .5f;
         if (mono) {
-            size /= GameClient.getEngine().getGraphics().getZoomFactor();
+            size /= GameClient.getEngine().getGraphics().getCamera().getZoomFactor();
         }
         for (int i = 0; i < chars.length; i++) {
             byte c = chars[i];
@@ -129,7 +129,7 @@ public class TextWriter {
             glVertex3f(x + next, y, 0.0f);
             glEnd();
             // Spacing dieses chars weiter gehen:
-            next += (mono ? 6 / 16f / GameClient.getEngine().getGraphics().getZoomFactor() : spaceing[c] / 16f);
+            next += (mono ? 6 / 16f / GameClient.getEngine().getGraphics().getCamera().getZoomFactor() : spaceing[c] / 16f);
         }
         glColor3f(1f, 1f, 1f);
     }
