@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.client.graphics.controls;
+package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import static org.lwjgl.opengl.GL11.*;

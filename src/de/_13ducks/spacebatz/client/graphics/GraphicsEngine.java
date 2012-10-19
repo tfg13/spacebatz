@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.client.graphics;
 import de._13ducks.spacebatz.Settings;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.*;
-import de._13ducks.spacebatz.client.graphics.controls.Camera;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;

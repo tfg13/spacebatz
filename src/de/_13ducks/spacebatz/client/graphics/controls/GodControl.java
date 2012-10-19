@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
+import de._13ducks.spacebatz.Settings;
+import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
@@ -7,12 +9,11 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.InventorySlot;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
-import de._13ducks.spacebatz.Settings;
-import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.Item;
@@ -99,14 +100,6 @@ public class GodControl extends Control {
             Display.destroy();
             return;
         }
-    }
-
-    /**
-     * Zerstört das Fenster der Graphikengine.
-     */
-    public void shutDown() {
-        // Ende der Mainloop.
-        Display.destroy();
     }
 
     /**

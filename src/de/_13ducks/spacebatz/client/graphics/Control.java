@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.client.graphics.controls.Camera;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
