@@ -27,7 +27,7 @@ public abstract class Control {
     /**
      * Rendert dieses Control.
      */
-    public abstract void render(Camera camera, TextWriter textWriter);
+    public abstract void render(Renderer renderer);
 
     /**
      * Verarbeitet Eingaben.

@@ -13,6 +13,7 @@ import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
+import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
@@ -313,7 +314,10 @@ public class GodControl extends Control {
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     @Override
-    public void render(Camera camera, TextWriter textWriter) {
+    public void render(Renderer renderer) {
+
+        Camera camera = renderer.getCamera();
+        TextWriter textWriter = renderer.getTextWriter();
 
         panX = (float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f;
         panY = (float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f;

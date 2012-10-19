@@ -45,6 +45,7 @@ public class GraphicsEngine {
      * Das God-Control, das auch Effekte und FX zeichent.
      */
     private GodControl godControl;
+    private Renderer renderer;
 
     /**
      * Initialisiert die GrafikEngine.
@@ -77,6 +78,9 @@ public class GraphicsEngine {
             // Tastatureingaben einstallen:
             Keyboard.enableRepeatEvents(true);
 
+            // Renderer Initialisieren:
+            renderer = new Renderer(camera);
+
             // Text initialisiern:
             textWriter = new TextWriter();
 
@@ -106,7 +110,7 @@ public class GraphicsEngine {
     public void tick() {
         for (Control c : controls) {
             if (c.isActive()) {
-                c.render(camera, textWriter);
+                c.render(renderer);
                 c.input();
             }
         }
