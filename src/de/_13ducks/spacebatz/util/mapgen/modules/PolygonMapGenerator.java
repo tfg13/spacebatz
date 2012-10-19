@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
@@ -66,5 +67,23 @@ public class PolygonMapGenerator extends Module {
         GeometryCollection voronoi = (GeometryCollection) vbuilder.getDiagram(geom);
 
         map.polygons = voronoi;
+
+        // Falls der optionale smoooth-parameter angegeben ist, noch so viele smoothing-läuft drüber laufen lassen
+        if (parameters.containsKey("smooth")) {
+            int runs = Integer.parseInt(parameters.get("smooth"));
+            for (int i = 0; i < runs; i++) {
+                // Punktwolke neu berechnen, aus Mittelpunkten der Voronoi-Polygone
+                // Dann Voronoi neu berechnen
+                points = new ArrayList<>(number);
+                for (int p = 0; p < map.polygons.getNumGeometries(); p++) {
+                    Polygon poly = (Polygon) map.polygons.getGeometryN(p);
+                    points.add(poly.getCentroid().getCoordinate());
+                }
+                // Man braucht unbedingt einen neuen Builder, der lässt sich anscheinend nicht wiederverwenden.
+                VoronoiDiagramBuilder newBuilder = new VoronoiDiagramBuilder();
+                newBuilder.setSites(points);
+                map.polygons = (GeometryCollection) newBuilder.getDiagram(geom);
+            }
+        }
     }
 }
