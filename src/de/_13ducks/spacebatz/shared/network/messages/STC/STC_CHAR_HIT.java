@@ -47,10 +47,10 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
         } else if (GameClient.netIDMap.get(netIDVictim) instanceof Enemy) {
             Enemy e = (Enemy) GameClient.netIDMap.get(netIDVictim);
             // Schadenszahl rendern:
-            Engine.createDamageNumber(damage, e.getX(), e.getY());
+            GameClient.getEngine().getGraphics().createDamageNumber(damage, e.getX(), e.getY());
             // Test-Explosion:
             Animation anim = new Animation(0, 2, 2, 3, 4);
-            Engine.addFx(new Fx(anim, e.getX(), e.getY(), 12));
+            GameClient.getEngine().getGraphics().addFx(new Fx(anim, e.getX(), e.getY(), 12));
         }
     }
 
