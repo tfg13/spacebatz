@@ -54,23 +54,4 @@ public class ImageLoader {
             throw new IllegalArgumentException("Textur " + name + " nicht gefunden!");
         }
     }
-
-    /**
-     * Erzeugt ein Bild.
-     *
-     * @param texturename
-     * @param x1
-     * @param x2
-     * @param y1
-     * @param y2
-     * @return
-     */
-    public Image createImage(String texturename, int x, int y, int width, int height) {
-        if (textures.containsKey(texturename)) {
-            return new Image(textures.get(texturename), x, y, width, height);
-        } else {
-            throw new IllegalArgumentException("Textur " + texturename + " existiert nicht!");
-        }
-
-    }
 }

@@ -83,13 +83,13 @@ public class GodControl extends Control {
 
         // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
         // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
-        groundTiles = renderer.getImageLoader().getTexture("ground.png");
-        playerTiles = renderer.getImageLoader().getTexture("player.png");
-        enemyTiles = renderer.getImageLoader().getTexture("enemy.png");
-        bulletTiles = renderer.getImageLoader().getTexture("bullet.png");
-        itemTiles = renderer.getImageLoader().getTexture("item.png");
-        inventoryPic = renderer.getImageLoader().getTexture("inventory2.png");
-        fxTiles = renderer.getImageLoader().getTexture("fx.png");
+        groundTiles = renderer.getTextureByName("ground.png");
+        playerTiles = renderer.getTextureByName("player.png");
+        enemyTiles = renderer.getTextureByName("enemy.png");
+        bulletTiles = renderer.getTextureByName("bullet.png");
+        itemTiles = renderer.getTextureByName("item.png");
+        inventoryPic = renderer.getTextureByName("inventory2.png");
+        fxTiles = renderer.getTextureByName("fx.png");
         tilemaps[0] = groundTiles;
         tilemaps[1] = playerTiles;
         tilemaps[2] = enemyTiles;
@@ -327,6 +327,11 @@ public class GodControl extends Control {
         renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
         renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
 
+        
+        if(true){
+             return;
+        }
+               
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + renderer.getCamera().getPanX()); x < -(1 + renderer.getCamera().getPanX()) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + renderer.getCamera().getPanY()); y < -(1 + renderer.getCamera().getPanY()) + camera.getTilesY() + 2; y++) {
