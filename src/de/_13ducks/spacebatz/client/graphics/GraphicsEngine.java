@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
+import de._13ducks.spacebatz.client.graphics.controls.SkillTreeControl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
@@ -91,6 +92,8 @@ public class GraphicsEngine {
             godControl = new GodControl(renderer);
             godControl.setActive(true);
             controls.add(godControl);
+            
+            controls.add(new SkillTreeControl(renderer));
 
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -53,4 +53,7 @@ public class Renderer {
     public ImageLoader getImageLoader() {
         return imageLoader;
     }
+
+    public void drawImage(double x, double y, double width, double height) {
+    }
 }

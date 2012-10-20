@@ -18,6 +18,10 @@ public class Camera {
      * Der aktuelle Zoomfaktor. Wird benötigt, um Schriften immer gleich groß anzeigen zu können
      */
     private int zoomFactor;
+    /**
+     * Scrollen des Bildschirms, in Feldern.
+     */
+    private float panX, panY;
 
     /**
      * Erzeugt die Kamera und stellt den Standardzoom ein.
@@ -51,5 +55,33 @@ public class Camera {
 
     public float getTilesY() {
         return tilesY;
+    }
+
+    /**
+     * @return the panX
+     */
+    public float getPanX() {
+        return panX;
+    }
+
+    /**
+     * @return the panY
+     */
+    public float getPanY() {
+        return panY;
+    }
+
+    /**
+     * @param panX the panX to set
+     */
+    public void setPanX(float panX) {
+        this.panX = panX;
+    }
+
+    /**
+     * @param panY the panY to set
+     */
+    public void setPanY(float panY) {
+        this.panY = panY;
     }
 }

@@ -27,15 +27,11 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
@@ -53,10 +49,6 @@ public class GodControl extends Control {
     private Texture itemTiles;
     private Texture inventoryPic;
     private Texture fxTiles;
-    /**
-     * Scrollen des Bildschirms, in Feldern.
-     */
-    private float panX, panY;
     /**
      * Sagt, ob Inventar gerade geöffnet ist (Taste i)
      */
@@ -332,25 +324,25 @@ public class GodControl extends Control {
         Camera camera = renderer.getCamera();
         TextWriter textWriter = renderer.getTextWriter();
 
-        panX = (float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f;
-        panY = (float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f;
+        renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
+        renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
 
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
-        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+        for (int x = -(int) (1 + renderer.getCamera().getPanX()); x < -(1 + renderer.getCamera().getPanX()) + camera.getTilesX() + 2; x++) {
+            for (int y = -(int) (1 + renderer.getCamera().getPanY()); y < -(1 + renderer.getCamera().getPanY()) + camera.getTilesY() + 2; y++) {
                 int tex = textWriter.texAt(GameClient.currentLevel.getGround(), x, y);
                 int tx = tex % 16;
                 int ty = tex / 16;
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-                glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                glVertex3f(x + renderer.getCamera().getPanX(), y + 1 + renderer.getCamera().getPanY(), 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
                 // Die weiteren 3 Ecken im Uhrzeigersinn:
                 glTexCoord2f((tx + 1) * 0.0625f, ty * 0.0625f);
-                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                glVertex3f(x + 1 + renderer.getCamera().getPanX(), y + 1 + renderer.getCamera().getPanY(), 0);
                 glTexCoord2f((tx + 1) * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + 1 + panX, y + panY, 0);
+                glVertex3f(x + 1 + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
                 glTexCoord2f(tx * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + panX, y + panY, 0);
+                glVertex3f(x + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
                 glEnd(); // Zeichnen des QUADs fertig
             }
         }
@@ -364,7 +356,7 @@ public class GodControl extends Control {
                 // Werte fürs Einfärben nehmen und rendern
                 EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
                 glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
                 glColor3f(1f, 1f, 1f);
 
             }
@@ -374,7 +366,7 @@ public class GodControl extends Control {
         playerTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof PlayerCharacter) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
             }
         }
 
@@ -382,7 +374,7 @@ public class GodControl extends Control {
         bulletTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Bullet) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
             }
         }
 
@@ -394,7 +386,7 @@ public class GodControl extends Control {
             if (GameClient.frozenGametick > f.getStarttick() + f.getLifetime()) {
                 itera.remove();
             } else {
-                renderAnim(f.getAnim(), f.getX(), f.getY(), 0.0, f.getStarttick());
+                renderAnim(f.getAnim(), f.getX(), f.getY(), 0.0, f.getStarttick(), renderer);
             }
         }
 
@@ -410,7 +402,7 @@ public class GodControl extends Control {
                 float height = (GameClient.getEngine().getTime() - d.getSpawntime()) / 250.0f;
                 float visibility = 1 - ((float) (GameClient.getEngine().getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
                 visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
-                textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f, visibility);
+                textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
             }
         }
 
@@ -717,7 +709,7 @@ public class GodControl extends Control {
      * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig, wenn sie beim ersten Bild anfangen soll.
      * Bei Einzelbild egal.
      */
-    private void renderAnim(Animation animation, double x, double y, double dir, int starttick) {
+    private void renderAnim(Animation animation, double x, double y, double dir, int starttick, Renderer renderer) {
         float picsizex = 0.0625f * animation.getPicsizex();
         float picsizey = 0.0625f * animation.getPicsizey();
 
@@ -728,18 +720,18 @@ public class GodControl extends Control {
         float w = (currentpic / (16 / animation.getPicsizey())) * picsizey;
 
         glPushMatrix();
-        glTranslated(x + panX, y + panY, 0);
+        glTranslated(x + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
         glRotated(dir / Math.PI * 180.0, 0, 0, 1);
-        glTranslated(-(x + panX), -(y + panY), 0);
+        glTranslated(-(x + renderer.getCamera().getPanX()), -(y + renderer.getCamera().getPanY()), 0);
         glBegin(GL_QUADS);
         glTexCoord2f(v, w + picsizey);
-        glVertex3f((float) x + panX - 1, (float) y + panY + 1, 0);
+        glVertex3f((float) x + renderer.getCamera().getPanX() - 1, (float) y + renderer.getCamera().getPanY() + 1, 0);
         glTexCoord2f(v + picsizex, w + picsizey);
-        glVertex3f((float) x + panX + 1, (float) y + panY + 1, 0);
+        glVertex3f((float) x + renderer.getCamera().getPanX() + 1, (float) y + renderer.getCamera().getPanY() + 1, 0);
         glTexCoord2f(v + picsizex, w);
-        glVertex3f((float) x + panX + 1, (float) y + panY - 1, 0);
+        glVertex3f((float) x + renderer.getCamera().getPanX() + 1, (float) y + renderer.getCamera().getPanY() - 1, 0);
         glTexCoord2f(v, w);
-        glVertex3f((float) x + panX - 1, (float) y + panY - 1, 0);
+        glVertex3f((float) x + renderer.getCamera().getPanX() - 1, (float) y + renderer.getCamera().getPanY() - 1, 0);
         glEnd();
         glPopMatrix();
     }
