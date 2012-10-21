@@ -327,11 +327,8 @@ public class GodControl extends Control {
         renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
         renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
 
-        
-        if(true){
-             return;
-        }
-               
+
+
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + renderer.getCamera().getPanX()); x < -(1 + renderer.getCamera().getPanX()) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + renderer.getCamera().getPanY()); y < -(1 + renderer.getCamera().getPanY()) + camera.getTilesY() + 2; y++) {
@@ -653,11 +650,7 @@ public class GodControl extends Control {
                 textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3, (float) camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
         }
-        // Fertig, Puffer swappen:
-        Display.update();
-
-        // Frames limitieren:
-        Display.sync(CLIENT_GFX_FRAMELIMIT);
+       
     }
 
     /**

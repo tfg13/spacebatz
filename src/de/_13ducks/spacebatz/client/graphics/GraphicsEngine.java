@@ -122,6 +122,11 @@ public class GraphicsEngine {
                 c.input();
             }
         }
+        // Fertig, Puffer swappen:
+        Display.update();
+
+        // Frames limitieren:
+        Display.sync(CLIENT_GFX_FRAMELIMIT);
     }
 
     /**
