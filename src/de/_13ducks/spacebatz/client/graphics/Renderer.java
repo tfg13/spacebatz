@@ -1,10 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.client.GameClient;
 import java.io.File;
-
-import de._13ducks.spacebatz.client.graphics.Camera;
-import de._13ducks.spacebatz.client.graphics.TextWriter;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
 
@@ -27,9 +23,22 @@ public class Renderer {
      * Lädt Texturen und erzeugt Bilder.
      */
     private ImageLoader imageLoader;
+    /**
+     * Die Breite der Bilder in Pixel.
+     */
     private int imageWidth;
+    /**
+     * Die Höhe der Bilder in Pixel.
+     */
     private int imageHeight;
+    /**
+     * Die Zahl der Bilder pro Reihe auf der Textur.
+     */
     private int imagesPerRow;
+    /**
+     * Die Größe und Breite der geladenen Textur.
+     */
+    private int textureSize;
 
     /**
      * Erzeugt einen neuen Renderer.
@@ -40,7 +49,6 @@ public class Renderer {
         this.camera = camera;
         textWriter = new TextWriter();
         imageLoader = new ImageLoader(new File("").getAbsolutePath() + "/tex");
-        setImageSize(40, 40);
     }
 
     /**
@@ -69,83 +77,90 @@ public class Renderer {
      */
     public void setTexture(Texture texture) {
         texture.bind();
+        textureSize = texture.getImageWidth();
+        if (texture.getImageHeight() != texture.getImageWidth()) {
+            throw new IllegalArgumentException("Texturen müssen quadratisch sein!");
+        }
     }
 
     public void setImageSize(int width, int height) {
         imageHeight = height;
         imageWidth = width;
-        imagesPerRow = (512 / width);
+        imagesPerRow = (textureSize / width);
     }
 
     /**
-     * Zeichnet ein Bild der aktuellen Textur auf den Bildschirm.
+     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm.
+     * Die Größe der Bilder wird mit setImageSize() eingestellt.
      *
-     * @param index das wievielte Bild der textur (in Leserichtung) gezeichnet wird.
-     * @param x X-Koordinate des Bildschirms an die gezeichnet wird
-     * @param y Y-Koordinate des Bildschirms an die gezeichnet wird
-     * @param width Breite mit der das Bild gezeichent wird
-     * @param height Höhe mit der das Bild gezeichent wird
+     * Koordinaten werden in Prozent des Bildschirms angegeben:
+     * 0/0 links unten
+     * 50/50 Mitte
+     * 100/100 rechts oben
+     *
+     * @param index das wievielte Bild der Textur (in Leserichtung) gezeichnet wird.
+     * @param x X-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
+     * @param y Y-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
+     * @param width Breite mit der das Bild gezeichent wird (in Prozent)
+     * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
      */
-    public void drawImage(int index, float x, float y, float width, float height) {
+    public void drawImage(int index, double x, double y, double width, double height) {
+
+        glPushMatrix(); // Transformationsmatrix sichern
+        // Neue Matrix erstellen: die bildet den Bildschirm auf ein 100*100 Feld ab
+        // 0/0 ist dann links unten, 50/50 ist dann die Mitte und 100/100 rechts oben.
+        glLoadIdentity();
+        glOrtho(0, 100, 0, 100, -1, 1);
+
         glBegin(GL_QUADS); // Viereck zeichnen
-        glEnable(GL_TEXTURE_2D);
-        int row = index / imagesPerRow;
-        int column = index % imagesPerRow;
+        glEnable(GL_TEXTURE_2D); // Textur zeichnen
 
-        float fromX;
-        float fromY;
+        int row = index / imagesPerRow; // Die Reihe in der das gesuchte Bild ist
+        int column = index % imagesPerRow; // Die Zeile in der das Bild ist
 
-        float toX;
-        float toY;
+        float fromX; // X-Koordinate der Vertex auf der Textur (in Prozent)
+        float fromY; // Y-Koordinate der Vertex auf der Textur (in Prozent)
 
-        float textureX = column * imageWidth;
-        float textureY = row * imageHeight;
+        double toX; // X-Koordinate der Vertex auf dem Bildschirm (in Prozent)
+        double toY; // Y-Koordinate der Vertex auf dem Bildschirm (in Prozent)
 
-        // links oben
-        fromX = (float) textureX / 512;
-        fromY = (float) textureY / 512;
-        toX = x+width;
-        toY = y+height;
-        glTexCoord2f(fromX, fromY);
-        glVertex2f(toX, toY);
+        float textureX = column * imageWidth; // X-Koordinate der Vertex auf der Textur in Pixel
+        float textureY = row * imageHeight; // Y-Koordinate der Vertex auf der Textur in Pixel
 
-        // rechts oben
-        fromX = (float) (textureX + imageWidth) / 512;
-        fromY = (float) textureY / 512;
-        toX = x ;
+        // alle Angaben über rechts, links, oben und unten sind ohne Gewähr
+        // links unten
+        fromX = (float) textureX / textureSize;
+        fromY = (float) textureY / textureSize;
+        toX = x;
         toY = y + height;
         glTexCoord2f(fromX, fromY);
-        glVertex2f(toX, toY);
+        glVertex2d(toX, toY);
 
         // rechts unten
-        fromX = (float) (textureX + imageWidth) / 512;
-        fromY = (float) (textureY + imageHeight) / 512;
-        toX = x ;
-        toY = y ;
-        glTexCoord2f(fromX, fromY);
-        glVertex2f(toX, toY);
-
-        // links unten
-        fromX = (float) textureX / 512;
-        fromY = (float) (textureY + imageHeight) / 512;
+        fromX = (float) (textureX + imageWidth) / textureSize;
+        fromY = (float) textureY / textureSize;
         toX = x + width;
-        toY = y ;
+        toY = y + height;
         glTexCoord2f(fromX, fromY);
-        glVertex2f(toX, toY);
+        glVertex2d(toX, toY);
+
+        // rechts oben
+        fromX = (float) (textureX + imageWidth) / textureSize;
+        fromY = (float) (textureY + imageHeight) / textureSize;
+        toX = x + width;
+        toY = y;
+        glTexCoord2f(fromX, fromY);
+        glVertex2d(toX, toY);
+
+        // links oben
+        fromX = (float) textureX / textureSize;
+        fromY = (float) (textureY + imageHeight) / textureSize;
+        toX = x;
+        toY = y;
+        glTexCoord2f(fromX, fromY);
+        glVertex2d(toX, toY);
 
         glEnd(); // Zeichnen des QUADs fertig
-    }
-
-    public void drawRectangle(float x, float y, float width, float height) {
-        glBegin(GL_QUADS);
-        glDisable(GL_TEXTURE_2D);
-        glColor3f(0, 0, 0.1f);
-        glVertex2f(x, y);
-        glVertex2f(x, y + height);
-        glVertex2f(x + width, y + height);
-        glVertex2f(x + width, y);
-        glEnable(GL_TEXTURE_2D);
-        glColor3f(1, 1, 1);
-        glEnd();
+        glPopMatrix();// wieder die ursprüngliche Transformationsmatrix herstellen
     }
 }
