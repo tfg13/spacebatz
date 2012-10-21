@@ -86,71 +86,66 @@ public class Renderer {
      * @param width Breite mit der das Bild gezeichent wird
      * @param height Höhe mit der das Bild gezeichent wird
      */
-    public void drawImage(int index, float a, float b, float width, float height) {
-
-        getTextureByName("ground.png").bind();
+    public void drawImage(int index, float x, float y, float width, float height) {
         glBegin(GL_QUADS); // Viereck zeichnen
+        glEnable(GL_TEXTURE_2D);
+        int row = index / imagesPerRow;
+        int column = index % imagesPerRow;
 
-        for (int x = -(int) (1 + getCamera().getPanX()); x < -(1 + getCamera().getPanX()) + camera.getTilesX() + 2; x++) {
-            for (int y = -(int) (1 + getCamera().getPanY()); y < -(1 + getCamera().getPanY()) + camera.getTilesY() + 2; y++) {
-                int tex = 1;
-                int tx = tex % 16;
-                int ty = tex / 16;
-                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-                glVertex3f(x + getCamera().getPanX(), y + 1 + getCamera().getPanY(), 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-                // Die weiteren 3 Ecken im Uhrzeigersinn:
-                glTexCoord2f((tx + 1) * 0.0625f, ty * 0.0625f);
-                glVertex3f(x + 1 + getCamera().getPanX(), y + 1 + getCamera().getPanY(), 0);
-                glTexCoord2f((tx + 1) * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + 1 + getCamera().getPanX(), y + getCamera().getPanY(), 0);
-                glTexCoord2f(tx * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + getCamera().getPanX(), y + getCamera().getPanY(), 0);
-            }
-        }
-        glEnd();
+        float fromX;
+        float fromY;
 
-      
-//        int row = index / imagesPerRow;
-//        int column = index % imagesPerRow;
-//
-//        float fromX;
-//        float fromY;
-//
-//        float toX;
-//        float toY;
-//
-//        // links oben
-//        fromX = column * imageWidth;
-//        fromY = row * imageHeight;
-//        toX = getCamera().getPanX() + x;
-//        toY = getCamera().getPanY() + y;
-//        glTexCoord2f(fromX, fromY);
-//        glVertex2f(toX, toY);
-//
-//        // rechts oben
-//        fromX = column * imageWidth + imageWidth;
-//        fromY = row * imageHeight;
-//        toX = getCamera().getPanX() + x + width;
-//        toY = getCamera().getPanY() + y;
-//        glTexCoord2f(fromX, fromY);
-//        glVertex2f(toX, toY);
-//
-//        // rechts unten
-//        fromX = column * imageWidth + imageWidth;
-//        fromY = row * imageHeight + imageHeight;
-//        toX = getCamera().getPanX() + x + width;
-//        toY = getCamera().getPanY() + y + height;
-//        glTexCoord2f(fromX, fromY);
-//        glVertex2f(toX, toY);
-//
-//        // links unten
-//        fromX = column * imageWidth;
-//        fromY = row * imageHeight + imageHeight;
-//        toX = getCamera().getPanX() + x;
-//        toY = getCamera().getPanY() + y + height;
-//        glTexCoord2f(fromX, fromY);
-//        glVertex2f(toX, toY);
+        float toX;
+        float toY;
+
+        float textureX = column * imageWidth;
+        float textureY = row * imageHeight;
+
+        // links oben
+        fromX = (float) textureX / 512;
+        fromY = (float) textureY / 512;
+        toX = x+width;
+        toY = y+height;
+        glTexCoord2f(fromX, fromY);
+        glVertex2f(toX, toY);
+
+        // rechts oben
+        fromX = (float) (textureX + imageWidth) / 512;
+        fromY = (float) textureY / 512;
+        toX = x ;
+        toY = y + height;
+        glTexCoord2f(fromX, fromY);
+        glVertex2f(toX, toY);
+
+        // rechts unten
+        fromX = (float) (textureX + imageWidth) / 512;
+        fromY = (float) (textureY + imageHeight) / 512;
+        toX = x ;
+        toY = y ;
+        glTexCoord2f(fromX, fromY);
+        glVertex2f(toX, toY);
+
+        // links unten
+        fromX = (float) textureX / 512;
+        fromY = (float) (textureY + imageHeight) / 512;
+        toX = x + width;
+        toY = y ;
+        glTexCoord2f(fromX, fromY);
+        glVertex2f(toX, toY);
 
         glEnd(); // Zeichnen des QUADs fertig
+    }
+
+    public void drawRectangle(float x, float y, float width, float height) {
+        glBegin(GL_QUADS);
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(0, 0, 0.1f);
+        glVertex2f(x, y);
+        glVertex2f(x, y + height);
+        glVertex2f(x + width, y + height);
+        glVertex2f(x + width, y);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1, 1, 1);
+        glEnd();
     }
 }
