@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.server.data.skilltree;
 
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_UPDATE_SKILLTREE;
 import java.util.HashMap;
 
 /**
@@ -30,10 +32,18 @@ public class SkillTree {
             if (skills.get(skillName).canInvestPoint(this) && availablePoints > 0) {
                 skill.investPoint();
                 availablePoints--;
+
             }
         } else {
             throw new IllegalArgumentException("Skill " + skillName + " ist nicht vorhanden!");
         }
+    }
+
+    public void sendSkillTreeUpdates(Client client) {
+        for (SkillTreeEntry entry : skills.values()) {
+            STC_UPDATE_SKILLTREE.sendUpdateSkillTree(client, entry.getName(), entry.getLevel());
+        }
+
     }
 
     /**

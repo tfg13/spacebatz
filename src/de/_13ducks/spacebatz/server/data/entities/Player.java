@@ -19,7 +19,6 @@ import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 
-
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
  *
@@ -68,7 +67,7 @@ public class Player extends ItemCarrier {
      */
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         double x = 0, y = 0;
-
+        
         if (w) {
             y += 1;
         }
@@ -121,7 +120,7 @@ public class Player extends ItemCarrier {
             getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
             //useAbilityInAngle(0, angle);
         }
-
+        
     }
 
     /**
@@ -149,7 +148,7 @@ public class Player extends ItemCarrier {
             STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
         }
     }
-
+    
     public void useAbility(byte ability, double x, double y) {
         abilities.useAbility(ability, x, y, this);
     }
@@ -163,8 +162,9 @@ public class Player extends ItemCarrier {
     public void mapAbility(byte slot, String ability) {
         abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
     }
-
+    
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
+        skillTree.sendSkillTreeUpdates(client);
     }
 }

@@ -1,8 +1,12 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
+import java.util.HashMap;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -16,10 +20,9 @@ public class SkillTreeControl extends Control {
      * Die Textur mit den Silltree-Symbolen.
      */
     private Texture skilltreeTexture;
-    /**
-     * Der Skilltree, der bestimmt was für Fähigkeiten verfügbar sind.
-     */
-    private SkillTree skilltree;
+    private HashMap<String, SkillTreeItem> items;
+    private boolean buttonDown;
+    private int remainingPoints;
 
     /**
      * Initialisiert das SkilltreeControl.
@@ -28,21 +31,95 @@ public class SkillTreeControl extends Control {
      */
     public SkillTreeControl(Renderer renderer) {
         skilltreeTexture = renderer.getTextureByName("skilltree.png");
-        skilltree = new SkillTree();
+        items = new HashMap<>();
+        remainingPoints = 10;
 
+        SkillTreeItem summon = new SkillTreeItem();
+        summon.name = "sumon";
+        summon.imageIndex = 0;
+        summon.level = 0;
+        summon.posX = 40f;
+        summon.posY = 40f;
+        summon.width = 5f;
+        summon.height = 5f;
+        items.put("summon", summon);
+
+        SkillTreeItem masssummon = new SkillTreeItem();
+        masssummon.name = "masssummon";
+        masssummon.imageIndex = 1;
+        masssummon.level = 0;
+        masssummon.posX = 40f;
+        masssummon.posY = 50f;
+        masssummon.width = 5f;
+        masssummon.height = 5f;
+        items.put("masssummon", masssummon);
+
+    }
+
+    /**
+     * Setzt den Status eines Skills.
+     *
+     * @param name
+     * @param level
+     */
+    public void setSkillStatus(String name, byte level) {
+        items.get(name).level = level;
     }
 
     @Override
     public void render(Renderer renderer) {
         renderer.setTexture(skilltreeTexture);
         renderer.setImageSize(32, 32);
-        renderer.drawImage(0, 50, 50, 10, 10);
-        renderer.drawImage(1, 50, 60, 10, 10);
-        renderer.drawImage(2, 50, 70, 10, 10);
-        renderer.drawImage(3, 50, 80, 10, 10);
+        for (SkillTreeItem item : items.values()) {
+            item.render(renderer);
+        }
     }
 
     @Override
     public void input() {
+        if (Mouse.isButtonDown(0)) {
+            buttonDown = true;
+        } else {
+            if (buttonDown) {
+                buttonDown = false;
+                for (SkillTreeItem item : items.values()) {
+                    if (item.isMouseOver(Mouse.getX() / Settings.CLIENT_GFX_RES_X, Mouse.getY() / Settings.CLIENT_GFX_RES_Y)) {
+                        if (remainingPoints > 0) {
+                            CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(item.name);
+                            remainingPoints--;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Ein Skillbutton, der den Skilllevel anzeigt und angeklickt werden kann um den Skill zu erbessern.
+     */
+    private class SkillTreeItem {
+
+        private byte level;
+        private float posX;
+        private float posY;
+        private float width;
+        private float height;
+        private int imageIndex;
+        private String name;
+
+        public SkillTreeItem() {
+        }
+
+        protected void render(Renderer renderer) {
+            if (level < 0) {
+                renderer.setColor(0.1f, 0.1f, 0.1f);
+            }
+            renderer.drawImage(imageIndex, posX, posY, width, height);
+            renderer.resetColor();
+        }
+
+        protected boolean isMouseOver(float mouseX, float mouseY) {
+            return posX < mouseX && mouseX < (posX + width) && posY < mouseY && mouseY < (posY + height);
+        }
     }
 }

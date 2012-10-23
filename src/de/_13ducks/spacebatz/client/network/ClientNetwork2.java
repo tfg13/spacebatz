@@ -31,6 +31,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_UPDATE_SKILLTREE;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -150,6 +151,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
         registerSTCCommand(MessageIDs.NET_CHANGE_LEVEL, new STC_CHANGE_LEVEL());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
+        registerSTCCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, new STC_UPDATE_SKILLTREE());
     }
 
     /**

@@ -11,6 +11,10 @@ public class MessageIDs {
      */
     private MessageIDs() {
     }
+    /**
+     * Skilltree-Info update für den Client.
+     */
+    public static final byte NET_STC_UPDATE_SKILLTREE = 55;
     /** *
      * Fähigkeitsbenutzungsanforderung vom Client
      */

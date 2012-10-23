@@ -163,4 +163,22 @@ public class Renderer {
         glEnd(); // Zeichnen des QUADs fertig
         glPopMatrix();// wieder die ursprüngliche Transformationsmatrix herstellen
     }
+
+    /**
+     * Setzt die Farbe die zum Zeichnen verwendet wird.
+     *
+     * @param r
+     * @param g
+     * @param b
+     */
+    public void setColor(float r, float g, float b) {
+        glColor3f(r, g, b);
+    }
+
+    /**
+     * Setzt die Farbe wieder auf den Standard.
+     */
+    public void resetColor() {
+        setColor(1.0f, 1.0f, 1.0f);
+    }
 }

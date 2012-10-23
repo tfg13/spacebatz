@@ -50,6 +50,7 @@ public class GraphicsEngine {
      * Der Renderer, der Geometrie und Texturen zeichnet.
      */
     private Renderer renderer;
+    private SkillTreeControl skilltree;
 
     /**
      * Initialisiert die GrafikEngine.
@@ -93,7 +94,7 @@ public class GraphicsEngine {
             godControl.setActive(true);
             controls.add(godControl);
 
-            SkillTreeControl skilltree = new SkillTreeControl(renderer);
+            skilltree = new SkillTreeControl(renderer);
             skilltree.setActive(true);
             controls.add(skilltree);
 
@@ -156,5 +157,9 @@ public class GraphicsEngine {
      */
     public void addFx(Fx fx) {
         godControl.addFx(fx);
+    }
+
+    public SkillTreeControl getSkillTree() {
+        return skilltree;
     }
 }
