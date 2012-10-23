@@ -94,9 +94,9 @@ public class Renderer {
      * Die Größe der Bilder wird mit setImageSize() eingestellt.
      *
      * Koordinaten werden in Prozent des Bildschirms angegeben:
-     * 0/0 links unten
-     * 50/50 Mitte
-     * 100/100 rechts oben
+     * 0.0/0.0 links unten
+     * 0.5/0.5 Mitte
+     * 1.0/1.0 rechts oben
      *
      * @param index das wievielte Bild der Textur (in Leserichtung) gezeichnet wird.
      * @param x X-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
@@ -104,13 +104,13 @@ public class Renderer {
      * @param width Breite mit der das Bild gezeichent wird (in Prozent)
      * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
      */
-    public void drawImage(int index, double x, double y, double width, double height) {
+    public void drawImage(int index, float x, float y, float width, float height) {
 
         glPushMatrix(); // Transformationsmatrix sichern
         // Neue Matrix erstellen: die bildet den Bildschirm auf ein 100*100 Feld ab
         // 0/0 ist dann links unten, 50/50 ist dann die Mitte und 100/100 rechts oben.
         glLoadIdentity();
-        glOrtho(0, 100, 0, 100, -1, 1);
+        glOrtho(0, 1, 0, 1, -1, 1);
 
         glBegin(GL_QUADS); // Viereck zeichnen
         glEnable(GL_TEXTURE_2D); // Textur zeichnen

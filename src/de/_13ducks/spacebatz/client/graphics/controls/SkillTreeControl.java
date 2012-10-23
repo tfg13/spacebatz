@@ -35,23 +35,23 @@ public class SkillTreeControl extends Control {
         remainingPoints = 10;
 
         SkillTreeItem summon = new SkillTreeItem();
-        summon.name = "sumon";
+        summon.name = "summon";
         summon.imageIndex = 0;
         summon.level = 0;
-        summon.posX = 40f;
-        summon.posY = 40f;
-        summon.width = 5f;
-        summon.height = 5f;
+        summon.posX = 0.4f;
+        summon.posY = 0.4f;
+        summon.width = 0.055f;
+        summon.height = 0.055f;
         items.put("summon", summon);
 
         SkillTreeItem masssummon = new SkillTreeItem();
         masssummon.name = "masssummon";
         masssummon.imageIndex = 1;
         masssummon.level = 0;
-        masssummon.posX = 40f;
-        masssummon.posY = 50f;
-        masssummon.width = 5f;
-        masssummon.height = 5f;
+        masssummon.posX = 0.4f;
+        masssummon.posY = 0.5f;
+        masssummon.width = 0.055f;
+        masssummon.height = 0.055f;
         items.put("masssummon", masssummon);
 
     }
@@ -83,7 +83,7 @@ public class SkillTreeControl extends Control {
             if (buttonDown) {
                 buttonDown = false;
                 for (SkillTreeItem item : items.values()) {
-                    if (item.isMouseOver(Mouse.getX() / Settings.CLIENT_GFX_RES_X, Mouse.getY() / Settings.CLIENT_GFX_RES_Y)) {
+                    if (item.isMouseOver((float)Mouse.getX() / Settings.CLIENT_GFX_RES_X, (float)Mouse.getY() / Settings.CLIENT_GFX_RES_Y)) {
                         if (remainingPoints > 0) {
                             CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(item.name);
                             remainingPoints--;

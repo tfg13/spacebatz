@@ -21,6 +21,7 @@ public class STC_UPDATE_SKILLTREE extends STCCommand {
     @Override
     public void execute(byte[] data) {
         BitDecoder decoder = new BitDecoder(data);
+        decoder.readByte();// Länge skippen
         String skill = decoder.readString();
         byte level = decoder.readByte();
         GameClient.getEngine().getGraphics().getSkillTree().setSkillStatus(skill, level);
@@ -44,8 +45,11 @@ public class STC_UPDATE_SKILLTREE extends STCCommand {
      */
     public static void sendUpdateSkillTree(Client client, String skill, byte level) {
         BitEncoder encoder = new BitEncoder();
+        encoder.writeByte((byte) 0); // Platzhalter, da kommt später die Größe rein
         encoder.writeString(skill);
         encoder.writeByte(level);
-        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, encoder.getBytes()), client);
+        byte data[] = encoder.getBytes();
+        data[0] = (byte) data.length;
+        Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, data), client);
     }
 }
