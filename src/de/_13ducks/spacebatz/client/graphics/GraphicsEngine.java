@@ -17,7 +17,7 @@ import org.lwjgl.util.glu.GLU;
  * @author michael
  */
 public class GraphicsEngine {
-
+    
     static {
         // Hack, um nachträglich java.library.path zu setzen.
         try {
@@ -93,11 +93,11 @@ public class GraphicsEngine {
             godControl = new GodControl(renderer);
             godControl.setActive(true);
             controls.add(godControl);
-
+            
             skilltree = new SkillTreeControl(renderer);
             skilltree.setActive(true);
             controls.add(skilltree);
-
+            
         } catch (Exception ex) {
             ex.printStackTrace();
             Display.destroy();
@@ -158,8 +158,12 @@ public class GraphicsEngine {
     public void addFx(Fx fx) {
         godControl.addFx(fx);
     }
-
+    
     public SkillTreeControl getSkillTree() {
         return skilltree;
+    }
+    
+    public void setShowSkilTree(boolean show) {
+        skilltree.setActive(show);
     }
 }
