@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.util.mapgen.modules.OldMapGeneratorWrapper;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
+import de._13ducks.spacebatz.util.mapgen.modules.PolygonVisualizer;
 import de._13ducks.spacebatz.util.mapgen.modules.Rasterizer;
 import java.util.HashMap;
 
@@ -21,6 +22,7 @@ public final class ModuleLoader {
             addModule(new PolygonMapGenerator());
             addModule(new Rasterizer());
             addModule(new OldMapGeneratorWrapper());
+            addModule(new PolygonVisualizer());
         }
         return map;
     }

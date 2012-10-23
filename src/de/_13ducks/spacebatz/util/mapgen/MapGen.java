@@ -50,6 +50,7 @@ public class MapGen {
      * @param params
      */
     public static InternalMap generateInternal(final MapParameters params) {
+        long startTime = System.currentTimeMillis();
         if (!params.check()) {
             throw new IllegalArgumentException("Invalid params!");
         }
@@ -57,6 +58,7 @@ public class MapGen {
         ArrayList<String> polyModules = new ArrayList<>();
         ArrayList<String> rasterModules = new ArrayList<>();
         String rasterize = null;
+        moduleLoop:
         for (String moduleName : params.getModules()) {
             Module module = modules.get(moduleName);
             // Hat das RASTERIZE?
@@ -64,7 +66,7 @@ public class MapGen {
                 if (var.equals("RASTERIZE")) {
                     rasterize = moduleName;
                     // Dann nicht einsortieren
-                    continue;
+                    continue moduleLoop;
                 }
             }
             // Sonst einsortieren
@@ -100,7 +102,7 @@ public class MapGen {
         for (String rasterModuleName : rasterModules) {
             runModule(rasterModuleName, params);
         }
-
+        System.out.println("INFO: MapGen: Generation took " + (System.currentTimeMillis() - startTime) + "ms");
         return currentMap;
     }
 
