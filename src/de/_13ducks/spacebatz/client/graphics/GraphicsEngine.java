@@ -95,7 +95,7 @@ public class GraphicsEngine {
             controls.add(godControl);
             
             skilltree = new SkillTreeControl(renderer);
-            skilltree.setActive(true);
+            skilltree.setActive(false);
             controls.add(skilltree);
             
         } catch (Exception ex) {
