@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.client.graphics.controls;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.Renderer;
-import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import java.util.HashMap;
 import org.lwjgl.input.Mouse;
@@ -63,7 +62,12 @@ public class SkillTreeControl extends Control {
      * @param level
      */
     public void setSkillStatus(String name, byte level) {
-        items.get(name).level = level;
+        if (items.containsKey(name)) {
+            items.get(name).level = level;
+        } else {
+            throw new IllegalArgumentException("Skill " + name + " ist nicht bekannt!");
+        }
+
     }
 
     @Override
@@ -83,7 +87,7 @@ public class SkillTreeControl extends Control {
             if (buttonDown) {
                 buttonDown = false;
                 for (SkillTreeItem item : items.values()) {
-                    if (item.isMouseOver((float)Mouse.getX() / Settings.CLIENT_GFX_RES_X, (float)Mouse.getY() / Settings.CLIENT_GFX_RES_Y)) {
+                    if (item.isMouseOver((float) Mouse.getX() / Settings.CLIENT_GFX_RES_X, (float) Mouse.getY() / Settings.CLIENT_GFX_RES_Y)) {
                         if (remainingPoints > 0) {
                             CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(item.name);
                             remainingPoints--;
@@ -114,7 +118,10 @@ public class SkillTreeControl extends Control {
             if (level < 0) {
                 renderer.setColor(0.1f, 0.1f, 0.1f);
             }
+            renderer.setTexture(skilltreeTexture);
             renderer.drawImage(imageIndex, posX, posY, width, height);
+
+            renderer.renderText(String.valueOf(level), posX + 0.045f, posY);
             renderer.resetColor();
         }
 

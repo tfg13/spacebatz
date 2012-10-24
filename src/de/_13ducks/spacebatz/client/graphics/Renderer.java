@@ -181,4 +181,15 @@ public class Renderer {
     public void resetColor() {
         setColor(1.0f, 1.0f, 1.0f);
     }
+
+    /**
+     * Rendert Text auf den Bildschirm.
+     *
+     * @param text der Text der gerendert wird.
+     * @param x X-Koordinate in % des Bildschirms (0.5f ist die Mitte).
+     * @param y Y-Koordinate in % des Bildschirms (0.5f ist die Mitte).
+     */
+    public void renderText(String text, float x, float y) {
+        textWriter.renderText(text, x * camera.getTilesX(), y * camera.getTilesY());
+    }
 }
