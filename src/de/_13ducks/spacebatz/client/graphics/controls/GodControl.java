@@ -272,6 +272,7 @@ public class GodControl extends Control {
                         case Keyboard.KEY_A:
                         case Keyboard.KEY_D:
                         case Keyboard.KEY_SPACE:
+                            break;
                         case Keyboard.KEY_T:
                             showSkillTree = !showSkillTree;
                             GameClient.getEngine().getGraphics().setShowSkilTree(showSkillTree);
