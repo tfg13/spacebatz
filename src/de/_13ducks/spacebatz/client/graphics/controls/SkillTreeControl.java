@@ -74,6 +74,7 @@ public class SkillTreeControl extends Control {
     public void render(Renderer renderer) {
         renderer.setTexture(skilltreeTexture);
         renderer.setImageSize(32, 32);
+        renderer.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, 0.9f, 0.9f, 0.9f);
         for (SkillTreeItem item : items.values()) {
             item.render(renderer);
         }
