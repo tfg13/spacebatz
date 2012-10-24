@@ -192,4 +192,26 @@ public class Renderer {
     public void renderText(String text, float x, float y) {
         textWriter.renderText(text, x * camera.getTilesX(), y * camera.getTilesY());
     }
+
+    public void drawRectangle(float x, float y, float width, float height, float r, float g, float b) {
+
+        glPushMatrix(); // Transformationsmatrix sichern
+
+        // Bildschirm auf 0.0-1.0 / 0.0-1.0 abbilden:
+        glLoadIdentity();
+        glOrtho(0, 1, 0, 1, -1, 1);
+
+        glBegin(GL_QUADS); // Viereck zeichnen
+        glDisable(GL_TEXTURE_2D); // Textur zeichnen
+
+        glColor3f(r, g, b);
+
+        glVertex2d(x, y);
+        glVertex2d(x + width, y);
+        glVertex2d(x + width, y + width);
+        glVertex2d(x, y + width);
+
+        glEnd(); // Zeichnen des QUADs fertig
+        glPopMatrix();// wieder die ursprüngliche Transformationsmatrix herstellen
+    }
 }
