@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.shared;
 
-import de._13ducks.spacebatz.client.InventorySlot;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,10 +30,6 @@ public class Item implements Serializable {
      * Attribute des Items
      */
     private ArrayList<ItemAttribute> itemAttributes;
-    /**
-     * Inventarplatz des Items, nur für Client wichtig
-     */
-    private InventorySlot inventoryslot;
     /**
      * Der Name ds Items
      */
@@ -90,20 +85,6 @@ public class Item implements Serializable {
 
         }
 
-    }
-
-    /**
-     * @return the inventoryslot
-     */
-    public InventorySlot getInventoryslot() {
-        return inventoryslot;
-    }
-
-    /**
-     * @param inventoryslot the inventoryslot to set
-     */
-    public void setInventoryslot(InventorySlot inventoryslot) {
-        this.inventoryslot = inventoryslot;
     }
 
     /**

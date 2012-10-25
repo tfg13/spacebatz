@@ -25,18 +25,22 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
         int netIDItem3 = Bits.getInt(data, 0); // netID des  Items
         byte selslot = data[4];
         int clientID4 = Bits.getInt(data, 5); // clientID des Spielers
+
         if (clientID4 == GameClient.getClientID()) {
-            Item item = GameClient.getInventoryItems().get(netIDItem3);
-            GameClient.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
-            for (int i = 0; i < GameClient.getInventorySlots().length; i++) {
-                if (GameClient.getInventorySlots()[i] != null && GameClient.getInventorySlots()[i].equals(item.getInventoryslot())) {
-                    GameClient.getInventorySlots()[i] = null;
+
+            for (int i = 0; i < GameClient.getItems().length; i++) {
+                if (GameClient.getItems()[i].getNetID() == netIDItem3) {
+
+                    Item item = GameClient.getItems()[i];
+                    GameClient.getEquippedItems().getEquipslots()[(int) item.getItemClass()][selslot] = item;
+
+                    GameClient.getItems()[i] = null;
+
+                    break;
                 }
             }
-            GameClient.getInventoryItems().values().remove(item);
+
         }
-
-
     }
 
     /**
