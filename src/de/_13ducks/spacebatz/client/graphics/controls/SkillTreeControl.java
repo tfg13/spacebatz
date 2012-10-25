@@ -1,15 +1,17 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import java.util.HashMap;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- * Zeigt den silltree an.
+ * Zeigt den Skilltree an.
  *
  * @author michael
  */
@@ -99,6 +101,14 @@ public class SkillTreeControl extends Control {
                 }
             }
         }
+        // Skilltree wieder verbergen wenn T gedrückt wird:
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKey() == Keyboard.KEY_T && Keyboard.getEventKeyState()) {
+                GameClient.getEngine().getGraphics().toggleSkillTree();
+            }
+        }
+
+
     }
 
     /**

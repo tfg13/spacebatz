@@ -75,10 +75,6 @@ public class GodControl extends Control {
      * Array mit allen Tilemaps
      */
     private Texture[] tilemaps;
-    /**
-     * gibt an ob der Skiltree gezeigt wird
-     */
-    private boolean showSkillTree;
 
     public GodControl(Renderer renderer) {
         tilemaps = new Texture[10];
@@ -266,17 +262,8 @@ public class GodControl extends Control {
                         case Keyboard.KEY_ESCAPE:
                             showinventory = false;
                             break;
-                        case Keyboard.KEY_S:
-                        case Keyboard.KEY_W:
-                        case Keyboard.KEY_A:
-                        case Keyboard.KEY_D:
-                        case Keyboard.KEY_SPACE:
-                            break;
                         case Keyboard.KEY_T:
-                            showSkillTree = !showSkillTree;
-                            GameClient.getEngine().getGraphics().setShowSkilTree(showSkillTree);
-
-
+                            GameClient.getEngine().getGraphics().toggleSkillTree();
                             break;
                         case Keyboard.KEY_1:
                             if (GameClient.getPlayer().getSelectedattack() != 0) {

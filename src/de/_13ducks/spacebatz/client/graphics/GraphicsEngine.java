@@ -17,7 +17,7 @@ import org.lwjgl.util.glu.GLU;
  * @author michael
  */
 public class GraphicsEngine {
-    
+
     static {
         // Hack, um nachträglich java.library.path zu setzen.
         try {
@@ -31,32 +31,31 @@ public class GraphicsEngine {
         }
     }
     /**
-     * Zeichnet Text.
-     */
-    TextWriter textWriter;
-    /**
      * Die Kamera mit Position und Zoom.
      */
     Camera camera;
-    /**
-     * Die Liste der Controls (z.B. Inventar, HUD, ...).
-     */
-    private ArrayList<Control> controls;
     /**
      * Das God-Control, das auch Effekte und FX zeichent.
      */
     private GodControl godControl;
     /**
+     * Der Skilltree.
+     */
+    private SkillTreeControl skilltree;
+    /**
+     * Das aktive Menü, das über das Spiel gerendert wird.
+     * z.B. Inventar
+     */
+    private Control activeMenu;
+    /**
      * Der Renderer, der Geometrie und Texturen zeichnet.
      */
     private Renderer renderer;
-    private SkillTreeControl skilltree;
 
     /**
      * Initialisiert die GrafikEngine.
      */
     public GraphicsEngine() {
-        controls = new ArrayList<>();
     }
 
     /**
@@ -86,18 +85,15 @@ public class GraphicsEngine {
             // Renderer Initialisieren:
             renderer = new Renderer(camera);
 
-            // Text initialisiern:
-            textWriter = new TextWriter();
-
             // Controls erzeugen:
             godControl = new GodControl(renderer);
             godControl.setActive(true);
-            controls.add(godControl);
-            
+
+
             skilltree = new SkillTreeControl(renderer);
             skilltree.setActive(false);
-            controls.add(skilltree);
-            
+
+
         } catch (Exception ex) {
             ex.printStackTrace();
             Display.destroy();
@@ -117,12 +113,16 @@ public class GraphicsEngine {
      * Rendert den Bildschirm und verarbeitet Eingaben.
      */
     public void tick() {
-        for (Control c : controls) {
-            if (c.isActive()) {
-                c.render(renderer);
-                c.input();
-            }
+        godControl.render(renderer);
+
+        // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
+        if (activeMenu == null) {
+            godControl.input();
+        } else {
+            activeMenu.render(renderer);
+            activeMenu.input();
         }
+
         // Fertig, Puffer swappen:
         Display.update();
 
@@ -158,12 +158,19 @@ public class GraphicsEngine {
     public void addFx(Fx fx) {
         godControl.addFx(fx);
     }
-    
+
     public SkillTreeControl getSkillTree() {
         return skilltree;
     }
-    
-    public void setShowSkilTree(boolean show) {
-        skilltree.setActive(show);
+
+    /**
+     * Schält das Skilltreemenü um.
+     */
+    public void toggleSkillTree() {
+        if (activeMenu == null) {
+            activeMenu = skilltree;
+        } else if (activeMenu == skilltree) {
+            activeMenu = null;
+        }
     }
 }
