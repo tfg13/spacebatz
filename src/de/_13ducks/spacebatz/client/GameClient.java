@@ -73,13 +73,10 @@ public class GameClient {
      */
     private static HashMap<Integer, Item> itemMap = new HashMap<>();
     /**
-     * Items des Inventars des Clients
+     * Inventar des Clients
      */
-    private static HashMap<Integer, Item> inventoryItems = new HashMap<>();
-    /**
-     * belegte Slots des Inventars des Clients
-     */
-    private static InventorySlot[] inventorySlots = new InventorySlot[Settings.INVENTORY_SIZE];
+    private static Item[] items = new Item[Settings.INVENTORY_SIZE];
+    
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
@@ -184,51 +181,22 @@ public class GameClient {
         itemMap = aItemMap;
     }
 
-    public static void setInventory(HashMap<Integer, Item> aInventory) {
-        inventoryItems = aInventory;
-        Iterator<Item> iterator = inventoryItems.values().iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            Item item = iterator.next();
-            inventorySlots[i] = new InventorySlot(item);
-            item.setInventoryslot(inventorySlots[i]);
-            i++;
-        }
-    }
-
-    /**
-     * @return the inventory
-     */
-    public static HashMap<Integer, Item> getInventoryItems() {
-        return inventoryItems;
-    }
-
-    /**
-     * @return the inventorySlots
-     */
-    public static InventorySlot[] getInventorySlots() {
-        return inventorySlots;
-    }
-
     /**
      * Item in das Spielerinventar aufnehmen
      *
      * @param item Item das geaddet werden soll
      */
     public static void addToInventory(Item item) {
-        for (int i = 0; i < inventorySlots.length; i++) {
-            if (inventorySlots[i] == null) {
-                inventorySlots[i] = new InventorySlot(item);
-                inventoryItems.put(item.getNetID(), item);
-                item.setInventoryslot(inventorySlots[i]);
+        for (int i = 0; i < getItems().length; i++) {
+            if (getItems()[i] == null) {
+                getItems()[i] = item;
                 break;
             }
         }
     }
 
     public static void removeFromInventory(int slot) {
-        inventoryItems.remove(inventorySlots[slot].getItem().getNetID());
-        inventorySlots[slot] = null;
+        getItems()[slot] = null;
     }
 
     public static int getMaterial(int material) {
@@ -272,5 +240,19 @@ public class GameClient {
             throw new IllegalArgumentException("Engine already set!");
         }
         GameClient.engine = aEngine;
+    }
+
+    /**
+     * @return the items
+     */
+    public static Item[] getItems() {
+        return items;
+    }
+
+    /**
+     * @param aItems the items to set
+     */
+    public static void setItems(Item[] aItems) {
+        items = aItems;
     }
 }

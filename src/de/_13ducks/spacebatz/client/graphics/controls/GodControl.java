@@ -6,7 +6,6 @@ import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.InventorySlot;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.Camera;
@@ -143,7 +142,7 @@ public class GodControl extends Control {
                                 if (x > 0.4 && x < 0.54) {
                                     // Hut-Slot
                                     if (selecteditemslot != -1) {
-                                        Item selecteditem = GameClient.getInventorySlots()[selecteditemslot].getItem();
+                                        Item selecteditem = GameClient.getItems()[selecteditemslot];
                                         if ((int) selecteditem.getItemClass() == 2) {
                                             CTS_EQUIP_ITEM.sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
                                             selecteditemslot = -1;
@@ -167,7 +166,7 @@ public class GodControl extends Control {
                                 if (weaponslot != -1) {
                                     // Waffenslot
                                     if (selecteditemslot != -1) {
-                                        Item selecteditem = GameClient.getInventorySlots()[selecteditemslot].getItem();
+                                        Item selecteditem = GameClient.getItems()[selecteditemslot];
                                         if ((int) selecteditem.getItemClass() == 1) {
                                             CTS_EQUIP_ITEM.sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                             selecteditemslot = -1;
@@ -203,23 +202,23 @@ public class GodControl extends Control {
 
                                 if (selecteditemslot == -1) {
                                     // zur Zeit war kein Slot ausgewählt -> der hier wird
-                                    if (GameClient.getInventorySlots()[slotklicked] != null) {
+                                    if (GameClient.getItems()[slotklicked] != null) {
                                         // nur wenn hier ein item drin ist
                                         selecteditemslot = slotklicked;
                                     }
 
                                 } else {
                                     // es war bereits ein Slot ausgewählt
-                                    if (GameClient.getInventorySlots()[slotklicked] == null) {
+                                    if (GameClient.getItems()[slotklicked] == null) {
                                         // angeklickter Slot leer -> Item verschieben
-                                        GameClient.getInventorySlots()[slotklicked] = GameClient.getInventorySlots()[selecteditemslot];
-                                        GameClient.getInventorySlots()[selecteditemslot] = null;
+                                        GameClient.getItems()[slotklicked] = GameClient.getItems()[selecteditemslot];
+                                        GameClient.getItems()[selecteditemslot] = null;
                                         selecteditemslot = -1;
                                     } else {
                                         // angeklickter Slot belegt -> Items tauschen
-                                        InventorySlot swapSlot = GameClient.getInventorySlots()[slotklicked];
-                                        GameClient.getInventorySlots()[slotklicked] = GameClient.getInventorySlots()[selecteditemslot];
-                                        GameClient.getInventorySlots()[selecteditemslot] = swapSlot;
+                                        Item swapSlot = GameClient.getItems()[slotklicked];
+                                        GameClient.getItems()[slotklicked] = GameClient.getItems()[selecteditemslot];
+                                        GameClient.getItems()[selecteditemslot] = swapSlot;
                                         selecteditemslot = -1;
                                     }
                                 }
@@ -457,13 +456,13 @@ public class GodControl extends Control {
 
             for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
 
-                if (GameClient.getInventorySlots()[i] == null || i == selecteditemslot) {
+                if (GameClient.getItems()[i] == null || i == selecteditemslot) {
                     // Slot leer oder gerade selected -> nicht zeichnen
                     continue;
                 }
                 itemTiles.bind();
 
-                Item item = GameClient.getInventorySlots()[i].getItem();
+                Item item = GameClient.getItems()[i];
 
                 float x = (0.1075f + 0.133f * (i % 6)) * camera.getTilesX();
 
@@ -544,7 +543,7 @@ public class GodControl extends Control {
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
             itemTiles.bind();
-            Item item = GameClient.getInventorySlots()[selecteditemslot].getItem();
+            Item item = GameClient.getItems()[selecteditemslot];
             float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
 
@@ -589,8 +588,8 @@ public class GodControl extends Control {
             }
             Item item = null;
             if (slothovered != -1 && slothovered != selecteditemslot) {
-                if (GameClient.getInventorySlots()[slothovered] != null) {
-                    item = GameClient.getInventorySlots()[slothovered].getItem();
+                if (GameClient.getItems()[slothovered] != null) {
+                    item = GameClient.getItems()[slothovered];
                 }
                 // Einer der Ausrüstungsslots?
             } else if (x > 0.4 && x < 0.54) {
