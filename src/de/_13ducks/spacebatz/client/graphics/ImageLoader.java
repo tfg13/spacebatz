@@ -8,7 +8,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 /**
- * Lädt und verwaltet Bilder und Texturen.
+ * Lädt und verwaltet Texturen.
  *
  * @author michael
  */
@@ -22,7 +22,9 @@ public class ImageLoader {
     /**
      * Lädt alle Texturen aus dem angegebenen Ordner.
      *
-     * @param path
+     * Alle Dateien die auf .png enden werden als Textur geladen.
+     *
+     * @param path der Ordner aus dem TExturen geladen werden.
      */
     public ImageLoader(String path) {
         textures = new HashMap<>();
@@ -47,6 +49,12 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * Gibt die Textur mit dem angegebenen Namen zurück.
+     *
+     * @param name
+     * @return
+     */
     public Texture getTexture(String name) {
         if (textures.containsKey(name)) {
             return textures.get(name);

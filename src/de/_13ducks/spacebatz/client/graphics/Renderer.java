@@ -65,9 +65,41 @@ public class Renderer {
         return camera;
     }
 
+    /**
+     * Gibt die Textur mit dem angegebenen Namen zurück.
+     *
+     * @param name der Name der gesuchten Textur.
+     * @return
+     */
     public Texture getTextureByName(String name) {
         return imageLoader.getTexture(name);
+    }
 
+    /**
+     * Stellt ein welche Fläche auf dem Bildschirm abgebildet wird.
+     * Sichert die vorherige Abbildungsfläche, so dass sie mit restoreScreenMapping wieder hergestellt werden kann.
+     *
+     * Nach dem Aufruf von setScreenMapping(0,100,0,100) gilt folgendes:
+     * (0,0) ist die linke untere Ecke
+     * (50,50) ist die Mitte
+     * (100,100) ist die rechte obere Ecke
+     *
+     * @param x X-Startkoordinate
+     * @param x2 X-Endkoordinate
+     * @param y Y-Startkoordinate
+     * @param y2 Y-Endkoordinate
+     */
+    public void setScreenMapping(float x, float x2, float y, float y2) {
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(x, x2, y, y2, -1, 1);
+    }
+
+    /**
+     * Macht den letzten Aufruf von setScreenMapping rückgängig.
+     */
+    public void restoreScreenMapping() {
+        glPopMatrix();
     }
 
     /**
@@ -75,7 +107,7 @@ public class Renderer {
      *
      * @param texture
      */
-    public void setTexture(Texture texture) {
+    public void setTilemap(Texture texture) {
         texture.bind();
         textureSize = texture.getImageWidth();
         if (texture.getImageHeight() != texture.getImageWidth()) {
@@ -83,7 +115,13 @@ public class Renderer {
         }
     }
 
-    public void setImageSize(int width, int height) {
+    /**
+     * Setzt die Größe der Tiles, die verwendet wird um (mit drawTile()) von Tilemaps zu zeichnen.
+     *
+     * @param width die Breite der Tiles in Pixel
+     * @param height die Höhe der Tiles in Pixel
+     */
+    public void setTileSize(int width, int height) {
         imageHeight = height;
         imageWidth = width;
         imagesPerRow = (textureSize / width);
@@ -91,12 +129,8 @@ public class Renderer {
 
     /**
      * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm.
-     * Die Größe der Bilder wird mit setImageSize() eingestellt.
-     *
-     * Koordinaten werden in Prozent des Bildschirms angegeben:
-     * 0.0/0.0 links unten
-     * 0.5/0.5 Mitte
-     * 1.0/1.0 rechts oben
+     * Die Größe der Bilder wird mit setTileSize() eingestellt.
+     * Die Koordinaten werden auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
      *
      * @param index das wievielte Bild der Textur (in Leserichtung) gezeichnet wird.
      * @param x X-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
@@ -104,13 +138,7 @@ public class Renderer {
      * @param width Breite mit der das Bild gezeichent wird (in Prozent)
      * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
      */
-    public void drawImage(int index, float x, float y, float width, float height) {
-
-        glPushMatrix(); // Transformationsmatrix sichern
-        // Neue Matrix erstellen: die bildet den Bildschirm auf ein 100*100 Feld ab
-        // 0/0 ist dann links unten, 50/50 ist dann die Mitte und 100/100 rechts oben.
-        glLoadIdentity();
-        glOrtho(0, 1, 0, 1, -1, 1);
+    public void drawTile(int index, float x, float y, float width, float height) {
 
         glBegin(GL_QUADS); // Viereck zeichnen
         glEnable(GL_TEXTURE_2D); // Textur zeichnen
@@ -161,22 +189,21 @@ public class Renderer {
         glVertex2d(toX, toY);
 
         glEnd(); // Zeichnen des QUADs fertig
-        glPopMatrix();// wieder die ursprüngliche Transformationsmatrix herstellen
     }
 
     /**
-     * Setzt die Farbe die zum Zeichnen verwendet wird.
+     * Setzt den Farbfilter.
      *
-     * @param r
-     * @param g
-     * @param b
+     * @param r der Rotanteil
+     * @param g der Grünanteil
+     * @param b der Gelbanteil
      */
     public void setColor(float r, float g, float b) {
         glColor3f(r, g, b);
     }
 
     /**
-     * Setzt die Farbe wieder auf den Standard.
+     * Setzt den Farbfilter zurück.
      */
     public void resetColor() {
         setColor(1.0f, 1.0f, 1.0f);
@@ -184,6 +211,7 @@ public class Renderer {
 
     /**
      * Rendert Text auf den Bildschirm.
+     * ACHTUNG braucht die setScreenMapping()-Einstellung des GodControls!
      *
      * @param text der Text der gerendert wird.
      * @param x X-Koordinate in % des Bildschirms (0.5f ist die Mitte).
@@ -193,7 +221,16 @@ public class Renderer {
         textWriter.renderText(text, x * camera.getTilesX(), y * camera.getTilesY());
     }
 
-    public void drawRectangle(float x, float y, float width, float height, float r, float g, float b) {
+    /**
+     * Zeichnet ein ausgefülltes Rechteck mit der aktuellen Farbe auf den Bildschirm.
+     * Die Farbe kann mit setColor gesetzt werden.
+     *
+     * @param x die X-Koordinate der linken oberen Ecke
+     * @param y die Y-Koordinate der linken oberen Ecke
+     * @param width die Breite des Rechtecks
+     * @param height die Höhe des Rechtecks
+     */
+    public void drawRectangle(float x, float y, float width, float height) {
 
         glPushMatrix(); // Transformationsmatrix sichern
 
@@ -202,9 +239,7 @@ public class Renderer {
         glOrtho(0, 1, 0, 1, -1, 1);
 
         glBegin(GL_QUADS); // Viereck zeichnen
-        glDisable(GL_TEXTURE_2D); // Textur zeichnen
-
-        glColor3f(r, g, b);
+        glDisable(GL_TEXTURE_2D); // keine Textur sondern Geometrie zeichnen
 
         glVertex2d(x, y);
         glVertex2d(x + width, y);

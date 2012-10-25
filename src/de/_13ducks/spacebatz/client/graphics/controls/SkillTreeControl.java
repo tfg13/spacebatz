@@ -72,9 +72,11 @@ public class SkillTreeControl extends Control {
 
     @Override
     public void render(Renderer renderer) {
-        renderer.setTexture(skilltreeTexture);
-        renderer.setImageSize(32, 32);
-        renderer.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, 0.9f, 0.9f, 0.9f);
+        renderer.setTilemap(skilltreeTexture);
+        renderer.setTileSize(32, 32);
+        renderer.setColor(0.9f, 0.9f, 0.9f);
+        renderer.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f);
+        renderer.resetColor();
         for (SkillTreeItem item : items.values()) {
             item.render(renderer);
         }
@@ -119,11 +121,13 @@ public class SkillTreeControl extends Control {
             if (level < 0) {
                 renderer.setColor(0.1f, 0.1f, 0.1f);
             }
-            renderer.setTexture(skilltreeTexture);
-            renderer.drawImage(imageIndex, posX, posY, width, height);
-
-            renderer.renderText(String.valueOf(level), posX + 0.045f, posY);
+            renderer.setTilemap(skilltreeTexture);
+            renderer.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
+            renderer.setTileSize(32, 32);
+            renderer.drawTile(imageIndex, posX, posY, width, height);
+            renderer.restoreScreenMapping();
             renderer.resetColor();
+            renderer.renderText(String.valueOf(level), posX + 0.045f, posY);
         }
 
         protected boolean isMouseOver(float mouseX, float mouseY) {
