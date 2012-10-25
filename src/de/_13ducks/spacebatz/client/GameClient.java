@@ -69,14 +69,9 @@ public class GameClient {
      */
     private static LinkedList<Bullet> bulletList = new LinkedList<>();
     /**
-     * Zuordnung von netID zu Item.
-     */
-    private static HashMap<Integer, Item> itemMap = new HashMap<>();
-    /**
      * Inventar des Clients
      */
     private static Item[] items = new Item[Settings.INVENTORY_SIZE];
-    
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
@@ -171,14 +166,6 @@ public class GameClient {
 
     public static void updateGametick() {
         frozenGametick = network2.getLogicTick();
-    }
-
-    public static HashMap<Integer, Item> getItemMap() {
-        return itemMap;
-    }
-
-    public static void setItemMap(HashMap<Integer, Item> aItemMap) {
-        itemMap = aItemMap;
     }
 
     /**
