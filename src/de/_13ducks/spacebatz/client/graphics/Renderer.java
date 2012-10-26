@@ -128,6 +128,16 @@ public class Renderer {
     }
 
     /**
+     * Zeichnet das angegebene Bild.
+     *
+     * @param image
+     */
+    public void drawImage(Image image) {
+        setTilemap(image.getTilemap());
+        drawTile(image.getIndex(), image.getPosX(), image.getPosY(), image.getWidth(), image.getHeight());
+    }
+
+    /**
      * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm.
      * Die Größe der Bilder wird mit setTileSize() eingestellt.
      * Die Koordinaten werden auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.

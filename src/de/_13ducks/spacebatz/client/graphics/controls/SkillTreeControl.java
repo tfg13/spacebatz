@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.client.graphics.controls;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Control;
+import de._13ducks.spacebatz.client.graphics.Image;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import java.util.HashMap;
@@ -21,8 +22,17 @@ public class SkillTreeControl implements Control {
      * Die Textur mit den Silltree-Symbolen.
      */
     private Texture skilltreeTexture;
+    /**
+     * Liste der Skilltreeienträge.
+     */
     private HashMap<String, SkillTreeItem> items;
+    /**
+     * Gibt an ob die linke Maustaste gedrückt ist.
+     */
     private boolean buttonDown;
+    /**
+     * Die verbleibenden Skillpunkte.
+     */
     private int remainingPoints;
 
     /**
@@ -35,24 +45,24 @@ public class SkillTreeControl implements Control {
         items = new HashMap<>();
         remainingPoints = 10;
 
-        SkillTreeItem summon = new SkillTreeItem();
+        SkillTreeItem summon = new SkillTreeItem(renderer);
         summon.name = "summon";
-        summon.imageIndex = 0;
+        summon.setIndex(0);
         summon.level = 0;
-        summon.posX = 0.4f;
-        summon.posY = 0.4f;
-        summon.width = 0.055f;
-        summon.height = 0.055f;
+        summon.setPosX(0.4f);
+        summon.setPosY(0.4f);
+        summon.setWidth(0.055f);
+        summon.setHeight(0.055f);
         items.put("summon", summon);
 
-        SkillTreeItem masssummon = new SkillTreeItem();
+        SkillTreeItem masssummon = new SkillTreeItem(renderer);
         masssummon.name = "masssummon";
-        masssummon.imageIndex = 1;
+        masssummon.setIndex(1);
         masssummon.level = 0;
-        masssummon.posX = 0.4f;
-        masssummon.posY = 0.5f;
-        masssummon.width = 0.055f;
-        masssummon.height = 0.055f;
+        masssummon.setPosX(0.5f);
+        masssummon.setPosY(0.5f);
+        masssummon.setWidth(0.055f);
+        masssummon.setHeight(0.055f);
         items.put("masssummon", masssummon);
 
     }
@@ -114,34 +124,31 @@ public class SkillTreeControl implements Control {
     /**
      * Ein Skillbutton, der den Skilllevel anzeigt und angeklickt werden kann um den Skill zu erbessern.
      */
-    private class SkillTreeItem {
+    private class SkillTreeItem extends Image {
 
         private byte level;
-        private float posX;
-        private float posY;
-        private float width;
-        private float height;
-        private int imageIndex;
         private String name;
 
-        public SkillTreeItem() {
+        public SkillTreeItem(Renderer renderer) {
+            super();
+
+            setTilemap(renderer.getTextureByName("skilltree.png"));
         }
 
         protected void render(Renderer renderer) {
             if (level < 0) {
                 renderer.setColor(0.1f, 0.1f, 0.1f);
             }
-            renderer.setTilemap(skilltreeTexture);
             renderer.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
             renderer.setTileSize(32, 32);
-            renderer.drawTile(imageIndex, posX, posY, width, height);
+            renderer.drawImage(this);
             renderer.restoreScreenMapping();
             renderer.resetColor();
-            renderer.renderText(String.valueOf(level), posX + 0.045f, posY);
+            renderer.renderText(String.valueOf(level), getPosX() + 0.045f, getPosY());
         }
 
         protected boolean isMouseOver(float mouseX, float mouseY) {
-            return posX < mouseX && mouseX < (posX + width) && posY < mouseY && mouseY < (posY + height);
+            return getPosX() < mouseX && mouseX < (getPosX() + getWidth()) && getPosY() < mouseY && mouseY < (getPosX() + getHeight());
         }
     }
 }
