@@ -15,7 +15,7 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author michael
  */
-public class SkillTreeControl extends Control {
+public class SkillTreeControl implements Control {
 
     /**
      * Die Textur mit den Silltree-Symbolen.

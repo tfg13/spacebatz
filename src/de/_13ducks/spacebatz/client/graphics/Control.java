@@ -5,24 +5,7 @@ package de._13ducks.spacebatz.client.graphics;
  *
  * @author michael
  */
-public abstract class Control {
-
-    /**
-     * Gibt an ob das Control aktiv ist.
-     */
-    private boolean active;
-
-    public Control() {
-        active = false;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
+public interface Control {
 
     /**
      * Rendert dieses Control.

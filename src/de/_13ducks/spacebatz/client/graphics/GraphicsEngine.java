@@ -2,9 +2,9 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
+import de._13ducks.spacebatz.client.graphics.controls.Inventory;
 import de._13ducks.spacebatz.client.graphics.controls.SkillTreeControl;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -12,7 +12,8 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 
 /**
- * Die GrafikEngine. Zeichnet den Bildschirm und verarbeitet Eingaben.
+ * Die GrafikEngine. Rendert das Spiel (Map, Entities, Bullets...) und genau ein Menü (z.B. Inventar, Hauptmenü, ...).
+ * Wenn ein Menü aktiv ist bekommt es Alle Eingaben.
  *
  * @author michael
  */
@@ -42,6 +43,10 @@ public class GraphicsEngine {
      * Der Skilltree.
      */
     private SkillTreeControl skilltree;
+    /**
+     * Das Inventar
+     */
+    private Inventory inventory;
     /**
      * Das aktive Menü, das über das Spiel gerendert wird.
      * z.B. Inventar
@@ -87,11 +92,8 @@ public class GraphicsEngine {
 
             // Controls erzeugen:
             godControl = new GodControl(renderer);
-            godControl.setActive(true);
-
-
             skilltree = new SkillTreeControl(renderer);
-            skilltree.setActive(false);
+            inventory = new Inventory(renderer);
 
 
         } catch (Exception ex) {
@@ -170,6 +172,14 @@ public class GraphicsEngine {
         if (activeMenu == null) {
             activeMenu = skilltree;
         } else if (activeMenu == skilltree) {
+            activeMenu = null;
+        }
+    }
+
+    public void toggleInventory() {
+        if (activeMenu == null) {
+            activeMenu = inventory;
+        } else if (activeMenu == inventory) {
             activeMenu = null;
         }
     }
