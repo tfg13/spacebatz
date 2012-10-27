@@ -1,10 +1,8 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
-import java.util.HashMap;
 
 /**
  * Ein Itemträger, kann Items tragen und ausrüsten. Kann im moment beliebig viele Items aufnehmen und ausrüsten.
@@ -100,26 +98,18 @@ public class ItemCarrier extends Char {
      * Item in leeren Slot anlegen
      *
      * @param itemnetID NetID des Items
-     * @param selectedslot ausgewählter Slot
+     * @param equipslot ausgewählter Slot
      */
-    public void equipItem(int itemnetID, byte selectedslot) {
-        Item item = null;
-        int index = 0;
-        while (index < inventory.length) {
-            if (inventory[index] != null && inventory[index].getNetID() == itemnetID) {
-                item = inventory[index];
-                break;
-            }
-            index++;
-        }
-        
+    public void equipItem(int inventoryslot, byte equipslot) {
+        Item item = inventory[inventoryslot];
+
         // richtiger Itemtyp für diesen Slot?
         int slottype = (int) item.getItemClass();
 
-        if (getEquipslots()[slottype] != null && getEquipslots()[slottype][selectedslot] == null && item != null) {
+        if (getEquipslots()[slottype] != null && getEquipslots()[slottype][equipslot] == null && item != null) {
             // Jetzt neues Item anlegen
-            getEquipslots()[slottype][selectedslot] = item;
-            inventory[index] = null;
+            getEquipslots()[slottype][equipslot] = item;
+            inventory[inventoryslot] = null;
             // die Stats des Items übernehmen:
             addProperties(item.getBonusProperties());
 
@@ -132,7 +122,7 @@ public class ItemCarrier extends Char {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, ((Player) this).getClient().clientID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), equipslot, ((Player) this).getClient().clientID);
         }
     }
 

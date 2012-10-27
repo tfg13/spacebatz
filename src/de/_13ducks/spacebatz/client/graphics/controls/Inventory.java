@@ -256,7 +256,7 @@ public class Inventory implements Control {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = GameClient.getItems()[selecteditemslot];
                                 if ((int) selecteditem.getItemClass() == 2) {
-                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditem, (byte) 0); // 2 = Hut-Slot
+                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // 2 = Hut-Slot
                                     selecteditemslot = -1;
                                 }
                             } else {
@@ -280,7 +280,7 @@ public class Inventory implements Control {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = GameClient.getItems()[selecteditemslot];
                                 if ((int) selecteditem.getItemClass() == 1) {
-                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditem, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                     selecteditemslot = -1;
                                 }
                             } else {
