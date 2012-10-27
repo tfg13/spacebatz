@@ -75,7 +75,7 @@ public class SkillTree {
         if (isSkillAvailable(name)) {
             return skills.get(name).getAbility();
         } else {
-            throw new IllegalArgumentException("Skill nicht verfügbar!");
+            throw new IllegalArgumentException("Skill " + name + " nicht verfügbar!");
         }
     }
 }

@@ -11,9 +11,6 @@ import java.util.HashMap;
  */
 public class SpellBook {
 
-    public final static byte SHIFTSKILL = 0;
-    public final static byte SPACESKILL = 1;
-    public final static byte CNTRLSKILL = 2;
     private HashMap<Byte, Ability> abilities;
 
     public SpellBook() {
@@ -24,7 +21,7 @@ public class SpellBook {
         if (abilities.containsKey(ability)) {
             abilities.get(ability).useOnPosition(user, posX, posY);
         } else {
-            throw new IllegalArgumentException("Char hat keine Fähigkeit " + ability + "!");
+            System.out.println("Char hat keine Fähigkeit " + ability + "!");
         }
     }
 
@@ -36,9 +33,10 @@ public class SpellBook {
      */
     public void mapAbility(byte abilityId, Ability ability) {
         if (abilities.containsKey(abilityId)) {
-            System.out.println("Waring: Ovverriding ability " + abilityId);
-        } else {
-            abilities.put(abilityId, ability);
+            System.out.println("Waring: Ovverriding ability " + abilityId + " with " + ability.toString());
+
         }
+        abilities.put(abilityId, ability);
+
     }
 }

@@ -17,6 +17,7 @@ import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 
 /**
@@ -67,7 +68,7 @@ public class Player extends ItemCarrier {
      */
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         double x = 0, y = 0;
-        
+
         if (w) {
             y += 1;
         }
@@ -120,7 +121,7 @@ public class Player extends ItemCarrier {
             getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
             //useAbilityInAngle(0, angle);
         }
-        
+
     }
 
     /**
@@ -148,7 +149,7 @@ public class Player extends ItemCarrier {
             STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
         }
     }
-    
+
     public void useAbility(byte ability, double x, double y) {
         abilities.useAbility(ability, x, y, this);
     }
@@ -160,9 +161,12 @@ public class Player extends ItemCarrier {
      * @param ability
      */
     public void mapAbility(byte slot, String ability) {
-        abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
+        if (skillTree.isSkillAvailable(ability)) {
+            abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
+            STC_SET_SKILL_MAPPING.sendSetSkillMapping(getClient(), ability, slot);
+        }
     }
-    
+
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
         skillTree.sendSkillTreeUpdates(client);

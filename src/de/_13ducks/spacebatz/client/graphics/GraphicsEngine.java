@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;
-import de._13ducks.spacebatz.client.graphics.controls.SkillTreeControl;
+import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
 import java.lang.reflect.Field;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
