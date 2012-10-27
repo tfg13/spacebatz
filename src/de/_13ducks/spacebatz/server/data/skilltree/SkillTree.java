@@ -41,7 +41,7 @@ public class SkillTree {
 
     public void sendSkillTreeUpdates(Client client) {
         for (SkillTreeEntry entry : skills.values()) {
-            STC_UPDATE_SKILLTREE.sendUpdateSkillTree(client, entry.getName(), entry.getLevel());
+            STC_UPDATE_SKILLTREE.sendUpdateSkillTree(client, entry.getName(), entry.getLevel(), entry.canInvestPoint(this));
         }
 
     }

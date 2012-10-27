@@ -24,7 +24,8 @@ public class STC_UPDATE_SKILLTREE extends STCCommand {
         decoder.readByte();// Länge skippen
         String skill = decoder.readString();
         byte level = decoder.readByte();
-        GameClient.getEngine().getGraphics().getSkillTree().setSkillStatus(skill, level);
+        boolean available = decoder.readBoolean();
+        GameClient.getEngine().getGraphics().getSkillTree().setSkillStatus(skill, level, available);
     }
 
     @Override
@@ -43,11 +44,12 @@ public class STC_UPDATE_SKILLTREE extends STCCommand {
      * @param skill der Skill der aktualisiert wird
      * @param level das Level des Skills. -1 falls der Skill nicht verfügbar ist, 0 wenn er verfügbar ist aber noch nicht gelevelt wurde oder x wenn er level x hat.
      */
-    public static void sendUpdateSkillTree(Client client, String skill, byte level) {
+    public static void sendUpdateSkillTree(Client client, String skill, byte level, boolean available) {
         BitEncoder encoder = new BitEncoder();
         encoder.writeByte((byte) 0); // Platzhalter, da kommt später die Größe rein
         encoder.writeString(skill);
         encoder.writeByte(level);
+        encoder.writeBoolean(available);
         byte data[] = encoder.getBytes();
         data[0] = (byte) data.length;
         Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, data), client);

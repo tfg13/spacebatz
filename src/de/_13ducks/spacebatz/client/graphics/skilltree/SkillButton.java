@@ -4,9 +4,13 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.graphics.ControlElement;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.Color;
 import org.newdawn.slick.opengl.Texture;
 
 /**
+ * Ein Button der einen Skill anzeigt.
+ * Kann angelkcickt werden, um den Skill zu verbessern.
+ * Kann per Drag and Drop gezogen werden.
  *
  * @author michael
  */
@@ -17,6 +21,9 @@ public class SkillButton extends ControlElement {
     private int tile;
     private SkillTreeControl skilltree;
     private Texture texture;
+    private Color filter;
+    private static Color red = new Color((byte) 100, (byte) 0, (byte) 0);
+    private static Color white = new Color((byte) 255, (byte) 255, (byte) 255);
 
     /**
      * Erzeugt einen neuen Skillbutton.
@@ -35,16 +42,13 @@ public class SkillButton extends ControlElement {
 
     @Override
     public void render(Renderer renderer) {
-        if (level < 0) {
-            renderer.setColor(0.5f, 0.5f, 0.5f);
-        }
         renderer.setTilemap(texture);
         renderer.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
         renderer.setTileSize(32, 32);
-        renderer.drawTile(tile, getX(), getY(), getWidth(), getHeight());
+        renderer.drawTileColored(tile, getX(), getY(), getWidth(), getHeight(), filter);
         renderer.restoreScreenMapping();
-        renderer.resetColor();
-        renderer.renderText(String.valueOf(level), getX() + 0.045f, getY());
+        renderer.renderText(String.valueOf(level), getX() + 0.05f, getY());
+
     }
 
     @Override
@@ -65,9 +69,21 @@ public class SkillButton extends ControlElement {
 
     void setLevel(byte level) {
         this.level = level;
+
     }
 
     int getTile() {
         return tile;
+    }
+
+    /**
+     * @param available the available to set
+     */
+    public void setAvailable(boolean available) {
+        if (available) {
+            filter = white;
+        } else {
+            filter = red;
+        }
     }
 }

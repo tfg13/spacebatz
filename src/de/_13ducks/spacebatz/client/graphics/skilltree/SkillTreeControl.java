@@ -9,19 +9,17 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY
 import java.util.HashMap;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.opengl.Texture;
+import org.lwjgl.util.Color;
 
 /**
  * Zeigt den Skilltree an.
+ * Der Skilltree zeigt den Status an, den der Server übermittelt und schickt Anfragen an den Server wenn ein Skill verbessert werden soll.
+ * Ob das Skillen oder Skill-Mapping geklappt hat erfährt er über die Antworten des Servers.
  *
  * @author michael
  */
 public class SkillTreeControl implements Control {
 
-    /**
-     * Die Textur mit den Silltree-Symbolen.
-     */
-    private Texture skilltreeTexture;
     /**
      * Liste der Skilltreeienträge.
      */
@@ -33,6 +31,7 @@ public class SkillTreeControl implements Control {
     private boolean dragging;
     private int dragTile;
     private String draggedSkill;
+    private static Color backgroundColor = new Color((byte) 100, (byte) 100, (byte) 100);
 
     /**
      * Initialisiert das SkilltreeControl.
@@ -40,16 +39,17 @@ public class SkillTreeControl implements Control {
      * @param renderer
      */
     public SkillTreeControl(Renderer renderer) {
-        skilltreeTexture = renderer.getTextureByName("skilltree.png");
         skills = new HashMap<>();
         skillSlots = new HashMap<>();
 
         SkillButton summon = new SkillButton("summon", 0, this, renderer);
         summon.setGeometry(0.4f, 0.4f, 0.05f, 0.05f);
+        summon.setAvailable(true);
         skills.put("summon", summon);
 
         SkillButton masssummon = new SkillButton("masssummon", 1, this, renderer);
         masssummon.setGeometry(0.4f, 0.5f, 0.05f, 0.05f);
+        masssummon.setAvailable(false);
         skills.put("masssummon", masssummon);
 
         SkillSlot primaryAttack = new SkillSlot(4, this, (byte) 1, renderer);
@@ -64,8 +64,9 @@ public class SkillTreeControl implements Control {
      * @param name
      * @param level
      */
-    public void setSkillStatus(String name, byte level) {
+    public void setSkillStatus(String name, byte level, boolean available) {
         if (skills.containsKey(name)) {
+            skills.get(name).setAvailable(available);
             skills.get(name).setLevel(level);
         } else {
             throw new IllegalArgumentException("Skill " + name + " ist nicht bekannt!");
@@ -89,9 +90,7 @@ public class SkillTreeControl implements Control {
     @Override
     public void render(Renderer renderer) {
         renderer.setTileSize(32, 32);
-        renderer.setColor(0.9f, 0.9f, 0.9f);
-        renderer.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f);
-        renderer.resetColor();
+        renderer.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, backgroundColor);
 
         // Skillbuttons rendern:
         for (SkillButton item : skills.values()) {
@@ -142,12 +141,23 @@ public class SkillTreeControl implements Control {
         CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(skillname);
     }
 
+    /**
+     * Beginnt mit einer Drag and Drop Operation.
+     *
+     * @param skillname
+     * @param tile
+     */
     public void startDrag(String skillname, int tile) {
         dragging = true;
         dragTile = tile;
         draggedSkill = skillname;
     }
 
+    /**
+     * Beendet eine Drag and Drop Operation.
+     *
+     * @param targetKey
+     */
     public void stopDrag(byte targetKey) {
         if (dragging) {
             CTS_REQUEST_MAP_ABILITY.sendMapAbility(targetKey, draggedSkill);

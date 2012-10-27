@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import java.io.File;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.util.Color;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -39,6 +40,7 @@ public class Renderer {
      * Die Größe und Breite der geladenen Textur.
      */
     private int textureSize;
+    private static Color neutral = new Color(Color.WHITE);
 
     /**
      * Erzeugt einen neuen Renderer.
@@ -134,11 +136,11 @@ public class Renderer {
      */
     public void drawImage(Image image) {
         setTilemap(image.getTilemap());
-        drawTile(image.getIndex(), image.getPosX(), image.getPosY(), image.getWidth(), image.getHeight());
+        drawTileColored(image.getIndex(), image.getPosX(), image.getPosY(), image.getWidth(), image.getHeight(), neutral);
     }
 
     /**
-     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm.
+     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur eingefärbt auf den Bildschirm.
      * Die Größe der Bilder wird mit setTileSize() eingestellt.
      * Die Koordinaten werden auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
      *
@@ -147,11 +149,14 @@ public class Renderer {
      * @param y Y-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
      * @param width Breite mit der das Bild gezeichent wird (in Prozent)
      * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
+     * @param color die Farbe
      */
-    public void drawTile(int index, float x, float y, float width, float height) {
+    public void drawTileColored(int index, float x, float y, float width, float height, Color color) {
 
         glBegin(GL_QUADS); // Viereck zeichnen
         glEnable(GL_TEXTURE_2D); // Textur zeichnen
+
+        glColor3ub(color.getRedByte(), color.getGreenByte(), color.getBlueByte()); // Farbe setzen
 
         int row = index / imagesPerRow; // Die Reihe in der das gesuchte Bild ist
         int column = index % imagesPerRow; // Die Zeile in der das Bild ist
@@ -202,21 +207,18 @@ public class Renderer {
     }
 
     /**
-     * Setzt den Farbfilter.
+     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm.
+     * Die Größe der Bilder wird mit setTileSize() eingestellt.
+     * Die Koordinaten werden auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
      *
-     * @param r der Rotanteil
-     * @param g der Grünanteil
-     * @param b der Gelbanteil
+     * @param index das wievielte Bild der Textur (in Leserichtung) gezeichnet wird.
+     * @param x X-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
+     * @param y Y-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
+     * @param width Breite mit der das Bild gezeichent wird (in Prozent)
+     * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
      */
-    public void setColor(float r, float g, float b) {
-        glColor3f(r, g, b);
-    }
-
-    /**
-     * Setzt den Farbfilter zurück.
-     */
-    public void resetColor() {
-        setColor(1.0f, 1.0f, 1.0f);
+    public void drawTile(int index, float x, float y, float width, float height) {
+        drawTileColored(index, x, y, width, height, neutral);
     }
 
     /**
@@ -232,15 +234,16 @@ public class Renderer {
     }
 
     /**
-     * Zeichnet ein ausgefülltes Rechteck mit der aktuellen Farbe auf den Bildschirm.
+     * Zeichnet ein gefärbtes ausgefülltes Rechteck auf den Bildschirm.
      * Die Farbe kann mit setColor gesetzt werden.
      *
      * @param x die X-Koordinate der linken oberen Ecke
      * @param y die Y-Koordinate der linken oberen Ecke
      * @param width die Breite des Rechtecks
      * @param height die Höhe des Rechtecks
+     * @param color die Farbe des Rechtecks
      */
-    public void drawRectangle(float x, float y, float width, float height) {
+    public void drawRectangle(float x, float y, float width, float height, Color color) {
 
         glPushMatrix(); // Transformationsmatrix sichern
 
@@ -250,6 +253,7 @@ public class Renderer {
 
         glBegin(GL_QUADS); // Viereck zeichnen
         glDisable(GL_TEXTURE_2D); // keine Textur sondern Geometrie zeichnen
+        glColor3ub(color.getRedByte(), color.getGreenByte(), color.getBlueByte());
 
         glVertex2d(x, y);
         glVertex2d(x + width, y);
