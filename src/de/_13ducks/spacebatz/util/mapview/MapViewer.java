@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.MapGen;
 import de._13ducks.spacebatz.util.mapgen.MapParameters;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -247,9 +248,10 @@ public class MapViewer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         MapParameters params = new MapParameters();
-        // apply settings here
+        System.out.println("Generated Map:");
+        System.out.println(params.export());
 
         // Generate Map
         InternalMap map = MapGen.generateInternal(params);
