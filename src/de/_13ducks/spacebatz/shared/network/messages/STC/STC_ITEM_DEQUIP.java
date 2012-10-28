@@ -24,27 +24,23 @@ public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
         // Ein Client will ein bestimmtes Item ablegen
         int slottype = Bits.getInt(data, 0); // netID des  Items
         byte selslot2 = data[4];
-        byte droptoground = data[5];
-        int clientID2 = Bits.getInt(data, 6); // clientID des Spielers
+        int clientID2 = Bits.getInt(data, 5); // clientID des Spielers
         if (clientID2 == GameClient.getClientID()) {
             Item item = GameClient.getEquippedItems().getEquipslots()[slottype][selslot2];
             GameClient.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
-            if (droptoground == 0) {
-                GameClient.addToInventory(item);
-            }
+            GameClient.addToInventory(item);
         }
     }
 
     /**
      * Item wird von Client abgelegt (zurück ins Inventar)
      */
-    public static void sendItemDequip(int slottype, byte selslot, byte droptoground, int clientID) {
+    public static void sendItemDequip(int slottype, byte selslot, int clientID) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[10];
+            byte[] b = new byte[9];
             Bits.putInt(b, 0, slottype);
             b[4] = selslot;
-            b[5] = droptoground;
-            Bits.putInt(b, 6, clientID);
+            Bits.putInt(b, 5, clientID);
             //Server.serverNetwork.sendTcpData(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, b, c);
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, b), c);
         }

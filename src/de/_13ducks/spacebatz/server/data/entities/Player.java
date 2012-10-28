@@ -134,7 +134,7 @@ public class Player extends ItemCarrier {
         if (freeInventorySlot()) {
             // Item ins Inventar tun:
             if (dequipItemToInventar(slottype, selectedslot)) {
-                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, (byte) 0, getClient().clientID);
+                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, getClient().clientID);
             }
         }
     }
