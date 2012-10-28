@@ -10,7 +10,15 @@ public class MessageIDs {
      * Private, da Utility-Class
      */
     private MessageIDs() {
+        /**
+         * Ability wird auf einen Key gemappt:
+         */
     }
+    public static final byte NET_STC_SET_SKILL_MAPPING = 57;
+    /**
+     * Skilltree-Info update für den Client.
+     */
+    public static final byte NET_STC_UPDATE_SKILLTREE = 55;
     /** *
      * Fähigkeitsbenutzungsanforderung vom Client
      */

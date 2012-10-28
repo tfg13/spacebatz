@@ -9,6 +9,7 @@ import de._13ducks.spacebatz.server.data.abilities.Ability;
  */
 public abstract class SkillTreeEntry {
 
+    private Ability ability;
     /**
      * Der Name des Skills.
      */
@@ -16,7 +17,7 @@ public abstract class SkillTreeEntry {
     /**
      * Das Level des Skills.
      */
-    private int level;
+    private byte level;
 
     public SkillTreeEntry(String name) {
         this.name = name;
@@ -28,7 +29,7 @@ public abstract class SkillTreeEntry {
      *
      * @return
      */
-    public int getLevel() {
+    public byte getLevel() {
         return level;
     }
 
@@ -62,5 +63,14 @@ public abstract class SkillTreeEntry {
      *
      * @return
      */
-    public abstract Ability getAbility();
+    public Ability getAbility() {
+        return ability;
+    }
+
+    /**
+     * @param ability the ability to set
+     */
+    public void setAbility(Ability ability) {
+        this.ability = ability;
+    }
 }

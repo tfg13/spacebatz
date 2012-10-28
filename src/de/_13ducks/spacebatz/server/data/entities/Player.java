@@ -17,8 +17,8 @@ import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
-
 
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
@@ -161,10 +161,14 @@ public class Player extends ItemCarrier {
      * @param ability
      */
     public void mapAbility(byte slot, String ability) {
-        abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
+        if (skillTree.isSkillAvailable(ability)) {
+            abilities.mapAbility(slot, skillTree.getSkillAbility(ability));
+            STC_SET_SKILL_MAPPING.sendSetSkillMapping(getClient(), ability, slot);
+        }
     }
 
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
+        skillTree.sendSkillTreeUpdates(client);
     }
 }

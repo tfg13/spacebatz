@@ -1,10 +1,8 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
-import java.util.HashMap;
 
 /**
  * Ein Itemträger, kann Items tragen und ausrüsten. Kann im moment beliebig viele Items aufnehmen und ausrüsten.
@@ -16,7 +14,7 @@ public class ItemCarrier extends Char {
     /**
      * Items im Inventar
      */
-    private HashMap<Integer, Item> items;
+    private static Item[] inventory = new Item[Settings.INVENTORY_SIZE];
     /**
      * Wieviel Materialien der Spieler hat (Geld, Erze, ...)
      */
@@ -44,7 +42,6 @@ public class ItemCarrier extends Char {
      */
     public ItemCarrier(double posX, double posY, int netId, byte typeId) {
         super(posX, posY, netId, typeId);
-        items = new HashMap<>();
         Item[] wslot = new Item[3];
         Item[] aslot = new Item[1];
 
@@ -60,22 +57,21 @@ public class ItemCarrier extends Char {
     /**
      * @return the items
      */
-    public HashMap<Integer, Item> getItems() {
-        return items;
-    }
-
-    /**
-     * @param items the items to set
-     */
-    public void setItems(HashMap<Integer, Item> items) {
-        this.items = items;
+    public Item[] getItems() {
+        return inventory;
     }
 
     /**
      * @param items the items to add
      */
     public void putItem(int netID, Item item) {
-        this.items.put(netID, item);
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                inventory[i] = item;
+                return;
+            }
+        }
+        System.out.println("ACHTUNG: Inventar voll");
     }
 
     /**
@@ -102,17 +98,18 @@ public class ItemCarrier extends Char {
      * Item in leeren Slot anlegen
      *
      * @param itemnetID NetID des Items
-     * @param selectedslot ausgewählter Slot
+     * @param equipslot ausgewählter Slot
      */
-    public void equipItem(int itemnetID, byte selectedslot) {
-        Item item = getItems().get(itemnetID);
+    public void equipItem(int inventoryslot, byte equipslot) {
+        Item item = inventory[inventoryslot];
+
         // richtiger Itemtyp für diesen Slot?
         int slottype = (int) item.getItemClass();
 
-        if (getEquipslots()[slottype] != null && getEquipslots()[slottype][selectedslot] == null && item != null) {
+        if (getEquipslots()[slottype] != null && getEquipslots()[slottype][equipslot] == null && item != null) {
             // Jetzt neues Item anlegen
-            getEquipslots()[slottype][selectedslot] = item;
-            getItems().remove(item.getNetID());
+            getEquipslots()[slottype][equipslot] = item;
+            inventory[inventoryslot] = null;
             // die Stats des Items übernehmen:
             addProperties(item.getBonusProperties());
 
@@ -125,7 +122,7 @@ public class ItemCarrier extends Char {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), selectedslot, ((Player) this).getClient().clientID);
+            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), equipslot, ((Player) this).getClient().clientID);
         }
     }
 
@@ -133,11 +130,12 @@ public class ItemCarrier extends Char {
      * Gibt zurück, ob noch ein freier Slot im Inventar ist
      */
     public boolean freeInventorySlot() {
-        if (getItems().size() < Settings.INVENTORY_SIZE) {
-            return true;
-        } else {
-            return false;
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -154,7 +152,7 @@ public class ItemCarrier extends Char {
                 // die Stats wieder abziehen:
                 removeProperties(itemx.getBonusProperties());
                 // passt das Item ins Inventar?
-                getItems().put(itemx.getNetID(), itemx);
+                putItem(itemx.getNetID(), itemx);
 
 //                if (getActiveWeapon() != null) {
 //                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist

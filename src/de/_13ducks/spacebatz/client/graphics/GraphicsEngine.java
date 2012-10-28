@@ -2,8 +2,9 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
+import de._13ducks.spacebatz.client.graphics.controls.Inventory;
+import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -11,7 +12,8 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 
 /**
- * Die GrafikEngine. Zeichnet den Bildschirm und verarbeitet Eingaben.
+ * Die GrafikEngine. Rendert das Spiel (Map, Entities, Bullets...) und genau ein Menü (z.B. Inventar, Hauptmenü, ...).
+ * Wenn ein Menü aktiv ist bekommt es Alle Eingaben.
  *
  * @author michael
  */
@@ -30,27 +32,35 @@ public class GraphicsEngine {
         }
     }
     /**
-     * Zeichnet Text.
-     */
-    TextWriter textWriter;
-    /**
      * Die Kamera mit Position und Zoom.
      */
     Camera camera;
     /**
-     * Die Liste der Controls (z.B. Inventar, HUD, ...).
-     */
-    private ArrayList<Control> controls;
-    /**
      * Das God-Control, das auch Effekte und FX zeichent.
      */
     private GodControl godControl;
+    /**
+     * Der Skilltree.
+     */
+    private SkillTreeControl skilltree;
+    /**
+     * Das Inventar
+     */
+    private Inventory inventory;
+    /**
+     * Das aktive Menü, das über das Spiel gerendert wird.
+     * z.B. Inventar
+     */
+    private Control activeMenu;
+    /**
+     * Der Renderer, der Geometrie und Texturen zeichnet.
+     */
+    private Renderer renderer;
 
     /**
      * Initialisiert die GrafikEngine.
      */
     public GraphicsEngine() {
-        controls = new ArrayList<>();
     }
 
     /**
@@ -77,13 +87,14 @@ public class GraphicsEngine {
             // Tastatureingaben einstallen:
             Keyboard.enableRepeatEvents(true);
 
-            // Text initialisiern:
-            textWriter = new TextWriter();
+            // Renderer Initialisieren:
+            renderer = new Renderer(camera);
 
             // Controls erzeugen:
-            godControl = new GodControl();
-            godControl.setActive(true);
-            controls.add(godControl);
+            godControl = new GodControl(renderer);
+            skilltree = new SkillTreeControl(renderer);
+            inventory = new Inventory(renderer);
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -104,12 +115,21 @@ public class GraphicsEngine {
      * Rendert den Bildschirm und verarbeitet Eingaben.
      */
     public void tick() {
-        for (Control c : controls) {
-            if (c.isActive()) {
-                c.render(camera, textWriter);
-                c.input();
-            }
+        godControl.render(renderer);
+
+        // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
+        if (activeMenu == null) {
+            godControl.input();
+        } else {
+            activeMenu.render(renderer);
+            activeMenu.input();
         }
+
+        // Fertig, Puffer swappen:
+        Display.update();
+
+        // Frames limitieren:
+        Display.sync(CLIENT_GFX_FRAMELIMIT);
     }
 
     /**
@@ -139,5 +159,28 @@ public class GraphicsEngine {
      */
     public void addFx(Fx fx) {
         godControl.addFx(fx);
+    }
+
+    public SkillTreeControl getSkillTree() {
+        return skilltree;
+    }
+
+    /**
+     * Schält das Skilltreemenü um.
+     */
+    public void toggleSkillTree() {
+        if (activeMenu == null) {
+            activeMenu = skilltree;
+        } else if (activeMenu == skilltree) {
+            activeMenu = null;
+        }
+    }
+
+    public void toggleInventory() {
+        if (activeMenu == null) {
+            activeMenu = inventory;
+        } else if (activeMenu == inventory) {
+            activeMenu = null;
+        }
     }
 }
