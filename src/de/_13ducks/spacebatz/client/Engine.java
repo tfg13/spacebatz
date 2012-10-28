@@ -59,6 +59,8 @@ public class Engine {
         while (run) {
             // Gametick updaten:
             GameClient.updateGametick();
+            // Gametick für alle Entities berechnen:
+            GameClient.gameTick();
             // Input neues Netzwerksystem verarbeiten
             GameClient.getNetwork2().inTick();
             // Render-Code

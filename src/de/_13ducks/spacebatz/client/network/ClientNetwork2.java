@@ -200,6 +200,7 @@ public class ClientNetwork2 {
                     byte clientID = ansData[2];
                     GameClient.setClientID(clientID);
                     serverTick = Bits.getInt(ansData, 3);
+                    GameClient.setLogicTick(serverTick);
                     lerpTimer.scheduleAtFixedRate(new TimerTask() {
                         @Override
                         public void run() {

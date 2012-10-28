@@ -160,4 +160,12 @@ public class Char {
     public RenderObject getRenderObject() {
         return renderObject;
     }
+
+    /**
+     * Wird bei jedem gameTick aufgerufen.
+     * @param gameTick 
+     */
+    public void tick(int gameTick) {
+        
+    }
 }

@@ -92,6 +92,10 @@ public class GameClient {
      * Das Client-Terminal.
      */
     public static ClientTerminal terminal = new ClientTerminal();
+    /**
+     * Der Tick, zu dem der Client die Gamelogic berechnet hat.
+     */
+    private static int logicGameTick;
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
@@ -241,5 +245,22 @@ public class GameClient {
      */
     public static void setItems(Item[] aItems) {
         items = aItems;
+    }
+
+    /**
+     * Berechnet einen Tick für allle Chars.
+     */
+    static void gameTick() {
+        int serverTick = network2.getLogicTick();
+        while (logicGameTick <= serverTick) {
+            for (Char c : GameClient.netIDMap.values()) {
+                c.tick(logicGameTick);
+            }
+            logicGameTick++;
+        }
+    }
+
+    public static void setLogicTick(int serverTick) {
+        logicGameTick = serverTick;
     }
 }
