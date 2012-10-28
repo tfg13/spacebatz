@@ -68,7 +68,7 @@ public class PolygonMapGenerator extends Module {
 
         map.polygons = voronoi;
 
-        // Falls der optionale smoooth-parameter angegeben ist, noch so viele smoothing-läuft drüber laufen lassen
+        // Falls der optionale smoooth-parameter angegeben ist, noch so viele smoothing-Durchgänge drüber laufen lassen
         if (parameters.containsKey("smooth")) {
             int runs = Integer.parseInt(parameters.get("smooth"));
             for (int i = 0; i < runs; i++) {
@@ -77,13 +77,28 @@ public class PolygonMapGenerator extends Module {
                 points = new ArrayList<>(number);
                 for (int p = 0; p < map.polygons.getNumGeometries(); p++) {
                     Polygon poly = (Polygon) map.polygons.getGeometryN(p);
-                    points.add(poly.getCentroid().getCoordinate());
+                    Coordinate point = poly.getCentroid().getCoordinate();
+                    limitPointCoords(point);
+                    points.add(point);
                 }
                 // Man braucht unbedingt einen neuen Builder, der lässt sich anscheinend nicht wiederverwenden.
                 VoronoiDiagramBuilder newBuilder = new VoronoiDiagramBuilder();
                 newBuilder.setSites(points);
                 map.polygons = (GeometryCollection) newBuilder.getDiagram(geom);
             }
+        }
+    }
+
+    private void limitPointCoords(Coordinate c) {
+        if (c.x > 1) {
+            c.x = 1;
+        } else if (c.x < 0) {
+            c.x = 0;
+        }
+        if (c.y > 1) {
+            c.y = 1;
+        } else if (c.y < 0) {
+            c.y = 0;
         }
     }
 }
