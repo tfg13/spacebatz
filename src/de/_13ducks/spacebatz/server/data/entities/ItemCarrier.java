@@ -232,21 +232,16 @@ public class ItemCarrier extends Char {
     /**
      * Tauscht 2 Items im Inventar
      * 2. Slot mus kein Item enthalten, dann wird nur 1. Item verschoben
-     * 
+     *
      * @param inventoryslot1 erster Inventarplatz
      * @param inventoryslot2 zweiter Inventarplatz
      */
     public void moveInvItems(int inventoryslot1, int inventoryslot2) {
-        if (inventory[inventoryslot2] == null) {
-            // 2. angeklickter Slot leer -> Item verschieben
-            inventory[inventoryslot2] = inventory[inventoryslot1];
-            inventory[inventoryslot1] = null;
-        } else {
-            // 2. angeklickter Slot belegt -> Items vertauschen
-            Item swapItem = inventory[inventoryslot2];
-            inventory[inventoryslot2] = inventory[inventoryslot1];
-            inventory[inventoryslot1] = swapItem;
-        }
+        // Items vertauschen
+        Item swapItem = inventory[inventoryslot2];
+        inventory[inventoryslot2] = inventory[inventoryslot1];
+        inventory[inventoryslot1] = swapItem;
+
         STC_INV_ITEM_MOVE.sendInvItemMove(inventoryslot1, inventoryslot2, ((Player) this).getClient().clientID);
     }
 }

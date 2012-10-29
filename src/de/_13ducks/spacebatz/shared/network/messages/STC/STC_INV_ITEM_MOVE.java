@@ -30,16 +30,10 @@ public class STC_INV_ITEM_MOVE extends FixedSizeSTCCommand {
         int clientID = Bits.getInt(data, 8);
 
         if (clientID == GameClient.getClientID()) {
-            if (GameClient.getItems()[inventoryslot2] == null) {
-                // angeklickter Slot leer -> Item verschieben
-                GameClient.getItems()[inventoryslot2] = GameClient.getItems()[inventoryslot1];
-                GameClient.getItems()[inventoryslot1] = null;
-            } else {
-                // angeklickter Slot belegt -> Items tauschen
-                Item swapSlot = GameClient.getItems()[inventoryslot2];
-                GameClient.getItems()[inventoryslot2] = GameClient.getItems()[inventoryslot1];
-                GameClient.getItems()[inventoryslot1] = swapSlot;
-            }
+            // Items tauschen
+            Item swapSlot = GameClient.getItems()[inventoryslot2];
+            GameClient.getItems()[inventoryslot2] = GameClient.getItems()[inventoryslot1];
+            GameClient.getItems()[inventoryslot1] = swapSlot;
         }
     }
 
