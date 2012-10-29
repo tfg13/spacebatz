@@ -8,6 +8,7 @@ import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -318,21 +319,10 @@ public class Inventory implements Control {
                                 // nur wenn hier ein item drin ist
                                 selecteditemslot = slotklicked;
                             }
-
                         } else {
                             // es war bereits ein Slot ausgewählt
-                            if (GameClient.getItems()[slotklicked] == null) {
-                                // angeklickter Slot leer -> Item verschieben
-                                GameClient.getItems()[slotklicked] = GameClient.getItems()[selecteditemslot];
-                                GameClient.getItems()[selecteditemslot] = null;
-                                selecteditemslot = -1;
-                            } else {
-                                // angeklickter Slot belegt -> Items tauschen
-                                Item swapSlot = GameClient.getItems()[slotklicked];
-                                GameClient.getItems()[slotklicked] = GameClient.getItems()[selecteditemslot];
-                                GameClient.getItems()[selecteditemslot] = swapSlot;
-                                selecteditemslot = -1;
-                            }
+                            CTS_REQUEST_INV_ITEM_MOVE.sendInvItemMove(selecteditemslot, slotklicked);      
+                            selecteditemslot = -1;
                         }
                     }
 

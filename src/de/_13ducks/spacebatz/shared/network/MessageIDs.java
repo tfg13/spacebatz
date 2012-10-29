@@ -19,15 +19,18 @@ public class MessageIDs {
      * Skilltree-Info update für den Client.
      */
     public static final byte NET_STC_UPDATE_SKILLTREE = 55;
-    /** *
+    /**
+     * *
      * Fähigkeitsbenutzungsanforderung vom Client
      */
     public static final byte NET_CTS_USE_ABILITY = 38;
-    /** *
+    /**
+     * *
      * Fähigkeit auf anderen Fähigkeitenslot legen:
      */
     public static final byte NET_CTS_MAP_ABILITY = 52;
-    /** *
+    /**
+     * *
      * Einen Skillpunkt auf einen Skill setzen
      */
     public static final byte NET_CTS_INVEST_SKILLPOINT = 51;
@@ -207,4 +210,12 @@ public class MessageIDs {
      * Die cmdID um allen Spielern von bestimmtem Material zu geben
      */
     public static final byte NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT = 48;
+    /**
+     * Client will 2 Items im Inventar tauschen, C->S
+     */
+    public static final byte NET_TCP_CMD_REQUEST_INV_ITEM_MOVE = 53;
+    /**
+     * Client will 2 Items im Inventar tauschen, S->C
+     */
+    public static final byte NET_TCP_CMD_INV_ITEM_MOVE = 54;
 }
