@@ -1,15 +1,15 @@
 package de._13ducks.spacebatz.util.mapview;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.MapGen;
 import de._13ducks.spacebatz.util.mapgen.MapParameters;
+import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -222,17 +222,44 @@ public class MapViewer {
         // Vis-Polys rendern, falls vorhanden:
         if (metadata != null && metadata.containsKey("VIS_POLYS")) {
             @SuppressWarnings("unchecked")
-            ArrayList<Coordinate> visPolys = (ArrayList<Coordinate>) metadata.get("VIS_POLYS");
-            // Immer zwei Punkte holen und eine Linie dazwischen zeichnen:
+            GeometryCollection visPolys = (GeometryCollection) metadata.get("VIS_POLYS");
             glDisable(GL_TEXTURE_2D);
+            glColor3f(1f, 1f, 0);
+
+            // Polygone einfärben
+            for (int i = 0; i < visPolys.getNumGeometries(); i++) {
+                MPolygon poly = (MPolygon) visPolys.getGeometryN(i);
+                if (poly.border) {
+                    glBegin(GL_POLYGON);
+                    CoordinateSequence outLine = poly.getExteriorRing().getCoordinateSequence();
+                    for (int j = 0; j < outLine.size(); j++) {
+                        Coordinate c = outLine.getCoordinate(j);
+                        glVertex2d(c.x, c.y);
+                    }
+                    glEnd();
+                }
+            }
+
+            // Linien malen
+
             glColor3f(0f, 1f, 1f);
             glLineWidth(1);
-            for (int i = 0; i < visPolys.size(); i += 2) {
-                Coordinate c1 = visPolys.get(i);
-                Coordinate c2 = visPolys.get(i + 1);
+            for (int i = 0; i < visPolys.getNumGeometries(); i++) {
+                MPolygon poly = (MPolygon) visPolys.getGeometryN(i);
+                CoordinateSequence outLine = poly.getExteriorRing().getCoordinateSequence();
+                Coordinate previous = outLine.getCoordinate(0);
+                for (int j = 1; j < outLine.size(); j++) {
+                    Coordinate next = outLine.getCoordinate(j);
+                    glBegin(GL_LINES);
+                    glVertex2d(previous.x, previous.y);
+                    glVertex2d(next.x, next.y);
+                    glEnd();
+                    previous = next;
+                }
+                // Zumachen
                 glBegin(GL_LINES);
-                glVertex2d(c1.x, c1.y);
-                glVertex2d(c2.x, c2.y);
+                glVertex2d(previous.x, previous.y);
+                glVertex2d(outLine.getCoordinate(0).x, outLine.getCoordinate(0).y);
                 glEnd();
             }
             glEnable(GL_TEXTURE_2D);

@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.util.mapgen;
 
+import de._13ducks.spacebatz.util.mapgen.modules.BorderGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.OldMapGeneratorWrapper;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonVisualizer;
@@ -23,6 +24,7 @@ public final class ModuleLoader {
             addModule(new Rasterizer());
             addModule(new OldMapGeneratorWrapper());
             addModule(new PolygonVisualizer());
+            addModule(new BorderGenerator());
         }
         return map;
     }

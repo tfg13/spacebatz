@@ -3,10 +3,12 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
+import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -60,7 +62,14 @@ public class PolygonMapGenerator extends Module {
 
         // Voronoi erzeugen
         VoronoiDiagramBuilder vbuilder = new VoronoiDiagramBuilder();
-        GeometryFactory geom = new GeometryFactory();
+        GeometryFactory geom = new GeometryFactory() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Polygon createPolygon(LinearRing shell, LinearRing[] holes) {
+                return new MPolygon(shell, holes, this);
+            }
+        };
 
         vbuilder.setSites(points);
 

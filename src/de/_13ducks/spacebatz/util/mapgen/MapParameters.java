@@ -279,8 +279,11 @@ public class MapParameters {
         polySettings.put("smooth", String.valueOf(2));
         settings.put("polymapgen", polySettings);
         HashMap<String, String> polyVisSettings = new HashMap<>();
-        polyVisSettings.put("PRIORITY", String.valueOf(1));
+        polyVisSettings.put("PRIORITY", String.valueOf(2));
         settings.put("polyVisualizer", polyVisSettings);
+        HashMap<String, String> borderSettings = new HashMap<>();
+        borderSettings.put("PRIORITY", String.valueOf(1));
+        settings.put("bordergenerator", borderSettings);
         settings.put("rasterizer", new HashMap<String, String>());
         masterSeed = new Random().nextLong();
     }
