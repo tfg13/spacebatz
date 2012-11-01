@@ -284,7 +284,10 @@ public class MapParameters {
         HashMap<String, String> borderSettings = new HashMap<>();
         borderSettings.put("PRIORITY", String.valueOf(1));
         settings.put("bordergenerator", borderSettings);
-        settings.put("rasterizer", new HashMap<String, String>());
+        HashMap<String, String> rasterSettings = new HashMap<>();
+        rasterSettings.put("sizex", String.valueOf(100));
+        rasterSettings.put("sizey", String.valueOf(100));
+        settings.put("rasterizer", rasterSettings);
         masterSeed = new Random().nextLong();
     }
 

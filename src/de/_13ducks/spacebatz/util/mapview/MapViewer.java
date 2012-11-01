@@ -176,6 +176,8 @@ public class MapViewer {
         GLU.gluOrtho2D(0, 1, 0, 1);
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
         //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
+        glEnable(GL_BLEND); // Transparenz in Texturen erlauben
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
         Keyboard.enableRepeatEvents(true);
 
     }
@@ -201,30 +203,30 @@ public class MapViewer {
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         float oneX = 1f / ground.length;
         float oneY = 1f / ground[0].length;
-//        for (int x = 0; x < ground.length; x++) {
-//            for (int y = 0; y < ground[0].length; y++) {
-//                int tex = texAt(ground, x, y);
-//                int tx = tex % 16;
-//                int ty = tex / 16;
-//                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-//                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-//                glVertex3f((x + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-//                // Die weiteren 3 Ecken im Uhrzeigersinn:
-//                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f);
-//                glVertex3f((x + 1 + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0);
-//                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f + 0.05859375f);
-//                glVertex3f((x + 1 + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
-//                glTexCoord2f(tx * 0.0625f, ty * 0.0625f + 0.05859375f);
-//                glVertex3f((x + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
-//                glEnd(); // Zeichnen des QUADs fertig
-//            }
-//        }
+        for (int x = 0; x < ground.length; x++) {
+            for (int y = 0; y < ground[0].length; y++) {
+                int tex = texAt(ground, x, y);
+                int tx = tex % 16;
+                int ty = tex / 16;
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+                glVertex3f((x + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                // Die weiteren 3 Ecken im Uhrzeigersinn:
+                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f);
+                glVertex3f((x + 1 + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0);
+                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f + 0.05859375f);
+                glVertex3f((x + 1 + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
+                glTexCoord2f(tx * 0.0625f, ty * 0.0625f + 0.05859375f);
+                glVertex3f((x + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
+                glEnd(); // Zeichnen des QUADs fertig
+            }
+        }
         // Vis-Polys rendern, falls vorhanden:
         if (metadata != null && metadata.containsKey("VIS_POLYS")) {
             @SuppressWarnings("unchecked")
             GeometryCollection visPolys = (GeometryCollection) metadata.get("VIS_POLYS");
             glDisable(GL_TEXTURE_2D);
-            glColor3f(1f, 1f, 0);
+            glColor4f(1f, 1f, 0, 0.3f);
 
             // Polygone einfärben
             for (int i = 0; i < visPolys.getNumGeometries(); i++) {
@@ -242,7 +244,7 @@ public class MapViewer {
 
             // Linien malen
 
-            glColor3f(0f, 1f, 1f);
+            glColor4f(0f, 1f, 1f, 0.5f);
             glLineWidth(1);
             for (int i = 0; i < visPolys.getNumGeometries(); i++) {
                 MPolygon poly = (MPolygon) visPolys.getGeometryN(i);
