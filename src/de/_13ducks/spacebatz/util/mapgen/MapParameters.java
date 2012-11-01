@@ -284,10 +284,18 @@ public class MapParameters {
         HashMap<String, String> borderSettings = new HashMap<>();
         borderSettings.put("PRIORITY", String.valueOf(1));
         settings.put("bordergenerator", borderSettings);
+
+        HashMap<String, String> perlinSettings = new HashMap<>();
+        perlinSettings.put("PRIORITY", String.valueOf(3));
+        perlinSettings.put("sizex", String.valueOf(100));
+        perlinSettings.put("sizey", String.valueOf(100));
+        settings.put("perlinterrain", perlinSettings);
+
         HashMap<String, String> rasterSettings = new HashMap<>();
-        rasterSettings.put("sizex", String.valueOf(100));
-        rasterSettings.put("sizey", String.valueOf(100));
+        rasterSettings.put("sizex", String.valueOf(128));
+        rasterSettings.put("sizey", String.valueOf(128));
         settings.put("rasterizer", rasterSettings);
+
         masterSeed = new Random().nextLong();
     }
 

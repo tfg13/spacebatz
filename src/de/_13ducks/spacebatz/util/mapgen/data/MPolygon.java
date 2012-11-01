@@ -20,4 +20,8 @@ public class MPolygon extends Polygon {
      * Ob dieser Polygon zum Rand gehört und daher auf keinen Fall komplett auf "frei" gesetzt werden darf.
      */
     public boolean border = false;
+    /**
+     * Ob dieser Polygon ein Berg ist, oder Freifläche.
+     */
+    public boolean solid = false;
 }
