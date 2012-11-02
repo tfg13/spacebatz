@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.util.mapgen.modules.BorderGenerator;
-import de._13ducks.spacebatz.util.mapgen.modules.OldMapGeneratorWrapper;
 import de._13ducks.spacebatz.util.mapgen.modules.PerlinTerrainFormer;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonVisualizer;
@@ -23,7 +22,6 @@ public final class ModuleLoader {
             // Hier neue Module eintragen:
             addModule(new PolygonMapGenerator());
             addModule(new Rasterizer());
-            addModule(new OldMapGeneratorWrapper());
             addModule(new PolygonVisualizer());
             addModule(new BorderGenerator());
             addModule(new PerlinTerrainFormer());
