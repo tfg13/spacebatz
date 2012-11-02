@@ -112,7 +112,7 @@ public abstract class NetPacket {
             }
             NetCommand cmd = getCommand(cmdID);
             if (cmd == null) {
-                System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID);
+                System.out.println("WARNING: NET: ignoring unknown cmd! (id: " + cmdID + ")");
                 continue;
             }
             int dataSize = cmd.isVariableSize() ? cmd.getSize(rawData[nextCmdIndex]) : cmd.getSize((byte) 0);

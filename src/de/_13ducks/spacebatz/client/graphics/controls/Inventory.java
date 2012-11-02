@@ -8,6 +8,7 @@ import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -190,48 +191,48 @@ public class Inventory implements Control {
                     break;
                 }
             }
+        }
 
-            Item item = null;
-            if (slothovered != -1 && slothovered != selecteditemslot) {
-                if (GameClient.getItems()[slothovered] != null) {
-                    item = GameClient.getItems()[slothovered];
-                }
-                // Einer der Ausrüstungsslots?
-            } else if (x > 0.4 && x < 0.54) {
-                if (y > 0.8 && y < 0.92) {
-                    item = GameClient.getEquippedItems().getEquipslots()[2][0];
-                } else if (y > 0.61 && y < 0.74) {
-                    item = GameClient.getEquippedItems().getEquipslots()[1][1];
-                }
-            } else if (y > 0.8 && y < 0.92) {
-                if (x > 0.4 && x < 0.54) {
-                    // Hutslot
-                    item = GameClient.getEquippedItems().getEquipslots()[2][0];
-                }
-            } else if (y > 0.61 && y < 0.74) {
-                // ein Waffenslot?
-                if (x > 0.22 && x < 0.36) {
-                    item = GameClient.getEquippedItems().getEquipslots()[1][0];
-                } else if (x > 0.4 && x < 0.54) {
-                    item = GameClient.getEquippedItems().getEquipslots()[1][1];
-                } else if (x > 0.58 && x < 0.72) {
-                    item = GameClient.getEquippedItems().getEquipslots()[1][2];
-                }
+        Item item = null;
+        if (slothovered != -1 && slothovered != selecteditemslot) {
+            if (GameClient.getItems()[slothovered] != null) {
+                item = GameClient.getItems()[slothovered];
             }
+            // Einer der Ausrüstungsslots?
+        } else if (x > 0.4 && x < 0.54) {
+            if (y > 0.8 && y < 0.92) {
+                item = GameClient.getEquippedItems().getEquipslots()[2][0];
+            } else if (y > 0.61 && y < 0.74) {
+                item = GameClient.getEquippedItems().getEquipslots()[1][1];
+            }
+        } else if (y > 0.8 && y < 0.92) {
+            if (x > 0.4 && x < 0.54) {
+                // Hutslot
+                item = GameClient.getEquippedItems().getEquipslots()[2][0];
+            }
+        } else if (y > 0.61 && y < 0.74) {
+            // ein Waffenslot?
+            if (x > 0.22 && x < 0.36) {
+                item = GameClient.getEquippedItems().getEquipslots()[1][0];
+            } else if (x > 0.4 && x < 0.54) {
+                item = GameClient.getEquippedItems().getEquipslots()[1][1];
+            } else if (x > 0.58 && x < 0.72) {
+                item = GameClient.getEquippedItems().getEquipslots()[1][2];
+            }
+        }
 
-            if (item != null) {
-                // Item gefunden, jetzt Mousehover rendern
-                glDisable(GL_TEXTURE_2D);
-                glColor3f(0.9f, 0.9f, 0.9f);
-                glRectf((x - 0.01f) * camera.getTilesX(), (y - 0.01f) * camera.getTilesY(), (x + 0.3f) * camera.getTilesX(), (y - 0.015f + 0.05f * item.getItemAttributes().size()) * camera.getTilesY());
-                glColor3f(1f, 1f, 1f);
-                glEnable(GL_TEXTURE_2D);
-                // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
-                float yadd = 0.0f;
-                for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
-                    textWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * camera.getTilesX(), (y + yadd) * camera.getTilesY());
-                    yadd += 0.05f;
-                }
+        if (item != null) {
+            // Item gefunden, jetzt Mousehover rendern
+            glDisable(GL_TEXTURE_2D);
+            glColor3f(0.9f, 0.9f, 0.9f);
+            glRectf((x - 0.01f) * camera.getTilesX(), (y - 0.01f) * camera.getTilesY(), (x + 0.3f) * camera.getTilesX(), (y - 0.015f + 0.05f * item.getItemAttributes().size()) * camera.getTilesY());
+            glColor3f(1f, 1f, 1f);
+            glEnable(GL_TEXTURE_2D);
+            // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
+            float yadd = 0.0f;
+            for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
+                textWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * camera.getTilesX(), (y + yadd) * camera.getTilesY());
+                yadd += 0.05f;
             }
         }
     }
@@ -318,21 +319,10 @@ public class Inventory implements Control {
                                 // nur wenn hier ein item drin ist
                                 selecteditemslot = slotklicked;
                             }
-
                         } else {
                             // es war bereits ein Slot ausgewählt
-                            if (GameClient.getItems()[slotklicked] == null) {
-                                // angeklickter Slot leer -> Item verschieben
-                                GameClient.getItems()[slotklicked] = GameClient.getItems()[selecteditemslot];
-                                GameClient.getItems()[selecteditemslot] = null;
-                                selecteditemslot = -1;
-                            } else {
-                                // angeklickter Slot belegt -> Items tauschen
-                                Item swapSlot = GameClient.getItems()[slotklicked];
-                                GameClient.getItems()[slotklicked] = GameClient.getItems()[selecteditemslot];
-                                GameClient.getItems()[selecteditemslot] = swapSlot;
-                                selecteditemslot = -1;
-                            }
+                            CTS_REQUEST_INV_ITEM_MOVE.sendInvItemMove(selecteditemslot, slotklicked);
+                            selecteditemslot = -1;
                         }
                     }
 

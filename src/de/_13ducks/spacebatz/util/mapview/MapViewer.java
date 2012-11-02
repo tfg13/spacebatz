@@ -1,14 +1,15 @@
 package de._13ducks.spacebatz.util.mapview;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.MapGen;
 import de._13ducks.spacebatz.util.mapgen.MapParameters;
+import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -175,6 +176,8 @@ public class MapViewer {
         GLU.gluOrtho2D(0, 1, 0, 1);
         glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
         //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
+        glEnable(GL_BLEND); // Transparenz in Texturen erlauben
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
         Keyboard.enableRepeatEvents(true);
 
     }
@@ -200,38 +203,65 @@ public class MapViewer {
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         float oneX = 1f / ground.length;
         float oneY = 1f / ground[0].length;
-//        for (int x = 0; x < ground.length; x++) {
-//            for (int y = 0; y < ground[0].length; y++) {
-//                int tex = texAt(ground, x, y);
-//                int tx = tex % 16;
-//                int ty = tex / 16;
-//                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-//                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-//                glVertex3f((x + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-//                // Die weiteren 3 Ecken im Uhrzeigersinn:
-//                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f);
-//                glVertex3f((x + 1 + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0);
-//                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f + 0.05859375f);
-//                glVertex3f((x + 1 + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
-//                glTexCoord2f(tx * 0.0625f, ty * 0.0625f + 0.05859375f);
-//                glVertex3f((x + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
-//                glEnd(); // Zeichnen des QUADs fertig
-//            }
-//        }
+        for (int x = 0; x < ground.length; x++) {
+            for (int y = 0; y < ground[0].length; y++) {
+                int tex = texAt(ground, x, y);
+                int tx = tex % 16;
+                int ty = tex / 16;
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+                glVertex3f((x + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                // Die weiteren 3 Ecken im Uhrzeigersinn:
+                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f);
+                glVertex3f((x + 1 + panX) * oneX * zoom, (y + 1 + panY) * oneY * zoom, 0);
+                glTexCoord2f(tx * 0.0625f + 0.05859375f, ty * 0.0625f + 0.05859375f);
+                glVertex3f((x + 1 + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
+                glTexCoord2f(tx * 0.0625f, ty * 0.0625f + 0.05859375f);
+                glVertex3f((x + panX) * oneX * zoom, (y + panY) * oneY * zoom, 0);
+                glEnd(); // Zeichnen des QUADs fertig
+            }
+        }
         // Vis-Polys rendern, falls vorhanden:
         if (metadata != null && metadata.containsKey("VIS_POLYS")) {
             @SuppressWarnings("unchecked")
-            ArrayList<Coordinate> visPolys = (ArrayList<Coordinate>) metadata.get("VIS_POLYS");
-            // Immer zwei Punkte holen und eine Linie dazwischen zeichnen:
+            GeometryCollection visPolys = (GeometryCollection) metadata.get("VIS_POLYS");
             glDisable(GL_TEXTURE_2D);
-            glColor3f(0f, 1f, 1f);
+            glColor4f(1f, 1f, 0, 0.3f);
+
+            // Polygone einfärben
+            for (int i = 0; i < visPolys.getNumGeometries(); i++) {
+                MPolygon poly = (MPolygon) visPolys.getGeometryN(i);
+                if (poly.border) {
+                    glBegin(GL_POLYGON);
+                    CoordinateSequence outLine = poly.getExteriorRing().getCoordinateSequence();
+                    for (int j = 0; j < outLine.size(); j++) {
+                        Coordinate c = outLine.getCoordinate(j);
+                        glVertex2d(c.x, c.y);
+                    }
+                    glEnd();
+                }
+            }
+
+            // Linien malen
+
+            glColor4f(0f, 1f, 1f, 0.5f);
             glLineWidth(1);
-            for (int i = 0; i < visPolys.size(); i += 2) {
-                Coordinate c1 = visPolys.get(i);
-                Coordinate c2 = visPolys.get(i + 1);
+            for (int i = 0; i < visPolys.getNumGeometries(); i++) {
+                MPolygon poly = (MPolygon) visPolys.getGeometryN(i);
+                CoordinateSequence outLine = poly.getExteriorRing().getCoordinateSequence();
+                Coordinate previous = outLine.getCoordinate(0);
+                for (int j = 1; j < outLine.size(); j++) {
+                    Coordinate next = outLine.getCoordinate(j);
+                    glBegin(GL_LINES);
+                    glVertex2d(previous.x, previous.y);
+                    glVertex2d(next.x, next.y);
+                    glEnd();
+                    previous = next;
+                }
+                // Zumachen
                 glBegin(GL_LINES);
-                glVertex2d(c1.x, c1.y);
-                glVertex2d(c2.x, c2.y);
+                glVertex2d(previous.x, previous.y);
+                glVertex2d(outLine.getCoordinate(0).x, outLine.getCoordinate(0).y);
                 glEnd();
             }
             glEnable(GL_TEXTURE_2D);
@@ -247,9 +277,10 @@ public class MapViewer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         MapParameters params = new MapParameters();
-        // apply settings here
+        System.out.println("Generated Map:");
+        System.out.println(params.export());
 
         // Generate Map
         InternalMap map = MapGen.generateInternal(params);

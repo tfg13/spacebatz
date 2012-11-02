@@ -24,6 +24,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
@@ -154,6 +155,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
         registerSTCCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, new STC_UPDATE_SKILLTREE());
         registerSTCCommand(MessageIDs.NET_STC_SET_SKILL_MAPPING, new STC_SET_SKILL_MAPPING());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_MOVE, new STC_INV_ITEM_MOVE());
     }
 
     /**

@@ -1,19 +1,21 @@
 package de._13ducks.spacebatz.util.mapgen.modules;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
+import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import java.util.HashMap;
 
 /**
- * Linkt das Polygonnetz in die Metadaten, damit der MapViewer es anzeigen kann.
+ * Sucht nach Rand-Polygonen und markiert sie als "border".
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class PolygonVisualizer extends Module {
+public class BorderGenerator extends Module {
 
     @Override
     public String getName() {
-        return "polyVisualizer";
+        return "bordergenerator";
     }
 
     @Override
@@ -38,6 +40,15 @@ public class PolygonVisualizer extends Module {
 
     @Override
     public void computeMap(InternalMap map, HashMap<String, String> parameters) {
-        map.metadata.put("VIS_POLYS", map.polygons);
+        for (int i = 0; i < map.polygons.getNumGeometries(); i++) {
+            MPolygon poly = (MPolygon) map.polygons.getGeometryN(i);
+            Coordinate[] coords = poly.getCoordinates();
+            for (Coordinate c : coords) {
+                if (c.x <= 0 || c.x >= 1 || c.y <= 0 || c.y >= 1) {
+                    poly.border = true;
+                    break;
+                }
+            }
+        }
     }
 }

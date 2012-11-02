@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 
 /**
  * Ein Itemträger, kann Items tragen und ausrüsten. Kann im moment beliebig viele Items aufnehmen und ausrüsten.
@@ -55,7 +56,7 @@ public class ItemCarrier extends Char {
     }
 
     /**
-     * @return the items
+     * @return Inventar (ohne die Equipslots)
      */
     public Item[] getItems() {
         return inventory;
@@ -122,7 +123,7 @@ public class ItemCarrier extends Char {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            STC_EQUIP_ITEM.sendItemEquip(item.getNetID(), equipslot, ((Player) this).getClient().clientID);
+            STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID);
         }
     }
 
@@ -226,5 +227,21 @@ public class ItemCarrier extends Char {
      */
     public Item getActiveWeapon() {
         return equipslots[1][selectedweapon];
+    }
+
+    /**
+     * Tauscht 2 Items im Inventar
+     * 2. Slot mus kein Item enthalten, dann wird nur 1. Item verschoben
+     *
+     * @param inventoryslot1 erster Inventarplatz
+     * @param inventoryslot2 zweiter Inventarplatz
+     */
+    public void moveInvItems(int inventoryslot1, int inventoryslot2) {
+        // Items vertauschen
+        Item swapItem = inventory[inventoryslot2];
+        inventory[inventoryslot2] = inventory[inventoryslot1];
+        inventory[inventoryslot1] = swapItem;
+
+        STC_INV_ITEM_MOVE.sendInvItemMove(inventoryslot1, inventoryslot2, ((Player) this).getClient().clientID);
     }
 }
