@@ -25,6 +25,10 @@ public class InternalMap {
         for (int x = 0; x < groundTex.length; x++) {
             System.arraycopy(collision[x], 0, level.getCollisionMap()[x], 0, groundTex[0].length);
         }
+        // Spawn steht in metadaten
+        int[] spawn = (int[]) metadata.get("SPAWN");
+        level.respawnX = spawn[0];
+        level.respawnY = spawn[1];
         return level;
     }
 }

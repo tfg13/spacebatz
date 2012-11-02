@@ -275,12 +275,14 @@ public class MapParameters {
     private void loadDefaults() {
         HashMap<String, String> polySettings = new HashMap<>();
         polySettings.put("PRIORITY", String.valueOf(0));
-        polySettings.put("polynumber", String.valueOf(1000));
+        polySettings.put("polynumber", String.valueOf(250));
         polySettings.put("smooth", String.valueOf(0));
         settings.put("polymapgen", polySettings);
+
         HashMap<String, String> polyVisSettings = new HashMap<>();
         polyVisSettings.put("PRIORITY", String.valueOf(2));
         settings.put("polyVisualizer", polyVisSettings);
+
         HashMap<String, String> borderSettings = new HashMap<>();
         borderSettings.put("PRIORITY", String.valueOf(1));
         settings.put("bordergenerator", borderSettings);
@@ -290,6 +292,10 @@ public class MapParameters {
         perlinSettings.put("sizex", String.valueOf(100));
         perlinSettings.put("sizey", String.valueOf(100));
         settings.put("perlinterrain", perlinSettings);
+
+        HashMap<String, String> spawnSettings = new HashMap<>();
+        spawnSettings.put("PRIORITY", String.valueOf(4));
+        settings.put("spawn", spawnSettings);
 
         HashMap<String, String> rasterSettings = new HashMap<>();
         rasterSettings.put("sizex", String.valueOf(128));

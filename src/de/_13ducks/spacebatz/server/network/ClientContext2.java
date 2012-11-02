@@ -49,12 +49,16 @@ class ClientContext2 {
 
     /**
      * Findet heraus, ob der gegebene Chunk dem Client bereits gesendet wurde.
+     * Liefert für ungültige Chunk-Koordinaten immer true, damit nichts übertragen wird, das nicht existiert.
      *
      * @param x x-Koordinate des Chunks
      * @param y y-Koordinate des Chunks
      * @return true, wenn geladen (bekannt)
      */
     boolean chunkLoaded(int x, int y) {
+        if (x < 0 || y < 0 || x >= loadedChunks.length || y >= loadedChunks[0].length) {
+            return true;
+        }
         return loadedChunks[x][y];
     }
 

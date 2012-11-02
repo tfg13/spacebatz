@@ -40,7 +40,7 @@ public class Rasterizer extends Module {
     @Override
     public String[] requires() {
         // CREATE_POLY is implizit
-        return new String[]{};
+        return new String[]{"SPAWN"};
     }
 
     @Override
@@ -53,6 +53,7 @@ public class Rasterizer extends Module {
         map.groundTex = new int[sizeX][sizeY];
         map.collision = new boolean[sizeX][sizeY];
         GeometryFactory fact = new GeometryFactory();
+        MPolygon spawnPoly = null; // Wird paralell noch gesucht.
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
@@ -60,8 +61,12 @@ public class Rasterizer extends Module {
                 // Suche Polygon
                 MPolygon poly = null;
                 for (int i = 0; i < map.polygons.getNumGeometries(); i++) {
-                    if (map.polygons.getGeometryN(i).covers(p)) {
-                        poly = (MPolygon) map.polygons.getGeometryN(i);
+                    MPolygon po = (MPolygon) map.polygons.getGeometryN(i);
+                    if (po.spawn) {
+                        spawnPoly = po;
+                    }
+                    if (po.covers(p)) {
+                        poly = po;
                         break;
                     }
                 }
@@ -77,8 +82,21 @@ public class Rasterizer extends Module {
                 } else if (poly.solid) {
                     map.groundTex[x][y] = 2;
                     map.collision[x][y] = true;
+                } else {
+                    map.groundTex[x][y] = 4;
                 }
             }
         }
+        // Spawn setzen
+        Coordinate spawn = spawnPoly.getCentroid().getCoordinate();
+        map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
+        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = 6;
+        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = 6;
+        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = 6;
+        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = 6;
+        map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = false;
+        map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
+        map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
+        map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = false;
     }
 }

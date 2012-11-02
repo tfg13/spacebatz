@@ -173,22 +173,20 @@ public class EnemySpawner {
      */
     private static void removeNonFree(List<double[]> positions, double size) {
         Iterator<double[]> iter = positions.iterator();
+        outer:
         while (iter.hasNext()) {
             double[] pos = iter.next();
             int x = (int) Math.round(pos[0]);
             int y = (int) Math.round(pos[1]);
             // Ein deltaxdelta-Feld auf Kollision überprüfen:
-            boolean remove = false;
-            int delta = (int) (size / 0.5 + 0.5);
+            int delta = (int) (size + 0.5);
             for (int tx = x - delta; tx < x + delta; tx++) {
                 for (int ty = y - delta; ty < y + delta; ty++) {
-                    if (Server.game.getLevel().getCollisionMap()[tx][ty]) {
-                        remove = true;
+                    if (tx < 0 || ty < 0 || tx >= Server.game.getLevel().getSizeX() || ty >= Server.game.getLevel().getSizeY() || Server.game.getLevel().getCollisionMap()[tx][ty]) {
+                        iter.remove();
+                        continue outer;
                     }
                 }
-            }
-            if (remove) {
-                iter.remove();
             }
         }
     }

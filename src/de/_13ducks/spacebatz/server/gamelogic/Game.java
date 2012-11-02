@@ -22,6 +22,8 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
+import de._13ducks.spacebatz.util.mapgen.MapGen;
+import de._13ducks.spacebatz.util.mapgen.MapParameters;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -72,7 +74,7 @@ public class Game {
     public Game() {
         entityManager = new EntityManager();
         clients = new HashMap<>();
-        level = LevelGenerator.generateLevel();
+        level = MapGen.genMap(new MapParameters());
         enemytypes = new EnemyTypes();
 
         // Enemytypes serialisieren, damit es später schnell an Clients gesendet werden kann:

@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.util.mapgen.modules.PerlinTerrainFormer;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonVisualizer;
 import de._13ducks.spacebatz.util.mapgen.modules.Rasterizer;
+import de._13ducks.spacebatz.util.mapgen.modules.SpawnFormer;
 import java.util.HashMap;
 
 /**
@@ -25,6 +26,7 @@ public final class ModuleLoader {
             addModule(new PolygonVisualizer());
             addModule(new BorderGenerator());
             addModule(new PerlinTerrainFormer());
+            addModule(new SpawnFormer());
         }
         return map;
     }

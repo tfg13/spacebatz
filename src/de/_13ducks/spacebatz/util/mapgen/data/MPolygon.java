@@ -24,4 +24,8 @@ public class MPolygon extends Polygon {
      * Ob dieser Polygon ein Berg ist, oder Freifläche.
      */
     public boolean solid = false;
+    /**
+     * Ist dies der (einzige) Spawn-Polygon?
+     */
+    public boolean spawn = false;
 }
