@@ -276,7 +276,7 @@ public class MapParameters {
         HashMap<String, String> polySettings = new HashMap<>();
         polySettings.put("PRIORITY", String.valueOf(0));
         polySettings.put("polynumber", String.valueOf(1000));
-        polySettings.put("smooth", String.valueOf(2));
+        polySettings.put("smooth", String.valueOf(0));
         settings.put("polymapgen", polySettings);
         HashMap<String, String> polyVisSettings = new HashMap<>();
         polyVisSettings.put("PRIORITY", String.valueOf(2));
