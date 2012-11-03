@@ -53,8 +53,8 @@ public class Enemy extends Char {
 //        } else {
 //            behaviour = new NeutralMobBehaviour(this);
 //        }
-        //behaviour = new StandardMobBehaviour(this);
-        behaviour = new FollowModeTestBehaviour(this);
+        behaviour = new StandardMobBehaviour(this);
+        //behaviour = new FollowModeTestBehaviour(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
 
