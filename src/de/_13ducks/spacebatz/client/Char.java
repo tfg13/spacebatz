@@ -57,6 +57,14 @@ public class Char {
      * Der Tick, zu dem die Bewegung begonnen hat.
      */
     private int startTick;
+    /**
+     * Gibt an, ob der Chat im Verfolgermodus ist.
+     */
+    private boolean followMode;
+    /**
+     * Die Entity die im Verfolgermodus verfolgt wird.
+     */
+    private Char target;
 
     public Char(int netID, RenderObject renderObject) {
         this.netID = netID;
@@ -75,7 +83,11 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
-        return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
+        if (followMode) {
+            return x;
+        } else {
+            return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
+        }
     }
 
     /**
@@ -84,7 +96,11 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
-        return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
+        if (followMode) {
+            return y;
+        } else {
+            return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
+        }
     }
 
     /**
@@ -114,6 +130,13 @@ public class Char {
         // Nicht drehen beim Stehenbleiben
         if (startTick != -1) {
             this.dir = Math.atan2(vY, vX);
+        }
+        if (m.followMode) {
+            followMode = true;
+            target = GameClient.netIDMap.get(m.targetId);
+        } else {
+            followMode = false;
+            target = null;
         }
     }
 
@@ -163,9 +186,21 @@ public class Char {
 
     /**
      * Wird bei jedem gameTick aufgerufen.
-     * @param gameTick 
+     *
+     * @param gameTick
      */
     public void tick(int gameTick) {
-        
+        // Im Verfolgermodus die Richtung anpassen:
+        if (followMode) {
+            x += vX * (gameTick - startTick);
+            y += vY * (gameTick - startTick);
+
+            vX = target.x - x;
+            vY = target.y - y;
+
+            dir = Math.atan2(vY, vX);
+
+            startTick = gameTick;
+        }
     }
 }
