@@ -215,7 +215,9 @@ public class Entity {
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
         movementDirty = true;
-        Server.sync.updateMovement(this);
+        if (target == null) {
+            Server.sync.updateMovement(this);
+        }
     }
 
     /**
@@ -374,11 +376,14 @@ public class Entity {
     public void tick(int gameTick) {
         // Im Verfolgermodus die Richtung anpassen:
         if (target != null) {
-            normalizeAndSetVector(target.getX() - getX(), target.getY() - getY());
-            posX = getX();
-            posY = getY();
+            double tx = target.getX() - getX();
+            double ty = target.getY() - getY();
+            if (tx == 0 && ty == 0) {
+                this.stopMovement();
+            } else {
+                setVector(tx, ty);
+            }
 
-            moveStartTick = gameTick;
         }
     }
 

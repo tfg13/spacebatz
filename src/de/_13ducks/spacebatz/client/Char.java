@@ -195,9 +195,6 @@ public class Char {
     }
 
     /**
-     *
-     *
-     * /**
      * Wird bei jedem gameTick aufgerufen.
      *
      * @param gameTick
@@ -206,14 +203,6 @@ public class Char {
         // Im Verfolgermodus die Richtung anpassen:
         if (followMode) {
             normalizeAndSetVector(target.getX() - getX(), target.getY() - getY());
-            x = getX();
-            y = getY();
-
-
-
-
-            dir = Math.atan2(vY, vX);
-
             startTick = gameTick;
         }
     }
