@@ -56,37 +56,37 @@ public class OutBuffer {
      * @param packID die ID dieses Pakets
      */
     public synchronized boolean registerPacket(DatagramPacket packet, int packID) {
-	if (packet == null) {
-	    throw new IllegalArgumentException("Packet must not be null");
-	}
-	if (buffer[ringBufferFirst] == null) {
-	    // leer, Sonderbehandlung
-	    buffer[ringBufferFirst] = new Buffer(packet, packID);
-	    ringBufferLast = ringBufferFirst;
-	    bufferSize++;
-	    return true;
-	} else {
-	    // Normal. Testen ob Platz:
-	    if (bufferSize == MAXIMUM_SIZE - 1) {
-		return false;
-	    }
-	    // Id muss eins größer sein als Vorgänger:
-	    int expectedID = buffer[ringBufferLast].packID + 1;
-	    // Wrap-around:
-	    if (expectedID == Constants.OVERFLOW_STC_PACK_ID) {
-		expectedID = 0;
-	    }
-	    if (packID != expectedID) {
-		throw new IllegalArgumentException("Irregular Paket id. Should be " + (expectedID) + " but is " + packID);
-	    }
-	    // Alles ok. Aufnehmen:
-	    if (++ringBufferLast == MAXIMUM_SIZE) {
-		ringBufferLast = 0;
-	    }
-	    buffer[ringBufferLast] = new Buffer(packet, packID);
-	    bufferSize++;
-	    return true;
-	}
+        if (packet == null) {
+            throw new IllegalArgumentException("Packet must not be null");
+        }
+        if (buffer[ringBufferFirst] == null) {
+            // leer, Sonderbehandlung
+            buffer[ringBufferFirst] = new Buffer(packet, packID);
+            ringBufferLast = ringBufferFirst;
+            bufferSize++;
+            return true;
+        } else {
+            // Normal. Testen ob Platz:
+            if (bufferSize == MAXIMUM_SIZE - 1) {
+                return false;
+            }
+            // Id muss eins größer sein als Vorgänger:
+            int expectedID = buffer[ringBufferLast].packID + 1;
+            // Wrap-around:
+            if (expectedID == Constants.OVERFLOW_STC_PACK_ID) {
+                expectedID = 0;
+            }
+            if (packID != expectedID) {
+                throw new IllegalArgumentException("Irregular Paket id. Should be " + (expectedID) + " but is " + packID);
+            }
+            // Alles ok. Aufnehmen:
+            if (++ringBufferLast == MAXIMUM_SIZE) {
+                ringBufferLast = 0;
+            }
+            buffer[ringBufferLast] = new Buffer(packet, packID);
+            bufferSize++;
+            return true;
+        }
     }
 
     /**
@@ -96,30 +96,30 @@ public class OutBuffer {
      * @return eine Liste aller Pakete, die gesendet werden sollen.
      */
     public synchronized ArrayList<DatagramPacket> packetsToSend() {
-	final long time = System.currentTimeMillis();
-	ArrayList<DatagramPacket> sendList = new ArrayList<>();
-	int ringBufferIter = ringBufferFirst;
-	while (buffer[ringBufferIter] != null) {
-	    Buffer buf = buffer[ringBufferIter];
+        final long time = System.currentTimeMillis();
+        ArrayList<DatagramPacket> sendList = new ArrayList<>();
+        int ringBufferIter = ringBufferFirst;
+        while (buffer[ringBufferIter] != null) {
+            Buffer buf = buffer[ringBufferIter];
 
-	    if (buf.sendTime == 0) { // Überhaupt schon einmal gesendet?
-		sendList.add(buf.pack);
-		buf.sendTime = time;
-	    } else {
-		// Noch nicht ACK und Zeit abgelaufen?
-		if (!buf.acked && (time - buf.sendTime) >= MAX_ACKTIME_MS) {
-		    // Neu senden
-		    sendList.add(buf.pack);
-		    buf.sendTime = time;
-		}
-	    }
+            if (buf.sendTime == 0) { // Überhaupt schon einmal gesendet?
+                sendList.add(buf.pack);
+                buf.sendTime = time;
+            } else {
+                // Noch nicht ACK und Zeit abgelaufen?
+                if (!buf.acked && (time - buf.sendTime) >= MAX_ACKTIME_MS) {
+                    // Neu senden
+                    sendList.add(buf.pack);
+                    buf.sendTime = time;
+                }
+            }
 
-	    // Increment
-	    if (++ringBufferIter == MAXIMUM_SIZE) {
-		ringBufferIter = 0;
-	    }
-	}
-	return sendList;
+            // Increment
+            if (++ringBufferIter == MAXIMUM_SIZE) {
+                ringBufferIter = 0;
+            }
+        }
+        return sendList;
     }
 
     /**
@@ -130,43 +130,47 @@ public class OutBuffer {
      * @param packID die packID des Pakets, das bestätigt wurde
      */
     public synchronized void ackPacket(int packID) {
-	// Paket suchen.
-	int ringBufferIter = ringBufferFirst;
-	while (buffer[ringBufferIter] != null) {
-	    if (buffer[ringBufferIter].packID == packID) {
-		break; // Gefunden
-	    }
-	    
-	    // Increment
-	    if (++ringBufferIter == MAXIMUM_SIZE) {
-		ringBufferIter = 0;
-	    }
-	}
-	// Gefunden?
-	if (buffer[ringBufferIter] != null) {
-	    buffer[ringBufferIter].acked = true;
-	    // Aufräumen?
-	    while (buffer[ringBufferFirst] != null && buffer[ringBufferFirst].acked) {
-		buffer[ringBufferFirst] = null;
-		bufferSize--;
-		// Increment
-		if (++ringBufferFirst == MAXIMUM_SIZE) {
-		    ringBufferFirst = 0;
-		}
-	    }
-	}
+        // Paket suchen.
+        int ringBufferIter = ringBufferFirst;
+        while (buffer[ringBufferIter] != null) {
+            if (buffer[ringBufferIter].packID == packID) {
+                break; // Gefunden
+            }
+
+            // Increment
+            if (++ringBufferIter == MAXIMUM_SIZE) {
+                ringBufferIter = 0;
+            }
+        }
+        // Gefunden?
+        if (buffer[ringBufferIter] != null) {
+            buffer[ringBufferIter].acked = true;
+            // Aufräumen?
+            while (buffer[ringBufferFirst] != null && buffer[ringBufferFirst].acked) {
+                buffer[ringBufferFirst] = null;
+                bufferSize--;
+                // Increment
+                if (++ringBufferFirst == MAXIMUM_SIZE) {
+                    ringBufferFirst = 0;
+                }
+            }
+        }
+    }
+
+    public int getBufferRatio() {
+        return (int) (100.0 * bufferSize / MAXIMUM_SIZE);
     }
 
     private class Buffer {
 
-	private final DatagramPacket pack;
-	private final int packID;
-	private long sendTime;
-	private boolean acked = false;
+        private final DatagramPacket pack;
+        private final int packID;
+        private long sendTime;
+        private boolean acked = false;
 
-	private Buffer(DatagramPacket pack, int id) {
-	    this.pack = pack;
-	    this.packID = id;
-	}
+        private Buffer(DatagramPacket pack, int id) {
+            this.pack = pack;
+            this.packID = id;
+        }
     }
 }

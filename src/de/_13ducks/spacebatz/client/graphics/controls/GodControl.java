@@ -13,6 +13,7 @@ import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
+import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
@@ -289,18 +290,29 @@ public class GodControl implements Control {
 
         // Net-Graph?
         if (NetStats.netGraph > 0) {
+            ClientNetwork2 net = GameClient.getNetwork2();
+            boolean connectionAlive = net.connectionAlive();
             glDisable(GL_TEXTURE_2D);
-            glColor4f(.9f, .9f, .9f, .7f);
+            if (connectionAlive) {
+                glColor4f(.9f, .9f, .9f, .7f);
+            } else {
+                glColor4f(1f, 0f, 0f, 1f);
+            }
             glRectf(0, camera.getTilesY(), 10, NetStats.netGraph == 2 ? camera.getTilesY() - 2f : camera.getTilesY() - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            textWriter.renderText("lerp: " + GameClient.getNetwork2().getLerp() + " (~" + (Settings.SERVER_TICKRATE * GameClient.getNetwork2().getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
-            //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
-            textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1.5f);
-            if (NetStats.netGraph == 2) {
-                // Einheitenposition:
-                textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
-                textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
+            if (connectionAlive) {
+                textWriter.renderText("lerp: " + net.getLerp() + " (~" + (Settings.SERVER_TICKRATE * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
+                //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
+                textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1f);
+                textWriter.renderText("Connection health: " + net.getConnectionHealthPercent() + "%", 0, camera.getTilesY() - 1.5f, net.getConnectionHealthPercent() < 95 ? 1 : 0, 0, 0, 1);
+                if (NetStats.netGraph == 2) {
+                    // Einheitenposition:
+                    textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
+                    textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
+                }
+            } else {
+                textWriter.renderText(" LOST CONNECTION TO SERVER", 0, camera.getTilesY() - 1.5f);
             }
         }
 

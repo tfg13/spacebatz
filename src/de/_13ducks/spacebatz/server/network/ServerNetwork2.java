@@ -267,7 +267,9 @@ public class ServerNetwork2 {
     private void schedulePacket(DatagramPacket dPack, Client client, int packID) {
         if (!client.getNetworkConnection().getOutBuffer().registerPacket(dPack, packID)) {
             // Dieser Client ist hoffnungslos
-            System.out.println("ERROR: NET: Paket output overflow!!!");
+            System.out.println("ERROR: NET: Disconnection client due to outbuffer packet overflow");
+            // Client entfernen
+            Server.disconnectClient(client);
         }
     }
 

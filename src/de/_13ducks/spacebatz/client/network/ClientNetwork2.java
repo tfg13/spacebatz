@@ -498,6 +498,8 @@ public class ClientNetwork2 {
         if (!outBuffer.registerPacket(dPack, packID)) {
             // Es ist hoffnungslos
             System.out.println("ERROR: CNET: Paket output overflow!!!");
+            // Verbindung trennen
+            connected = false;
         }
     }
 
@@ -518,6 +520,27 @@ public class ClientNetwork2 {
      */
     public InetAddress getServerAdr() {
         return serverAdr;
+    }
+
+    /**
+     * Findet heraus, ob die Verbindung steht.
+     * Wenn das false ist, ist die Verbindung entweder noch nicht hergestellt, oder schon wieder kaputt.
+     *
+     * @return true, wenn connected.
+     */
+    public boolean connectionAlive() {
+        return connected;
+    }
+
+    /**
+     * Liefert die "Gesundheit" der Connection.
+     * Dieser Wert sollte 100 (%) sein, sonst ist die Verbindung am kaputtgehen.
+     * Nicht definiert, wenn connectionAlive() == false
+     *
+     * @return Gesundheit in Prozent
+     */
+    public int getConnectionHealthPercent() {
+        return 100 - outBuffer.getBufferRatio();
     }
 
     /**

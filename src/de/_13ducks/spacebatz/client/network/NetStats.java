@@ -20,51 +20,6 @@ import de._13ducks.spacebatz.Settings;
 public final class NetStats {
 
     /**
-     * Die berechneten Tickdelays für die letzte Sekunde. Ein Ringbuffer.
-     */
-    private static int[] tickDelay = new int[1000 / Settings.SERVER_TICKRATE];
-    /**
-     * Summe aller Delays aus dem Tickdelay-Ringbuffer. Zum schnellen Berechnen des Durchschnitts.
-     */
-    private static int sumTickDelay = 0;
-    /**
-     * Der Zeiger auf die nächste Positon des Tickdelay-Ringbuffers.
-     */
-    private static int tickDelayClock = 0;
-
-    /**
-     * Liefert den letzten gemessenen Tickdelay.
-     *
-     * @return den letzten gemessenen Tickdelay
-     */
-    public static int getLastTickDelay() {
-        return tickDelay[tickDelayClock != 0 ? tickDelayClock - 1 : (1000 / Settings.SERVER_TICKRATE) - 1];
-    }
-
-    /**
-     * Liefert den durchschnittlichen Tickdelay der letzten Sekunde.
-     *
-     * @return den durchschnittlichen Tickdelay der letzten Sekunde
-     */
-    public static int getAvgTickDelay() {
-        return sumTickDelay / (1000 / Settings.SERVER_TICKRATE);
-    }
-
-    /**
-     * Aufrufen, um ein neu gemessens TickDelay einzufügen.
-     *
-     * @param delay das neue Tickdelay.
-     */
-    public static void pushTickDelay(int delay) {
-        int old = tickDelay[tickDelayClock];
-        tickDelay[tickDelayClock] = delay;
-        sumTickDelay -= old;
-        sumTickDelay += delay;
-        if (++tickDelayClock == (1000 / Settings.SERVER_TICKRATE)) {
-            tickDelayClock = 0;
-        }
-    }
-    /**
      * Ob der Net-Graph derzeit aktiv ist.
      */
     public static int netGraph = Settings.CLIENT_NETGRAPH_LEVEL;
