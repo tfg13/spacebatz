@@ -95,6 +95,7 @@ public class GameClient {
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
+     * Der Client wird dies etwa eine Minute lang versuchen (etwa 60 Verbindungsversuche)
      *
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
@@ -105,8 +106,10 @@ public class GameClient {
         netIDMap = new HashMap<>();
 
         equippedItems = new EquippedItems();
-        if (!network2.connect(InetAddress.getByName(ip), Settings.SERVER_UDPPORT2)) {
-            throw new RuntimeException("Cannot connect");
+        // Immer weiter versuchen, sich zu connecten
+        int triesLeft = 60;
+        while (!network2.connect(InetAddress.getByName(ip), Settings.SERVER_UDPPORT2) && triesLeft-- > 0) {
+            System.out.println("Connecting failed. Retrying...");
         }
     }
 

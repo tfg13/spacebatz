@@ -44,8 +44,6 @@ public class SinglePlayer {
         });
         // Server starten
         server.start();
-        // Server zeit geben zum Socket aufmachen
-        Thread.sleep(5000);
         // Client starten & verbinden lassen:
         client.start();
 

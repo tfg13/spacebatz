@@ -160,7 +160,7 @@ public class ClientNetwork2 {
 
     /**
      * Weist das Netzwerksystem an, sich zur Zieladdresse/Port zu verbinden. Liefert true bei erfolgreichem Verbindungsaufbau. Anschließend ist der Setup des Netzwerksystems abgeschlossen und es kann
-     * verwendet werden. Wenn false returned wurde, kann diese Methode für weitere Versuche erneut aufgerufen werden. Diese Methode blockt, bis der Server geantwortet hat. (Maximal 5 Sekunden)
+     * verwendet werden. Wenn false returned wurde, kann diese Methode für weitere Versuche erneut aufgerufen werden. Diese Methode blockt, bis der Server geantwortet hat. (Maximal 1 Sekunde)
      *
      * @param targetAddress die Zieladdresse
      * @param port der Ziel-Port
@@ -181,7 +181,7 @@ public class ClientNetwork2 {
             // Antwort-Packet
             byte[] ansData = new byte[8];
             DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
-            socket.setSoTimeout(50000);
+            socket.setSoTimeout(1000);
             socket.send(packet);
             while (true) {
                 try {
