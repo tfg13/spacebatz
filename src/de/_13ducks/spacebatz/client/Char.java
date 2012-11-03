@@ -57,6 +57,14 @@ public class Char {
      * Der Tick, zu dem die Bewegung begonnen hat.
      */
     private int startTick;
+    /**
+     * Gibt an, ob der Chat im Verfolgermodus ist.
+     */
+    private boolean followMode;
+    /**
+     * Die Entity die im Verfolgermodus verfolgt wird.
+     */
+    private Char target;
 
     public Char(int netID, RenderObject renderObject) {
         this.netID = netID;
@@ -75,7 +83,9 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
+
         return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
+
     }
 
     /**
@@ -84,7 +94,9 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
+
         return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
+
     }
 
     /**
@@ -114,6 +126,13 @@ public class Char {
         // Nicht drehen beim Stehenbleiben
         if (startTick != -1) {
             this.dir = Math.atan2(vY, vX);
+        }
+        if (m.targetId != -1) {
+            followMode = true;
+            target = GameClient.netIDMap.get(m.targetId);
+        } else {
+            followMode = false;
+            target = null;
         }
     }
 
@@ -159,5 +178,32 @@ public class Char {
      */
     public RenderObject getRenderObject() {
         return renderObject;
+    }
+
+    /**
+     * Normalisiert den Vektor (x, y) und setzt ihn anschließend.
+     *
+     * @param x X-Richtung
+     * @param y Y-Richtung
+     */
+    private void normalizeAndSetVector(double x, double y) {
+        // Länge berechnen (Pythagoras)
+        double length = Math.sqrt((x * x) + (y * y));
+        // Normalisieren und setzen
+        vX = x / length;
+        vY = y / length;
+    }
+
+    /**
+     * Wird bei jedem gameTick aufgerufen.
+     *
+     * @param gameTick
+     */
+    public void tick(int gameTick) {
+        // Im Verfolgermodus die Richtung anpassen:
+        if (followMode) {
+            normalizeAndSetVector(target.getX() - getX(), target.getY() - getY());
+            startTick = gameTick;
+        }
     }
 }

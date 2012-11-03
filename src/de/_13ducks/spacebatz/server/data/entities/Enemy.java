@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.Behaviour;
+import de._13ducks.spacebatz.server.ai.FollowModeTestBehaviour;
 import de._13ducks.spacebatz.server.ai.NeutralMobBehaviour;
 import de._13ducks.spacebatz.server.ai.StandardMobBehaviour;
 
@@ -53,6 +54,7 @@ public class Enemy extends Char {
 //            behaviour = new NeutralMobBehaviour(this);
 //        }
         behaviour = new StandardMobBehaviour(this);
+        //behaviour = new FollowModeTestBehaviour(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
 

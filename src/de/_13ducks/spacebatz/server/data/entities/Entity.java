@@ -56,6 +56,15 @@ public class Entity {
      */
     protected double vecY;
     /**
+     * Die netId der Entity die im Verfolgermodus verfolgt wird.
+     * -1 wenn keine Entity verfolgt wird.
+     */
+    private int targetId;
+    /**
+     * Die Entity die verfplgt wird. null wenn keine berfolgt wird.
+     */
+    private Entity target;
+    /**
      * Die aktuelle Bewegung nocheinmal repräsentiert. Nur aktuell wenn moveDirty == false.
      */
     private Movement movement;
@@ -86,6 +95,7 @@ public class Entity {
         entityMapPos = new int[2];
         this.netID = netID;
         size = Settings.CHARSIZE;
+        targetId = -1;
     }
 
     /**
@@ -95,6 +105,18 @@ public class Entity {
      */
     public boolean isMoving() {
         return getMoveStartTick() != -1;
+    }
+
+    /**
+     * Startet den Verfolgermodus.
+     *
+     * @param target
+     */
+    public void setFollowMode(Entity target) {
+        this.target = target;
+        targetId = target.netID;
+        movementDirty = true;
+        Server.sync.updateMovement(this);
     }
 
     /**
@@ -193,7 +215,9 @@ public class Entity {
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
         movementDirty = true;
-        Server.sync.updateMovement(this);
+        if (target == null) {
+            Server.sync.updateMovement(this);
+        }
     }
 
     /**
@@ -250,9 +274,9 @@ public class Entity {
 
     private void computeMovement() {
         if (isMoving()) {
-            movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed());
+            movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed(), targetId);
         } else {
-            movement = new Movement(posX, posY, 0, 0, -1, 0);
+            movement = new Movement(posX, posY, 0, 0, -1, 0, targetId);
         }
     }
 
@@ -350,6 +374,17 @@ public class Entity {
      * Berechnet einen gameTick für die Entity.
      */
     public void tick(int gameTick) {
+        // Im Verfolgermodus die Richtung anpassen:
+        if (target != null) {
+            double tx = target.getX() - getX();
+            double ty = target.getY() - getY();
+            if (tx == 0 && ty == 0) {
+                this.stopMovement();
+            } else {
+                setVector(tx, ty);
+            }
+
+        }
     }
 
     /**

@@ -20,27 +20,33 @@ public class Movement {
     /**
      * Die Startposition der Bewegung.
      */
-    public final float startX, startY;
+    public float startX, startY;
     /**
      * Die Richtung der Bewegung, normalisiert.
      */
-    public final float vecX, vecY;
+    public float vecX, vecY;
     /**
      * Der startTick der Bewegung. Wenn -1 wird ein Stehen repräsentiert.
      */
-    public final int startTick;
+    public int startTick;
     /**
      * Die Geschwindigkeit der Bewegung.
      */
-    public final float speed;
+    public float speed;
+    /**
+     * Die netID der Entity die im erfolgermodus verfolgt wird.
+     * -1 wenn der Verfolgermodus inaktiv ist.
+     */
+    public int targetId;
 
-    public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed) {
+    public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed, int targetId) {
         this.startX = (float) startX;
         this.startY = (float) startY;
         this.vecX = (float) vecX;
         this.vecY = (float) vecY;
         this.startTick = startTick;
         this.speed = (float) speed;
+        this.targetId = targetId;
     }
 
     @Override
