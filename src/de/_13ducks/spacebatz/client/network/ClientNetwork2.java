@@ -423,7 +423,7 @@ public class ClientNetwork2 {
             // Schauen, ob der Index des nächsten Pakets stimmt:
             while (true) {
                 // Queues tauschen?
-                if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
+                if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastInIndex == -1) {
                     System.out.println("CLIENT QUEUE SWAP");
                     PriorityBlockingQueue<STCPacket> temp = inputQueue;
                     inputQueue = inputQueue2;
@@ -437,14 +437,14 @@ public class ClientNetwork2 {
                 // Berechnen, bei welchem Servertick das nächste Paket gesendet wurde:
                 int packetServerTick = inputQueue.peek().getIndex() + packZeroServerTick;
                 int next = lastInIndex + 1;
-                if (next == Constants.OVERFLOW_STC_PACK_ID) {
-                    next = 0;
-                }
                 // Zweite Bedingung ist Lerp. Verzögern, bis wir lerp Ticks Vorsprung haben
                 if (inputQueue.peek().getIndex() == next && packetServerTick <= serverTick - lerp) {
                     STCPacket packet = inputQueue.poll();
                     packet.compute();
                     lastInIndex = packet.getIndex();
+                    if (lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
+                        lastInIndex = -1;
+                    }
                 } else {
                     break;
                 }
