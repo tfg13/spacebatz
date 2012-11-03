@@ -83,11 +83,9 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
-        if (followMode) {
-            return x;
-        } else {
-            return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
-        }
+
+        return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
+
     }
 
     /**
@@ -96,11 +94,9 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
-        if (followMode) {
-            return y;
-        } else {
-            return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
-        }
+
+        return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
+
     }
 
     /**
@@ -131,7 +127,7 @@ public class Char {
         if (startTick != -1) {
             this.dir = Math.atan2(vY, vX);
         }
-        if (m.followMode) {
+        if (m.targetId != -1) {
             followMode = true;
             target = GameClient.netIDMap.get(m.targetId);
         } else {
@@ -185,6 +181,23 @@ public class Char {
     }
 
     /**
+     * Normalisiert den Vektor (x, y) und setzt ihn anschließend.
+     *
+     * @param x X-Richtung
+     * @param y Y-Richtung
+     */
+    private void normalizeAndSetVector(double x, double y) {
+        // Länge berechnen (Pythagoras)
+        double length = Math.sqrt((x * x) + (y * y));
+        // Normalisieren und setzen
+        vX = x / length;
+        vY = y / length;
+    }
+
+    /**
+     *
+     *
+     * /**
      * Wird bei jedem gameTick aufgerufen.
      *
      * @param gameTick
@@ -192,11 +205,12 @@ public class Char {
     public void tick(int gameTick) {
         // Im Verfolgermodus die Richtung anpassen:
         if (followMode) {
-            x += vX * (gameTick - startTick);
-            y += vY * (gameTick - startTick);
+            normalizeAndSetVector(target.getX() - getX(), target.getY() - getY());
+            x = getX();
+            y = getY();
 
-            vX = target.x - x;
-            vY = target.y - y;
+
+
 
             dir = Math.atan2(vY, vX);
 

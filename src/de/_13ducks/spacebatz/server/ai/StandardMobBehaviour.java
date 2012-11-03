@@ -38,6 +38,7 @@ public class StandardMobBehaviour extends Behaviour {
                 Player player = client.getPlayer();
                 if (mob.getProperties().getSightrange() > Distance.getDistance(mob.getX(), mob.getY(), player.getX(), player.getY())) {
                     mob.setMyTarget(player);
+                   // mob.setFollowMode(player);
                 }
             }
         } else {

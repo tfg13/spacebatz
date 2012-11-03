@@ -17,23 +17,23 @@ import de._13ducks.spacebatz.util.Distance;
  * @author michael
  */
 public class NeutralMobBehaviour extends Behaviour {
-
+    
     private Enemy owner;
     private boolean aggro = false;
-
+    
     public NeutralMobBehaviour(Enemy owner) {
         super(20);
         this.owner = owner;
-
+        
     }
-
+    
     @Override
     protected void onTick(int gameTick) {
         if (aggro) {
             computeStandardMobBehaviour(owner);
         }
     }
-
+    
     @Override
     public void onCollision(Entity other) {
         if (other instanceof Bullet) {
@@ -54,7 +54,8 @@ public class NeutralMobBehaviour extends Behaviour {
             for (Client client : Server.game.clients.values()) {
                 Player player = client.getPlayer();
                 if (mob.getProperties().getSightrange() > Distance.getDistance(mob.getX(), mob.getY(), player.getX(), player.getY())) {
-                    mob.setMyTarget(player);
+                    //mob.setMyTarget(player);
+                    mob.setFollowMode(player);
                 }
             }
         } else {
@@ -79,11 +80,11 @@ public class NeutralMobBehaviour extends Behaviour {
                     }
                     mob.setVector(vecX, vecY);
                 }
-
-
-
+                
+                
+                
             }
         }
-
+        
     }
 }

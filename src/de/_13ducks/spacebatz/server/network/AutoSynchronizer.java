@@ -160,20 +160,21 @@ public class AutoSynchronizer {
      */
     private byte[] craftUpdateCommand(ArrayList<Entity> updateList) {
         // Größe in erstes byte schreiben. Egal wenn zu viel für dieses byte - denn dann ist das Paket sowieso Fragmentiert und die Größe wird ignoriert...
-        byte[] data = new byte[updateList.size() * 28 + 1];
+        byte[] data = new byte[updateList.size() * 32 + 1];
         data[0] = (byte) updateList.size();
         for (int i = 0; i < updateList.size(); i++) {
             Entity e = updateList.get(i);
             // netID:
-            Bits.putInt(data, i * 28 + 1, e.netID);
+            Bits.putInt(data, i * 32 + 1, e.netID);
             // movement
             Movement m = e.getMovement();
-            Bits.putInt(data, i * 28 + 5, m.startTick);
-            Bits.putFloat(data, i * 28 + 9, m.speed);
-            Bits.putFloat(data, i * 28 + 13, m.startX);
-            Bits.putFloat(data, i * 28 + 17, m.startY);
-            Bits.putFloat(data, i * 28 + 21, m.vecX);
-            Bits.putFloat(data, i * 28 + 25, m.vecY);
+            Bits.putInt(data, i * 32 + 5, m.startTick);
+            Bits.putFloat(data, i * 32 + 9, m.speed);
+            Bits.putFloat(data, i * 32 + 13, m.startX);
+            Bits.putFloat(data, i * 32 + 17, m.startY);
+            Bits.putFloat(data, i * 32 + 21, m.vecX);
+            Bits.putFloat(data, i * 32 + 25, m.vecY);
+            Bits.putInt(data, i * 32 + 29, m.targetId);
         }
         return data;
     }

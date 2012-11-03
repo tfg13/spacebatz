@@ -34,23 +34,18 @@ public class Movement {
      */
     public float speed;
     /**
-     * Gibt an ob dies eine normale Bewegung ist oder eine Verfolgungsbewegung.
-     */
-    public boolean followMode;
-    /**
      * Die netID der Entity die im erfolgermodus verfolgt wird.
-     * Nur gültig wenn followMode gesetzt ist.
+     * -1 wenn der Verfolgermodus inaktiv ist.
      */
     public int targetId;
 
-    public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed, boolean followMode, int targetId) {
+    public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed, int targetId) {
         this.startX = (float) startX;
         this.startY = (float) startY;
         this.vecX = (float) vecX;
         this.vecY = (float) vecY;
         this.startTick = startTick;
         this.speed = (float) speed;
-        this.followMode = followMode;
         this.targetId = targetId;
     }
 
