@@ -15,7 +15,7 @@ public class FireBulletAbility extends WeaponAbility {
 
     private static final long serialVersionUID = 1L;
 
-    public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius) {
+    public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
         setDamage(damage);
         setAttackspeed(attackspeed);
         setRange(range);
@@ -23,8 +23,8 @@ public class FireBulletAbility extends WeaponAbility {
         setBulletspeed(bulletspeed);
         setSpread(spread);
         setExplosionRadius(explosionradius);
-        setMaxoverheat(5);
-        setReduceoverheat(0.002);
+        setMaxoverheat(maxoverheat);
+        setReduceoverheat(reduceoverheat);
     }
 
     @Override

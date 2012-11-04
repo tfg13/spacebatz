@@ -66,7 +66,7 @@ public class ItemTypes {
         pistol.setItemClass(1);
         pistol.setQuality(1);
         pistol.setAmount(0);
-        pistol.setWeaponAbility(new FireBulletAbility(7, 15.0, 10.0, 1, 0.35, 0.05, 0.0));
+        pistol.setWeaponAbility(new FireBulletAbility(7, 15.0, 10.0, 1, 0.35, 0.05, 0.0, 0, 0));
         itemtypelist.add(pistol);
 
         ItemAttribute laser = new ItemAttribute("Laser");
@@ -74,7 +74,7 @@ public class ItemTypes {
         laser.setItemClass(1);
         laser.setQuality(1);
         laser.setAmount(0);
-        laser.setWeaponAbility(new FireBulletAbility(4, 6.0, 9.0, 3, 0.35, 0.1, 0.0));
+        laser.setWeaponAbility(new FireBulletAbility(4, 6.0, 9.0, 3, 0.35, 0.1, 0.0, 20, 0.01));
         itemtypelist.add(laser);
 
         ItemAttribute superlaser = new ItemAttribute("Super Laser");
@@ -82,7 +82,7 @@ public class ItemTypes {
         superlaser.setItemClass(1);
         superlaser.setQuality(1);
         superlaser.setAmount(0);
-        superlaser.setWeaponAbility(new FireBulletAbility(25, 25.0, 12.0, 2, 0.5, 0.02, 0.0));
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 25.0, 12.0, 2, 0.5, 0.02, 0.0, 3, 0.003));
         itemtypelist.add(superlaser);
 
         ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
@@ -90,7 +90,7 @@ public class ItemTypes {
         rocketlauncher.setItemClass(1);
         rocketlauncher.setQuality(1);
         rocketlauncher.setAmount(0);
-        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 6.0));
+        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 40.0, 15.0, 4, 0.25, 0.0, 6.0, 3, 0.003));
         itemtypelist.add(rocketlauncher);
 
         ItemAttribute drill = new ItemAttribute("Drill");
@@ -98,7 +98,7 @@ public class ItemTypes {
         drill.setItemClass(1);
         drill.setQuality(1);
         drill.setAmount(0);
-        drill.setWeaponAbility(new HitscanAbility(50, 60.0, 4.0));
+        drill.setWeaponAbility(new HitscanAbility(50, 60.0, 4.0, 5, 0.007));
         itemtypelist.add(drill);
 
         ItemAttribute saw = new ItemAttribute("Saw");
@@ -106,7 +106,7 @@ public class ItemTypes {
         saw.setItemClass(1);
         saw.setQuality(1);
         saw.setAmount(0);
-        saw.setWeaponAbility(new HitscanAbility(15, 12.0, 4.0));
+        saw.setWeaponAbility(new HitscanAbility(15, 12.0, 4.0, 10, 0.01));
         itemtypelist.add(saw);
 
 

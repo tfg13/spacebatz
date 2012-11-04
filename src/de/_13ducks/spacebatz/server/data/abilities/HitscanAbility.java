@@ -24,10 +24,12 @@ public class HitscanAbility extends WeaponAbility {
     private ArrayList<Effect> effects = new ArrayList<>();
     private double damage;
 
-    public HitscanAbility(double damage, double attackspeed, double range) {
+    public HitscanAbility(double damage, double attackspeed, double range, double maxoverheat, double reduceoverheat) {
         setRange(range);
         setAttackspeed(attackspeed);
         this.damage = damage;
+        setMaxoverheat(maxoverheat);
+        setReduceoverheat(reduceoverheat);
     }
 
     /**
@@ -39,39 +41,36 @@ public class HitscanAbility extends WeaponAbility {
     public void useInAngle(Char user, double angle) {
 
         double range = getRange();
-        double attackspeed = getAttackspeed();
-        if (user.attackCooldownTick <= Server.game.getTick()) {
-            user.attackCooldownTick = Server.game.getTick() + (int) attackspeed;
 
-            // Schaden an Gegnern
-            ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
+        // Schaden an Gegnern
+        ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
 
-            TrueDamageEffect damageeff = new TrueDamageEffect((int) (damage * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus())));
-            effects.clear();
-            effects.add(damageeff);
+        TrueDamageEffect damageeff = new TrueDamageEffect((int) (damage * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus())));
+        effects.clear();
+        effects.add(damageeff);
 
-            for (Char character : charsHit) {
-                for (Effect effect : effects) {
-                    effect.applyToChar((Char) character);
-                }
-
-                if (character.getProperties().getHitpoints() <= 0) {
-                    Server.game.getEntityManager().removeEntity(character.netID);
-                    if (character instanceof Enemy) {
-                        Enemy e = (Enemy) character;
-                        DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
-                    }
-                }
+        for (Char character : charsHit) {
+            for (Effect effect : effects) {
+                effect.applyToChar((Char) character);
             }
 
-            // Block abbauem
-            Position test = CollisionManager.computeHitscanOnBlocks(user, angle, getRange());
-            if (test != null) {
-                if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
-                    Server.game.getLevel().destroyBlock(test.getX(), test.getY());
+            if (character.getProperties().getHitpoints() <= 0) {
+                Server.game.getEntityManager().removeEntity(character.netID);
+                if (character instanceof Enemy) {
+                    Enemy e = (Enemy) character;
+                    DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
                 }
             }
         }
+
+        // Block abbauem
+        Position test = CollisionManager.computeHitscanOnBlocks(user, angle, getRange());
+        if (test != null) {
+            if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
+                Server.game.getLevel().destroyBlock(test.getX(), test.getY());
+            }
+        }
+
     }
 
     @Override

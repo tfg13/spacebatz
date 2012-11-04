@@ -244,4 +244,23 @@ public class ItemCarrier extends Char {
 
         STC_INV_ITEM_MOVE.sendInvItemMove(inventoryslot1, inventoryslot2, ((Player) this).getClient().clientID);
     }
+
+    /**
+     * Reduziert Überhitzung für die drei ausgerüsteten Waffen
+     */
+    @Override
+    public void tick(int gametick) {
+        super.tick(gametick);
+        
+        for (int i = 0; i <= 2; i++) {
+            Item weapon = equipslots[1][i];
+            if (weapon != null) {
+                double newoverheat = weapon.getOverheat() - weapon.getWeaponAbility().getReduceoverheat();
+                if (newoverheat < 0) {
+                    newoverheat = 0;
+                }
+                weapon.setOverheat(newoverheat);
+            }
+        }
+    }
 }

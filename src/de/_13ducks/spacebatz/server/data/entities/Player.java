@@ -33,7 +33,7 @@ public class Player extends ItemCarrier {
      * Der, Client, dem der Player gehört
      */
     private Client client;
-    private WeaponAbility standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0);
+    private WeaponAbility standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
     /**
      * Die Fähigkeiten mit Zuordnung.
      */
@@ -184,23 +184,5 @@ public class Player extends ItemCarrier {
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
         skillTree.sendSkillTreeUpdates(client);
-    }
-
-    /**
-     * Berechnet alle Effekte und entfernt abgelaufene Effekte.
-     */
-    @Override
-    public void tick(int gametick) {
-        super.tick(gametick);
-        for (int i = 0; i <= 2; i++) {
-            Item weapon = getEquipslots()[1][i];
-            if (weapon != null) {
-                double newoverheat = weapon.getOverheat() - weapon.getWeaponAbility().getReduceoverheat();
-                if (newoverheat < 0) {
-                    newoverheat = 0;
-                }
-                weapon.setOverheat(newoverheat);
-            }
-        }
     }
 }
