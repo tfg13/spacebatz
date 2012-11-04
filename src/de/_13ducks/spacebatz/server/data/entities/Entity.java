@@ -56,15 +56,6 @@ public class Entity {
      */
     protected double vecY;
     /**
-     * Die netId der Entity die im Verfolgermodus verfolgt wird.
-     * -1 wenn keine Entity verfolgt wird.
-     */
-    private int targetId;
-    /**
-     * Die Entity die verfplgt wird. null wenn keine berfolgt wird.
-     */
-    private Entity target;
-    /**
      * Die aktuelle Bewegung nocheinmal repräsentiert. Nur aktuell wenn moveDirty == false.
      */
     private Movement movement;
@@ -95,8 +86,7 @@ public class Entity {
         entityMapPos = new int[2];
         this.netID = netID;
         size = Settings.CHARSIZE;
-        targetId = -1;
-    }
+            }
 
     /**
      * Liefert true, wenn die Einheit sich gerade bewegt.
@@ -107,26 +97,7 @@ public class Entity {
         return getMoveStartTick() != -1;
     }
 
-    /**
-     * Startet den Verfolgermodus.
-     *
-     * @param target
-     */
-    public void setFollowMode(Entity target) {
-        this.target = target;
-        targetId = target.netID;
-        movementDirty = true;
-        Server.sync.updateMovement(this);
-    }
-
-    /**
-     * Beendet den Verfolgermodus.
-     */
-    public void stopFollowMode() {
-        target = null;
-        targetId = -1;
-        stopMovement();
-    }
+   
 
     /**
      * Setzt die Position dieser Einheit auf den angegebenen Wert. Wenn entweder x oder y (nicht beide!) NaN sind, wird
@@ -224,11 +195,8 @@ public class Entity {
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
         movementDirty = true;
-        // Wenn wir nicht im Verfolgermodus sind updaten:
-        if (target == null) {
-            Server.sync.updateMovement(this);
-        }
-    }
+                   Server.sync.updateMovement(this);
+            }
 
     /**
      * Liefert die Geschwindigkeit dieser Einheit zurück.
@@ -284,9 +252,9 @@ public class Entity {
 
     private void computeMovement() {
         if (isMoving()) {
-            movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed(), targetId);
+            movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed());
         } else {
-            movement = new Movement(posX, posY, 0, 0, -1, 0, targetId);
+            movement = new Movement(posX, posY, 0, 0, -1, 0);
         }
     }
 
@@ -384,17 +352,6 @@ public class Entity {
      * Berechnet einen gameTick für die Entity.
      */
     public void tick(int gameTick) {
-        // Im Verfolgermodus die Richtung anpassen:
-        if (target != null) {
-            double tx = target.getX() - getX();
-            double ty = target.getY() - getY();
-            if (tx == 0 && ty == 0) {
-                this.stopMovement();
-            } else {
-                setVector(tx, ty);
-            }
-
-        }
     }
 
     /**
