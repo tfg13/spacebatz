@@ -99,6 +99,15 @@ public abstract class NetPacket {
         internalCompute(true);
     }
 
+    /**
+     * Liefert Anzahl Bytes an Rohdaten in diesem Paket.
+     *
+     * @return Anzahl Bytes
+     */
+    public int getDataLength() {
+        return rawData.length;
+    }
+
     private void internalCompute(boolean pre) {
         int nextCmdIndex = getInitialCmdIndex();
         while (nextCmdIndex < rawData.length) {

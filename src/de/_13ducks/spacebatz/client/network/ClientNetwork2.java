@@ -128,6 +128,11 @@ public class ClientNetwork2 {
      * Der Zeitpunkt, zu dem der letzte Ping-Request an den Server geschickt wurde.
      */
     private long lastPingOut;
+    /**
+     * Die letzte gemessene Netzwerkauslastung.
+     * Ein ganzzahliger Prozentwert
+     */
+    private int lastLoad;
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -440,6 +445,7 @@ public class ClientNetwork2 {
                 // Zweite Bedingung ist Lerp. Verzögern, bis wir lerp Ticks Vorsprung haben
                 if (inputQueue.peek().getIndex() == next && packetServerTick <= serverTick - lerp) {
                     STCPacket packet = inputQueue.poll();
+                    lastLoad = (int) (100.0 * packet.getDataLength() / 512);
                     packet.compute();
                     lastInIndex = packet.getIndex();
                     if (lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
@@ -541,6 +547,17 @@ public class ClientNetwork2 {
      */
     public int getConnectionHealthPercent() {
         return 100 - outBuffer.getBufferRatio();
+    }
+
+    /**
+     * Liefert die Auslastung des Netzwerksystems, in Prozent.
+     * Ist dieser Wert mehrere Ticks lang sehr hoch, so kommt es zu lags.
+     * Nicht definiert, wenn connectionAlive() == false
+     *
+     * @return Auslastung in Prozent.
+     */
+    public int getConnectionLoadPercent() {
+        return lastLoad;
     }
 
     /**
