@@ -48,22 +48,11 @@ public class Enemy extends Char {
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
 
-//        if (enemytypeID == 1) {
-//            behaviour = new StandardMobBehaviour(this);
-//        } else {
-//            behaviour = new NeutralMobBehaviour(this);
-//        }
         behaviour = new StandardMobBehaviour(this);
-        //behaviour = new FollowModeTestBehaviour(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
-
         getProperties().setHitpoints(estats.getHealthpoints());
-        //getProperties().setDamage(estats.getDamage());
         getProperties().setSightrange(estats.getSightrange());
-        //getProperties().setPictureId(estats.getPicture());
-
-
         speed = estats.getSpeed();
         this.enemylevel = estats.getEnemylevel();
 

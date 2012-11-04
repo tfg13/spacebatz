@@ -224,6 +224,7 @@ public class Entity {
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
         movementDirty = true;
+        // Wenn wir nicht im Verfolgermodus sind updaten:
         if (target == null) {
             Server.sync.updateMovement(this);
         }
