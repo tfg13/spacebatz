@@ -43,6 +43,15 @@ public class WeaponStats implements Serializable {
     private double explosionRadius;
     // PictureID setzen:
     private int pictureId;
+    
+    /**
+     * Nach wievielen Schüssen die Waffe überhitzt ist
+     */
+    private double maxoverheat;
+    /**
+     * Wieviel Overheat pro Gametick abgebaut wird
+     */
+    private double reduceoverheat;
 
     /**
      * Addiert Attribute zu diesen hinzu.
@@ -59,6 +68,8 @@ public class WeaponStats implements Serializable {
         spread += other.getSpread();
         explosionRadius += other.getExplosionRadius();
         pictureId += other.getPictureId();
+        maxoverheat += other.maxoverheat;
+        reduceoverheat += reduceoverheat;
     }
 
     /**
@@ -185,5 +196,33 @@ public class WeaponStats implements Serializable {
      */
     public void setDamagemultiplicator(double damagemultiplicator) {
         this.damageMultiplicatorBonus = damagemultiplicator;
+    }
+
+    /**
+     * @return the maxoverheat
+     */
+    public double getMaxoverheat() {
+        return maxoverheat;
+    }
+
+    /**
+     * @param maxoverheat the maxoverheat to set
+     */
+    public void setMaxoverheat(double maxoverheat) {
+        this.maxoverheat = maxoverheat;
+    }
+
+    /**
+     * @return the reduceoverheat
+     */
+    public double getReduceoverheat() {
+        return reduceoverheat;
+    }
+
+    /**
+     * @param reduceoverheat the reduceoverheat to set
+     */
+    public void setReduceoverheat(double reduceoverheat) {
+        this.reduceoverheat = reduceoverheat;
     }
 }

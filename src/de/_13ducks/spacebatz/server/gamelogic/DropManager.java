@@ -97,7 +97,7 @@ public class DropManager {
      */
     private static Item addAttributes(Item item, int droplevel) {
         ArrayList<ItemAttribute> attributesofrightclass = new ArrayList<>();
-        ArrayList<ItemAttribute> qualityallowedattributes = new ArrayList<>();
+        ArrayList<ItemAttribute> allowedattributes = new ArrayList<>();
 
         attributesofrightclass.addAll(itemattribute.getAttributelist());
 
@@ -106,7 +106,7 @@ public class DropManager {
             // nur Attribute mögich, die keinen höheren Level haben als es der vom Enemy ders gedroppt hat
             double test = attributesofrightclass.get(i).getQuality();
             if (test <= droplevel) {
-                qualityallowedattributes.add(attributesofrightclass.get(i));
+                allowedattributes.add(attributesofrightclass.get(i));
             }
         }
 
@@ -130,7 +130,7 @@ public class DropManager {
         }
 
         for (int i = 0; i < maxatt; i++) {
-            ItemAttribute randomatt = qualityallowedattributes.get(random.nextInt(qualityallowedattributes.size()));
+            ItemAttribute randomatt = allowedattributes.get(random.nextInt(allowedattributes.size()));
             if (!item.getItemAttributes().contains(randomatt)) {
                 if (item.getWeaponAbility() == null && randomatt.isWeaponAttribute()) {
                     // Überspringen, wenn einem Hut ein Waffenattribut gegeben werden soll.

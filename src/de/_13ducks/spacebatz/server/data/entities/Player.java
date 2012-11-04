@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
@@ -109,19 +110,31 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Lässt den Player seine "Shoot"-Fähigkeit auf ein Ziel einsetzen
+     * Lässt den Player seine "Shoot"-Fähigkeit auf ein Ziel einsetzen, falls Cooldown und Overheat das zulässt
      *
      * @param angle der Winkel in dem die Fähigkeit benutzt wird
      *
      */
     public void playerShoot(double angle) {
-        if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
-            standardAttack.useInAngle(this, angle);
-        } else {
-            getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
-            //useAbilityInAngle(0, angle);
+        if (attackCooldownTick <= Server.game.getTick()) {
+            
+            // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
+            int aspeed = (int) standardAttack.getAttackspeed();
+            if (getActiveWeapon() != null) {
+                aspeed = (int) getActiveWeapon().getWeaponAbility().getAttackspeed();
+            }
+            attackCooldownTick = (Server.game.getTick() + aspeed);
+            
+            if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+                standardAttack.useInAngle(this, angle);
+            } else {
+                if (getActiveWeapon().getOverheat() < getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                    double newoverheat = getActiveWeapon().getOverheat() + 1;
+                    getActiveWeapon().setOverheat(newoverheat);
+                    getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+                }
+            }
         }
-
     }
 
     /**
