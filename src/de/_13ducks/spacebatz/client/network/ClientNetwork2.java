@@ -254,7 +254,7 @@ public class ClientNetwork2 {
             public void run() {
                 try {
                     while (true) {
-                        DatagramPacket pack = new DatagramPacket(new byte[512], 512);
+                        DatagramPacket pack = new DatagramPacket(new byte[1460], 1460);
                         // blockt
                         socket.receive(pack);
                         byte[] data = Utilities.extractData(pack);
@@ -360,7 +360,7 @@ public class ClientNetwork2 {
      * @return das DatenPaket
      */
     DatagramPacket craftPacket() {
-        byte[] buf = new byte[512];
+        byte[] buf = new byte[1460];
         buf[0] = GameClient.getClientID();
         short idx = getAndIncrementNextIndex();
         Bits.putShort(buf, 1, idx);
@@ -445,7 +445,7 @@ public class ClientNetwork2 {
                 // Zweite Bedingung ist Lerp. Verzögern, bis wir lerp Ticks Vorsprung haben
                 if (inputQueue.peek().getIndex() == next && packetServerTick <= serverTick - lerp) {
                     STCPacket packet = inputQueue.poll();
-                    lastLoad = (int) (100.0 * packet.getDataLength() / 512);
+                    lastLoad = (int) (100.0 * packet.getDataLength() / 1460);
                     packet.compute();
                     lastInIndex = packet.getIndex();
                     if (lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {

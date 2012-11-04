@@ -236,7 +236,7 @@ public class ServerNetworkConnection {
          * Wenn man mehr als ein neues Paket schickt, muss man ein internes Kommando dazu tun, das dem Client das mitteilt, damit der
          * Lerp entsprechend angepasst werden kann. Das ist noch in keinster Weise eingebaut und muss alles auf einmal gemacht werden.
          */
-        byte[] buf = new byte[512];
+        byte[] buf = new byte[1460];
         short idx = getAndIncrementNextIndex();
         Bits.putShort(buf, 0, idx);
         buf[2] = 0; // MAC
