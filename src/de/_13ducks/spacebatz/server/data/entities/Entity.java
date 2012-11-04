@@ -120,6 +120,15 @@ public class Entity {
     }
 
     /**
+     * Beendet den Verfolgermodus.
+     */
+    public void stopFollowMode() {
+        target = null;
+        targetId = -1;
+        stopMovement();
+    }
+
+    /**
      * Setzt die Position dieser Einheit auf den angegebenen Wert. Wenn entweder x oder y (nicht beide!) NaN sind, wird
      * die Bewegung nur in eine Richtung angehalten. Darf nicht aufgerufen werden, wenn sich die Einheit gar nicht
      * bewegt.
