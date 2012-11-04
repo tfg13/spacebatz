@@ -24,7 +24,7 @@ public class FireBulletAbility extends WeaponAbility {
         setSpread(spread);
         setExplosionRadius(explosionradius);
         setMaxoverheat(5);
-        setReduceoverheat(0.01);
+        setReduceoverheat(0.002);
     }
 
     @Override

@@ -17,6 +17,7 @@ import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
+import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
@@ -117,14 +118,14 @@ public class Player extends ItemCarrier {
      */
     public void playerShoot(double angle) {
         if (attackCooldownTick <= Server.game.getTick()) {
-            
+
             // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
             int aspeed = (int) standardAttack.getAttackspeed();
             if (getActiveWeapon() != null) {
                 aspeed = (int) getActiveWeapon().getWeaponAbility().getAttackspeed();
             }
             attackCooldownTick = (Server.game.getTick() + aspeed);
-            
+
             if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
                 standardAttack.useInAngle(this, angle);
             } else {
@@ -183,5 +184,23 @@ public class Player extends ItemCarrier {
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
         skillTree.sendSkillTreeUpdates(client);
+    }
+
+    /**
+     * Berechnet alle Effekte und entfernt abgelaufene Effekte.
+     */
+    @Override
+    public void tick(int gametick) {
+        super.tick(gametick);
+        for (int i = 0; i <= 2; i++) {
+            Item weapon = getEquipslots()[1][i];
+            if (weapon != null) {
+                double newoverheat = weapon.getOverheat() - weapon.getWeaponAbility().getReduceoverheat();
+                if (newoverheat < 0) {
+                    newoverheat = 0;
+                }
+                weapon.setOverheat(newoverheat);
+            }
+        }
     }
 }

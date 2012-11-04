@@ -44,8 +44,7 @@ public class Item implements Serializable {
     /**
      * Die Fähigkeit, falls das Item eine Waffe ist
      */
-    private transient WeaponAbility weaponAbility;
-    
+    private transient WeaponAbility weaponAbility;    
     /**
      * aktueller Überhitzungs-Zustand
      */
