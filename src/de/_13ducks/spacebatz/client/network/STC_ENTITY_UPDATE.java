@@ -24,15 +24,15 @@ public class STC_ENTITY_UPDATE extends STCCommand {
 
     @Override
     public void execute(byte[] data) {
-        int numberOfUpdates = (data.length - 1) / 32;
+        int numberOfUpdates = (data.length - 1) / 28;
         for (int i = 0; i < numberOfUpdates; i++) {
-            int netID = Bits.getInt(data, i * 32 + 1);
+            int netID = Bits.getInt(data, i * 28 + 1);
             Char c = GameClient.netIDMap.get(netID);
             if (c == null) {
                 System.out.println("WARNING: CNET: MOVESYNC: Skipping unknown Char " + netID);
                 continue;
             }
-            Movement m = new Movement(Bits.getFloat(data, i * 32 + 13), Bits.getFloat(data, i * 32 + 17), Bits.getFloat(data, i * 32 + 21), Bits.getFloat(data, i * 32 + 25), Bits.getInt(data, i * 32 + 5), Bits.getFloat(data, i * 32 + 9), Bits.getInt(data, i * 32 + 29));
+            Movement m = new Movement(Bits.getFloat(data, i * 28 + 13), Bits.getFloat(data, i * 28 + 17), Bits.getFloat(data, i * 28 + 21), Bits.getFloat(data, i * 28 + 25), Bits.getInt(data, i * 28 + 5), Bits.getFloat(data, i * 28 + 9));
             c.applyMove(m);
         }
     }
@@ -48,6 +48,6 @@ public class STC_ENTITY_UPDATE extends STCCommand {
         if (number < 0) {
             number += 256;
         }
-        return number * 32 + 1;
+        return number * 28 + 1;
     }
 }

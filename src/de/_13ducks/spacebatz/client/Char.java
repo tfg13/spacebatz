@@ -57,14 +57,6 @@ public class Char {
      * Der Tick, zu dem die Bewegung begonnen hat.
      */
     private int startTick;
-    /**
-     * Gibt an, ob der Chat im Verfolgermodus ist.
-     */
-    private boolean followMode;
-    /**
-     * Die Entity die im Verfolgermodus verfolgt wird.
-     */
-    private Char target;
 
     public Char(int netID, RenderObject renderObject) {
         this.netID = netID;
@@ -127,13 +119,7 @@ public class Char {
         if (startTick != -1) {
             this.dir = Math.atan2(vY, vX);
         }
-        if (m.targetId != -1) {
-            followMode = true;
-            target = GameClient.netIDMap.get(m.targetId);
-        } else {
-            followMode = false;
-            target = null;
-        }
+
     }
 
     @Override
@@ -200,10 +186,5 @@ public class Char {
      * @param gameTick
      */
     public void tick(int gameTick) {
-        // Im Verfolgermodus die Richtung anpassen:
-        if (followMode) {
-            normalizeAndSetVector(target.getX() - getX(), target.getY() - getY());
-            startTick = gameTick;
-        }
     }
 }

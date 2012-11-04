@@ -3,55 +3,70 @@ package de._13ducks.spacebatz.server.ai;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
-import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.Distance;
-import java.util.Iterator;
 
 /**
- * Das Standardverhalten von Mobs: Sie rennen Luftlinie auf den Spieler zu.
  *
  * @author michael
  */
 public class StandardMobBehaviour extends Behaviour {
 
-    /**
-     * Der Besitzer dieses Behaviours.
-     */
     private Enemy owner;
-    /**
-     * Das Ziel, das verfolgt wird.
-     */
-    private Entity target;
-    /**
-     * Ob das Ziel gerae verfolgt wird oder wir zu nahe dran sind.
-     */
-    private boolean following;
 
-    /**
-     * Initialisiert das Behaviour.
-     *
-     * @param owner
-     */
     public StandardMobBehaviour(Enemy owner) {
-        super(5);
+        super(20);
         this.owner = owner;
-        Iterator<Client> iter = Server.game.clients.values().iterator();
-        while (iter.hasNext()) {
-            target = iter.next().getPlayer();
-        }
-        owner.setFollowMode(target);
     }
 
     @Override
     protected void onTick(int gameTick) {
-        if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < 2.0) {
-            // Wenn wir zu nahe dran sind anhalten:
-            owner.stopFollowMode();
-            following = false;
-        } else if (!following && Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) > 3.0) {
-            // wenn wir gerade angehalten sind, aber das target zu weit weg ist, wieder loslaufen:
-            owner.setFollowMode(target);
-            following = true;
+        computeStandardMobBehaviour(owner);
+    }
+
+    /**
+     * Berechnet das Standard-MobverhaltenX
+     *
+     * @param mob der Enemy für den das Standardverhalten berechnet werde nsoll
+     */
+    private void computeStandardMobBehaviour(Enemy mob) {
+
+        // Hat der Mob ein Ziel?
+        if (mob.getMyTarget() == null) {
+            // wenn er kein Ziel hat sucht er ob eines in dwer Nähe ist:
+            for (Client client : Server.game.clients.values()) {
+                Player player = client.getPlayer();
+                if (mob.getProperties().getSightrange() > Distance.getDistance(mob.getX(), mob.getY(), player.getX(), player.getY())) {
+                    mob.setMyTarget(player);
+                }
+            }
+        } else {
+            // wenn er eins hat schaut er ob es noch in reichweite ist:
+            if (mob.getProperties().getSightrange() * 2 < Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
+                mob.setMyTarget(null);
+                mob.stopMovement();
+            } else {
+                // Wenn wir schon nahe genug dran sind anhalten:
+                if (1.0 > Distance.getDistance(mob.getX(), mob.getY(), mob.getMyTarget().getX(), mob.getMyTarget().getY())) {
+                    mob.stopMovement();
+                } else {
+                    // wenn wir noch zu weit entfernt sind hinbewegen:
+                    double vecX = mob.getMyTarget().getX() - mob.getX();
+                    double vecY = mob.getMyTarget().getY() - mob.getY();
+                    // Sicher gehen, dass die Vektoren nicht 0 sind:
+                    if (vecX == 0.0) {
+                        vecX = 0.1;
+                    }
+                    if (vecY == 0.0) {
+                        vecY = 0.1;
+                    }
+                    mob.setVector(vecX, vecY);
+                }
+
+
+
+            }
         }
+
     }
 }

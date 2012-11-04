@@ -33,20 +33,14 @@ public class Movement {
      * Die Geschwindigkeit der Bewegung.
      */
     public float speed;
-    /**
-     * Die netID der Entity die im erfolgermodus verfolgt wird.
-     * -1 wenn der Verfolgermodus inaktiv ist.
-     */
-    public int targetId;
 
-    public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed, int targetId) {
+    public Movement(double startX, double startY, double vecX, double vecY, int startTick, double speed) {
         this.startX = (float) startX;
         this.startY = (float) startY;
         this.vecX = (float) vecX;
         this.vecY = (float) vecY;
         this.startTick = startTick;
         this.speed = (float) speed;
-        this.targetId = targetId;
     }
 
     @Override
