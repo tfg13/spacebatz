@@ -135,7 +135,7 @@ public class ServerNetwork2 {
             public void run() {
                 try {
                     while (true) {
-                        DatagramPacket inputPacket = new DatagramPacket(new byte[512], 512);
+                        DatagramPacket inputPacket = new DatagramPacket(new byte[1460], 1460);
                         // Blocken, bis Paket empfangen
                         socket.receive(inputPacket);
                         byte[] data = Utilities.extractData(inputPacket);
