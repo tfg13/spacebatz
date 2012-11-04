@@ -12,10 +12,7 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.Behaviour;
-import de._13ducks.spacebatz.server.ai.FollowModeTestBehaviour;
-import de._13ducks.spacebatz.server.ai.NeutralMobBehaviour;
 import de._13ducks.spacebatz.server.ai.StandardMobBehaviour;
-
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 
