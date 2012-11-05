@@ -216,8 +216,14 @@ public class ServerNetwork2 {
 
         for (Client c : Server.game.clients.values()) {
             if (c.getNetworkConnection().getPort() != 0) {
-                DatagramPacket dPack = c.getNetworkConnection().craftPacket();
-                schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
+                for (int i = 0; i < Settings.SERVER_MAXPACKPERCLIENT; i++) {
+                    DatagramPacket dPack = c.getNetworkConnection().craftPacket(i != 0);
+                    schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
+                    // Wiederholen, falls noch viel da:
+                    if (!c.getNetworkConnection().qualifiesForMultiPacket()) {
+                        break;
+                    }
+                }
             }
         }
 
