@@ -117,19 +117,20 @@ public class Player extends ItemCarrier {
      *
      */
     public void playerShoot(double angle) {
-        if (attackCooldownTick <= Server.game.getTick()) {
+        if (Server.game.getTick() >= attackCooldownTick) {
 
             // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
             int aspeed = (int) standardAttack.getAttackspeed();
             if (getActiveWeapon() != null) {
                 aspeed = (int) getActiveWeapon().getWeaponAbility().getAttackspeed();
             }
-            attackCooldownTick = (Server.game.getTick() + aspeed);
 
             if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+                attackCooldownTick = (Server.game.getTick() + aspeed);
                 standardAttack.useInAngle(this, angle);
             } else {
-                if (getActiveWeapon().getOverheat() < getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                    attackCooldownTick = (Server.game.getTick() + aspeed);
                     double newoverheat = getActiveWeapon().getOverheat() + 1;
                     getActiveWeapon().setOverheat(newoverheat);
                     getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
