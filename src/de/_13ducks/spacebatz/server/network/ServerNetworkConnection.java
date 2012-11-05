@@ -229,7 +229,7 @@ public class ServerNetworkConnection {
      *
      * @return das DatenPaket
      */
-    DatagramPacket craftPacket() {
+    DatagramPacket craftPacket(boolean multi) {
         /*
          * ACHTUNG: NICHT EINFACH SO ANPASSEN, DASS BEI BEDARF MEHRERE PAKETE GESENDET WERDEN!!!
          * Der Clientseitige Lerp-Mechanismus hängt massiv davon ab, dass der Server genau 1 Paket pro Tick versenden.
@@ -241,6 +241,10 @@ public class ServerNetworkConnection {
         Bits.putShort(buf, 0, idx);
         buf[2] = 0; // MAC
         int pos = 3;
+        // Das Multi-Paket hat ultrahohe Priorität, muss immer als aller erstes kommen:
+        if (multi) {
+            buf[pos++] = (byte) 0x88;
+        }
         // Nachrichten mit hoher Priorität
         while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 511 - pos) {
             // Befehl passt noch rein
@@ -269,5 +273,21 @@ public class ServerNetworkConnection {
      */
     public MessageFragmenter getFragmenter() {
         return fragmenter;
+    }
+
+    /**
+     * Liefert true, wenn noch viele Befehle raus müssen, es also sinnvoll erscheint ein weiteres ("multi")-Paket zu schicken.
+     * Wird unmittelbar nach dem leeren der queues durch craftPaket aufgerufen
+     * @return true, wenn multi sinnvoll
+     */
+    boolean qualifiesForMultiPacket() {
+        if (!priorityCmdOutQueue.isEmpty()) {
+            // Es wurden nicht einmal alle PRIO-Pakete verschickt, es ist also sinnvoll.
+            return true;
+        }
+        if (cmdOutQueue.size() > 2) {
+            return true;
+        }
+        return false;
     }
 }
