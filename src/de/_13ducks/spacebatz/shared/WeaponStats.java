@@ -68,6 +68,8 @@ public class WeaponStats implements Serializable {
         spread += other.getSpread();
         explosionRadius += other.getExplosionRadius();
         pictureId += other.getPictureId();
+        maxoverheat += other.getMaxoverheat();
+        reduceoverheat += other.getReduceoverheat();
     }
 
     /**
