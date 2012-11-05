@@ -23,8 +23,6 @@ public class ItemAttributeTypes {
 
     public ItemAttributeTypes() {
         attributelist = new ArrayList<>();
-        // name, quality, damage, attackspeed, range, armor, movespeed
-
 
         ItemAttribute moreDamage = new ItemAttribute("50% More Damage For This Weapon");
         moreDamage.setQuality(1);
@@ -37,37 +35,41 @@ public class ItemAttributeTypes {
         evenMoreDamage.bonusStats.setDamageMultiplicatorBonus(0.5);
         attributelist.add(evenMoreDamage);
 
-        ItemAttribute moreAttackSpeed = new ItemAttribute("0.2 More Attackspeed");
+        ItemAttribute moreAttackSpeed = new ItemAttribute("3 More Attackspeed");
         moreAttackSpeed.setQuality(1);
-        moreAttackSpeed.bonusStats.setAttackSpeedMultiplicatorBonus(0.2);
+        moreAttackSpeed.weaponStats.setAttackspeed(-3.0);
+        moreAttackSpeed.setIsWeaponAttribute(true);
         attributelist.add(moreAttackSpeed);
 
-        ItemAttribute evenMoreAttackSpeed = new ItemAttribute("100 More Attackspeed");
+        ItemAttribute evenMoreAttackSpeed = new ItemAttribute("5 More Attackspeed");
         evenMoreAttackSpeed.setQuality(2);
-        evenMoreAttackSpeed.bonusStats.setAttackSpeedMultiplicatorBonus(100.0);
+        evenMoreAttackSpeed.weaponStats.setAttackspeed(-5.0);
+        evenMoreAttackSpeed.setIsWeaponAttribute(true);
         attributelist.add(evenMoreAttackSpeed);
 
-        ItemAttribute moreRange = new ItemAttribute("0.2 More Range");
-        moreRange.setQuality(2);
-        moreRange.bonusStats.setRangeMultiplicatorBonus(0.2);
+        ItemAttribute moreRange = new ItemAttribute("3 More Range");
+        moreRange.setQuality(1);
+        moreRange.weaponStats.setRange(3);
+        moreRange.setIsWeaponAttribute(true);
         attributelist.add(moreRange);
 
         ItemAttribute moreEverything = new ItemAttribute("More Everything");
         moreEverything.setQuality(3);
-        moreEverything.bonusStats.setDamageMultiplicatorBonus(0.1);
-        moreEverything.bonusStats.setAttackSpeedMultiplicatorBonus(0.1);
-        moreEverything.bonusStats.setRangeMultiplicatorBonus(0.1);
+        moreEverything.bonusStats.setDamageMultiplicatorBonus(0.2);
+        moreAttackSpeed.weaponStats.setAttackspeed(-2.0);
+        moreEverything.weaponStats.setRange(1);
+        moreEverything.setIsWeaponAttribute(true);
         attributelist.add(moreEverything);
 
-        ItemAttribute moreArmor = new ItemAttribute("0.1 More Armor");
-        moreArmor.setQuality(1);
-        moreArmor.bonusStats.setArmorMultiplicatorBonus(0.1);
-        attributelist.add(moreArmor);
-
-        ItemAttribute evenMoreArmor = new ItemAttribute("0.3 Even More Armor");
-        evenMoreArmor.setQuality(2);
-        evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(0.3);
-        attributelist.add(evenMoreArmor);
+//        ItemAttribute moreArmor = new ItemAttribute("0.1 More Armor");
+//        moreArmor.setQuality(1);
+//        moreArmor.bonusStats.setArmorMultiplicatorBonus(0.1);
+//        attributelist.add(moreArmor);
+//
+//        ItemAttribute evenMoreArmor = new ItemAttribute("0.3 Even More Armor");
+//        evenMoreArmor.setQuality(2);
+//        evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(0.3);
+//        attributelist.add(evenMoreArmor);
 
 
 //        ItemAttribute moreHP = new ItemAttribute("More Healthpoints");
@@ -83,6 +85,18 @@ public class ItemAttributeTypes {
         ItemAttribute unusual = new ItemAttribute("Unusual");
         unusual.setQuality(2);
         attributelist.add(unusual);
+        
+        ItemAttribute moreMaxOverheat = new ItemAttribute("More MaxOverheat");
+        moreMaxOverheat.setQuality(1);
+        moreMaxOverheat.weaponStats.setMaxoverheat(10);
+        moreMaxOverheat.setIsWeaponAttribute(true);
+        attributelist.add(moreMaxOverheat);
+        
+        ItemAttribute moreReduceOverheat = new ItemAttribute("Faster Weapon Cooldown");
+        moreReduceOverheat.setQuality(1);
+        moreReduceOverheat.weaponStats.setReduceoverheat(0.01);
+        moreReduceOverheat.setIsWeaponAttribute(true);
+        attributelist.add(moreReduceOverheat);
     }
 
     /**
