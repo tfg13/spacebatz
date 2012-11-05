@@ -124,9 +124,10 @@ public class SkillTreeControl implements Control {
             dragTile = -1;
             draggedSkill = null;
         }
-        // Skilltree wieder verbergen wenn T gedrückt wird:
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKey() == Keyboard.KEY_T && Keyboard.getEventKeyState()) {
+
+        // Tastatureingaben verarbeiten:
+        while (Keyboard.next()) {// Skilltree wieder verbergen wenn T oder ESCAPE gedrückt wird:
+            if ((Keyboard.getEventKey() == Keyboard.KEY_T || Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) && Keyboard.getEventKeyState()) {
                 GameClient.getEngine().getGraphics().toggleSkillTree();
             }
         }
