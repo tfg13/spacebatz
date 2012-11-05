@@ -357,6 +357,9 @@ public class Inventory implements Control {
                     case Keyboard.KEY_I:
                         GameClient.getEngine().getGraphics().toggleInventory();
                         break;
+                    case Keyboard.KEY_ESCAPE:
+                        GameClient.getEngine().getGraphics().toggleInventory();
+                        break;
                     case Keyboard.KEY_1:
                         GameClient.getPlayer().setSelectedattack(0);
                         break;

@@ -130,6 +130,11 @@ public class GraphicsEngine {
 
         // Frames limitieren:
         Display.sync(CLIENT_GFX_FRAMELIMIT);
+
+        // Beenden, wenn auf das X geklickt wurde.
+        if (Display.isCloseRequested()) {
+            System.exit(0);
+        }
     }
 
     /**
