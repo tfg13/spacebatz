@@ -139,6 +139,7 @@ public class ClientNetwork2 {
      */
     public ClientNetwork2() {
         cmdMap[0x80] = new STC_ACK();
+        cmdMap[0x88] = new STC_MULTI();
         cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
         cmdMap[MessageIDs.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
         cmdMap[MessageIDs.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
@@ -450,6 +451,9 @@ public class ClientNetwork2 {
                     lastInIndex = packet.getIndex();
                     if (lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
                         lastInIndex = -1;
+                    }
+                    if (packet.isMulti()) {
+                        packZeroServerTick--;
                     }
                 } else {
                     break;

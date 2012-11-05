@@ -72,6 +72,12 @@ public final class Settings {
      */
     public static final int SERVER_MAXPLAYERS = 32;
     /**
+     * Wieviele Pakete à 1500 Bytes maximal pro Tick zu einem Client verschickt werden können.
+     * Das ist eine Beschränkung des Peak-Werts für einzelne Ticks, es wird nicht erwartet, das Netzwerk
+     * über längere Zeit so viele Pakete pro Tick verträgt.
+     */
+    public static final int SERVER_MAXPACKPERCLIENT = 5;
+    /**
      * Größe des Inventar jedes Spielers
      */
     public static final int INVENTORY_SIZE = 96;
