@@ -258,11 +258,7 @@ public class ItemCarrier extends Char {
             if (weapon != null) {
                 // Waffe, die gerade schiesst, soll nicht abkühlen
                 if (i != selectedweapon || Server.game.getTick() >= attackCooldownTick) {
-                    double newoverheat = weapon.getOverheat() - weapon.getWeaponAbility().getReduceoverheat();
-                    if (newoverheat < 0) {
-                        newoverheat = 0;
-                    }
-                    weapon.setOverheat(newoverheat);
+                    weapon.increaseOverheat(-weapon.getWeaponAbility().getReduceoverheat());
                 }
             }
         }

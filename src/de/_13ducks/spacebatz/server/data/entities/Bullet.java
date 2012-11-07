@@ -124,13 +124,14 @@ public class Bullet extends Entity {
     
     @Override
     public int byteArraySize() {
-        return super.byteArraySize() + 4;
+        return super.byteArraySize() + 8;
     }
     
     @Override
     public void netPack(byte[] pack, int offset) {
         super.netPack(pack, offset);
         Bits.putInt(pack, super.byteArraySize() + offset, bulletpic);
+        Bits.putInt(pack, super.byteArraySize() + offset + 4, owner.netID);
     }
 
    @Override

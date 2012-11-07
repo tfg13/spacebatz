@@ -23,9 +23,17 @@ public class Bullet extends Char {
      * Bild
      */
     public final int bulletpic;
+    public final int ownerid;
 
-    public Bullet(int netID, int bulletpic) {
+    public Bullet(int netID, int bulletpic, int ownerid) {
         super(netID, new RenderObject(new Animation(bulletpic, 1, 1, 1, 1)));
         this.bulletpic = bulletpic;
+        this.ownerid = ownerid;
+        
+        // Overheat der Waffe erhöhen:
+        if (ownerid == GameClient.player.netID) {
+            int weaponnumber = GameClient.player.getSelectedattack();
+            GameClient.getEquippedItems().getEquipslots()[1][weaponnumber].increaseOverheat(1);
+        }
     }
 }
