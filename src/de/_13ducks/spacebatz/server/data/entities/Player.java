@@ -17,7 +17,6 @@ import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
-import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
@@ -33,7 +32,7 @@ public class Player extends ItemCarrier {
      * Der, Client, dem der Player gehört
      */
     private Client client;
-    private WeaponAbility standardAttack = new FireBulletAbility(3, 10.0, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
+    private WeaponAbility standardAttack = new FireBulletAbility(3, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
     /**
      * Die Fähigkeiten mit Zuordnung.
      */
@@ -117,19 +116,20 @@ public class Player extends ItemCarrier {
      *
      */
     public void playerShoot(double angle) {
-        if (attackCooldownTick <= Server.game.getTick()) {
+        if (Server.game.getTick() >= attackCooldownTick) {
 
             // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
-            int aspeed = (int) standardAttack.getAttackspeed();
+            double aspeed =  standardAttack.getAttackspeed();
             if (getActiveWeapon() != null) {
-                aspeed = (int) getActiveWeapon().getWeaponAbility().getAttackspeed();
+                aspeed =  getActiveWeapon().getWeaponAbility().getAttackspeed();
             }
-            attackCooldownTick = (Server.game.getTick() + aspeed);
 
             if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+                attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
                 standardAttack.useInAngle(this, angle);
             } else {
-                if (getActiveWeapon().getOverheat() < getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
                     double newoverheat = getActiveWeapon().getOverheat() + 1;
                     getActiveWeapon().setOverheat(newoverheat);
                     getActiveWeapon().getWeaponAbility().useInAngle(this, angle);

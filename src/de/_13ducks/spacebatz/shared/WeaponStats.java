@@ -43,7 +43,6 @@ public class WeaponStats implements Serializable {
     private double explosionRadius;
     // PictureID setzen:
     private int pictureId;
-    
     /**
      * Nach wievielen Schüssen die Waffe überhitzt ist
      */
@@ -68,7 +67,10 @@ public class WeaponStats implements Serializable {
         spread += other.getSpread();
         explosionRadius += other.getExplosionRadius();
         pictureId += other.getPictureId();
-        maxoverheat += other.getMaxoverheat();
+        // Maxoverheat = 0 bedeutet dass Waffe keinen Overheat hat. Wenn man addiert gehts kaputt
+        if (maxoverheat > 0) {
+            maxoverheat += other.getMaxoverheat();
+        }
         reduceoverheat += other.getReduceoverheat();
     }
 

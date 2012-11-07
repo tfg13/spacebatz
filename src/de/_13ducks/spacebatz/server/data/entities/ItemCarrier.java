@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
@@ -251,15 +252,18 @@ public class ItemCarrier extends Char {
     @Override
     public void tick(int gametick) {
         super.tick(gametick);
-        
+
         for (int i = 0; i <= 2; i++) {
             Item weapon = equipslots[1][i];
             if (weapon != null) {
-                double newoverheat = weapon.getOverheat() - weapon.getWeaponAbility().getReduceoverheat();
-                if (newoverheat < 0) {
-                    newoverheat = 0;
+                // Waffe, die gerade schiesst, soll nicht abkühlen
+                if (i != selectedweapon || Server.game.getTick() >= attackCooldownTick) {
+                    double newoverheat = weapon.getOverheat() - weapon.getWeaponAbility().getReduceoverheat();
+                    if (newoverheat < 0) {
+                        newoverheat = 0;
+                    }
+                    weapon.setOverheat(newoverheat);
                 }
-                weapon.setOverheat(newoverheat);
             }
         }
     }
