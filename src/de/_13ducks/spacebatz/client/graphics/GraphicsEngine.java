@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics;
 
 import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
+import de._13ducks.spacebatz.client.graphics.controls.HudControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
 import java.lang.reflect.Field;
@@ -39,6 +40,10 @@ public class GraphicsEngine {
      * Das God-Control, das auch Effekte und FX zeichent.
      */
     private GodControl godControl;
+    /**
+     * Das Hud-Control, zeichnet HP-Balken etc.
+     */
+    private HudControl hudControl;
     /**
      * Der Skilltree.
      */
@@ -92,6 +97,7 @@ public class GraphicsEngine {
 
             // Controls erzeugen:
             godControl = new GodControl(renderer);
+            hudControl = new HudControl(renderer);
             skilltree = new SkillTreeControl(renderer);
             inventory = new Inventory(renderer);
 
@@ -116,6 +122,7 @@ public class GraphicsEngine {
      */
     public void tick() {
         godControl.render(renderer);
+        hudControl.render(renderer);
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
         if (activeMenu == null) {

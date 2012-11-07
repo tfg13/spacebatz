@@ -271,23 +271,6 @@ public class GodControl implements Control {
             }
         }
 
-        // Lebensenergie-Balken im HUD zeichnen
-        int maxhp = Math.max(1, GameClient.getPlayer().getHealthpointsmax());
-        int hp = Math.min(GameClient.getPlayer().getHealthpoints(), maxhp);
-        hp = Math.max(hp, 0);
-
-        glDisable(GL_TEXTURE_2D);
-        // schwarzer Hintergrund
-        glColor3f(0.0f, 0.0f, 0.0f);
-        glRectf(0.02f * camera.getTilesX(), 0.02f * camera.getTilesY(), 0.3f * camera.getTilesX(), 0.06f * camera.getTilesY());
-        // roter HP-Balken, Länge anhängig von HP
-        glColor3f(0.7f, 0.0f, 0.0f);
-        glRectf(0.03f * camera.getTilesX(), 0.03f * camera.getTilesY(), (0.03f + 0.26f * ((float) hp / maxhp)) * camera.getTilesX(), 0.05f * camera.getTilesY());
-        glEnable(GL_TEXTURE_2D);
-        glColor3f(1f, 1f, 1f);
-
-
-
         // Net-Graph?
         if (NetStats.netGraph > 0) {
             ClientNetwork2 net = GameClient.getNetwork2();
