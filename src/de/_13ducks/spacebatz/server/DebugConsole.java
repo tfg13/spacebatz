@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
+import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
@@ -17,6 +19,7 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.data.entities.StandardEnemy;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.util.Position;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +114,7 @@ public class DebugConsole {
             });
             System.setOut(new PrintStream(new OutputStream() {
                 StringBuffer buf = new StringBuffer();
-                
+
                 @Override
                 public void write(int b) throws IOException {
                     if (b != '\n' && b != '\r') {
@@ -122,7 +125,7 @@ public class DebugConsole {
                         // Filtern
                         boolean warn = line.toLowerCase().startsWith("warn");
                         boolean err = line.toLowerCase().startsWith("err");
-                        
+
                         if (loglevel == LOGLEVEL_ALL || (loglevel == LOGLEVEL_WARNING && (warn || err)) || (loglevel == LOGLEVEL_ERROR && err)) {
                             outStream.println(line);
                         }
@@ -158,7 +161,7 @@ public class DebugConsole {
                     try {
                         while (true) {
                             commands.add(input.readLine().split("\\s+"));
-                            
+
                         }
                     } catch (Exception ex) {
                         rmRcon(c);
@@ -299,6 +302,19 @@ public class DebugConsole {
                             Enemy e1 = new StandardEnemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1);
                             Server.game.getEntityManager().addEntity(e1.netID, e1);
                         }
+                        break;
+                    case "shootwall":
+                        int targetX = Integer.parseInt(words[1]);
+                        int targetY = Integer.parseInt(words[2]);
+                        Player player = Server.game.clients.values().iterator().next().getPlayer();
+                        Server.game.pathfinder.requestPath(new Position((int) player.getX(), (int) player.getY() + 2), new Position(targetX, targetY), new PathRequester() {
+                            @Override
+                            public void pathComputed(Position[] path) {
+                                for (int i = 0; i < path.length; i++) {
+                                    Server.game.getLevel().createDestroyableBlock(path[i].getX(), path[i].getY(), 10);
+                                }
+                            }
+                        });
                         break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");

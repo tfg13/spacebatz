@@ -38,12 +38,11 @@ public class MainLoop {
     public MainLoop() {
         mainLoopTimer = new Timer("Server_looptimer", false);
         mainLoop = new TimerTask() {
-
             @Override
             public void run() {
                 try {
                     if (checkClientsLeft()) {
-			mainLoopTimer.cancel();
+                        mainLoopTimer.cancel();
                         return;
                     }
 
@@ -51,13 +50,15 @@ public class MainLoop {
                     Server.debugConsole.executeCommands();
 
                     // Input vom Client holen:
-		    Server.serverNetwork2.inTick();
+                    Server.serverNetwork2.inTick();
                     // Wartende Clients akzeptieren:
                     Server.serverNetwork2.initNewClients();
                     // Gamelogic berechnen:
                     Server.game.gameTick();
+                    // Wege berechnen:
+                    Server.game.pathfinder.computePaths();
                     // Änderungen an die Clients schicken.
-		    Server.serverNetwork2.outTick();
+                    Server.serverNetwork2.outTick();
                     Server.game.incrementTick();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -89,6 +90,6 @@ public class MainLoop {
      * Startet die GameLogic
      */
     public void startGameLogic() {
-	mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, Settings.SERVER_TICKRATE);
+        mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, Settings.SERVER_TICKRATE);
     }
 }

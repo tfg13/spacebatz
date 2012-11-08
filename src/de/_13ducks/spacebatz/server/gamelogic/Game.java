@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.server.data.entities.Entity;
@@ -67,6 +68,10 @@ public class Game {
      * Die nächste netID.
      */
     private int nextNetID = 1;
+    /**
+     * Der wegfinder.
+     */
+    public AStarPathfinder pathfinder;
 
     /**
      * Konstruktor
@@ -76,6 +81,7 @@ public class Game {
         clients = new HashMap<>();
         level = MapGen.genMap(new MapParameters());
         enemytypes = new EnemyTypes();
+        pathfinder = new AStarPathfinder();
 
         // Enemytypes serialisieren, damit es später schnell an Clients gesendet werden kann:
         try {
