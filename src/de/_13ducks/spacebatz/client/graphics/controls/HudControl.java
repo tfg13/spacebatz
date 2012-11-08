@@ -73,20 +73,29 @@ public class HudControl implements Control {
                 } else if (overheatpermax < 0) {
                     overheatpermax = 0.0f;
                 }
-                
-                float height = 0.68f - 0.1f * j;
-                
+
+                float height = 0.69f - 0.1f * j;
+
                 glDisable(GL_TEXTURE_2D);
                 // weißer Hintergrund
                 glColor3f(1.0f, 1.0f, 1.0f);
-                glRectf(0.02f * camera.getTilesX(), height * camera.getTilesY(), 0.3f * camera.getTilesX(), (height + 0.015f) * camera.getTilesY());
+                glRectf(0.01f * camera.getTilesX(), height * camera.getTilesY(), 0.06f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
                 // roter HP-Balken, Länge anhängig von HP
                 glColor3f(0.7f, 0.0f, 0.0f);
-                glRectf(0.03f * camera.getTilesX(), (height + 0.005f) * camera.getTilesY(), (0.03f + 0.26f * overheatpermax) * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                glRectf(0.012f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.012f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
                 glEnable(GL_TEXTURE_2D);
                 glColor3f(1f, 1f, 1f);
             }
         }
+
+        // Markierung an angelegte Waffe:
+        glDisable(GL_TEXTURE_2D);
+        // weißer Hintergrund
+        glColor3f(0.7f, 0.0f, 0.0f);
+        float height = 0.7f - 0.1f * GameClient.player.getSelectedattack();
+        glRectf(0.0f * camera.getTilesX(), height * camera.getTilesY(), 0.005f * camera.getTilesX(), (height + 0.05f) * camera.getTilesY());
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1f, 1f, 1f);
     }
 
     @Override
