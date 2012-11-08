@@ -35,15 +35,15 @@ public class ItemAttributeTypes {
         evenMoreDamage.bonusStats.setDamageMultiplicatorBonus(0.5);
         attributelist.add(evenMoreDamage);
 
-        ItemAttribute moreAttackSpeed = new ItemAttribute("3 More Attackspeed");
+        ItemAttribute moreAttackSpeed = new ItemAttribute("0.03 More Attackspeed");
         moreAttackSpeed.setQuality(1);
-        moreAttackSpeed.weaponStats.setAttackspeed(-3.0);
+        moreAttackSpeed.weaponStats.setAttackspeed(0.03);
         moreAttackSpeed.setIsWeaponAttribute(true);
         attributelist.add(moreAttackSpeed);
 
-        ItemAttribute evenMoreAttackSpeed = new ItemAttribute("5 More Attackspeed");
+        ItemAttribute evenMoreAttackSpeed = new ItemAttribute("0.05 More Attackspeed");
         evenMoreAttackSpeed.setQuality(2);
-        evenMoreAttackSpeed.weaponStats.setAttackspeed(-5.0);
+        evenMoreAttackSpeed.weaponStats.setAttackspeed(0.05);
         evenMoreAttackSpeed.setIsWeaponAttribute(true);
         attributelist.add(evenMoreAttackSpeed);
 
@@ -56,7 +56,7 @@ public class ItemAttributeTypes {
         ItemAttribute moreEverything = new ItemAttribute("More Everything");
         moreEverything.setQuality(3);
         moreEverything.bonusStats.setDamageMultiplicatorBonus(0.2);
-        moreAttackSpeed.weaponStats.setAttackspeed(-2.0);
+        moreAttackSpeed.weaponStats.setAttackspeed(0.02);
         moreEverything.weaponStats.setRange(1);
         moreEverything.setIsWeaponAttribute(true);
         attributelist.add(moreEverything);

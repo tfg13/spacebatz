@@ -11,7 +11,6 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.shared.PropertyList;
 import java.util.ArrayList;
@@ -28,6 +27,9 @@ public abstract class Char extends Entity {
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
      */
     private PropertyList properties;
+    /**
+     * Der Tick, ab dem der Char wieder angreifen darf
+     */
     public int attackCooldownTick;
     /**
      * Liste aller Effekte, die der EffectCarrier gerade hat

@@ -54,7 +54,9 @@ public class PlayerCharacter extends Char {
             Item weapon = GameClient.getEquippedItems().getEquipslots()[1][i];
            
             if (weapon != null) {
-                weapon.increaseOverheat(-weapon.getWeaponAbility().getReduceoverheat());
+                if (i != selectedattack || GameClient.frozenGametick >= attackCooldownTick) {
+                    weapon.increaseOverheat(-weapon.getWeaponAbility().getReduceoverheat());
+                }
             }
         }
 

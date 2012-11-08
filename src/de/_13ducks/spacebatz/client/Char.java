@@ -57,6 +57,10 @@ public class Char {
      * Der Tick, zu dem die Bewegung begonnen hat.
      */
     private int startTick;
+    /**
+     * Der Tick, ab dem der Char wieder angreifen darf
+     */
+    public int attackCooldownTick;
 
     public Char(int netID, RenderObject renderObject) {
         this.netID = netID;
