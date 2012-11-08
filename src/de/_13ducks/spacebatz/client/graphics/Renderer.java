@@ -250,11 +250,9 @@ public class Renderer {
         // Bildschirm auf 0.0-1.0 / 0.0-1.0 abbilden:
         glLoadIdentity();
         glOrtho(0, 1, 0, 1, -1, 1);
-
-        glBegin(GL_QUADS); // Viereck zeichnen
         glDisable(GL_TEXTURE_2D); // keine Textur sondern Geometrie zeichnen
+        glBegin(GL_QUADS); // Viereck zeichnen
         glColor3ub(color.getRedByte(), color.getGreenByte(), color.getBlueByte());
-
         glVertex2d(x, y);
         glVertex2d(x + width, y);
         glVertex2d(x + width, y + width);

@@ -43,6 +43,9 @@ public class EntityManager {
     public void removeDisposableEntities() {
         while (!entitiesToRemove.empty()) {
             int netId = entitiesToRemove.pop();
+            if (!netIDMap.containsKey(netId)) {
+                throw new IllegalArgumentException("Nichtexistente Entity soll gelöscht werden!");
+            }
             Server.entityMap.removeEntity(netIDMap.get(netId));
             Server.sync.entityRemoved(netIDMap.remove(netId));
         }
@@ -64,8 +67,6 @@ public class EntityManager {
     public void removeEntity(int netID) {
         if (!entitiesToRemove.contains(netID)) {
             entitiesToRemove.add(netID);
-        } else {
-            throw new IllegalArgumentException("Entity soll doppelt gelöscht werden!");
         }
     }
 
