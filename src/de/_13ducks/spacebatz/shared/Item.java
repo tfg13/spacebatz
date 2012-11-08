@@ -44,7 +44,7 @@ public class Item implements Serializable {
     /**
      * Die Fähigkeit, falls das Item eine Waffe ist
      */
-    private transient WeaponAbility weaponAbility;    
+    private WeaponAbility weaponAbility;
     /**
      * aktueller Überhitzungs-Zustand
      */
@@ -172,9 +172,12 @@ public class Item implements Serializable {
     }
 
     /**
-     * @param overheat the overheat to set
+     * @param overheat the overheat to increase
      */
-    public void setOverheat(double overheat) {
-        this.overheat = overheat;
+    public void increaseOverheat(double overheat) {
+        this.overheat += overheat;
+        if (this.overheat < 0) {
+            this.overheat = 0.0;
+        }
     }
 }

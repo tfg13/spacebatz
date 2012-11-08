@@ -44,9 +44,9 @@ public class HudControl implements Control {
 
         // angelegte Waffen in Hud zeichnen
         for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
-            
+
             Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
-            
+
             if (item != null) {
                 float x = 0.01f;
                 float y = 0.7f - 0.1f * j;
@@ -58,6 +58,33 @@ public class HudControl implements Control {
                 renderer.setScreenMapping(0, 1, 0, 1);
                 renderer.drawTile(item.getPic(), x, y, width, height);
                 renderer.restoreScreenMapping();
+            }
+        }
+
+        // Waffen-Overheat in Hud zeichnen
+        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+
+            Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
+            if (item != null) {
+
+                float overheatpermax = (float) (item.getOverheat() / item.getWeaponAbility().getMaxoverheat());
+                if (overheatpermax > 1) {
+                    overheatpermax = 1.0f;
+                } else if (overheatpermax < 0) {
+                    overheatpermax = 0.0f;
+                }
+                
+                float height = 0.68f - 0.1f * j;
+                
+                glDisable(GL_TEXTURE_2D);
+                // weißer Hintergrund
+                glColor3f(1.0f, 1.0f, 1.0f);
+                glRectf(0.02f * camera.getTilesX(), height * camera.getTilesY(), 0.3f * camera.getTilesX(), (height + 0.015f) * camera.getTilesY());
+                // roter HP-Balken, Länge anhängig von HP
+                glColor3f(0.7f, 0.0f, 0.0f);
+                glRectf(0.03f * camera.getTilesX(), (height + 0.005f) * camera.getTilesY(), (0.03f + 0.26f * overheatpermax) * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                glEnable(GL_TEXTURE_2D);
+                glColor3f(1f, 1f, 1f);
             }
         }
     }

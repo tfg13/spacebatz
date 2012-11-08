@@ -130,8 +130,7 @@ public class Player extends ItemCarrier {
             } else {
                 if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
                     attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                    double newoverheat = getActiveWeapon().getOverheat() + 1;
-                    getActiveWeapon().setOverheat(newoverheat);
+                    getActiveWeapon().increaseOverheat(1);
                     getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
                 }
             }

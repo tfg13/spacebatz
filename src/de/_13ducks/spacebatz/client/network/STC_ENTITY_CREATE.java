@@ -31,7 +31,7 @@ public class STC_ENTITY_CREATE extends STCCommand {
                 GameClient.netIDMap.put(en.netID, en);
                 break;
             case 4:
-                Bullet bu = new Bullet(netID, Bits.getInt(data, 6));
+                Bullet bu = new Bullet(netID, Bits.getInt(data, 6), Bits.getInt(data, 10));
                 GameClient.netIDMap.put(bu.netID, bu);
                 break;
             default:

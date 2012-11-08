@@ -13,10 +13,11 @@ package de._13ducks.spacebatz.client;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
+import de._13ducks.spacebatz.shared.Item;
 
 /**
  * Der eigene Spieler
- * 
+ *
  * @author JK
  */
 public class PlayerCharacter extends Char {
@@ -25,7 +26,7 @@ public class PlayerCharacter extends Char {
      * Die gerade ausgewählte Waffe
      */
     private int selectedattack;
-    
+
     public PlayerCharacter(int netID) {
         super(netID, new RenderObject(new Animation(0, 2, 2, 1, 1)));
         selectedattack = 0;
@@ -45,5 +46,17 @@ public class PlayerCharacter extends Char {
      */
     public void setSelectedattack(int selectedattack) {
         this.selectedattack = selectedattack;
+    }
+
+    @Override
+    public void tick(int gameTick) {
+        for (int i = 0; i <= 2; i++) {
+            Item weapon = GameClient.getEquippedItems().getEquipslots()[1][i];
+           
+            if (weapon != null) {
+                weapon.increaseOverheat(-weapon.getWeaponAbility().getReduceoverheat());
+            }
+        }
+
     }
 }
