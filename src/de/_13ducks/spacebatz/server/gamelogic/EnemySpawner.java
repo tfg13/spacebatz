@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.server.data.entities.StandardEnemy;
 import java.util.*;
 
 /**
@@ -249,9 +250,8 @@ public class EnemySpawner {
                     enemytype = 1 + random.nextInt(3);
                 }
 
-                Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                Enemy enem = new StandardEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
-                enem.setMyTarget(player);
             }
         }
     }

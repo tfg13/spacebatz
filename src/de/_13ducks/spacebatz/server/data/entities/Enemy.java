@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2011, 2012:
  *  Tobias Fleig (tobifleig[AT]googlemail[DOT]com)
  *  Michael Haas (mekhar[AT]gmx[DOT]de)
@@ -11,10 +11,10 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.ai.Behaviour;
-import de._13ducks.spacebatz.server.ai.StandardMobBehaviour;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
+import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.Position;
 
 /**
  * Ein Gegner.
@@ -24,15 +24,30 @@ import de._13ducks.spacebatz.util.Bits;
 public class Enemy extends Char {
 
     /**
-     * ID des Gegnertyps
+     * ID des Gegnertyps.
      */
     private int enemytypeID = 0;
     /**
-     * Der Char, den dieser Enemy gerade verfolgt
+     * Das Level dieses Gegners. Beeinflusst die möglichen Drops.
      */
-    private Char myTarget;
     private int enemylevel;
-    private Behaviour behaviour;
+    /**
+     * Der Pfad dem der Gegner gerade folgt.
+     * Enthält Start- und Zielfeld.
+     */
+    private Position[] path;
+    /**
+     * Der Index der Position in Pfad, von der der Gegner gerade kommt.
+     */
+    private int currentPathPosition;
+    /**
+     * Gibt an ob der Gegner gerade einem Pfad folgt.
+     */
+    private boolean followingPath;
+    /**
+     * Die Distanz zum nächsten Wegpunkt im Pfad.
+     */
+    private double distanceToNextWaypoint;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -44,48 +59,12 @@ public class Enemy extends Char {
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
         super(x, y, netid, (byte) 3);
-
-        behaviour = new StandardMobBehaviour(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         getProperties().setHitpoints(estats.getHealthpoints());
         getProperties().setSightrange(estats.getSightrange());
         speed = estats.getSpeed();
         this.enemylevel = estats.getEnemylevel();
-
-    }
-
-    /**
-     * Gibt den Char, den dieser Enemy gerade verfolgt, zurück.
-     *
-     * @return der Char der gerade verfolgt wird
-     */
-    public Char getMyTarget() {
-        return myTarget;
-    }
-
-    /**
-     * Setzt den Char, den dieser Enemy gerade verfolgt.
-     *
-     * @param der Char den dieser Enemy verfolgen soll
-     */
-    public void setMyTarget(Char myTarget) {
-        this.myTarget = myTarget;
-    }
-
-    /**
-     * @return the enemytypeid
-     */
-    public int getEnemytypeid() {
-        return enemytypeID;
-    }
-
-    /**
-     * Der Enemy will jemanden angreifen
-     *
-     * @param e das was angegriffen wird
-     */
-    public void attack(Char c) {
     }
 
     @Override
@@ -109,11 +88,94 @@ public class Enemy extends Char {
     @Override
     public void tick(int gameTick) {
         super.tick(gameTick);
-        behaviour.tick(gameTick);
+        if (isFollowingPath()) {
+            // Zurückgelegte Distanz vom letzten Wegpunkt berechnen:
+            double distance = Distance.getDistance(getX(), getY(), path[currentPathPosition].getX(), path[currentPathPosition].getY());
+            // Wenn wir schon weiter sind als die Distanz zum nächsten Wegpunkt, dann setzten wir den übernächsten als Ziel:
+            if (distanceToNextWaypoint - distance < 0.01 || distance >= distanceToNextWaypoint) {
+                // auf den Wegpunkt snappen, da wir nicht ganz drauf stehen (das summiert sich sonst bei jedem Wegpunkt):
+                setStopXY(path[currentPathPosition + 1].getX(), path[currentPathPosition + 1].getY());
+                stopMovement();
+                // den Nächsten Wegpunkt ansteuern:
+                currentPathPosition++;
+                // Anhalten, falls wir am Ende des Pfads sind:
+                if (currentPathPosition == path.length - 1) {
+                    followingPath = false;
+                    path = null;
+                    currentPathPosition = 0;
+                } else {
+                    setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
+                    // Distanz zum nächsten Wegpunkt berechnen:
+                    double currentX = path[currentPathPosition].getX();
+                    double currentY = path[currentPathPosition].getY();
+                    double targetX = path[currentPathPosition + 1].getX();
+                    double targetY = path[currentPathPosition + 1].getY();
+                    distanceToNextWaypoint = Distance.getDistance(currentX, currentY, targetX, targetY);
+                }
+            }
+        }
     }
 
+    @Override
     public void onCollision(Entity other) {
         super.onCollision(other);
-        behaviour.onCollision(other);
+    }
+
+    @Override
+    public void onWallCollision() {
+        super.onWallCollision();
+        // Bei Kollision brechen wir das folgen ab:
+        if (followingPath) {
+            stopFollowongPath();
+        }
+    }
+
+    /**
+     * Lässt den Gegner einen Pfad entlang laufen.
+     * Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
+     *
+     * @param path der Pfad dem der Gegner folgen soll.
+     */
+    public void followPath(Position path[]) {
+        if (path.length <= 1) {
+            throw new IllegalArgumentException("Der übergebene Pfad muss mindestens 2 Elemente enthalten!");
+        }
+        // An den Anfang des Pfads springen:
+        setVector(1, 1);
+        setStopXY(path[0].getX(), path[0].getY());
+        currentPathPosition = 0;
+        this.path = path;
+        followingPath = true;
+
+        // Distanz zum nächsten Wegpunkt berechnen:
+        double currentX = getX();
+        double currentY = getY();
+        double targetX = path[currentPathPosition + 1].getX();
+        double targetY = path[currentPathPosition + 1].getY();
+        distanceToNextWaypoint = Distance.getDistance(currentX, currentY, targetX, targetY);
+
+        // Richtung erster wegpunkt gehen:
+        setVector(path[1].getX() - getX(), path[1].getY() - getY());
+    }
+
+    /**
+     * Hält den Gegner an, falls er gerade einem Pfad folgt.
+     */
+    public void stopFollowongPath() {
+        if (followingPath) {
+            stopMovement();
+            followingPath = false;
+            path = null;
+            currentPathPosition = 0;
+        }
+    }
+
+    /**
+     * Gibt an ob dieser Gegner gerade einem Pfad folgt.
+     *
+     * @return the followingPath
+     */
+    public boolean isFollowingPath() {
+        return followingPath;
     }
 }

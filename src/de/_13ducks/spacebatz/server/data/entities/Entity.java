@@ -86,7 +86,7 @@ public class Entity {
         entityMapPos = new int[2];
         this.netID = netID;
         size = Settings.CHARSIZE;
-            }
+    }
 
     /**
      * Liefert true, wenn die Einheit sich gerade bewegt.
@@ -96,8 +96,6 @@ public class Entity {
     public boolean isMoving() {
         return getMoveStartTick() != -1;
     }
-
-   
 
     /**
      * Setzt die Position dieser Einheit auf den angegebenen Wert. Wenn entweder x oder y (nicht beide!) NaN sind, wird
@@ -195,8 +193,8 @@ public class Entity {
         normalizeAndSetVector(x, y);
         moveStartTick = Server.game.getTick();
         movementDirty = true;
-                   Server.sync.updateMovement(this);
-            }
+        Server.sync.updateMovement(this);
+    }
 
     /**
      * Liefert die Geschwindigkeit dieser Einheit zurück.
@@ -360,5 +358,11 @@ public class Entity {
      * @param other die Entity, in die diese sich hineinbewegt hat
      */
     public void onCollision(Entity other) {
+    }
+
+    /**
+     * Wird aufgerufen, wenn die Entity mit einer wand kollidiert.
+     */
+    public void onWallCollision() {
     }
 }
