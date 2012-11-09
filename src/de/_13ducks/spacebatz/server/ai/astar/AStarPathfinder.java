@@ -13,9 +13,17 @@ import java.util.LinkedList;
 public class AStarPathfinder {
 
     /**
+     * Gibt an wieviele Iterationen pro Aufruf berechnet werden.
+     * Bestimmt, wi viel der Pathfinder pro gameTick rechnet,
+     */
+    private static final int MAX_ITERATIONS_PER_CYCLE = 10;
+    /**
      * Warteschlange der Wegberechnungsanforderungen.
      */
     private LinkedList<PathRequest> pathRequests;
+    /**
+     * Der eigentliche AStar-Algorithmus.
+     */
     private AStarImplementation aStar;
 
     public AStarPathfinder() {
@@ -35,16 +43,26 @@ public class AStarPathfinder {
     }
 
     /**
-     * Berechnet alle Wege. Rechenzeitaufwändig.
+     * Berechnet 100 Iterationen der Wegfindungalle.
+     * Wenn ein Weg fertig berechnet wird wird er seinem Requester übergeben.
      */
     public void computePaths() {
-        while (!pathRequests.isEmpty()) {
-            PathRequest request = pathRequests.pop();
-            aStar.loadPathRequest(request.getStart(), request.getGoal(), request.getRequester());
-            while (!aStar.isComputed()) {
+        int iterations = MAX_ITERATIONS_PER_CYCLE;
+        while (iterations > 0) {
+            iterations--;
+            if (aStar.isComputed()) {
+                if (!pathRequests.isEmpty()) {
+                    // nächste Wegberechnung vorbereiten:
+                    PathRequest request = pathRequests.pop();
+                    aStar.loadPathRequest(request.getStart(), request.getGoal(), request.getRequester());
+                } else {
+                    // Keine Wege mehr zum berechnen
+                    return;
+                }
+            } else {
+                // am aktuellen Weg rechnen:
                 aStar.computeIteration();
             }
         }
-
     }
 }
