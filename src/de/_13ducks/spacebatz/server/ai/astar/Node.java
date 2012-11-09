@@ -24,11 +24,6 @@ class Node extends Position {
      * Der Knoten, von dem aus dieser Erreicht wurde.
      */
     private Node predecessor;
-    /**
-     * Referenz auf die Factory, die diese Node erzeugt hat und die Nodes verwaltet.
-     * Wird verwendet, um die Nachbarknoten zu finden.
-     */
-    private NodeFactory factory;
 
     /**
      * Erzeugt eine neue Node.
@@ -36,10 +31,8 @@ class Node extends Position {
      * @param y
      * @param factory 
      */
-    public Node(int x, int y, NodeFactory factory) {
+    public Node(int x, int y) {
         super(x, y);
-        this.factory = factory;
-
     }
 
     /**
@@ -54,27 +47,6 @@ class Node extends Position {
      */
     public void setWayLength(float weight) {
         this.wayLength = weight;
-    }
-
-    /**
-     * Gibt ein Feld mit Nachbarknoten zurück.
-     *
-     * @return
-     */
-    public Node[] getNeighbors() {
-        Node neighbors[] = new Node[8];
-        int i = 0;
-        for (int x = getX() - 1; x <= getX() + 1; x++) {
-            for (int y = getY() - 1; y <= getY() + 1; y++) {
-                if ((x != getX() || y != getY()) && !Server.game.getLevel().getCollisionMap()[x][y]) {
-                    neighbors[i] = factory.getNode(x, y);
-                    i++;
-                }
-            }
-        }
-        Node newNeighbors[] = new Node[i];
-        System.arraycopy(neighbors, 0, newNeighbors, 0, i);
-        return newNeighbors;
     }
 
     @Override

@@ -131,7 +131,7 @@ class AStarImplementation {
      * @param current
      */
     private void expandNode(Node current) {
-        Node neighbors[] = current.getNeighbors();
+        Node neighbors[] = factory.getNeighbors(current);
         for (int i = 0; i < neighbors.length; i++) {
             Node successor = neighbors[i];
             if (closedList.contains(successor)) {
