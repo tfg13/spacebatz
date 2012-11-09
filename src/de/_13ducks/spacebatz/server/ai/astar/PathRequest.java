@@ -9,10 +9,19 @@ import de._13ducks.spacebatz.util.Position;
  */
 class PathRequest {
 
+    /** Die Startposition */
     private Position start;
+    /** Die Zielposition */
     private Position goal;
+    /** Der Anforderer, der den gertigen Pfad dann bekommt */
     private PathRequester requester;
 
+    /**
+     * Erzeugt ein neues Pathrequest.
+     * @param start
+     * @param target
+     * @param requester 
+     */
     PathRequest(Position start, Position target, PathRequester requester) {
         this.start = start;
         this.goal = target;

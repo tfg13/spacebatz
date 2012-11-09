@@ -24,8 +24,18 @@ class Node extends Position {
      * Der Knoten, von dem aus dieser Erreicht wurde.
      */
     private Node predecessor;
+    /**
+     * Referenz auf die Factory, die diese Node erzeugt hat und die Nodes verwaltet.
+     * Wird verwendet, um die Nachbarknoten zu finden.
+     */
     private NodeFactory factory;
 
+    /**
+     * Erzeugt eine neue Node.
+     * @param x
+     * @param y
+     * @param factory 
+     */
     public Node(int x, int y, NodeFactory factory) {
         super(x, y);
         this.factory = factory;

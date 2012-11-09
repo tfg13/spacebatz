@@ -38,7 +38,8 @@ class AStarImplementation {
      */
     private boolean computed;
     /**
-     * Die Nodefactory die gerade verwendet wird.
+     * Die Nodefactory die die Wegknoten erzeugt und verwaltet.
+     * Muss für jede Wegberechnung neu erzeugt werden.
      */
     private NodeFactory factory;
 
@@ -47,6 +48,7 @@ class AStarImplementation {
      */
     public AStarImplementation() {
         openList = new PriorityQueue(11, new Comparator<Node>() {
+
             @Override
             public int compare(Node t, Node t1) {
                 if (t.getFValue() < t1.getFValue()) {
@@ -62,7 +64,7 @@ class AStarImplementation {
     }
 
     /**
-     * Lädt Start und Ziel einer Wegberechnung, so das an dieser gearbeitet werden kann.
+     * Lädt Start und Ziel einer Wegberechnung, so das mit computeIteration() an dieser gearbeitet werden kann.
      *
      * @param start
      * @param goal
@@ -85,6 +87,7 @@ class AStarImplementation {
     /**
      * Berechnet eine Iteration der Wegfindung.
      * In O(1), d.h. Das braucht nur wenig Rechenzeit.
+     * Falls der Weg fertig berechnet wird, wird der Anforderer automatisch benachrichtigt.
      */
     public void computeIteration() {
         if (!openList.isEmpty()) {
@@ -101,7 +104,7 @@ class AStarImplementation {
     }
 
     /**
-     * Baut den Pfad auf, in dem von jeder Node der Vorgänger geholt wird.
+     * Baut den Pfad auf, in dem von jeder Node der Vorgänger geholt wird bis man wieder sam Startknoten ist.
      *
      * @param goal der gefundene ZielKnoten.
      */
@@ -152,7 +155,7 @@ class AStarImplementation {
     }
 
     /**
-     * Berechnet das Geweicht der Kante zwischen den beiden Knoten.
+     * Berechnet das Gewicht der Kante zwischen den beiden Knoten.
      *
      * @param current
      * @param successor
