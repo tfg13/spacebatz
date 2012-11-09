@@ -66,7 +66,7 @@ class Node extends Position {
         int i = 0;
         for (int x = getX() - 1; x <= getX() + 1; x++) {
             for (int y = getY() - 1; y <= getY() + 1; y++) {
-                if (x != getX() || y != getY() && !Server.game.getLevel().getCollisionMap()[x][y]) {
+                if ((x != getX() || y != getY()) && !Server.game.getLevel().getCollisionMap()[x][y]) {
                     neighbors[i] = factory.getNode(x, y);
                     i++;
                 }
