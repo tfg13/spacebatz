@@ -42,24 +42,24 @@ class AStarImplementation {
      * Muss für jede Wegberechnung neu erzeugt werden.
      */
     private NodeFactory factory;
+    private static Comparator<Node> comparator = new Comparator<Node>() {
+
+        @Override
+        public int compare(Node t, Node t1) {
+            if (t.getFValue() < t1.getFValue()) {
+                return -1;
+            } else if (t.getFValue() > t1.getFValue()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    };
 
     /**
      * Initialisiert die AStar-Implemenierung.
      */
     public AStarImplementation() {
-        openList = new PriorityQueue(11, new Comparator<Node>() {
-
-            @Override
-            public int compare(Node t, Node t1) {
-                if (t.getFValue() < t1.getFValue()) {
-                    return -1;
-                } else if (t.getFValue() > t1.getFValue()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
         computed = true;
     }
 
@@ -77,6 +77,7 @@ class AStarImplementation {
         computed = false;
         factory = new NodeFactory();
         closedList = new ArrayList<>();
+        openList = new PriorityQueue<>(50, comparator);
         this.requester = requester;
 
         this.goal = factory.getNode(goal.getX(), goal.getY());
