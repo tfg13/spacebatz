@@ -29,6 +29,11 @@ public class Animation {
      * Dauer der Einzelbilder der Animation in Ticks, egal bei Einzelbildern
      */
     private int picduration;
+    /**
+     * Die Richtung, in die die Animation gerendert wird
+     * Wird nicht automatisch beutzt
+     */
+    private float direction;
 
     /**
      * Konstruktor.
@@ -78,5 +83,19 @@ public class Animation {
      */
     public int getPicduration() {
         return picduration;
+    }
+
+    /**
+     * @return the direction
+     */
+    public float getDirection() {
+        return direction;
+    }
+
+    /**
+     * @param direction the direction to set
+     */
+    public void setDirection(float direction) {
+        this.direction = direction;
     }
 }
