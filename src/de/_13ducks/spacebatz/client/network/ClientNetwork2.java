@@ -22,6 +22,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CH
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
@@ -162,6 +163,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, new STC_UPDATE_SKILLTREE());
         registerSTCCommand(MessageIDs.NET_STC_SET_SKILL_MAPPING, new STC_SET_SKILL_MAPPING());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_MOVE, new STC_INV_ITEM_MOVE());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_ATTACK, new STC_CHAR_ATTACK());
     }
 
     /**

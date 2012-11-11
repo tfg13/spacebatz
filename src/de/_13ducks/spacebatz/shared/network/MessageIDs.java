@@ -218,4 +218,8 @@ public class MessageIDs {
      * Client will 2 Items im Inventar tauschen, S->C
      */
     public static final byte NET_TCP_CMD_INV_ITEM_MOVE = 54;
+    /**
+     * Client will 2 Items im Inventar tauschen, S->C
+     */
+    public static final byte NET_TCP_CMD_CHAR_ATTACK = 56;
 }

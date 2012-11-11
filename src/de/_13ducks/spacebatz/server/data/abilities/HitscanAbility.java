@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 
@@ -39,7 +40,8 @@ public class HitscanAbility extends WeaponAbility {
      */
     @Override
     public void useInAngle(Char user, double angle) {
-
+        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle);
+        
         double range = getRange();
 
         // Schaden an Gegnern

@@ -74,7 +74,7 @@ public class ItemTypes {
         laser.setItemClass(1);
         laser.setQuality(1);
         laser.setAmount(0);
-        laser.setWeaponAbility(new FireBulletAbility(4, 0.167, 9.0, 3, 0.35, 0.1, 0.0, 20, 0.025));
+        laser.setWeaponAbility(new FireBulletAbility(4, 0.167, 9.0, 3, 0.35, 0.1, 0.0, 20, 0.05));
         itemtypelist.add(laser);
 
         ItemAttribute superlaser = new ItemAttribute("Super Laser");
