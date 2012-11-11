@@ -13,12 +13,17 @@ class NodeFactory {
      * Die Karte der schon erzeugten Nodes.
      */
     private Node[][] nodeMap;
+    /**
+     * Die Größe des Feldes das frei sein muss, dass eine Node als frei gilt.
+     */
+    private int size;
 
     /**
      * Initialisiert eine neue NodeFactory.
      */
-    public NodeFactory() {
+    public NodeFactory(int size) {
         nodeMap = new Node[Server.game.getLevel().getSizeX()][Server.game.getLevel().getSizeY()];
+        this.size = size;
     }
 
     /**
@@ -51,9 +56,22 @@ class NodeFactory {
         int i = 0;
         for (int x = posX - 1; x <= posX + 1; x++) {
             for (int y = posY - 1; y <= posY + 1; y++) {
-                if ((x != posX || y != posY) && !Server.game.getLevel().getCollisionMap()[x][y]) {
-                    neighbors[i] = getNode(x, y);
-                    i++;
+                if ((x != posX || y != posY)) {
+                    // Soviele Felder prüfen, wie die Entity dick ist:
+                    boolean blocked = false;
+                    for (int colX = x; colX < x + size; colX++) {
+                        for (int colY = y; colY > y - size; colY--) {
+                            if (Server.game.getLevel().getCollisionMap()[colX][colY]) {
+                                blocked = true;
+                            }
+                        }
+                    }
+                    // Wenn kein Feld blockiert ist:
+                    if (!blocked) {
+                        neighbors[i] = getNode(x, y);
+                        i++;
+
+                    }
                 }
             }
         }
