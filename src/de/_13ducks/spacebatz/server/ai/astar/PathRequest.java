@@ -15,6 +15,8 @@ class PathRequest {
     private Position goal;
     /** Der Anforderer, der den gertigen Pfad dann bekommt */
     private PathRequester requester;
+    /** Die Breite die der Pfad haben soll. */
+    private int requesterSize;
 
     /**
      * Erzeugt ein neues Pathrequest.
@@ -22,10 +24,11 @@ class PathRequest {
      * @param target
      * @param requester 
      */
-    PathRequest(Position start, Position target, PathRequester requester) {
+    PathRequest(Position start, Position target, PathRequester requester, int size) {
         this.start = start;
         this.goal = target;
         this.requester = requester;
+        this.requesterSize = size;
     }
 
     PathRequester getRequester() {
@@ -65,5 +68,12 @@ class PathRequest {
      */
     public void setRequester(PathRequester requester) {
         this.requester = requester;
+    }
+
+    /**
+     * @return the requesterSize
+     */
+    public int getRequesterSize() {
+        return requesterSize;
     }
 }

@@ -84,6 +84,7 @@ public class DebugConsole {
         reader = new BufferedReader(new java.io.InputStreamReader(System.in));
         commands = new ConcurrentLinkedQueue<>();
         Thread debugConsoleThread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 while (true) {
@@ -101,6 +102,7 @@ public class DebugConsole {
         try {
             final PrintStream realout = System.out;
             outStream = new PrintStream(new OutputStream() {
+
                 @Override
                 public void write(int b) throws IOException {
                     // Eventuell an die rcons verteilen
@@ -113,6 +115,7 @@ public class DebugConsole {
                 }
             });
             System.setOut(new PrintStream(new OutputStream() {
+
                 StringBuffer buf = new StringBuffer();
 
                 @Override
@@ -156,6 +159,7 @@ public class DebugConsole {
             rconOutput.add(output);
             rcons.put(c.clientID, br);
             Thread rconReader = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -303,18 +307,20 @@ public class DebugConsole {
                             Server.game.getEntityManager().addEntity(e1.netID, e1);
                         }
                         break;
-                    case "shootwall":
+                    case "wall":
                         int targetX = Integer.parseInt(words[1]);
                         int targetY = Integer.parseInt(words[2]);
+                        int size = Integer.parseInt(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
                         Server.game.pathfinder.requestPath(new Position((int) player.getX(), (int) player.getY() + 2), new Position(targetX, targetY), new PathRequester() {
+
                             @Override
                             public void pathComputed(Position[] path) {
                                 for (int i = 0; i < path.length; i++) {
                                     Server.game.getLevel().createDestroyableBlock(path[i].getX(), path[i].getY(), 10);
                                 }
                             }
-                        });
+                        }, size);
                         break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");

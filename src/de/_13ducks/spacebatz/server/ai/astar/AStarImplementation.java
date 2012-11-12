@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ class AStarImplementation {
      */
     private NodeFactory factory;
     private static Comparator<Node> comparator = new Comparator<Node>() {
-
+        
         @Override
         public int compare(Node t, Node t1) {
             if (t.getFValue() < t1.getFValue()) {
@@ -70,16 +71,16 @@ class AStarImplementation {
      * @param goal
      * @param requester
      */
-    public void loadPathRequest(Position start, Position goal, PathRequester requester) {
+    public void loadPathRequest(Position start, Position goal, PathRequester requester, int size) {
         if (!isComputed()) {
             throw new IllegalStateException("Der alte Weg ist nocht nicht fertoig!");
         }
         computed = false;
-        factory = new NodeFactory();
+        factory = new NodeFactory(size);
         closedList = new ArrayList<>();
         openList = new PriorityQueue<>(50, comparator);
         this.requester = requester;
-
+        
         this.goal = factory.getNode(goal.getX(), goal.getY());
         this.start = factory.getNode(start.getX(), start.getY());
         openList.add(this.start);
@@ -100,7 +101,7 @@ class AStarImplementation {
                 closedList.add(current);
             }
         } else {
-            throw new IllegalStateException("Kein Weg gefunden!");
+            requester.pathComputed(new Position[0]);
         }
     }
 
@@ -119,7 +120,7 @@ class AStarImplementation {
         Node path[] = new Node[nodes.size()];
         int i = 0;
         for (Node n : nodes) {
-            path[i] = n;
+            path[path.length - 1 - i] = n;
             i++;
         }
         requester.pathComputed(path);
@@ -145,13 +146,15 @@ class AStarImplementation {
             }
             successor.setPredecessor(current);
             successor.setWayLength(weight);
-
+            
             float cost = current.getWayLength() + getWeight(successor, goal);
             successor.setFValue(cost);
             if (openList.contains(successor)) {
                 openList.remove(successor);
             }
             openList.add(successor);
+            Server.game.getLevel().createDestroyableBlock(successor.getX(), successor.getY(), 10);
+                    
         }
     }
 
