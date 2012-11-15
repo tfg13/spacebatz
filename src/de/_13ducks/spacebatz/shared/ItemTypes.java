@@ -106,7 +106,7 @@ public class ItemTypes {
         saw.setItemClass(1);
         saw.setQuality(1);
         saw.setAmount(0);
-        saw.setWeaponAbility(new HitscanAbility(15, 0.083, 4.0, 10, 0.02));
+        saw.setWeaponAbility(new HitscanAbility(15, 0.083, 4.0, 10, 0.04));
         itemtypelist.add(saw);
 
 

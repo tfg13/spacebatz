@@ -251,7 +251,7 @@ public class GodControl implements Control {
             if (GameClient.frozenGametick > f.getStarttick() + f.getLifetime()) {
                 itera.remove();
             } else {
-                renderAnim(f.getAnim(), f.getX(), f.getY(), 0.0, f.getStarttick(), renderer);
+                renderAnim(f.getAnim(), f.getX(), f.getY(), f.getAnim().getDirection(), f.getStarttick(), renderer);
             }
         }
 

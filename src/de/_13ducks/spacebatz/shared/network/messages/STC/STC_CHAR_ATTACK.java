@@ -28,6 +28,7 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
     @Override
     public void execute(byte[] data) {
         int charid = Bits.getInt(data, 0);
+        float direction = Bits.getFloat(data, 4);
 
         // Overheat der Waffe erhöhen:
         if (charid == GameClient.player.netID) {
@@ -39,7 +40,8 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
             }
         }
 
-        Animation anim = new Animation(0, 2, 2, 3, 4);
+        Animation anim = new Animation(3, 2, 2, 1, 2);
+        anim.setDirection(direction);
         GameClient.getEngine().getGraphics().addFx(new Fx(anim, GameClient.player.getX(), GameClient.player.getY(), 12));
     }
 
