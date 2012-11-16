@@ -31,7 +31,8 @@ public class Fx {
      */
     private int starttick;
     /**
-     * Besitzer der Animation Animation wird auf seine Position gerendert wenn != null
+     * Besitzer des Fx. 
+     * Fx wird auf seine Position gerendert wenn != null
      */
     private Char owner;
 
