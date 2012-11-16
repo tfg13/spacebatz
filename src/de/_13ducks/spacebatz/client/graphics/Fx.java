@@ -1,10 +1,11 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.GameClient;
 
 /**
  * Ein einzelner grafischer Effekt, z.B. Explosion
- * 
+ *
  * @author Jojo
  */
 public class Fx {
@@ -29,9 +30,14 @@ public class Fx {
      * Der Tick, zu dem es angelegt wurde
      */
     private int starttick;
+    /**
+     * Besitzer der Animation Animation wird auf seine Position gerendert wenn != null
+     */
+    private Char owner;
 
     /**
      * Konstruktor
+     *
      * @param baseAnim Grundanimation, die gerendert wird
      */
     public Fx(Animation anim, double x, double y, int lifetime) {
@@ -75,5 +81,19 @@ public class Fx {
      */
     public int getLifetime() {
         return lifetime;
+    }
+
+    /**
+     * @return the owner
+     */
+    public Char getOwner() {
+        return owner;
+    }
+
+    /**
+     * @param owner the owner to set
+     */
+    public void setOwner(Char owner) {
+        this.owner = owner;
     }
 }
