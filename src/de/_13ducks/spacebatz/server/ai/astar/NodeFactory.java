@@ -53,14 +53,89 @@ class NodeFactory {
         int posX = node.getX();
         int posY = node.getY();
         Node neighbors[] = new Node[8];
+
+        int numNeighbors = 8;
+        boolean top = true, bot = true, left = true, right = true, topLeft = true, topRight = true, botLeft = true, botRight = true;
+
+
+
+
         int i = 0;
         for (int x = posX - 1; x <= posX + 1; x++) {
             for (int y = posY - 1; y <= posY + 1; y++) {
+
                 if ((x != posX || y != posY)) {
                     // Soviele Felder prüfen, wie die Entity dick ist:
                     boolean blocked = false;
-                    for (int colX = x; colX < x + size; colX++) {
-                        for (int colY = y; colY > y - size; colY--) {
+
+                    int startColX = -1, endColX = -1, startColY = -1, endColY = -1;
+
+                    // links oben
+                    if (x < posX && y < posY) {
+                        startColX = posX - 1;
+                        endColX = posX + size;
+                        startColY = posY - 1;
+                        endColY = posY + size;
+                    }
+
+                    // oben
+                    if (x == posX && y < posY) {
+                        startColX = posX;
+                        endColX = posX + size;
+                        startColY = posY - 1;
+                        endColY = posY - 1;
+                    }
+
+                    // oben rechts
+                    if (x > posX && y < posY) {
+                        startColX = posX;
+                        endColX = posX + size + 1;
+                        startColY = posY - 1;
+                        endColY = posY + size;
+                    }
+
+                    // rechts
+                    if (x > posX && y == posY) {
+                        startColX = posX;
+                        endColX = posX + size + 1;
+                        startColY = posY;
+                        endColY = posY + size;
+                    }
+
+                    // rechts unten
+                    if (x > posX && y > posY) {
+                        startColX = posX;
+                        endColX = posX + size + 1;
+                        startColY = posY;
+                        endColY = posY + size + 1;
+                    }
+
+                    // unten
+                    if (x == posX && y > posY) {
+                        startColX = posX;
+                        endColX = posX + size;
+                        startColY = posY + size + 1;
+                        endColY = posY + size + 1;
+                    }
+
+                    // unten links
+                    if (x < posX && y > posY) {
+                        startColX = posX - 1;
+                        endColX = posX + size;
+                        startColY = posY;
+                        endColY = posY + size + 1;
+                    }
+
+                    // links
+                    if (x < posX && y == posY) {
+                        startColX = posX - 1;
+                        endColX = posX + size;
+                        startColY = posY;
+                        endColY = posY + size;
+                    }
+
+                    for (int colX = startColX; colX <= endColX; colX++) {
+                        for (int colY = startColY; colY < endColY ; colY++) {
                             if (Server.game.getLevel().getCollisionMap()[colX][colY]) {
                                 blocked = true;
                             }
