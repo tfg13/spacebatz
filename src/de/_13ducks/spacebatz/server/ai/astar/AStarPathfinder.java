@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Position;
 import java.util.LinkedList;
 
@@ -13,10 +14,18 @@ import java.util.LinkedList;
 public class AStarPathfinder {
 
     /**
+     * Die maximalen Iterationen die für ein Request berechnet werden.
+     */
+    private static final int MAX_ITERATIONS_PER_REQUEST = 10 * 60 * 30;
+    /**
+     * Das maximale Alter von Reqeusts in gameTicks, bevor sie verworfen werden.
+     */
+    private static final int MAX_REQUEST_AGE = 2000;
+    /**
      * Gibt an wieviele Iterationen pro Aufruf berechnet werden.
      * Bestimmt, wi viel der Pathfinder pro gameTick rechnet,
      */
-    private static final int MAX_ITERATIONS_PER_CYCLE = 10;
+    private static final int MAX_ITERATIONS_PER_CYCLE = 30;
     /**
      * Warteschlange der Wegberechnungsanforderungen.
      */
@@ -25,6 +34,14 @@ public class AStarPathfinder {
      * Der eigentliche AStar-Algorithmus.
      */
     private AStarImplementation aStar;
+    /**
+     * Der Reqeuster der den aktuellen Pfad angefordert hat.
+     */
+    private PathRequester requester;
+    /**
+     * Gibt an wieviele Iterationen für den aktuellen WEg schon berechnet wurden.
+     */
+    private int iterationsOfCurrentRequest;
 
     public AStarPathfinder() {
         pathRequests = new LinkedList<>();
@@ -41,7 +58,7 @@ public class AStarPathfinder {
      * @param size die Breite des Pfads in Feldern
      */
     public void requestPath(Position start, Position target, PathRequester requester, int size) {
-        pathRequests.push(new PathRequest(start, target, requester, size));
+        pathRequests.push(new PathRequest(start, target, requester, size, Server.game.getTick()));
     }
 
     /**
@@ -53,17 +70,37 @@ public class AStarPathfinder {
         while (iterations > 0) {
             iterations--;
             if (aStar.isComputed()) {
-                if (!pathRequests.isEmpty()) {
-                    // nächste Wegberechnung vorbereiten:
-                    PathRequest request = pathRequests.pop();
-                    aStar.loadPathRequest(request.getStart(), request.getGoal(), request.getRequester(), request.getRequesterSize());
-                } else {
-                    // Keine Wege mehr zum berechnen
+                // Weg ausliefern:
+                if (requester != null) {
+                    requester.pathComputed(aStar.getPath());
+                }
+                if (pathRequests.isEmpty()) {
                     return;
                 }
+                loadNextRequest();
             } else {
-                // am aktuellen Weg rechnen:
                 aStar.computeIteration();
+                iterationsOfCurrentRequest++;
+                if (iterationsOfCurrentRequest > MAX_ITERATIONS_PER_REQUEST) {
+                    aStar.abort();
+                }
+            }
+        }
+    }
+
+    /**
+     * Lädt das nächste Request, wenn eins da ist und es nicht zu alt ist.
+     */
+    private void loadNextRequest() {
+        // Nähstes request laden wenn es eins gibt:
+        while (!pathRequests.isEmpty()) {
+            // nächste Wegberechnung vorbereiten:
+            PathRequest request = pathRequests.pop();
+            if (Server.game.getTick() - request.getCreationTick() < MAX_REQUEST_AGE) {
+                aStar.loadPathRequest(request.getStart(), request.getGoal(), request.getRequester(), request.getRequesterSize());
+                requester = request.getRequester();
+                iterationsOfCurrentRequest = 0;
+                return;
             }
         }
     }

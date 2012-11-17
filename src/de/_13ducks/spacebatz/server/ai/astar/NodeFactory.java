@@ -15,6 +15,7 @@ class NodeFactory {
     private Node[][] nodeMap;
     /**
      * Die Größe des Feldes das frei sein muss, dass eine Node als frei gilt.
+     * 0 = 1x1, 1=2x2, ...
      */
     private int size;
 
@@ -23,7 +24,7 @@ class NodeFactory {
      */
     public NodeFactory(int size) {
         nodeMap = new Node[Server.game.getLevel().getSizeX()][Server.game.getLevel().getSizeY()];
-        this.size = size;
+        this.size = size - 1;
     }
 
     /**
@@ -74,8 +75,8 @@ class NodeFactory {
                     if (x < posX && y < posY) {
                         startColX = posX - 1;
                         endColX = posX + size;
-                        startColY = posY -size;
-                        endColY = posY +1;
+                        startColY = posY - size;
+                        endColY = posY + 1;
                     }
 
                     // oben

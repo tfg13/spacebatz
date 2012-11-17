@@ -84,7 +84,6 @@ public class DebugConsole {
         reader = new BufferedReader(new java.io.InputStreamReader(System.in));
         commands = new ConcurrentLinkedQueue<>();
         Thread debugConsoleThread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 while (true) {
@@ -102,7 +101,6 @@ public class DebugConsole {
         try {
             final PrintStream realout = System.out;
             outStream = new PrintStream(new OutputStream() {
-
                 @Override
                 public void write(int b) throws IOException {
                     // Eventuell an die rcons verteilen
@@ -115,7 +113,6 @@ public class DebugConsole {
                 }
             });
             System.setOut(new PrintStream(new OutputStream() {
-
                 StringBuffer buf = new StringBuffer();
 
                 @Override
@@ -159,7 +156,6 @@ public class DebugConsole {
             rconOutput.add(output);
             rcons.put(c.clientID, br);
             Thread rconReader = new Thread(new Runnable() {
-
                 @Override
                 public void run() {
                     try {
@@ -313,7 +309,6 @@ public class DebugConsole {
                         int size = Integer.parseInt(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
                         Server.game.pathfinder.requestPath(new Position((int) player.getX(), (int) player.getY() + 2), new Position(targetX, targetY), new PathRequester() {
-
                             @Override
                             public void pathComputed(Position[] path) {
                                 for (int i = 0; i < path.length; i++) {
@@ -321,6 +316,25 @@ public class DebugConsole {
                                 }
                             }
                         }, size);
+                        break;
+
+                    case "manywalls":
+                        int targetX2 = Integer.parseInt(words[1]);
+                        int targetY2 = Integer.parseInt(words[2]);
+                        int size2 = Integer.parseInt(words[3]);
+                        int num = Integer.parseInt(words[4]);
+                        Player player2 = Server.game.clients.values().iterator().next().getPlayer();
+                        for (int i = 0; i < num; i++) {
+                            Server.game.pathfinder.requestPath(new Position((int) player2.getX(), (int) player2.getY() + 2), new Position(targetX2, targetY2), new PathRequester() {
+                                @Override
+                                public void pathComputed(Position[] path) {
+                                    for (int i = 0; i < path.length; i++) {
+                                        Server.game.getLevel().createDestroyableBlock(path[i].getX(), path[i].getY(), 10);
+                                    }
+                                }
+                            }, size2);
+                        }
+
                         break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");

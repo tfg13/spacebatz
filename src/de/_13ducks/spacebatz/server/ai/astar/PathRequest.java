@@ -17,18 +17,22 @@ class PathRequest {
     private PathRequester requester;
     /** Die Breite die der Pfad haben soll. */
     private int requesterSize;
+    /** Gibt an zu welchem gameTick das Request erzeugt wurde. */
+    private int creationTick;
 
     /**
      * Erzeugt ein neues Pathrequest.
+     *
      * @param start
      * @param target
-     * @param requester 
+     * @param requester
      */
-    PathRequest(Position start, Position target, PathRequester requester, int size) {
+    PathRequest(Position start, Position target, PathRequester requester, int size, int gameTick) {
         this.start = start;
         this.goal = target;
         this.requester = requester;
         this.requesterSize = size;
+        creationTick = gameTick;
     }
 
     PathRequester getRequester() {
@@ -75,5 +79,12 @@ class PathRequest {
      */
     public int getRequesterSize() {
         return requesterSize;
+    }
+
+    /**
+     * @return the creationTick
+     */
+    public int getCreationTick() {
+        return creationTick;
     }
 }

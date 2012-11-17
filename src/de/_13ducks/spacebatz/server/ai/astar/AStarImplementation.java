@@ -37,12 +37,19 @@ class AStarImplementation {
     /**
      * Gibt an, ob der aktuelle weg schon fertig berechnet ist.
      */
-    private boolean computed;
+    private boolean computing;
+    /**
+     * Der berechnete Pfad.
+     */
+    private Node[] path;
     /**
      * Die Nodefactory die die Wegknoten erzeugt und verwaltet.
      * Muss für jede Wegberechnung neu erzeugt werden.
      */
     private NodeFactory factory;
+    /**
+     * Vergleicht 2 Nodes ob sie identisch sind.
+     */
     private static Comparator<Node> comparator = new Comparator<Node>() {
         @Override
         public int compare(Node t, Node t1) {
@@ -60,7 +67,7 @@ class AStarImplementation {
      * Initialisiert die AStar-Implemenierung.
      */
     public AStarImplementation() {
-        computed = true;
+        computing = false;
     }
 
     /**
@@ -71,10 +78,11 @@ class AStarImplementation {
      * @param requester
      */
     public void loadPathRequest(Position start, Position goal, PathRequester requester, int size) {
-        if (!isComputed()) {
+        if (computing) {
             throw new IllegalStateException("Der alte Weg ist nocht nicht fertoig!");
         }
-        computed = false;
+        computing = true;
+        path = new Node[0];
         factory = new NodeFactory(size);
         closedList = new ArrayList<>();
         openList = new PriorityQueue<>(50, comparator);
@@ -91,10 +99,13 @@ class AStarImplementation {
      * Falls der Weg fertig berechnet wird, wird der Anforderer automatisch benachrichtigt.
      */
     public void computeIteration() {
+        if (!computing) {
+            throw new IllegalStateException("Kein Weg geladen, habe nichts zum Berechnen!");
+        }
         if (!openList.isEmpty()) {
             Node current = openList.poll();
             if (current.equals(goal)) {
-                buildAndDeliverPath(goal);
+                buildPath(goal);
             } else {
                 expandNode(current);
                 closedList.add(current);
@@ -109,21 +120,20 @@ class AStarImplementation {
      *
      * @param goal der gefundene ZielKnoten.
      */
-    private void buildAndDeliverPath(Node goal) {
+    private void buildPath(Node goal) {
         ArrayList<Node> nodes = new ArrayList<>();
         Node current = goal;
         while (!current.equals(start)) {
             nodes.add(current);
             current = current.getPredecessor();
         }
-        Node path[] = new Node[nodes.size()];
+        path = new Node[nodes.size()];
         int i = 0;
         for (Node n : nodes) {
             path[path.length - 1 - i] = n;
             i++;
         }
-        requester.pathComputed(path);
-        computed = true;
+        computing = false;
     }
 
     /**
@@ -173,6 +183,27 @@ class AStarImplementation {
      * @return the computed
      */
     public boolean isComputed() {
-        return computed;
+        return !computing;
+    }
+
+    /**
+     * Bricht die Berechnung ab.
+     */
+    public void abort() {
+        computing = false;
+    }
+
+    /**
+     * Gibt den Pfad zurück oder einen leeren Pfad wenn die Berechnung abgebrochen wurde.
+     * Gibt den Pfad zurück oder einen leeren Pfad null wenn die Berechnung abgebrochen wurde.
+     *
+     * @return
+     */
+    public Position[] getPath() {
+        if (computing) {
+            throw new IllegalStateException("Pfad noch nicht fertig berechnet!");
+        } else {
+            return path;
+        }
     }
 }
