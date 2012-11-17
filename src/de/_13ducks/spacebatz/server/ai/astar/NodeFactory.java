@@ -74,8 +74,8 @@ class NodeFactory {
                     if (x < posX && y < posY) {
                         startColX = posX - 1;
                         endColX = posX + size;
-                        startColY = posY - 1;
-                        endColY = posY + size;
+                        startColY = posY -size;
+                        endColY = posY +1;
                     }
 
                     // oben
@@ -122,20 +122,20 @@ class NodeFactory {
                     if (x < posX && y > posY) {
                         startColX = posX - 1;
                         endColX = posX + size;
-                        startColY = posY;
-                        endColY = posY + size + 1;
+                        startColY = posY - size - 1;
+                        endColY = posY;
                     }
 
                     // links
                     if (x < posX && y == posY) {
                         startColX = posX - 1;
                         endColX = posX + size;
-                        startColY = posY;
-                        endColY = posY + size;
+                        startColY = posY - size;
+                        endColY = posY;
                     }
 
                     for (int colX = startColX; colX <= endColX; colX++) {
-                        for (int colY = startColY; colY < endColY ; colY++) {
+                        for (int colY = startColY; colY <= endColY; colY++) {
                             if (Server.game.getLevel().getCollisionMap()[colX][colY]) {
                                 blocked = true;
                             }

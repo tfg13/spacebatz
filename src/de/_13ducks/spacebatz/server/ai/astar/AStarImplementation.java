@@ -44,7 +44,6 @@ class AStarImplementation {
      */
     private NodeFactory factory;
     private static Comparator<Node> comparator = new Comparator<Node>() {
-        
         @Override
         public int compare(Node t, Node t1) {
             if (t.getFValue() < t1.getFValue()) {
@@ -80,7 +79,7 @@ class AStarImplementation {
         closedList = new ArrayList<>();
         openList = new PriorityQueue<>(50, comparator);
         this.requester = requester;
-        
+
         this.goal = factory.getNode(goal.getX(), goal.getY());
         this.start = factory.getNode(start.getX(), start.getY());
         openList.add(this.start);
@@ -146,15 +145,14 @@ class AStarImplementation {
             }
             successor.setPredecessor(current);
             successor.setWayLength(weight);
-            
+
             float cost = current.getWayLength() + getWeight(successor, goal);
             successor.setFValue(cost);
             if (openList.contains(successor)) {
                 openList.remove(successor);
             }
             openList.add(successor);
-            Server.game.getLevel().createDestroyableBlock(successor.getX(), successor.getY(), 10);
-                    
+
         }
     }
 
