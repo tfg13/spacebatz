@@ -40,9 +40,12 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
             }
         }
 
-        Animation anim = new Animation(3, 2, 2, 1, 2);
+        Animation anim = new Animation(3, 2, 2, 1, 10);
         anim.setDirection(direction);
-        GameClient.getEngine().getGraphics().addFx(new Fx(anim, GameClient.player.getX(), GameClient.player.getY(), 12));
+        //anim.setOwner(GameClient.netIDMap.get(charid));
+        Fx f = new Fx(anim, GameClient.player.getX(), GameClient.player.getY(), 12);
+        f.setOwner(GameClient.netIDMap.get(charid));
+        GameClient.getEngine().getGraphics().addFx(f);
     }
 
     public static void sendCharAttack(int charid, float direction) {
