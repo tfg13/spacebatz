@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Position;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -31,13 +32,13 @@ public class AStarPathfinder {
      */
     private LinkedList<PathRequest> pathRequests;
     /**
+     * Das Request das gerade bearbeitet wird.
+     */
+    private PathRequest currentRequest;
+    /**
      * Der eigentliche AStar-Algorithmus.
      */
     private AStarImplementation aStar;
-    /**
-     * Der Reqeuster der den aktuellen Pfad angefordert hat.
-     */
-    private PathRequester requester;
     /**
      * Gibt an wieviele Iterationen für den aktuellen WEg schon berechnet wurden.
      */
@@ -58,7 +59,7 @@ public class AStarPathfinder {
      * @param size die Breite des Pfads in Feldern
      */
     public void requestPath(Position start, Position target, PathRequester requester, int size) {
-        pathRequests.push(new PathRequest(start, target, requester, size, Server.game.getTick()));
+        pathRequests.push(new PathRequest(start, target, requester, size, aStar));
     }
 
     /**
@@ -69,38 +70,32 @@ public class AStarPathfinder {
         int iterations = MAX_ITERATIONS_PER_CYCLE;
         while (iterations > 0) {
             iterations--;
-            if (aStar.isComputed()) {
-                // Weg ausliefern:
-                if (requester != null) {
-                    requester.pathComputed(aStar.getPath());
+            if (currentRequest != null) {
+                if (currentRequest.isDone()) {
+                    currentRequest = null;
+                } else {
+                    currentRequest.computeIteration();
+                    iterationsOfCurrentRequest++;
+                    if (iterationsOfCurrentRequest > MAX_ITERATIONS_PER_REQUEST) {
+                        currentRequest.abort();
+                        currentRequest = null;
+                    }
                 }
-                if (pathRequests.isEmpty()) {
+            } else {    
+                Iterator<PathRequest> iter = pathRequests.iterator();
+                while (iter.hasNext()) {
+                    PathRequest request = iter.next();
+                    if (request.getAge() < MAX_REQUEST_AGE) {
+                        iter.remove();
+                        currentRequest = request;
+                        iterationsOfCurrentRequest = 0;
+                        currentRequest.initialise();
+                        // request geladen
+                        break;
+                    }
+                    // keine requests mehr, abbrechen bis zum nächsten tick
                     return;
                 }
-                loadNextRequest();
-            } else {
-                aStar.computeIteration();
-                iterationsOfCurrentRequest++;
-                if (iterationsOfCurrentRequest > MAX_ITERATIONS_PER_REQUEST) {
-                    aStar.abort();
-                }
-            }
-        }
-    }
-
-    /**
-     * Lädt das nächste Request, wenn eins da ist und es nicht zu alt ist.
-     */
-    private void loadNextRequest() {
-        // Nähstes request laden wenn es eins gibt:
-        while (!pathRequests.isEmpty()) {
-            // nächste Wegberechnung vorbereiten:
-            PathRequest request = pathRequests.pop();
-            if (Server.game.getTick() - request.getCreationTick() < MAX_REQUEST_AGE) {
-                aStar.loadPathRequest(request.getStart(), request.getGoal(), request.getRequester(), request.getRequesterSize());
-                requester = request.getRequester();
-                iterationsOfCurrentRequest = 0;
-                return;
             }
         }
     }

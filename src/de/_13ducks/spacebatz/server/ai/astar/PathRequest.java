@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.Position;
 
 /**
@@ -9,16 +10,20 @@ import de._13ducks.spacebatz.util.Position;
  */
 class PathRequest {
 
-    /** Die Startposition */
+    /** Die Startposition. */
     private Position start;
-    /** Die Zielposition */
+    /** Die Zielposition. */
     private Position goal;
-    /** Der Anforderer, der den gertigen Pfad dann bekommt */
+    /** Der Anforderer, der den gertigen Pfad dann bekommt. */
     private PathRequester requester;
     /** Die Breite die der Pfad haben soll. */
     private int requesterSize;
     /** Gibt an zu welchem gameTick das Request erzeugt wurde. */
     private int creationTick;
+    /** Gibt an ob dieses Request noch berechnet ist oder fertig/abgebrochen ist. */
+    private boolean computed;
+    /** Der Astar-Algorithmus der verwendet wird. */
+    private AStarImplementation aStar;
 
     /**
      * Erzeugt ein neues Pathrequest.
@@ -27,64 +32,41 @@ class PathRequest {
      * @param target
      * @param requester
      */
-    PathRequest(Position start, Position target, PathRequester requester, int size, int gameTick) {
+    PathRequest(Position start, Position target, PathRequester requester, int size, AStarImplementation astar) {
         this.start = start;
         this.goal = target;
         this.requester = requester;
         this.requesterSize = size;
-        creationTick = gameTick;
+        this.creationTick = Server.game.getTick();
+        this.aStar = astar;
     }
 
-    PathRequester getRequester() {
-        return requester;
+    public void initialise() {
+        aStar.loadPathRequest(start, goal, requester, requesterSize);
     }
 
-    /**
-     * @return the start
-     */
-    public Position getStart() {
-        return start;
+    public boolean isDone() {
+        return computed;
     }
 
-    /**
-     * @param start the start to set
-     */
-    public void setStart(Position start) {
-        this.start = start;
+    public void abort() {
+        computed = true;
+        aStar.abort();
+        requester.pathComputed(new Position[0]);
     }
 
-    /**
-     * @return the goal
-     */
-    public Position getGoal() {
-        return goal;
+    void computeIteration() {
+        if (computed) {
+            throw new IllegalArgumentException("Request ist schon fertig berechnet!");
+        }
+        aStar.computeIteration();
+        if (aStar.isComputed()) {
+            requester.pathComputed(aStar.getPath());
+            computed = true;
+        }
     }
 
-    /**
-     * @param goal the goal to set
-     */
-    public void setGoal(Position goal) {
-        this.goal = goal;
-    }
-
-    /**
-     * @param requester the requester to set
-     */
-    public void setRequester(PathRequester requester) {
-        this.requester = requester;
-    }
-
-    /**
-     * @return the requesterSize
-     */
-    public int getRequesterSize() {
-        return requesterSize;
-    }
-
-    /**
-     * @return the creationTick
-     */
-    public int getCreationTick() {
-        return creationTick;
+    public int getAge() {
+        return Server.game.getTick() - creationTick;
     }
 }
