@@ -336,6 +336,16 @@ public class DebugConsole {
                         }
 
                         break;
+
+                    case "test":
+                        Player player3 = Server.game.clients.values().iterator().next().getPlayer();
+                        for (int xx = (int) player3.getX() - 20; xx < player3.getX() + 20; xx++) {
+                            for (int yy = (int) player3.getY() - 20; yy < player3.getY() + 20; yy++) {
+                            }
+                        }
+
+
+                        break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");

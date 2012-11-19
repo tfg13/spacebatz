@@ -83,16 +83,16 @@ class NodeFactory {
                     if (x == posX && y < posY) {
                         startColX = posX;
                         endColX = posX + size;
-                        startColY = posY - 1;
-                        endColY = posY - 1;
+                        startColY = posY + 1;
+                        endColY = posY + 1;
                     }
 
                     // oben rechts
                     if (x > posX && y < posY) {
                         startColX = posX;
                         endColX = posX + size + 1;
-                        startColY = posY - 1;
-                        endColY = posY + size;
+                        startColY = posY - size;
+                        endColY = posY + 1;
                     }
 
                     // rechts
@@ -107,16 +107,16 @@ class NodeFactory {
                     if (x > posX && y > posY) {
                         startColX = posX;
                         endColX = posX + size + 1;
-                        startColY = posY;
-                        endColY = posY + size + 1;
+                        startColY = posY - size - 1;
+                        endColY = posY;
                     }
 
                     // unten
                     if (x == posX && y > posY) {
                         startColX = posX;
                         endColX = posX + size;
-                        startColY = posY + size + 1;
-                        endColY = posY + size + 1;
+                        startColY = posY - size - 1;
+                        endColY = posY - size - 1;
                     }
 
                     // unten links
