@@ -10,6 +10,7 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import static org.lwjgl.opengl.GL11.*;
@@ -361,13 +362,13 @@ public class Inventory implements Control {
                         GameClient.getEngine().getGraphics().toggleInventory();
                         break;
                     case Keyboard.KEY_1:
-                        GameClient.getPlayer().setSelectedattack(0);
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
                         break;
                     case Keyboard.KEY_2:
-                        GameClient.getPlayer().setSelectedattack(1);
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
                         break;
                     case Keyboard.KEY_3:
-                        GameClient.getPlayer().setSelectedattack(2);
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
                         break;
                 }
             }
