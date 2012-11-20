@@ -71,66 +71,67 @@ class NodeFactory {
 
                     int startColX = -1, endColX = -1, startColY = -1, endColY = -1;
 
-                    // links oben
+                    // links unten
                     if (x < posX && y < posY) {
                         startColX = posX - 1;
                         endColX = posX + size;
-                        startColY = posY - size;
-                        endColY = posY + 1;
-                    }
-
-                    // oben
-                    if (x == posX && y < posY) {
-                        startColX = posX;
-                        endColX = posX + size;
-                        startColY = posY + 1;
-                        endColY = posY + 1;
-                    }
-
-                    // oben rechts
-                    if (x > posX && y < posY) {
-                        startColX = posX;
-                        endColX = posX + size + 1;
-                        startColY = posY - size;
-                        endColY = posY + 1;
-                    }
-
-                    // rechts
-                    if (x > posX && y == posY) {
-                        startColX = posX;
-                        endColX = posX + size + 1;
-                        startColY = posY;
-                        endColY = posY + size;
-                    }
-
-                    // rechts unten
-                    if (x > posX && y > posY) {
-                        startColX = posX;
-                        endColX = posX + size + 1;
                         startColY = posY - size - 1;
                         endColY = posY;
+
                     }
 
                     // unten
-                    if (x == posX && y > posY) {
+                    if (x == posX && y < posY) {
                         startColX = posX;
                         endColX = posX + size;
                         startColY = posY - size - 1;
                         endColY = posY - size - 1;
                     }
 
-                    // unten links
+                    // unten rechts
+                    if (x > posX && y < posY) {
+                        startColX = posX;
+                        endColX = posX + size + 1;
+                        startColY = posY - size - 1;
+                        endColY = posY;
+                    }
+
+                    // rechts
+                    if (x > posX && y == posY) {
+                        startColX = posX;
+                        endColX = posX + size + 1;
+                        startColY = posY - size;
+                        endColY = posY;
+                    }
+
+                    // rechts oben
+                    if (x > posX && y > posY) {
+                        startColX = posX;
+                        endColX = posX + size + 1;
+                        startColY = posY - size;
+                        endColY = posY + 1;
+                    }
+
+                    // oben
+                    if (x == posX && y > posY) {
+                        startColX = posX;
+                        endColX = posX + size;
+                        startColY = posY + 1;
+                        endColY = posY + 1;
+                    }
+
+                    // oben links
                     if (x < posX && y > posY) {
                         startColX = posX - 1;
                         endColX = posX + size;
-                        startColY = posY - size - 1;
-                        endColY = posY;
+                        startColY = posY - size;
+                        endColY = posY + 1;
                     }
 
                     // links
                     if (x < posX && y == posY) {
                         startColX = posX - 1;
-                        endColX = posX + size;
+                        endColX = posX + size - 1;
                         startColY = posY - size;
                         endColY = posY;
                     }
