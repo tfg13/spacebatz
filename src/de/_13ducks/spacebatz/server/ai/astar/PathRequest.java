@@ -24,6 +24,10 @@ class PathRequest {
     private boolean computed;
     /** Der Astar-Algorithmus der verwendet wird. */
     private AStarImplementation aStar;
+    /** Die Erste Position auf die die Entity laufen muss um am Raster ausgerichtet zu sein. */
+    private PrecisePosition firstPosition;
+    /** Die Transformation von Entitykoordinaten zu Kollisionsmapkoordinaten. */
+    private double dx, dy;
 
     /**
      * Erzeugt ein neues Pathrequest.
@@ -32,11 +36,31 @@ class PathRequest {
      * @param target
      * @param requester
      */
-    PathRequest(Position start, Position target, PathRequester requester, int size, AStarImplementation astar) {
-        this.start = start;
-        this.goal = target;
+    PathRequest(PrecisePosition start, PrecisePosition target, PathRequester requester, double size, AStarImplementation astar) {
+
+        // Das linke untere Feld des Kollisionsrechtecks der Entity berechnen:
+        int leftBotFieldX = (int) (start.getX() - size / 2);
+        int leftBotFieldY = (int) (start.getY() - size / 2);
+
+        // Die Position auf die die Entity gehen muss, das sie in das (am Raster ausgerichtete) Kollisionsrechteck passt:
+        double firstPositionX = start.getX() - ((start.getX() + size / 2) - (leftBotFieldX + size));
+        double firstPositionY = start.getY() - ((start.getY() + size / 2) - (leftBotFieldY + size));
+
+        // Die Transformation zwischen Entitykoordinaten und Pathfinderkoordinate berechnen:
+        dx = firstPositionX - leftBotFieldX;
+        dy = firstPositionY - leftBotFieldY;
+
+        // Die erste Position speichern dass sie später an den wEg vorne angefügt werden kann:
+        firstPosition = new PrecisePosition(firstPositionX, firstPositionY);
+
+        // Das linke untere Feld als Startfeld der WEgberechnung setzen:
+        this.start = new Position(leftBotFieldX, leftBotFieldY);
+        // Linkes unteres Feld der Zielposition bestimmen:
+        this.goal = new Position((int) (target.getX() - size / 2), (int) (target.getY() - size / 2));
+
+        // Restliche Wegfindungsinfos setzen:
         this.requester = requester;
-        this.requesterSize = size;
+        this.requesterSize = (int) (size + 1);
         this.creationTick = Server.game.getTick();
         this.aStar = astar;
     }
@@ -52,7 +76,7 @@ class PathRequest {
     public void abort() {
         computed = true;
         aStar.abort();
-        requester.pathComputed(new Position[0]);
+        requester.pathComputed(new PrecisePosition[0]);
     }
 
     void computeIteration() {
@@ -61,7 +85,18 @@ class PathRequest {
         }
         aStar.computeIteration();
         if (aStar.isComputed()) {
-            requester.pathComputed(aStar.getPath());
+            Position path[] = aStar.getPath();
+            // Startposition vorne anhängen und den Weg zu Entitykoordinaten transformieren:
+            PrecisePosition finalPath[] = new PrecisePosition[path.length];
+
+            finalPath[0] = firstPosition;
+
+            for (int i = 1; i < path.length; i++) {
+                finalPath[i] = new PrecisePosition(path[i].getX() + dx, path[i].getY() + dy);
+            }
+
+            // Den fertigen Pfad übergeben;
+            requester.pathComputed(finalPath);
             computed = true;
         }
     }

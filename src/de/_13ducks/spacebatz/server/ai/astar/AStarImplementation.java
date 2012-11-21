@@ -111,7 +111,7 @@ class AStarImplementation {
                 closedList.add(current);
             }
         } else {
-            requester.pathComputed(new Position[0]);
+            requester.pathComputed(new PrecisePosition[0]);
         }
     }
 

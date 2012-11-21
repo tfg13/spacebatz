@@ -58,7 +58,7 @@ public class AStarPathfinder {
      * @param requester der PathRequester, der das Ergebnis der berechnung erhält.
      * @param size die Breite des Pfads in Feldern
      */
-    public void requestPath(Position start, Position target, PathRequester requester, int size) {
+    public void requestPath(PrecisePosition start, PrecisePosition target, PathRequester requester, double size) {
         pathRequests.push(new PathRequest(start, target, requester, size, aStar));
     }
 
@@ -81,7 +81,7 @@ public class AStarPathfinder {
                         currentRequest = null;
                     }
                 }
-            } else {    
+            } else {
                 Iterator<PathRequest> iter = pathRequests.iterator();
                 while (iter.hasNext()) {
                     PathRequest request = iter.next();

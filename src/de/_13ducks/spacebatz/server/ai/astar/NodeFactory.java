@@ -109,7 +109,7 @@ class NodeFactory {
                         startColX = posX;
                         endColX = posX + size + 1;
                         startColY = posY;
-                        endColY = posY +size + 1;
+                        endColY = posY + size + 1;
                     }
 
                     // oben
@@ -117,7 +117,7 @@ class NodeFactory {
                         startColX = posX;
                         endColX = posX + size;
                         startColY = posY;
-                        endColY = posY +size + 1;
+                        endColY = posY + size + 1;
                     }
 
                     // oben links
@@ -125,7 +125,7 @@ class NodeFactory {
                         startColX = posX - 1;
                         endColX = posX + size;
                         startColY = posY;
-                        endColY = posY +size + 1;
+                        endColY = posY + size + 1;
                     }
 
                     // links

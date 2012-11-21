@@ -15,5 +15,5 @@ public interface PathRequester {
      *
      * @param path der fertig berechnete Pfad
      */
-    public void pathComputed(Position path[]);
+    public void pathComputed(PrecisePosition path[]);
 }

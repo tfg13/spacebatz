@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
+import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
@@ -306,36 +307,19 @@ public class DebugConsole {
                     case "wall":
                         int targetX = Integer.parseInt(words[1]);
                         int targetY = Integer.parseInt(words[2]);
-                        int size = Integer.parseInt(words[3]);
+                        double size = Integer.parseInt(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
-                        Server.game.pathfinder.requestPath(new Position((int) player.getX(), (int) player.getY() + 2), new Position(targetX, targetY), new PathRequester() {
+                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY() + 2), new PrecisePosition(targetX, targetY), new PathRequester() {
                             @Override
-                            public void pathComputed(Position[] path) {
+                            public void pathComputed(PrecisePosition[] path) {
                                 for (int i = 0; i < path.length; i++) {
-                                    Server.game.getLevel().createDestroyableBlock(path[i].getX(), path[i].getY(), 10);
+                                    Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
                                 }
                             }
                         }, size);
                         break;
 
-                    case "manywalls":
-                        int targetX2 = Integer.parseInt(words[1]);
-                        int targetY2 = Integer.parseInt(words[2]);
-                        int size2 = Integer.parseInt(words[3]);
-                        int num = Integer.parseInt(words[4]);
-                        Player player2 = Server.game.clients.values().iterator().next().getPlayer();
-                        for (int i = 0; i < num; i++) {
-                            Server.game.pathfinder.requestPath(new Position((int) player2.getX(), (int) player2.getY() + 2), new Position(targetX2, targetY2), new PathRequester() {
-                                @Override
-                                public void pathComputed(Position[] path) {
-                                    for (int i = 0; i < path.length; i++) {
-                                        Server.game.getLevel().createDestroyableBlock(path[i].getX(), path[i].getY(), 10);
-                                    }
-                                }
-                            }, size2);
-                        }
 
-                        break;
 
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
