@@ -127,6 +127,7 @@ class AStarImplementation {
             nodes.add(current);
             current = current.getPredecessor();
         }
+        nodes.add(start);
         path = new Node[nodes.size()];
         int i = 0;
         for (Node n : nodes) {
