@@ -285,7 +285,7 @@ public class GodControl implements Control {
             } else {
                 glColor4f(1f, 0f, 0f, 1f);
             }
-            glRectf(0, camera.getTilesY(), 10, NetStats.netGraph == 2 ? camera.getTilesY() - 2f : camera.getTilesY() - 1.5f);
+            glRectf(0, camera.getTilesY(), 10, NetStats.netGraph == 2 ? camera.getTilesY() - 2.5f : camera.getTilesY() - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
@@ -298,6 +298,9 @@ public class GodControl implements Control {
                     // Einheitenposition:
                     textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
                     textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
+                    // Mausposition:
+                    textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) Settings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
+                    textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) Settings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
                 }
             } else {
                 textWriter.renderText(" LOST CONNECTION TO SERVER", 0, camera.getTilesY() - 1.5f);
