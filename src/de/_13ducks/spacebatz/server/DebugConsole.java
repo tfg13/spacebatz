@@ -309,9 +309,9 @@ public class DebugConsole {
                     case "wall":
                         int targetX = Integer.parseInt(words[1]);
                         int targetY = Integer.parseInt(words[2]);
-                        double size = Integer.parseInt(words[3]);
+                        double size = Double.parseDouble(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
-                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY() ), new PrecisePosition(targetX, targetY), new PathRequester() {
+                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY()), new PrecisePosition(targetX, targetY), new PathRequester() {
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
                                 synchronized (GodControl.debugPath) {
@@ -321,14 +321,26 @@ public class DebugConsole {
                         }, size);
                         break;
 
+                    case "oldwall":
+                        int targetX1 = Integer.parseInt(words[1]);
+                        int targetY1 = Integer.parseInt(words[2]);
+                        double size1 = Double.parseDouble(words[3]);
+                        Player player1 = Server.game.clients.values().iterator().next().getPlayer();
+                        Server.game.pathfinder.requestPath(new PrecisePosition(player1.getX(), player1.getY()), new PrecisePosition(targetX1, targetY1), new PathRequester() {
+                            @Override
+                            public void pathComputed(PrecisePosition[] path) {
+                                for (int i = 0; i < path.length; i++) {
+                                    Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
+                                }
+                            }
+                        }, size1);
+                        break;
+
 
 
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
-                        for (int xx = (int) player3.getX() - 20; xx < player3.getX() + 20; xx++) {
-                            for (int yy = (int) player3.getY() - 20; yy < player3.getY() + 20; yy++) {
-                            }
-                        }
+                        System.out.println("DLASDLSADASLDSALDSALD: " + player3.getX() + " / " + player3.getY());
 
 
                         break;

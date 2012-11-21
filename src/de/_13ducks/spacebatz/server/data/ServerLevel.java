@@ -79,7 +79,7 @@ public class ServerLevel extends Level {
      */
     public void createDestroyableBlock(int x, int y, int texture) {
         getGround()[x][y] = texture;
-        getCollisionMap()[x][y] = true;
+        //getCollisionMap()[x][y] = true;
         STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, true);
         STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
     }

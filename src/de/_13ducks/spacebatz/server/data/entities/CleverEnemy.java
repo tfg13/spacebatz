@@ -13,6 +13,7 @@ public class CleverEnemy extends Enemy implements PathRequester {
 
     private int lastRequest;
     private Entity target;
+    private boolean waiting;
 
     public CleverEnemy(double x, double y, int netID, int enemyTypeID) {
         super(x, y, netID, 1);
@@ -22,16 +23,19 @@ public class CleverEnemy extends Enemy implements PathRequester {
     @Override
     public void tick(int gameTick) {
         super.tick(gameTick);
-        if (gameTick - lastRequest > 100) {
-            Server.game.pathfinder.requestPath(new PrecisePosition((int) getX(), (int) getY()), new PrecisePosition(target.getX(), target.getY()), this, speed);
+        if (gameTick - lastRequest > 300 && !waiting) {
+            Server.game.pathfinder.requestPath(new PrecisePosition((int) getX(), (int) getY()), new PrecisePosition(target.getX(), target.getY()), this, getSize());
             lastRequest = gameTick;
+            waiting = true;
         }
     }
 
     @Override
     public void pathComputed(PrecisePosition[] path) {
+        waiting = false;
         if (path.length > 1) {
             followPath(path);
+
             synchronized (GodControl.debugPath) {
                 GodControl.debugPath = path;
             }

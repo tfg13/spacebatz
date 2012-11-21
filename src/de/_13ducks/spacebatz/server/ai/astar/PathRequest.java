@@ -42,6 +42,9 @@ class PathRequest {
         int leftBotFieldX = (int) (start.getX() - size / 2);
         int leftBotFieldY = (int) (start.getY() - size / 2);
 
+        if(Server.game.getLevel().getCollisionMap()[leftBotFieldX][leftBotFieldY]){
+            System.out.println("ASDSADSADASDASDASDASD");
+        }
         // Die Position auf die die Entity gehen muss, das sie in das (am Raster ausgerichtete) Kollisionsrechteck passt:
         double firstPositionX = start.getX() - ((start.getX() + size / 2) - (leftBotFieldX + size));
         double firstPositionY = start.getY() - ((start.getY() + size / 2) - (leftBotFieldY + size));
@@ -86,6 +89,9 @@ class PathRequest {
         aStar.computeIteration();
         if (aStar.isComputed()) {
             Position path[] = aStar.getPath();
+            for (int i = 0; i < path.length; i++) {
+                Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
+            }
             PrecisePosition finalPath[];
             if (path.length == 0) {
                 finalPath = new PrecisePosition[0];

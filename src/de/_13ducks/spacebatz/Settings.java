@@ -17,14 +17,11 @@ package de._13ducks.spacebatz;
  */
 public final class Settings {
 
-   
-
     /**
      * Private, da Utility-Class
      */
     private Settings() {
     }
-    
     /**
      * Die X-Auflösung der Grafikausgabe.
      */
