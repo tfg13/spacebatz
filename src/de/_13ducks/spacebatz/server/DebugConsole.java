@@ -311,7 +311,7 @@ public class DebugConsole {
                         int targetY = Integer.parseInt(words[2]);
                         double size = Integer.parseInt(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
-                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY() + 2), new PrecisePosition(targetX, targetY), new PathRequester() {
+                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY() ), new PrecisePosition(targetX, targetY), new PathRequester() {
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
                                 synchronized (GodControl.debugPath) {
