@@ -15,12 +15,13 @@ public class InternalMap {
     public HashMap<String, Object> metadata = new HashMap<>();
     public int[][] groundTex;
     public boolean[][] collision;
+    public String hash;
 
     /**
      * Wandelt die interne Map-Darstellung in ein ServerLevel um.
      */
     public ServerLevel toServerLevel() {
-        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length);
+        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, hash);
         level.setGround(groundTex);
         for (int x = 0; x < groundTex.length; x++) {
             System.arraycopy(collision[x], 0, level.getCollisionMap()[x], 0, groundTex[0].length);
