@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
@@ -312,8 +314,8 @@ public class DebugConsole {
                         Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY() + 2), new PrecisePosition(targetX, targetY), new PathRequester() {
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
-                                for (int i = 0; i < path.length; i++) {
-                                    Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
+                                synchronized (GodControl.debugPath) {
+                                    GodControl.debugPath = path;
                                 }
                             }
                         }, size);

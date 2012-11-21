@@ -10,8 +10,10 @@
  */
 package de._13ducks.spacebatz.client;
 
+import com.vividsolutions.jts.geom.PrecisionModel;
 import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
+import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import org.lwjgl.Sys;
 
 /**

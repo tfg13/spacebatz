@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
@@ -65,6 +66,7 @@ public class GodControl implements Control {
      * Array mit allen Tilemaps
      */
     private Texture[] tilemaps;
+    public static PrecisePosition debugPath[] = new PrecisePosition[0];
 
     public GodControl(Renderer renderer) {
         tilemaps = new Texture[10];
@@ -317,6 +319,26 @@ public class GodControl implements Control {
             int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor());
             for (int i = 0; i < numberoflines - 1; i++) {
                 textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3, (float) camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
+            }
+        }
+
+        synchronized (debugPath) {
+            for (int i = 0; i < debugPath.length - 1; i++) {
+                glColor3f(1.0f, 0.0f, 0.0f);
+                glDisable(GL_TEXTURE_2D);
+                glPushMatrix();
+                glLoadIdentity();
+                glOrtho(-camera.getPanX(), -camera.getPanX() + camera.getTilesX(), -camera.getPanY(), -camera.getPanY() + camera.getTilesY(), -1, 1);
+                glBegin(GL_LINES);
+                glLineWidth(10.0f);
+                glVertex2f((float) debugPath[i].getX() , (float) debugPath[i].getY() );
+                glVertex2f((float) debugPath[i+1].getX(), (float) debugPath[i+1].getY() );
+                
+//                glVertex2f((float)GameClient.player.getX(), (float)GameClient.player.getY());
+//                glVertex2f((float)GameClient.player.getX(), (float)GameClient.player.getY() + 1 );
+                glEnd();
+                glPopMatrix();
+                glEnable(GL_TEXTURE_2D);
             }
         }
 

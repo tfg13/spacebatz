@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.Distance;
@@ -35,7 +36,7 @@ public class Enemy extends Char {
      * Der Pfad dem der Gegner gerade folgt.
      * Enthält Start- und Zielfeld.
      */
-    private Position[] path;
+    private PrecisePosition[] path;
     /**
      * Der Index der Position in Pfad, von der der Gegner gerade kommt.
      */
@@ -92,10 +93,7 @@ public class Enemy extends Char {
             // Zurückgelegte Distanz vom letzten Wegpunkt berechnen:
             double distance = Distance.getDistance(getX(), getY(), path[currentPathPosition].getX(), path[currentPathPosition].getY());
             // Wenn wir schon weiter sind als die Distanz zum nächsten Wegpunkt, dann setzten wir den übernächsten als Ziel:
-            if (distanceToNextWaypoint - distance < 0.01 || distance >= distanceToNextWaypoint) {
-                // auf den Wegpunkt snappen, da wir nicht ganz drauf stehen (das summiert sich sonst bei jedem Wegpunkt):
-                setStopXY(path[currentPathPosition + 1].getX(), path[currentPathPosition + 1].getY());
-                stopMovement();
+            if (distance >= distanceToNextWaypoint) {
                 // den Nächsten Wegpunkt ansteuern:
                 currentPathPosition++;
                 // Anhalten, falls wir am Ende des Pfads sind:
@@ -103,6 +101,7 @@ public class Enemy extends Char {
                     followingPath = false;
                     path = null;
                     currentPathPosition = 0;
+                    stopMovement();
                 } else {
                     setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
                     // Distanz zum nächsten Wegpunkt berechnen:
@@ -124,10 +123,7 @@ public class Enemy extends Char {
     @Override
     public void onWallCollision() {
         super.onWallCollision();
-        // Bei Kollision brechen wir das folgen ab:
-        if (followingPath) {
-            stopFollowongPath();
-        }
+        setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
     }
 
     /**
@@ -136,13 +132,10 @@ public class Enemy extends Char {
      *
      * @param path der Pfad dem der Gegner folgen soll.
      */
-    public void followPath(Position path[]) {
+    public void followPath(PrecisePosition path[]) {
         if (path.length <= 1) {
             throw new IllegalArgumentException("Der übergebene Pfad muss mindestens 2 Elemente enthalten!");
         }
-        // An den Anfang des Pfads springen:
-        setVector(1, 1);
-        setStopXY(path[0].getX(), path[0].getY());
         currentPathPosition = 0;
         this.path = path;
         followingPath = true;

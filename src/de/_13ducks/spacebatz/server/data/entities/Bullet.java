@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
@@ -64,7 +65,7 @@ public class Bullet extends Entity {
         this.deletetick = spawntick + lifetime;
         effects = new ArrayList<>();
     }
-    
+
     public void hitChar(Entity hitChar) {
         if (hitChar instanceof Char) {
             Char target = (Char) hitChar;
@@ -88,7 +89,7 @@ public class Bullet extends Entity {
             Server.game.getEntityManager().removeEntity(netID);
         }
     }
-    
+
     public void hitGround(double x, double y) {
         for (Effect effect : effects) {
             effect.applyToPosition(getX(), getY(), null);
@@ -121,12 +122,12 @@ public class Bullet extends Entity {
     public void addEffect(Effect effect) {
         effects.add(effect);
     }
-    
+
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 8;
     }
-    
+
     @Override
     public void netPack(byte[] pack, int offset) {
         super.netPack(pack, offset);
@@ -134,7 +135,7 @@ public class Bullet extends Entity {
         Bits.putInt(pack, super.byteArraySize() + offset + 4, owner.netID);
     }
 
-   @Override
+    @Override
     public void onCollision(Entity other) {
         super.onCollision(other);
         hitChar(other);
