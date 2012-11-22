@@ -135,6 +135,18 @@ public class Entity {
             posX = x;
             posY = y;
         }
+        int fromX = (int) (getX() - size / 2);
+        int fromY = (int) (getY() - size / 2);
+        int toX = (int) (getX() + size / 2);
+        int toY = (int) (getY() + size  / 2);
+        for (int xx = fromX; xx <= toX; xx++) {
+            for (int yy = fromY; yy <= toY; yy++) {
+                if (Server.game.getLevel().getCollisionMap()[xx][yy]) {
+                    System.out.println(System.currentTimeMillis() + " Parkverbot!");
+                }
+            }
+        }
+
         movementDirty = true;
         Server.sync.updateMovement(this);
     }
