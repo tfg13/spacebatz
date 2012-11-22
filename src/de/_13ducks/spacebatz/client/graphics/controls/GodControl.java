@@ -170,7 +170,7 @@ public class GodControl implements Control {
                         break;
                     } else {
                         char c = Keyboard.getEventCharacter();
-                        if (c == ' ' || c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '>')) {
+                        if (c == ' ' || c == '_' || c == '.' || c == ',' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '>')) {
                             GameClient.terminal.input(c);
                         }
                     }

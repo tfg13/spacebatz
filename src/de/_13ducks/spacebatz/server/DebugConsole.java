@@ -344,6 +344,9 @@ public class DebugConsole {
 
 
                         break;
+                    case "maphash":
+                        System.out.println(Server.game.getLevel().getHash());
+                        break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
@@ -351,6 +354,7 @@ public class DebugConsole {
                         outStream.println("help                 - prints this help");
                         outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
+                        outStream.println("maphash              - Prints the hash of the current map");
                         outStream.println("spawnitem            - Spawns an item on every player's position");
                         outStream.println("spawnenemy           - Spawns an enemy on every player's position");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");

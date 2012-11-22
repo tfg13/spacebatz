@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server.data;
 
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
@@ -34,6 +33,10 @@ public class ServerLevel extends Level {
      * Die Liste mit Gebieten
      */
     private ArrayList<Zone> areas;
+    /**
+     * Parameter, um diese Map wieder zu erstellen.
+     */
+    private final String hash;
 
     /**
      * Konstruktor
@@ -41,8 +44,9 @@ public class ServerLevel extends Level {
      * @param xSize die Höhe des Levels
      * @param ySize die Breite des Levels
      */
-    public ServerLevel(int xSize, int ySize) {
+    public ServerLevel(int xSize, int ySize, String hash) {
         super(xSize, ySize);
+        this.hash = hash;
         areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
         destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, -1)); // -1: droppt nichts
@@ -129,5 +133,9 @@ public class ServerLevel extends Level {
             }
         }
         return null;
+    }
+    
+    public String getHash() {
+        return hash;
     }
 }
