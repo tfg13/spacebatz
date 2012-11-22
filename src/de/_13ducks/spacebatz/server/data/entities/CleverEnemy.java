@@ -24,7 +24,7 @@ public class CleverEnemy extends Enemy implements PathRequester {
     public void tick(int gameTick) {
         super.tick(gameTick);
         if (gameTick - lastRequest > 300 && !waiting) {
-            Server.game.pathfinder.requestPath(new PrecisePosition((int) getX(), (int) getY()), new PrecisePosition(target.getX(), target.getY()), this, getSize());
+            Server.game.pathfinder.requestPath(new PrecisePosition(getX(), getY()), new PrecisePosition(target.getX(), target.getY()), this, getSize());
             lastRequest = gameTick;
             waiting = true;
         }
