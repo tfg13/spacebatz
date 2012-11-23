@@ -15,7 +15,6 @@ import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.Distance;
-import de._13ducks.spacebatz.util.Position;
 
 /**
  * Ein Gegner.
@@ -64,7 +63,7 @@ public class Enemy extends Char {
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         getProperties().setHitpoints(estats.getHealthpoints());
         getProperties().setSightrange(estats.getSightrange());
-        speed = estats.getSpeed();
+        setSpeed(estats.getSpeed());
         this.enemylevel = estats.getEnemylevel();
     }
 
@@ -121,8 +120,8 @@ public class Enemy extends Char {
     }
 
     @Override
-    public void onWallCollision() {
-        super.onWallCollision();
+    public void onWallCollision(int[] collisionBlock) {
+        super.onWallCollision(collisionBlock);
         setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
     }
 

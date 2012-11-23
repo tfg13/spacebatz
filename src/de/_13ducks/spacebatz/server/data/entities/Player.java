@@ -93,7 +93,7 @@ public class Player extends ItemCarrier {
                 double length = Math.sqrt((x * x) + (y * y));
                 x /= length;
                 y /= length;
-                if (Math.abs(vecX - x) > .001 || Math.abs(vecY - y) > .001) {
+                if (Math.abs(getVecX() - x) > .001 || Math.abs(getVecY() - y) > .001) {
                     this.setVector(x, y);
                 }
             } else {

@@ -13,7 +13,6 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
@@ -45,7 +44,6 @@ public class Bullet extends Entity {
     /**
      * Erzeugt ein neues Bullet
      *
-     * @param spawntick der Tick, zu dem das Bullet erzeugt wurde bzw. mit der Bewegung begann
      * @param lifetime die Zahl der Ticks, nach der das Bullet gelöscht wird
      * @param spawnposx X-Koordinate des Anfangspunktes der Bewegung
      * @param spawnposy Y-Koordinate des Anfangspunktes der Bewegung
@@ -55,14 +53,13 @@ public class Bullet extends Entity {
      * @param netID die netID des Bullets
      * @param owner der Besitzer, i.d.R. der Char der das Bullet erzeugt hat
      */
-    public Bullet(int spawntick, int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
+    public Bullet(int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
         super(spawnposx, spawnposy, netID, (byte) 4);
-        moveStartTick = spawntick;
         this.bulletpic = pictureID;
         setVector(Math.cos(angle), Math.sin(angle));
         setSpeed(speed);
         this.owner = owner;
-        this.deletetick = spawntick + lifetime;
+        this.deletetick = Server.game.getTick() + lifetime;
         effects = new ArrayList<>();
     }
 
@@ -90,7 +87,7 @@ public class Bullet extends Entity {
         }
     }
 
-    public void hitGround(double x, double y) {
+    private void hitGround(double x, double y) {
         for (Effect effect : effects) {
             effect.applyToPosition(getX(), getY(), null);
         }
@@ -139,5 +136,17 @@ public class Bullet extends Entity {
     public void onCollision(Entity other) {
         super.onCollision(other);
         hitChar(other);
+    }
+
+    @Override
+    public void onWallCollision(int[] collidingBlock) {
+        super.onWallCollision(collidingBlock);
+        if (Server.game.getLevel().isBlockDestroyable(collidingBlock[0], collidingBlock[1])) {
+            Server.game.getLevel().destroyBlock(collidingBlock[0], collidingBlock[1]);
+            // Flächenschaden machen
+            hitGround(getX(), getY());
+        }
+        // Immer löschen, wenn Wand getroffen
+        Server.game.getEntityManager().removeEntity(netID);
     }
 }

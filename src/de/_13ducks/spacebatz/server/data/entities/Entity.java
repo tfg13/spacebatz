@@ -32,37 +32,42 @@ public class Entity {
      */
     public final byte entityTypeID;
     /**
-     * Die Bewegungsgeschwindigkeit eine Entity. Einheit: Felder/Tick
+     * Die Position dieser Einheit in X-Richtung.
      */
     private double posX;
     /**
-     * Der Tick, bei dem die Bewegung gestartet wurde. -1, falls er sich nicht bewegt.
+     * Die Position dieser Einheit in Y-Richtung.
      */
     private double posY;
     /**
+     * Die Startposition der aktuellen Bewegung. Nur für Client.
+     */
+    private double moveStartX;
+    /**
+     * Die Startposition der aktuellen Bewegung. Nur für Client.
+     */
+    private double moveStartY;
+    /**
      * Die Geschwindigkeit der Bewegung
      */
-    protected double speed = .17;
+    private double speed = .17;
     /**
      * Der Gametick in dem die Bewegung gestartet wurde
+     * (Muss für den Client gespeichert werden)
      */
-    protected int moveStartTick;
+    private int moveStartTick;
     /**
      * Die X-Koordinate des Bewegungsvektors
      */
-    protected double vecX;
+    private double vecX;
     /**
      * Die Y-Koordinate des Bewegungsvektors
      */
-    protected double vecY;
+    private double vecY;
     /**
-     * Die aktuelle Bewegung nocheinmal repräsentiert. Nur aktuell wenn moveDirty == false.
+     * True, wenn die Einheit sich gerade bewegt.
      */
-    private Movement movement;
-    /**
-     * Ob das aktuelle Movement stimmt.
-     */
-    private boolean movementDirty = true;
+    private boolean moving = false;
     /**
      * Die aktuelle Positon auf der EntityMap.
      */
@@ -94,7 +99,7 @@ public class Entity {
      * @return true, wenn die Einheit sich gerade bewegt
      */
     public boolean isMoving() {
-        return getMoveStartTick() != -1;
+        return moving;
     }
 
     /**
@@ -105,106 +110,91 @@ public class Entity {
      * @param x die X-Stop-Koordinate oder NaN
      * @param y die Y-Stop-Koordinate oder NaN
      */
-    public void setStopXY(double x, double y) {
-        /*
-         * Diese Methode ist nicht (!) das gleiche wie das alte setStillX und danach setStillY.
-         * Das konnte böse Wechselwirkungsfehler erzeugen, die dazu führen, dass Einheiten in der Wand stecken bleiben.
-         */
+    private void setStopXY(double x, double y) {
         boolean xCont = Double.isNaN(x);
         boolean yCont = Double.isNaN(y);
         if (xCont && yCont) {
             throw new IllegalArgumentException("Cannot setStop without stopping at all! (x=y=NaN)");
         }
-        if (moveStartTick == -1) {
+        if (!moving) {
             throw new IllegalArgumentException("Cannot setStop, Entity is not moving at all!");
         }
         if (xCont) {
             posY = y;
             vecY = 0;
+            moveStartTick = Server.game.getTick();
+            moveStartX = posX;
+            moveStartY = posY;
             if (vecX == 0) {
-                moveStartTick = -1;
+                moving = false;
             }
         } else if (yCont) {
             posX = x;
             vecX = 0;
+            moveStartTick = Server.game.getTick();
+            moveStartX = posX;
+            moveStartY = posY;
             if (vecY == 0) {
-                moveStartTick = -1;
+                moving = false;
             }
         } else {
             stopMovement();
             posX = x;
             posY = y;
         }
-        int fromX = (int) (getX() - size / 2);
-        int fromY = (int) (getY() - size / 2);
-        int toX = (int) (getX() + size / 2);
-        int toY = (int) (getY() + size  / 2);
-        for (int xx = fromX; xx <= toX; xx++) {
-            for (int yy = fromY; yy <= toY; yy++) {
-                if (Server.game.getLevel().getCollisionMap()[xx][yy]) {
-                    System.out.println(System.currentTimeMillis() + " Parkverbot!");
-                }
-            }
-        }
-
-        movementDirty = true;
-        Server.sync.updateMovement(this);
     }
 
     /**
-     * Stoppt die Einheit sofort. Berechnet den Aufenthaltsort anhand des aktuellen Ticks. Die Bewegung ist danach
-     * beendet. Es passiert nichts, wenn die Einheit schon steht. Nicht zur Kollisionsberechnung geeignet, da die
-     * Einheit die Bewegung dieses Ticks noch vollständig ausführt. Besser setStop verwenden.
+     * Stoppt die Einheit sofort.
+     * Wenn die Einheit sich gar nicht bewegt passiert nichts.
      */
     public void stopMovement() {
+        moving = false;
         posX = getX();
         posY = getY();
         moveStartTick = -1;
-        movementDirty = true;
         Server.sync.updateMovement(this);
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit
-     * ein.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit.
+     * Einheiten verschieben höchstens ein mal pro Tick ihre Position. (das ist normale Bewegung)
+     * Ansonsten ist diese Position konstant.
      *
-     * @return Die echte Position X dieses Chars.
+     * @return Die X-Position dieses Chars
      */
     public double getX() {
-        if (isMoving()) {
-            return posX + ((Server.game.getTick() - getMoveStartTick()) * getSpeed() * vecX);
-        }
         return posX;
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Berechnet Bewegungen anhand des aktuellen Gameticks mit
-     * ein.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit.
+     * Einheiten verschieben häcshtens ein mal pro Tick ihre Position. (das ist normale Bewegung)
+     * Ansonsten ist diese Position konstant.
      *
-     * @return Die echte Position X dieses Chars.
+     * @return Die Y-Position dieses Chars
      */
     public double getY() {
-        if (isMoving()) {
-            return posY + ((Server.game.getTick() - getMoveStartTick()) * getSpeed() * vecY);
-        }
         return posY;
     }
 
     /**
-     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Berechnet
-     * falls nötig die aktuelle Position zuerst neu. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht
-     * beeinflussen. Das geht nur mit setSpeed. Die Werte dürfen nicht beide 0 sein!
+     * Setzt den Bewegungsvektor dieses Chars neu.
+     * Die Einheit bewegt sich nach dem Aufruf in diese Richtung.
+     * Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen.
+     * Das geht nur mit setSpeed.
+     * x und y dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
         if (x == 0 && y == 0) {
             throw new IllegalArgumentException("Cannot set moveVector, x = y = 0 is not allowed!");
         }
-        if (isMoving()) {
-            stopMovement();
-        }
         normalizeAndSetVector(x, y);
+        moving = true;
+        // Das ist eine neue Client-Bewegung
         moveStartTick = Server.game.getTick();
-        movementDirty = true;
+        moveStartX = posX;
+        moveStartY = posY;
         Server.sync.updateMovement(this);
     }
 
@@ -218,9 +208,9 @@ public class Entity {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Initialisiert die Bewegung einer Einheit
-     * neu, damit Geschwindigkeitsänderungen während der Bewegung möglich sind. Sollte daher wenn möglich vor dem Start
-     * der Bewegung aufgerufen werden.
+     * Setzt die Geschwindigkeit dieser Einheit.
+     * Es sind nur Werte > 0 erlaubt.
+     * Kann auch während einer Bewegung aufgerufen werden
      *
      * @param speed die neue Geschwindigkeit > 0
      */
@@ -228,14 +218,13 @@ public class Entity {
         if (speed <= 0) {
             throw new IllegalArgumentException("Cannot set speed: Must be greater than zero");
         }
-        if (isMoving()) {
-            stopMovement();
-            this.speed = speed;
-            setVector(vecX, vecY);
-            movementDirty = true;
+        this.speed = speed;
+        if (moving) {
+            // Neue Client-Bewegung simulieren
+            moveStartTick = Server.game.getTick();
+            moveStartX = posX;
+            moveStartY = posY;
             Server.sync.updateMovement(this);
-        } else {
-            this.speed = speed;
         }
     }
 
@@ -254,45 +243,15 @@ public class Entity {
     }
 
     public Movement getMovement() {
-        if (movementDirty) {
-            computeMovement();
-        }
-        return movement;
+        return computeMovement();
     }
 
-    private void computeMovement() {
+    private Movement computeMovement() {
         if (isMoving()) {
-            movement = new Movement(posX, posY, vecX, vecY, getMoveStartTick(), getSpeed());
+            return new Movement(moveStartX, moveStartY, vecX, vecY, moveStartTick, speed);
         } else {
-            movement = new Movement(posX, posY, 0, 0, -1, 0);
+            return new Movement(posX, posY, 0, 0, -1, 0);
         }
-    }
-
-    /**
-     * Extrapoliert die Bewegung dieses Chars, d.h. berechnet die Position für einige Ticks vorraus.
-     *
-     * @return die X-Koordinate des Chars nach der angegebenen Zahl Ticks
-     */
-    public double extrapolateX(int ticks) {
-        return this.posX + vecX * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
-    }
-
-    /**
-     * Extrapoliert die Bewegung dieses Chars, d.h. berechnet die Position für einige Ticks vorraus.
-     *
-     * @return die Y-Koordinate des Chars nach der angegebenen Zahl Ticks
-     */
-    public double extrapolateY(int ticks) {
-        return this.posY + vecY * getSpeed() * (Server.game.getTick() + ticks - getMoveStartTick());
-    }
-
-    /**
-     * Gibt den Gametick in dem die Bewegung gestartet wurde zurück
-     *
-     * @return der gametick in dem die Bewegung gestartet wurde
-     */
-    public int getMoveStartTick() {
-        return moveStartTick;
     }
 
     /**
@@ -362,6 +321,151 @@ public class Entity {
      * Berechnet einen gameTick für die Entity.
      */
     public void tick(int gameTick) {
+        if (moving) { // Einheit bewegt sich
+            double oldX = posX;
+            double oldY = posY;
+            double predictedX = posX + speed * vecX;
+            double predictedY = posY + speed * vecY;
+            // Bewegung einfach mal setzen, und dann die Kollission das prüfen lassen
+            posX = predictedX;
+            posY = predictedY;
+            int[] colBlock = computeCollision(oldX, oldY, posX, posY);
+            // Hat sich unsere Bewegung geändert?
+            if (posX != predictedX || posY != predictedY) {
+                // Client(s) informieren
+                Server.sync.updateMovement(this);
+                // Unterklassen informieren
+                onWallCollision(colBlock);
+            }
+        }
+    }
+
+    /**
+     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können.
+     * Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen an der aktuellen Bewegung vor.
+     * Liefert den Block zurück, mit dem wir als nächstes kollidieren.
+     * @param fromX Startpunkt X (muss frei sein)
+     * @param fromY Startpunkt Y (muss frei sein)
+     * @param toX Zielpunkt X
+     * @param toY Zielpunkt Y
+     * @return falls Kollision: Erster Kollisionsblock, sonst undefiniert
+     */
+    private int[] computeCollision(double fromX, double fromY, double toX, double toY) {
+        // Der Vektor der Bewegung:
+        double deltaX = toX - fromX;
+        double deltaY = toY - fromY;
+        // Anfangs- und Ziel-X des Gebiets das gescannt wird
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - size / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + size / 2) + 1;
+        // Anfangs- und Ziel-Y des Gebiets das gescannt wird
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - size / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + size / 2) + 1;
+
+
+        // Gesucht ist der Block, mit dem wir als erstes kollidieren
+        // der Faktor für die weiteste Position auf die wir ohne Kolision vorrücken können: start + d * vector
+        double d;
+        // das kleinste gefundene d
+        double smallestD = Double.MAX_VALUE;
+        // Variablen, die wir in jedem Schleifendurchlauf brauchen:
+        double blockMidX, blockMidY, d1, d2;
+        // Den Block, mit dem wir kollidieren zwischenspeichern
+        int[] collisionBlock = new int[2];
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
+            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
+                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = x + 0.5;
+                    blockMidY = y + 0.5;
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromX) / deltaX;
+
+                    // das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
+                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
+
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((size / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                            collisionBlock[0] = x;
+                            collisionBlock[1] = y;
+                        }
+                    }
+                }
+            }
+        }
+        double sx = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
+            sx = fromX + smallestD * deltaX;
+        }
+
+        // Für die Y-Berechung die Werte zurücksetzten, für die Block-Berechung aber behalten!
+        double globalsmallestD = smallestD;
+        smallestD = Double.MAX_VALUE;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
+            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
+                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
+
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = x + 0.5;
+                    blockMidY = y + 0.5;
+                    // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
+                    // Das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
+
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((size / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                        // Näher als die von X?
+                        if (d < globalsmallestD) {
+                            globalsmallestD = d;
+                            collisionBlock[0] = x;
+                            collisionBlock[1] = y;
+                        }
+                    }
+                }
+            }
+        }
+        double sy = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann
+            sy = fromY + smallestD * deltaY;
+        }
+
+        // Bewegung koorigieren?
+        if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
+            setStopXY(sx, sy);
+        }
+        
+        return collisionBlock;
     }
 
     /**
@@ -375,6 +479,24 @@ public class Entity {
     /**
      * Wird aufgerufen, wenn die Entity mit einer wand kollidiert.
      */
-    public void onWallCollision() {
+    public void onWallCollision(int[] collisionBlock) {
+    }
+    
+    /**
+     * Liefert den Vektor, in den sich diese Einheit gerade bewegt.
+     * Undefiniert, falls die Einheit sich nicht bewegt.
+     * @return X-Richtungsvektor
+     */
+    protected double getVecX() {
+        return vecX;
+    }
+    
+    /**
+     * Liefert den Vektor, in den sich diese Einheit gerade bewegt.
+     * Undefiniert, falls die Einheit sich nicht bewegt.
+     * @return Y-Richtungsvektor
+     */
+    protected double getVecY() {
+        return vecY;
     }
 }
