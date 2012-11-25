@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -296,6 +294,10 @@ public class MapParameters {
         HashMap<String, String> spawnSettings = new HashMap<>();
         spawnSettings.put("PRIORITY", String.valueOf(4));
         settings.put("spawn", spawnSettings);
+
+        HashMap<String, String> exampleQuestSettings = new HashMap<>();
+        exampleQuestSettings.put("PRIORITY", String.valueOf(5));
+        settings.put("examplequest", exampleQuestSettings);
 
         HashMap<String, String> rasterSettings = new HashMap<>();
         rasterSettings.put("sizex", String.valueOf(128));

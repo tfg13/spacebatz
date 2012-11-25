@@ -2,6 +2,8 @@ package de._13ducks.spacebatz.util.mapgen;
 
 import com.vividsolutions.jts.geom.GeometryCollection;
 import de._13ducks.spacebatz.server.data.ServerLevel;
+import de._13ducks.spacebatz.server.data.quests.Quest;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -15,12 +17,13 @@ public class InternalMap {
     public HashMap<String, Object> metadata = new HashMap<>();
     public int[][] groundTex;
     public boolean[][] collision;
+    public ArrayList<Quest> quests = new ArrayList<>();
 
     /**
      * Wandelt die interne Map-Darstellung in ein ServerLevel um.
      */
     public ServerLevel toServerLevel() {
-        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length);
+        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, quests);
         level.setGround(groundTex);
         for (int x = 0; x < groundTex.length; x++) {
             System.arraycopy(collision[x], 0, level.getCollisionMap()[x], 0, groundTex[0].length);

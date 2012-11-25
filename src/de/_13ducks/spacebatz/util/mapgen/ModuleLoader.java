@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.util.mapgen.modules.BorderGenerator;
+import de._13ducks.spacebatz.util.mapgen.modules.ExampleQuestCreator;
 import de._13ducks.spacebatz.util.mapgen.modules.PerlinTerrainFormer;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonVisualizer;
@@ -27,6 +28,7 @@ public final class ModuleLoader {
             addModule(new BorderGenerator());
             addModule(new PerlinTerrainFormer());
             addModule(new SpawnFormer());
+            addModule(new ExampleQuestCreator());
         }
         return map;
     }

@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.util.mapgen.modules;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
@@ -83,7 +82,12 @@ public class Rasterizer extends Module {
                     map.groundTex[x][y] = 2;
                     map.collision[x][y] = true;
                 } else {
-                    map.groundTex[x][y] = 4;
+                    if (poly.spawn || poly.texture == 0) {
+                        map.groundTex[x][y] = 4;
+                    } else {
+                        // Angeforderte Textur setzen
+                        map.groundTex[x][y] = poly.texture;
+                    }
                 }
             }
         }

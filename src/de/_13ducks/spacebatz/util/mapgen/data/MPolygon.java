@@ -28,4 +28,9 @@ public class MPolygon extends Polygon {
      * Ist dies der (einzige) Spawn-Polygon?
      */
     public boolean spawn = false;
+    /**
+     * Spezial-Textur angefordert?
+     * (Wird derzeit nur für Freiflächen beachtet)
+     */
+    public int texture;
 }

@@ -17,7 +17,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.levelgenerator.LevelGenerator;
+import de._13ducks.spacebatz.server.data.quests.Quest;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
@@ -72,6 +72,10 @@ public class Game {
      * Der wegfinder.
      */
     public AStarPathfinder pathfinder;
+    /**
+     * Der Questmanager.
+     */
+    public final QuestManager questManager = new QuestManager();
 
     /**
      * Konstruktor
@@ -98,6 +102,11 @@ public class Game {
 
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+
+        // Alle Quests dieses Levels adden
+        for (Quest quest : level.quests) {
+            questManager.addQuest(quest);
         }
     }
 
@@ -138,6 +147,8 @@ public class Game {
      * Berechnet die GameLogic für einen Tick.
      */
     public void gameTick() {
+        // Quests ticken
+        questManager.tick();
         // den tick für alle Entities berechnen:
         Iterator<Entity> iter = getEntityManager().getEntityIterator();
         while (iter.hasNext()) {
