@@ -5,7 +5,6 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import java.util.Iterator;
 
