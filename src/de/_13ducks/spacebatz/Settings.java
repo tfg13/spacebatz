@@ -96,7 +96,7 @@ public final class Settings {
     /**
      * Die HP der Chars
      */
-    public static final int CHARHEALTH = 10;
+    public static final int CHARHEALTH = 100;
     /**
      * Default-Level des netGraphen. 0 - Aus 1 - + Netzwerkdebug 2 - + GameDebug
      */

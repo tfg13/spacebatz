@@ -22,10 +22,7 @@ public class PoisonEffect extends Effect {
 
     @Override
     public boolean tick() {
-        affectedChar.getProperties().setHitpoints(affectedChar.getProperties().getHitpoints() - 1);
-        if (affectedChar.getProperties().getHitpoints() < 0) {
-            Server.game.getEntityManager().removeEntity(affectedChar.netID);
-        }
+        affectedChar.decreaseHitpoints(1);
         remainingTime--;
         if (remainingTime < 0) {
             return false;

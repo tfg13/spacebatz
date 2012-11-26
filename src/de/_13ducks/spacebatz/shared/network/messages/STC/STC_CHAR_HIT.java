@@ -31,10 +31,14 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
         byte victimdies = data[8];
 
         if (GameClient.netIDMap.get(netIDVictim) instanceof PlayerCharacter) {
-            // HP abziehen, wenn eigener Spieler
-            PlayerCharacter p = (PlayerCharacter) GameClient.netIDMap.get(netIDVictim);
-            if (p == GameClient.getPlayer()) {
 
+            PlayerCharacter p = (PlayerCharacter) GameClient.netIDMap.get(netIDVictim);
+            
+            // Schadenszahl rendern:
+            GameClient.getEngine().getGraphics().createDamageNumber(damage, p.getX(), p.getY());
+            
+            if (p == GameClient.getPlayer()) {
+                // HP abziehen, wenn eigener Spieler
                 if (victimdies == 1) {
 
                     // Weil es noch keinen richtigen Respawn gibt, werden die HP hier wieder hochgesetzt

@@ -41,6 +41,10 @@ public class Player extends ItemCarrier {
      * Der Skilltree, der bestimmt welche Fähigkeiten verfügbar sind.
      */
     private SkillTree skillTree;
+    /**
+     * Spieler ist tot und wartet auf Respawn
+     */
+    private boolean dead;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann

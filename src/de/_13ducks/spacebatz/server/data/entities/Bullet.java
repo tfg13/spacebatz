@@ -13,7 +13,6 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
-import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
@@ -72,18 +71,12 @@ public class Bullet extends Entity {
             for (Effect effect : effects) {
                 effect.applyToChar(target);
             }
+            //c.decreaseHitpoints();
             // AoE-Effekte auslösen:
             for (Effect effect : effects) {
                 effect.applyToPosition(getX(), getY(), target);
             }
-            // Wenn das Ziel stirbt es entfernen und loot dropen:
-            if (target.getProperties().getHitpoints() <= 0) {
-                Server.game.getEntityManager().removeEntity(target.netID);
-                if (target instanceof Enemy) {
-                    Enemy e = (Enemy) target;
-                    DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
-                }
-            }
+
             // Das Bullet entfernen:
             Server.game.getEntityManager().removeEntity(netID);
         }

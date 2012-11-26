@@ -12,7 +12,9 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.Distance;
 
@@ -32,8 +34,7 @@ public class Enemy extends Char {
      */
     private int enemylevel;
     /**
-     * Der Pfad dem der Gegner gerade folgt.
-     * Enthält Start- und Zielfeld.
+     * Der Pfad dem der Gegner gerade folgt. Enthält Start- und Zielfeld.
      */
     private PrecisePosition[] path;
     /**
@@ -126,8 +127,7 @@ public class Enemy extends Char {
     }
 
     /**
-     * Lässt den Gegner einen Pfad entlang laufen.
-     * Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
+     * Lässt den Gegner einen Pfad entlang laufen. Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
      *
      * @param path der Pfad dem der Gegner folgen soll.
      */
@@ -169,5 +169,11 @@ public class Enemy extends Char {
      */
     public boolean isFollowingPath() {
         return followingPath;
+    }
+
+    @Override
+    public void decreaseHitpoints(int damage) {
+        super.decreaseHitpoints(damage);
+        DropManager.dropItem(getX(), getY(), enemylevel);
     }
 }
