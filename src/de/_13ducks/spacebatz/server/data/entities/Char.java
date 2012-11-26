@@ -11,7 +11,6 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
@@ -28,7 +27,7 @@ public abstract class Char extends Entity {
     /**
      * Die Eigenschaften des Chars (Hitpoints, Rüstung etc).
      */
-    private PropertyList properties;
+    protected PropertyList properties;
     /**
      * Der Tick, ab dem der Char wieder angreifen darf
      */
@@ -116,9 +115,6 @@ public abstract class Char extends Entity {
      */
     public void decreaseHitpoints(int damage) {
         properties.setHitpoints(properties.getHitpoints() - damage);
-        if (properties.getHitpoints() < 0) {
-            Server.game.getEntityManager().removeEntity(netID);
-        }
         STC_CHAR_HIT.sendCharHit(netID, damage, false);
     }
 }

@@ -174,6 +174,9 @@ public class Enemy extends Char {
     @Override
     public void decreaseHitpoints(int damage) {
         super.decreaseHitpoints(damage);
-        DropManager.dropItem(getX(), getY(), enemylevel);
+        if (properties.getHitpoints() < 0) {
+            Server.game.getEntityManager().removeEntity(netID);
+            DropManager.dropItem(getX(), getY(), enemylevel);
+        }
     }
 }
