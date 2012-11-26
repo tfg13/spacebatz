@@ -16,8 +16,7 @@ import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
- * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und
- * Bewegungsinformationen
+ * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und Bewegungsinformationen
  *
  * @author michael
  */
@@ -52,8 +51,7 @@ public class Entity {
      */
     private double speed = .17;
     /**
-     * Der Gametick in dem die Bewegung gestartet wurde
-     * (Muss für den Client gespeichert werden)
+     * Der Gametick in dem die Bewegung gestartet wurde (Muss für den Client gespeichert werden)
      */
     private int moveStartTick;
     /**
@@ -103,9 +101,8 @@ public class Entity {
     }
 
     /**
-     * Setzt die Position dieser Einheit auf den angegebenen Wert. Wenn entweder x oder y (nicht beide!) NaN sind, wird
-     * die Bewegung nur in eine Richtung angehalten. Darf nicht aufgerufen werden, wenn sich die Einheit gar nicht
-     * bewegt.
+     * Setzt die Position dieser Einheit auf den angegebenen Wert. Wenn entweder x oder y (nicht beide!) NaN sind, wird die Bewegung nur in eine Richtung angehalten. Darf nicht aufgerufen werden, wenn
+     * sich die Einheit gar nicht bewegt.
      *
      * @param x die X-Stop-Koordinate oder NaN
      * @param y die Y-Stop-Koordinate oder NaN
@@ -145,8 +142,7 @@ public class Entity {
     }
 
     /**
-     * Stoppt die Einheit sofort.
-     * Wenn die Einheit sich gar nicht bewegt passiert nichts.
+     * Stoppt die Einheit sofort. Wenn die Einheit sich gar nicht bewegt passiert nichts.
      */
     public void stopMovement() {
         moving = false;
@@ -157,9 +153,7 @@ public class Entity {
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit.
-     * Einheiten verschieben höchstens ein mal pro Tick ihre Position. (das ist normale Bewegung)
-     * Ansonsten ist diese Position konstant.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Einheiten verschieben höchstens ein mal pro Tick ihre Position. (das ist normale Bewegung) Ansonsten ist diese Position konstant.
      *
      * @return Die X-Position dieses Chars
      */
@@ -168,9 +162,7 @@ public class Entity {
     }
 
     /**
-     * Liefert die aktuelle Aufenthaltsposition dieser Einheit.
-     * Einheiten verschieben häcshtens ein mal pro Tick ihre Position. (das ist normale Bewegung)
-     * Ansonsten ist diese Position konstant.
+     * Liefert die aktuelle Aufenthaltsposition dieser Einheit. Einheiten verschieben häcshtens ein mal pro Tick ihre Position. (das ist normale Bewegung) Ansonsten ist diese Position konstant.
      *
      * @return Die Y-Position dieses Chars
      */
@@ -179,11 +171,8 @@ public class Entity {
     }
 
     /**
-     * Setzt den Bewegungsvektor dieses Chars neu.
-     * Die Einheit bewegt sich nach dem Aufruf in diese Richtung.
-     * Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen.
-     * Das geht nur mit setSpeed.
-     * x und y dürfen nicht beide 0 sein!
+     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen. Das geht
+     * nur mit setSpeed. x und y dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
         if (x == 0 && y == 0) {
@@ -208,9 +197,7 @@ public class Entity {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit.
-     * Es sind nur Werte > 0 erlaubt.
-     * Kann auch während einer Bewegung aufgerufen werden
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Kann auch während einer Bewegung aufgerufen werden
      *
      * @param speed die neue Geschwindigkeit > 0
      */
@@ -255,9 +242,8 @@ public class Entity {
     }
 
     /**
-     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten!
-     * Implementierungen von Entity müssen diese Methode überschreiben und super.byteArraySize() + Eigenbedarf
-     * zurückgeben!
+     * Wie groß die Byte-Representation dieses Entitys ist. Die Größe darf 32 auf keinen Fall überschreiten! Implementierungen von Entity müssen diese Methode überschreiben und super.byteArraySize() +
+     * Eigenbedarf zurückgeben!
      *
      * @return die größe des byte[]'s, das netPack() braucht.
      */
@@ -266,10 +252,9 @@ public class Entity {
     }
 
     /**
-     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array
-     * muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese Methode überschreiben, falls sie
-     * irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden
-     * müssen erst super.netPack() aufrufen, und dann selber den Puffer ab super.byteArraySize() + offset befüllen.
+     * Schreibt die für eine Netzwerkübertragung unbedingt nötigen Werte dieses Chars in das gegebene Array. Das Array muss mindestens byteArraySize() + offset groß sein. Unterklassen müssen diese
+     * Methode überschreiben, falls sie irgendwelche zusätzlichen Daten haben, die nicht in den Enemytypes oder ähnlich stehen. Überschriebene Methoden müssen erst super.netPack() aufrufen, und dann
+     * selber den Puffer ab super.byteArraySize() + offset befüllen.
      *
      * @param b der Puffer, in den geschrieben ist.
      */
@@ -279,8 +264,8 @@ public class Entity {
     }
 
     /**
-     * Liefert die Richtung in die sich diese Einheit gerade bewegt. Die Angabe ist eine Fließkommazahl von 0 bis 2PI im
-     * üblichen Einheitskreisverfahren. Das Verhalten, wenn die Einheit sich nicht bewegt ist nicht definiert.
+     * Liefert die Richtung in die sich diese Einheit gerade bewegt. Die Angabe ist eine Fließkommazahl von 0 bis 2PI im üblichen Einheitskreisverfahren. Das Verhalten, wenn die Einheit sich nicht
+     * bewegt ist nicht definiert.
      *
      * @return die Richtung in die sich diese Einheit gerade bewegt
      */
@@ -318,6 +303,13 @@ public class Entity {
     }
 
     /**
+     * @param size the size to set
+     */
+    protected void setSize(double size) {
+        this.size = size;
+    }
+
+    /**
      * Berechnet einen gameTick für die Entity.
      */
     public void tick(int gameTick) {
@@ -341,9 +333,9 @@ public class Entity {
     }
 
     /**
-     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können.
-     * Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen an der aktuellen Bewegung vor.
-     * Liefert den Block zurück, mit dem wir als nächstes kollidieren.
+     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können. Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen an der aktuellen
+     * Bewegung vor. Liefert den Block zurück, mit dem wir als nächstes kollidieren.
+     *
      * @param fromX Startpunkt X (muss frei sein)
      * @param fromY Startpunkt Y (muss frei sein)
      * @param toX Zielpunkt X
@@ -355,11 +347,11 @@ public class Entity {
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
         // Anfangs- und Ziel-X des Gebiets das gescannt wird
-        int moveAreaStartX = (int) (Math.min(fromX, toX) - size / 2);
-        int moveAreaEndX = (int) (Math.max(fromX, toX) + size / 2) + 1;
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - getSize() / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + getSize() / 2) + 1;
         // Anfangs- und Ziel-Y des Gebiets das gescannt wird
-        int moveAreaStartY = (int) (Math.min(fromY, toY) - size / 2);
-        int moveAreaEndY = (int) (Math.max(fromY, toY) + size / 2) + 1;
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - getSize() / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + getSize() / 2) + 1;
 
 
         // Gesucht ist der Block, mit dem wir als erstes kollidieren
@@ -380,8 +372,8 @@ public class Entity {
                     blockMidX = x + 0.5;
                     blockMidY = y + 0.5;
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromX) / deltaX;
-                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromX) / deltaX;
+                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
@@ -393,7 +385,7 @@ public class Entity {
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
 
-                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((size / 2.0) + 0.5)) {
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -426,8 +418,8 @@ public class Entity {
                     blockMidY = y + 0.5;
                     // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
-                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + size / 2.0)) - fromY) / deltaY;
+                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
 
@@ -437,7 +429,7 @@ public class Entity {
 
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
 
-                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((size / 2.0) + 0.5)) {
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
@@ -464,7 +456,7 @@ public class Entity {
         if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
             setStopXY(sx, sy);
         }
-        
+
         return collisionBlock;
     }
 
@@ -481,19 +473,19 @@ public class Entity {
      */
     public void onWallCollision(int[] collisionBlock) {
     }
-    
+
     /**
-     * Liefert den Vektor, in den sich diese Einheit gerade bewegt.
-     * Undefiniert, falls die Einheit sich nicht bewegt.
+     * Liefert den Vektor, in den sich diese Einheit gerade bewegt. Undefiniert, falls die Einheit sich nicht bewegt.
+     *
      * @return X-Richtungsvektor
      */
     protected double getVecX() {
         return vecX;
     }
-    
+
     /**
-     * Liefert den Vektor, in den sich diese Einheit gerade bewegt.
-     * Undefiniert, falls die Einheit sich nicht bewegt.
+     * Liefert den Vektor, in den sich diese Einheit gerade bewegt. Undefiniert, falls die Einheit sich nicht bewegt.
+     *
      * @return Y-Richtungsvektor
      */
     protected double getVecY() {

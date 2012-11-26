@@ -56,8 +56,8 @@ public final class Settings {
      */
     public static final int SERVER_UDPPORT2 = 13949;
     /**
-     * Die Server-Tickrate in default-Delay zwischen Ticks. 15 entspricht also einer Tickrate von 66,66666666...
-     * Wert darf nicht negativ sein, also nicht über 127 steigen. Die minimal mögliche Server-Tickrate ist also etwa 8 Ticks/s
+     * Die Server-Tickrate in default-Delay zwischen Ticks. 15 entspricht also einer Tickrate von 66,66666666... Wert darf nicht negativ sein, also nicht über 127 steigen. Die minimal mögliche
+     * Server-Tickrate ist also etwa 8 Ticks/s
      */
     public static final byte SERVER_TICKRATE = 15;
     /**
@@ -69,9 +69,8 @@ public final class Settings {
      */
     public static final int SERVER_MAXPLAYERS = 32;
     /**
-     * Wieviele Pakete à 1500 Bytes maximal pro Tick zu einem Client verschickt werden können.
-     * Das ist eine Beschränkung des Peak-Werts für einzelne Ticks, es wird nicht erwartet, das Netzwerk
-     * über längere Zeit so viele Pakete pro Tick verträgt.
+     * Wieviele Pakete à 1500 Bytes maximal pro Tick zu einem Client verschickt werden können. Das ist eine Beschränkung des Peak-Werts für einzelne Ticks, es wird nicht erwartet, das Netzwerk über
+     * längere Zeit so viele Pakete pro Tick verträgt.
      */
     public static final int SERVER_MAXPACKPERCLIENT = 5;
     /**
@@ -90,6 +89,10 @@ public final class Settings {
      * Die Größe der Chars für Kollision
      */
     public static final double CHARSIZE = 1.8;
+    /**
+     * Die Größe der Bullets für Kollision
+     */
+    public static final double BULLETSIZE = 0.1;
     /**
      * Die HP der Chars
      */
