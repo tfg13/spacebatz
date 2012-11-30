@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
+import de._13ducks.spacebatz.server.ai.astar.PathRequest;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.data.Client;
@@ -87,6 +88,7 @@ public class DebugConsole {
         reader = new BufferedReader(new java.io.InputStreamReader(System.in));
         commands = new ConcurrentLinkedQueue<>();
         Thread debugConsoleThread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 while (true) {
@@ -104,6 +106,7 @@ public class DebugConsole {
         try {
             final PrintStream realout = System.out;
             outStream = new PrintStream(new OutputStream() {
+
                 @Override
                 public void write(int b) throws IOException {
                     // Eventuell an die rcons verteilen
@@ -116,6 +119,7 @@ public class DebugConsole {
                 }
             });
             System.setOut(new PrintStream(new OutputStream() {
+
                 StringBuffer buf = new StringBuffer();
 
                 @Override
@@ -159,6 +163,7 @@ public class DebugConsole {
             rconOutput.add(output);
             rcons.put(c.clientID, br);
             Thread rconReader = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -312,6 +317,7 @@ public class DebugConsole {
                         double size = Double.parseDouble(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
                         Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY()), new PrecisePosition(targetX, targetY), new PathRequester() {
+
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
                                 synchronized (GodControl.debugPath) {
@@ -327,6 +333,7 @@ public class DebugConsole {
                         double size1 = Double.parseDouble(words[3]);
                         Player player1 = Server.game.clients.values().iterator().next().getPlayer();
                         Server.game.pathfinder.requestPath(new PrecisePosition(player1.getX(), player1.getY()), new PrecisePosition(targetX1, targetY1), new PathRequester() {
+
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
                                 for (int i = 0; i < path.length; i++) {
@@ -341,6 +348,7 @@ public class DebugConsole {
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
                         System.out.println("DLASDLSADASLDSALDSALD: " + player3.getX() + " / " + player3.getY());
+                        PathRequest.getLeftBotPosition(new PrecisePosition(player3.getX(), player3.getY()), player3.getSize());
 
 
                         break;

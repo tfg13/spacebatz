@@ -8,7 +8,7 @@ import de._13ducks.spacebatz.util.Position;
  *
  * @author michael
  */
-class PathRequest {
+public class PathRequest {
 
     /** Die Startposition. */
     private Position start;
@@ -42,7 +42,8 @@ class PathRequest {
         int leftBotFieldX = (int) (start.getX() - size / 2);
         int leftBotFieldY = (int) (start.getY() - size / 2);
 
-        if(Server.game.getLevel().getCollisionMap()[leftBotFieldX][leftBotFieldY]){
+
+        if (Server.game.getLevel().getCollisionMap()[leftBotFieldX][leftBotFieldY]) {
             System.out.println("ASDSADSADASDASDASDASD");
         }
         // Die Position auf die die Entity gehen muss, das sie in das (am Raster ausgerichtete) Kollisionsrechteck passt:
@@ -115,5 +116,61 @@ class PathRequest {
 
     public int getAge() {
         return Server.game.getTick() - creationTick;
+    }
+
+    public static Position getLeftBotPosition(PrecisePosition actualPosition, double size) {
+        // oben, links, rechts und unten auf kollision prüfen
+        boolean topCollision = false, rightCollision = false, botCollision = false, leftCollision = false;
+
+
+        for (int x = (int) (actualPosition.getX() - size / 2); x <= (int) (actualPosition.getX() + size / 2); x++) {
+            if (Server.game.getLevel().getCollisionMap()[x][(int) (actualPosition.getY() + (size / 2 + 0.1))]) {
+                topCollision = true;
+                System.out.println("top");
+            }
+            if (Server.game.getLevel().getCollisionMap()[x][(int) (actualPosition.getY() - (size / 2 + 0.1))]) {
+                botCollision = true;
+                System.out.println("bot");
+            }
+        }
+
+        for (int y = (int) (actualPosition.getY() - size / 2); y <= (int) (actualPosition.getY() + size / 2); y++) {
+            if (Server.game.getLevel().getCollisionMap()[(int) (actualPosition.getX() + (size / 2 + 0.1))][y]) {
+                rightCollision = true;
+                System.out.println("right");
+
+            }
+            if (Server.game.getLevel().getCollisionMap()[(int) (actualPosition.getX() - (size / 2 + 0.1))][y]) {
+                leftCollision = true;
+                System.out.println("left");
+            }
+        }
+
+        // botleft feld normal berechnen:
+        int leftBotFieldX = (int) (actualPosition.getX() - size / 2);
+        int leftBotFieldY = (int) (actualPosition.getY() - size / 2);
+
+        // botleft feld von den kollisionen weg verschieben (kollision rechts -> nach links verschieben)
+
+        if (topCollision) {
+            leftBotFieldY--;
+        } else if (rightCollision) {
+            leftBotFieldX--;
+        } else if (botCollision) {
+            leftBotFieldY++;
+        } else if (leftCollision) {
+            leftBotFieldX++;
+        }
+        // bei kolliison oben und unten oder links und rechts fehler!
+
+        if ((topCollision && botCollision) || (leftCollision && rightCollision)) {
+            throw new IllegalStateException("OMG Entity ist zwischen Wänden eingeklemmt!");
+        }
+
+
+
+
+
+        return null;
     }
 }
