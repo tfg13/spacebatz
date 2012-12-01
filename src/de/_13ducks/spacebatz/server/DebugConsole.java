@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
+import de._13ducks.spacebatz.server.ai.astar.PathRequest;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.data.Client;
@@ -340,8 +341,9 @@ public class DebugConsole {
 
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
-                        System.out.println("DLASDLSADASLDSALDSALD: " + player3.getX() + " / " + player3.getY());
-
+                        System.out.println("Playerpos:: " + player3.getX() + " / " + player3.getY());
+                        Position p = PathRequest.getLeftBotPosition(new PrecisePosition(player3.getX(), player3.getY()), player3.getSize());
+                        System.out.println("LB-Position: " + p.toString());
 
                         break;
                     case "maphash":

@@ -138,7 +138,7 @@ class NodeFactory {
 
                     for (int colX = startColX; colX <= endColX; colX++) {
                         for (int colY = startColY; colY <= endColY; colY++) {
-                            if (Server.game.getLevel().getCollisionMap()[colX][colY]) {
+                            if (0 < colX && colX < Server.game.getLevel().getSizeX() && 0 < colY && colY < Server.game.getLevel().getSizeY() && Server.game.getLevel().getCollisionMap()[colX][colY]) {
                                 blocked = true;
                             }
                         }
