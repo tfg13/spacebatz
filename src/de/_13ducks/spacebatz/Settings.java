@@ -114,7 +114,7 @@ public final class Settings {
      */
     public static final int NUMBER_OF_MATERIALS = 3;
     /**
-     * Zeit, bis Spieler nach seinem Tod respawnt
+     * Zeit, bis Spieler nach seinem Tod respawnt, in Ticks
      */
     public static final int RESPAWNTIME = 300;
 }

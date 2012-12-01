@@ -30,6 +30,10 @@ public class PlayerCharacter extends Char {
      * Ob der Spieler gerade tot ist
      */
     private boolean dead;
+    /**
+     * Ab wann der Spieler respawnwn kann
+     */
+    private int respawntick;
 
     public PlayerCharacter(int netID) {
         super(netID, new RenderObject(new Animation(0, 2, 2, 1, 1)));
@@ -78,5 +82,13 @@ public class PlayerCharacter extends Char {
      */
     public void setDead(boolean dead) {
         this.dead = dead;
+        respawntick = GameClient.frozenGametick + Settings.RESPAWNTIME;
+    }
+
+    /**
+     * @return the respawntick
+     */
+    public int getRespawntick() {
+        return respawntick;
     }
 }

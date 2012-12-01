@@ -48,7 +48,7 @@ public class Player extends ItemCarrier {
      */
     private boolean dead = false;
     /**
-     *
+     * Ab wann der Spieler respawnwn kann
      */
     private int respawntick;
 
