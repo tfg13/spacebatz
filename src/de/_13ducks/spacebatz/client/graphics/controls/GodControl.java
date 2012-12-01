@@ -233,7 +233,9 @@ public class GodControl implements Control {
         playerTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof PlayerCharacter) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                if (!((PlayerCharacter) c).isDead()) {
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                }
             }
         }
 

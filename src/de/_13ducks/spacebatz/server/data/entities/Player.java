@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
@@ -18,6 +19,7 @@ import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 
@@ -44,11 +46,10 @@ public class Player extends ItemCarrier {
     /**
      * Spieler ist tot und wartet auf Respawn
      */
-    private boolean dead;
+    private boolean dead = false;
 
     /**
-     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann
-     * nur einen Player pro Client geben.
+     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
      *
      * @param x Startkoordinate X
      * @param y Startkoordinate Y
@@ -123,9 +124,9 @@ public class Player extends ItemCarrier {
         if (Server.game.getTick() >= attackCooldownTick) {
 
             // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
-            double aspeed =  standardAttack.getAttackspeed();
+            double aspeed = standardAttack.getAttackspeed();
             if (getActiveWeapon() != null) {
-                aspeed =  getActiveWeapon().getWeaponAbility().getAttackspeed();
+                aspeed = getActiveWeapon().getWeaponAbility().getAttackspeed();
             }
 
             if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
@@ -187,5 +188,15 @@ public class Player extends ItemCarrier {
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
         skillTree.sendSkillTreeUpdates(client);
+    }
+
+    @Override
+    public void decreaseHitpoints(int damage) {
+        super.decreaseHitpoints(damage);
+        if (properties.getHitpoints() < 0) {
+            dead = true;
+            properties.setHitpoints(Settings.CHARHEALTH);
+            STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
+        }
     }
 }
