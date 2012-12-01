@@ -113,4 +113,8 @@ public final class Settings {
      * Anzahl der Materialien im Spiel (Geld, Erze, ...)
      */
     public static final int NUMBER_OF_MATERIALS = 3;
+    /**
+     * Zeit, bis Spieler nach seinem Tod respawnt
+     */
+    public static final int RESPAWNTIME = 300;
 }

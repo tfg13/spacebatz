@@ -47,6 +47,10 @@ public class Player extends ItemCarrier {
      * Spieler ist tot und wartet auf Respawn
      */
     private boolean dead = false;
+    /**
+     *
+     */
+    private int respawntick;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -75,17 +79,19 @@ public class Player extends ItemCarrier {
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         double x = 0, y = 0;
 
-        if (w) {
-            y += 1;
-        }
-        if (a) {
-            x += -1;
-        }
-        if (s) {
-            y += -1;
-        }
-        if (d) {
-            x += 1;
+        if (!dead) { // Tote bewegen sich nicht
+            if (w) {
+                y += 1;
+            }
+            if (a) {
+                x += -1;
+            }
+            if (s) {
+                y += -1;
+            }
+            if (d) {
+                x += 1;
+            }
         }
         // Sonderfall stoppen
         if (x == 0 && y == 0) {
@@ -121,23 +127,33 @@ public class Player extends ItemCarrier {
      *
      */
     public void playerShoot(double angle) {
-        if (Server.game.getTick() >= attackCooldownTick) {
+        if (!dead) {
+            if (Server.game.getTick() >= attackCooldownTick) {
 
-            // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
-            double aspeed = standardAttack.getAttackspeed();
-            if (getActiveWeapon() != null) {
-                aspeed = getActiveWeapon().getWeaponAbility().getAttackspeed();
-            }
-
-            if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
-                attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                standardAttack.useInAngle(this, angle);
-            } else {
-                if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
-                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                    getActiveWeapon().increaseOverheat(1);
-                    getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+                // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
+                double aspeed = standardAttack.getAttackspeed();
+                if (getActiveWeapon() != null) {
+                    aspeed = getActiveWeapon().getWeaponAbility().getAttackspeed();
                 }
+
+                if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                    standardAttack.useInAngle(this, angle);
+                } else {
+                    if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                        attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                        getActiveWeapon().increaseOverheat(1);
+                        getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+                    }
+                }
+            }
+        } else {
+            if (Server.game.getTick() >= respawntick) {
+                // respawnen
+                properties.setHitpoints(Settings.CHARHEALTH);
+                dead = false;
+                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, false);
+                attackCooldownTick = Server.game.getTick() + 30; // damit nicht sofort geschossen wird
             }
         }
     }
@@ -195,7 +211,7 @@ public class Player extends ItemCarrier {
         super.decreaseHitpoints(damage);
         if (properties.getHitpoints() < 0) {
             dead = true;
-            properties.setHitpoints(Settings.CHARHEALTH);
+            respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
             STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
         }
     }
