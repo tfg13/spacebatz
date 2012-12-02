@@ -47,7 +47,7 @@ public class ExplosionDamageEffect extends Effect {
          */
         if (hitChar != null) {
             hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
-            STC_CHAR_HIT.sendCharHit(hitChar.netID, damage, false);
+            STC_CHAR_HIT.sendCharHit(hitChar.netID, damage);
         }
         computeBulletExplosion(damage, x, y, hitChar, radius);
     }

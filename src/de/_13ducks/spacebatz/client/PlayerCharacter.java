@@ -26,6 +26,14 @@ public class PlayerCharacter extends Char {
      * Die gerade ausgewählte Waffe
      */
     private int selectedattack;
+    /**
+     * Ob der Spieler gerade tot ist
+     */
+    private boolean dead;
+    /**
+     * Ab wann der Spieler respawnwn kann
+     */
+    private int respawntick;
 
     public PlayerCharacter(int netID) {
         super(netID, new RenderObject(new Animation(0, 2, 2, 1, 1)));
@@ -60,5 +68,27 @@ public class PlayerCharacter extends Char {
             }
         }
 
+    }
+
+    /**
+     * @return the dead
+     */
+    public boolean isDead() {
+        return dead;
+    }
+
+    /**
+     * @param dead the dead to set
+     */
+    public void setDead(boolean dead) {
+        this.dead = dead;
+        respawntick = GameClient.frozenGametick + Settings.RESPAWNTIME;
+    }
+
+    /**
+     * @return the respawntick
+     */
+    public int getRespawntick() {
+        return respawntick;
     }
 }

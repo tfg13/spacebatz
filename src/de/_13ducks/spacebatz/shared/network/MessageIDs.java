@@ -222,4 +222,8 @@ public class MessageIDs {
      * Client will 2 Items im Inventar tauschen, S->C
      */
     public static final byte NET_TCP_CMD_CHAR_ATTACK = 56;
+    /**
+     * Player stibt / lebt wieder
+     */
+    public static final byte NET_TCP_CMD_PLAYER_TOGGLE_ALIVE = 58;
 }

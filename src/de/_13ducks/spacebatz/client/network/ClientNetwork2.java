@@ -28,6 +28,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
@@ -164,6 +165,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_STC_SET_SKILL_MAPPING, new STC_SET_SKILL_MAPPING());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_MOVE, new STC_INV_ITEM_MOVE());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_ATTACK, new STC_CHAR_ATTACK());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
     }
 
     /**

@@ -115,6 +115,6 @@ public abstract class Char extends Entity {
      */
     public void decreaseHitpoints(int damage) {
         properties.setHitpoints(properties.getHitpoints() - damage);
-        STC_CHAR_HIT.sendCharHit(netID, damage, false);
+        STC_CHAR_HIT.sendCharHit(netID, damage);
     }
 }
