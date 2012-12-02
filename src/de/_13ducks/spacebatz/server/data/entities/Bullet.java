@@ -17,8 +17,7 @@ import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
 /**
- * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre
- * lifetime abgelaufen ist
+ * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre lifetime abgelaufen ist
  *
  * @author J.K.
  */
@@ -138,9 +137,9 @@ public class Bullet extends Entity {
         super.onWallCollision(collidingBlock);
         if (Server.game.getLevel().isBlockDestroyable(collidingBlock[0], collidingBlock[1])) {
             Server.game.getLevel().destroyBlock(collidingBlock[0], collidingBlock[1]);
-            // Flächenschaden machen
-            hitGround(getX(), getY());
         }
+        // Flächenschaden machen
+        hitGround(getX(), getY());
         // Immer löschen, wenn Wand getroffen
         Server.game.getEntityManager().removeEntity(netID);
     }
