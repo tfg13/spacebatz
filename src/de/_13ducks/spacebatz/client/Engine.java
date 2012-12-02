@@ -13,6 +13,8 @@ package de._13ducks.spacebatz.client;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import de._13ducks.spacebatz.client.*;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
+import de._13ducks.spacebatz.client.sound.Sound;
+import de._13ducks.spacebatz.client.sound.SoundEngine;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import org.lwjgl.Sys;
 
@@ -50,6 +52,10 @@ public class Engine {
     public Engine() {
         run = true;
         graphics = new GraphicsEngine();
+        SoundEngine s = new SoundEngine();
+//        Sound sound = s.createSound("ragtime_warfare_audacity.ogg");
+//        sound.play();
+
     }
 
     /**
