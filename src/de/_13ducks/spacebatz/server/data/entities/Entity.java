@@ -18,7 +18,27 @@ import de._13ducks.spacebatz.util.Bits;
 /**
  * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und Bewegungsinformationen
  *
- * @author michael
+ * Diese Klasse ist die Einzige, die die Position einer Entity verändern kann.
+ *
+ * Diese Klasse macht im Wesentlichen nur Bewegungs-Sachen.
+ * Der Code wird teils von mehreren Stellen gleichzeitig aufgerufen, und muss
+ * garantieren können, dass Entitys niemals in der Wand anhalten.
+ * Deshalb:
+ * DIESE KLASSE DARF VON NIEMANDEM VERÄNDERT WERDEN.
+ * UND SEI DIE ÄNDERUNG AUCH NOCH SO KLEIN. ICH SETZE ALLES GNADENLOS ZURÜCK.
+ * NUR ICH DARF DIESE KLASSE ÄNDERN.
+ *
+ * Das Bewegungssystem unterstützt 2 Laufmodi.
+ * Der erste wird mit setVector gestartet und lässt die Entity einfach in eine Richtung laufen.
+ * Die Entity hält nur an, falls ein Hindernis auftaucht, oder die Bewegung mit stopMovement angehalten, bzw. mit setVector geändert wird.
+ * Der zweite Modus wird mit setLinearTarget aufgerufen und startet eine lineare Bewegung bis zum Ziel. Hier meldet sich die Entity beim
+ * Listener zurück, wenn das Ziel erreicht wird, oder wenn ein Hindernis den Weg blockiert.
+ * Aufrufen von setVector im zweiten Modus oder setLinearTarget im ersten bricht die jeweilige Bewegung ab.
+ *
+ * Mit einer Bewegung im zweiten Modus kann, im Gegensatz zum ersten, ein bestimmter Zielpunkt exakt erreicht werden.
+ * Hier werden vom Bewegungssystem alle Verschiebungen wegen Tickdelay oder Fließkomma-Ungenauigkeiten rausgerechnet.
+ *
+ * @author tobi
  */
 public class Entity {
 
@@ -46,6 +66,25 @@ public class Entity {
      * Die Startposition der aktuellen Bewegung. Nur für Client.
      */
     private double moveStartY;
+    /**
+     * Restlänge des aktuellen Streckenabschnitts.
+     * -1, wenn kein Streckenfahren aktiv
+     */
+    private double remainingPathLength = -1;
+    /**
+     * Das Ziel des aktuellen Steckenabschnitts in X-Richtung.
+     */
+    private double targetX;
+    /**
+     * Das Ziel des aktuellen Streckenabschnitts in Y-Richtung.
+     */
+    private double targetY;
+    /**
+     * Der Observer der aktuellen target-Bewegung.
+     * Muss immer gesetzt sein, wenn die Einheit in Modus 2 läuft.
+     * Ansonsten nicht definiert.
+     */
+    private EntityLinearTargetObserver observer;
     /**
      * Die Geschwindigkeit der Bewegung
      */
@@ -116,6 +155,12 @@ public class Entity {
         if (!moving) {
             throw new IllegalArgumentException("Cannot setStop, Entity is not moving at all!");
         }
+        // Linearmodus abschalten, damit stopMovement() nicht (nochmal) den Observer benachrichtigt.
+        boolean pathColBlocked = false;
+        if (remainingPathLength != -1) {
+            remainingPathLength = -1;
+            pathColBlocked = true;
+        }
         if (xCont) {
             posY = y;
             vecY = 0;
@@ -139,6 +184,9 @@ public class Entity {
             posX = x;
             posY = y;
         }
+        if (pathColBlocked) {
+            observer.movementBlocked();
+        }
     }
 
     /**
@@ -146,10 +194,12 @@ public class Entity {
      */
     public void stopMovement() {
         moving = false;
-        posX = getX();
-        posY = getY();
         moveStartTick = -1;
         Server.sync.updateMovement(this);
+        if (remainingPathLength != -1) {
+            remainingPathLength = -1;
+            observer.movementAborted();
+        }
     }
 
     /**
@@ -171,8 +221,10 @@ public class Entity {
     }
 
     /**
-     * Setzt den Bewegungsvektor dieses Chars neu. Die Einheit bewegt sich nach dem Aufruf in diese Richtung. Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen. Das geht
-     * nur mit setSpeed. x und y dürfen nicht beide 0 sein!
+     * Setzt den Bewegungsvektor dieses Chars neu.
+     * Die Einheit bewegt sich nach dem Aufruf in diese Richtung im Modus 1.
+     * Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen.
+     * Das geht nur mit setSpeed. x und y dürfen nicht beide 0 sein!
      */
     public void setVector(double x, double y) {
         if (x == 0 && y == 0) {
@@ -185,6 +237,10 @@ public class Entity {
         moveStartX = posX;
         moveStartY = posY;
         Server.sync.updateMovement(this);
+        if (remainingPathLength != -1) {
+            remainingPathLength = -1;
+            observer.movementAborted();
+        }
     }
 
     /**
@@ -197,7 +253,8 @@ public class Entity {
     }
 
     /**
-     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt. Kann auch während einer Bewegung aufgerufen werden
+     * Setzt die Geschwindigkeit dieser Einheit. Es sind nur Werte > 0 erlaubt.
+     * Kann auch während einer Bewegung aufgerufen werden.
      *
      * @param speed die neue Geschwindigkeit > 0
      */
@@ -213,6 +270,39 @@ public class Entity {
             moveStartY = posY;
             Server.sync.updateMovement(this);
         }
+    }
+
+    /**
+     * Lässt die Einheit auf einer linearen Strecke zum Ziel laufen.
+     * Wenn die Bewegung nicht unterbrochen wird, und der Weg zum Ziel frei ist,
+     * wird die Einheit exakt auf dem Ziel angehalten.
+     * Staret eine neue Bewegung (Modus 2), stoppt aktuell laufende.
+     *
+     * @param tx Ziel-X
+     * @param ty Ziel-Y
+     * @param obs Observer
+     */
+    public void setLinearTarget(double tx, double ty, EntityLinearTargetObserver obs) {
+        if (Double.isInfinite(tx) || Double.isInfinite(ty) || Double.isNaN(tx) || Double.isNaN(ty)) {
+            throw new IllegalArgumentException("Illegal target!");
+        }
+        if (obs == null) {
+            throw new IllegalArgumentException("Observer must not be null!");
+        }
+        if (remainingPathLength != -1) {
+            observer.movementAborted();
+        }
+        // Vektor zum Ziel und Länge berechnen:
+        normalizeAndSetVector(tx - posX, ty - posY);
+        remainingPathLength = Math.sqrt((tx - posX) * (tx - posX) + (ty - posY) * (ty - posY));
+        targetX = tx;
+        targetY = ty;
+        moving = true;
+        // Das ist eine neue Client-Bewegung
+        moveStartTick = Server.game.getTick();
+        moveStartX = posX;
+        moveStartY = posY;
+        Server.sync.updateMovement(this);
     }
 
     /**
@@ -321,6 +411,16 @@ public class Entity {
             // Bewegung einfach mal setzen, und dann die Kollission das prüfen lassen
             posX = predictedX;
             posY = predictedY;
+            // Ist das weiter als wir wollen?
+            boolean targetReached = false;
+            if (remainingPathLength != -1) {
+                remainingPathLength -= Math.sqrt((predictedX - oldX) * (predictedX - oldX) + (predictedY - oldY) * (predictedY - oldY));
+                if (remainingPathLength <= 0) {
+                    targetReached = true;
+                    posX = targetX;
+                    posY = targetY;
+                }
+            }
             int[] colBlock = computeCollision(oldX, oldY, posX, posY);
             // Hat sich unsere Bewegung geändert?
             if (posX != predictedX || posY != predictedY) {
@@ -328,6 +428,11 @@ public class Entity {
                 Server.sync.updateMovement(this);
                 // Unterklassen informieren
                 onWallCollision(colBlock);
+            } else if (targetReached) {
+                // Wir sind am Ziel!
+                remainingPathLength = -1;
+                stopMovement();
+                observer.targetReached();
             }
         }
     }
