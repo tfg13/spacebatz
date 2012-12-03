@@ -292,6 +292,7 @@ public class Entity {
         if (remainingPathLength != -1) {
             observer.movementAborted();
         }
+        observer = obs;
         // Vektor zum Ziel und Länge berechnen:
         normalizeAndSetVector(tx - posX, ty - posY);
         remainingPathLength = Math.sqrt((tx - posX) * (tx - posX) + (ty - posY) * (ty - posY));
@@ -419,6 +420,8 @@ public class Entity {
                     targetReached = true;
                     posX = targetX;
                     posY = targetY;
+                    predictedX = posX;
+                    predictedY = posY;
                 }
             }
             int[] colBlock = computeCollision(oldX, oldY, posX, posY);
