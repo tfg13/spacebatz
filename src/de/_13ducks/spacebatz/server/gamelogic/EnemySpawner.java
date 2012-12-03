@@ -13,11 +13,11 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Zone;
-import de._13ducks.spacebatz.server.data.entities.CleverEnemy;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.data.entities.StandardEnemy;
+import de._13ducks.spacebatz.server.data.entities.enemys.Shooter;
+import de._13ducks.spacebatz.server.data.entities.enemys.StandardEnemy;
 import java.util.*;
 
 /**
@@ -262,7 +262,17 @@ public class EnemySpawner {
                     enemytype = 1 + random.nextInt(3);
                 }
 
-                Enemy enem = new CleverEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                Enemy enem = null;
+                switch (Server.game.getTick() % 2) {
+                    case 0:
+                        enem = new StandardEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                        break;
+                    case 1:
+                        enem = new Shooter(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                        break;
+
+
+                }
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
         }

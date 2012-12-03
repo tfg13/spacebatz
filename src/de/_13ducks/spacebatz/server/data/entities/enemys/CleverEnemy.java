@@ -1,9 +1,11 @@
-package de._13ducks.spacebatz.server.data.entities;
+package de._13ducks.spacebatz.server.data.entities.enemys;
 
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
+import de._13ducks.spacebatz.server.data.entities.Enemy;
+import de._13ducks.spacebatz.server.data.entities.Entity;
 
 /**
  *

@@ -13,8 +13,8 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.Distance;
 
@@ -123,7 +123,9 @@ public class Enemy extends Char {
     @Override
     public void onWallCollision(int[] collisionBlock) {
         super.onWallCollision(collisionBlock);
-        setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
+        if (followingPath) {
+            setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
+        }
     }
 
     /**
@@ -175,6 +177,7 @@ public class Enemy extends Char {
     public void decreaseHitpoints(int damage) {
         super.decreaseHitpoints(damage);
         if (properties.getHitpoints() < 0) {
+            EnemySpawner.notifyEnemyDeath();
             Server.game.getEntityManager().removeEntity(netID);
             DropManager.dropItem(getX(), getY(), enemylevel);
         }
