@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.server.data.entities.enemys.CleverEnemy;
 import de._13ducks.spacebatz.server.data.entities.enemys.Shooter;
 import de._13ducks.spacebatz.server.data.entities.enemys.StandardEnemy;
 import java.util.*;
@@ -28,7 +29,7 @@ import java.util.*;
 public class EnemySpawner {
 
     private static int numSpawns;
-    private static final int MAX_ENEMYS = 5;
+    private static final int MAX_ENEMYS = 1;
     /**
      * Ordnet den Spieler ihre SpawnHistory zu.
      */
@@ -263,12 +264,15 @@ public class EnemySpawner {
                 }
 
                 Enemy enem = null;
-                switch (Server.game.getTick() % 2) {
+                switch (2) {
                     case 0:
                         enem = new StandardEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                         break;
                     case 1:
                         enem = new Shooter(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                        break;
+                        case 2:
+                        enem = new CleverEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                         break;
 
 

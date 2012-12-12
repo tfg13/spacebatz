@@ -23,7 +23,7 @@ import de._13ducks.spacebatz.util.Distance;
  *
  * @author J
  */
-public class Enemy extends Char {
+public class Enemy extends Char implements EntityLinearTargetObserver {
 
     /**
      * ID des Gegnertyps.
@@ -40,15 +40,11 @@ public class Enemy extends Char {
     /**
      * Der Index der Position in Pfad, von der der Gegner gerade kommt.
      */
-    private int currentPathPosition;
+    private int currentPathTarget;
     /**
      * Gibt an ob der Gegner gerade einem Pfad folgt.
      */
     private boolean followingPath;
-    /**
-     * Die Distanz zum nächsten Wegpunkt im Pfad.
-     */
-    private double distanceToNextWaypoint;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -86,48 +82,6 @@ public class Enemy extends Char {
         return enemylevel;
     }
 
-    @Override
-    public void tick(int gameTick) {
-        super.tick(gameTick);
-        if (isFollowingPath()) {
-            // Zurückgelegte Distanz vom letzten Wegpunkt berechnen:
-            double distance = Distance.getDistance(getX(), getY(), path[currentPathPosition].getX(), path[currentPathPosition].getY());
-            // Wenn wir schon weiter sind als die Distanz zum nächsten Wegpunkt, dann setzten wir den übernächsten als Ziel:
-            if (distance >= distanceToNextWaypoint) {
-                // den Nächsten Wegpunkt ansteuern:
-                currentPathPosition++;
-                // Anhalten, falls wir am Ende des Pfads sind:
-                if (currentPathPosition == path.length - 1) {
-                    followingPath = false;
-                    path = null;
-                    currentPathPosition = 0;
-                    stopMovement();
-                } else {
-                    setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
-                    // Distanz zum nächsten Wegpunkt berechnen:
-                    double currentX = path[currentPathPosition].getX();
-                    double currentY = path[currentPathPosition].getY();
-                    double targetX = path[currentPathPosition + 1].getX();
-                    double targetY = path[currentPathPosition + 1].getY();
-                    distanceToNextWaypoint = Distance.getDistance(currentX, currentY, targetX, targetY);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onCollision(Entity other) {
-        super.onCollision(other);
-    }
-
-    @Override
-    public void onWallCollision(int[] collisionBlock) {
-        super.onWallCollision(collisionBlock);
-        if (followingPath) {
-            setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
-        }
-    }
-
     /**
      * Lässt den Gegner einen Pfad entlang laufen. Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
      *
@@ -137,30 +91,38 @@ public class Enemy extends Char {
         if (path.length <= 1) {
             throw new IllegalArgumentException("Der übergebene Pfad muss mindestens 2 Elemente enthalten!");
         }
-        currentPathPosition = 0;
-        this.path = path;
+        if (followingPath) {
+            stopFollowingPath();
+        }
+
+        for (int i = 0; i < path.length; i++) {
+            for (int x = (int) (path[i].getX() - (getSize() / 2)); x < (int) (path[i].getX() + (getSize() / 2)); x++) {
+                for (int y = (int) (path[i].getY() - (getSize() / 2)); y < (int) (path[i].getY() + (getSize() / 2)); y++) {
+                    if (Server.game.getLevel().getCollisionMap()[x][y]) {
+                        System.out.println("Illegal Path position at " + x + " " + y);
+                    }
+                }
+            }
+        }
+
         followingPath = true;
+        this.path = path;
+        currentPathTarget = 0;
+        setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
 
-        // Distanz zum nächsten Wegpunkt berechnen:
-        double currentX = getX();
-        double currentY = getY();
-        double targetX = path[currentPathPosition + 1].getX();
-        double targetY = path[currentPathPosition + 1].getY();
-        distanceToNextWaypoint = Distance.getDistance(currentX, currentY, targetX, targetY);
-
-        // Richtung erster wegpunkt gehen:
-        setVector(path[1].getX() - getX(), path[1].getY() - getY());
     }
 
     /**
      * Hält den Gegner an, falls er gerade einem Pfad folgt.
      */
-    public void stopFollowongPath() {
+    public void stopFollowingPath() {
         if (followingPath) {
-            stopMovement();
             followingPath = false;
+            stopMovement();
             path = null;
-            currentPathPosition = 0;
+            currentPathTarget = -1;
+        } else {
+            throw new IllegalStateException("Cant stop following path while not folling path!");
         }
     }
 
@@ -181,5 +143,31 @@ public class Enemy extends Char {
             Server.game.getEntityManager().removeEntity(netID);
             DropManager.dropItem(getX(), getY(), enemylevel);
         }
+    }
+
+    @Override
+    public void targetReached() {
+        if (followingPath) {
+            if (currentPathTarget + 1 < path.length) {
+                currentPathTarget++;
+                setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
+            }
+        } else {
+            throw new IllegalStateException("Reached target while not following a path!");
+        }
+
+    }
+
+    @Override
+    public void movementBlocked() {
+        System.out.println("blocked at " + getX() + " " + getY() + " . path: ");
+        for (int i = 0; i < path.length; i++) {
+            System.out.println(path[i].getX() + " " + path[i].getY());
+        }
+    }
+
+    @Override
+    public void movementAborted() {
+        System.out.println("movement aborted!");
     }
 }
