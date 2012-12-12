@@ -107,7 +107,7 @@ public class ClientNetwork2 {
     /**
      * Timer zählt Serverticks so weit wie möglich mit, um Lerp reinrechnen zu können.
      */
-    private Timer lerpTimer = new Timer("NET_LERPTIMER", true);
+    private Timer lerpTimer = new Timer("CNET_LERPTIMER", true);
     /**
      * Der mehr oder weniger aktuelle Tickwert des Servers. Ist zwangsweise mindestens um die Ping der Sync-Pakete verschoben.
      */
@@ -225,7 +225,7 @@ public class ClientNetwork2 {
                     serverAdr = targetAddress;
                     serverPort = port;
                     connected = true;
-                    System.out.println("INFO: NET: Connection established. ClientID " + clientID + ", nextPackID " + packID);
+                    System.out.println("INFO: CNET: Connection established. ClientID " + clientID + ", nextPackID " + packID);
                     initializeReceiver();
                     return true;
                 } else if ((ansData[0] & 0xC0) == 0x80) {
@@ -286,12 +286,12 @@ public class ClientNetwork2 {
                                 }
                                 break;
                             default:
-                                System.out.println("WARNING: NET: Ignoring packet with unknown netmode (" + (mode >>> 6) + ")");
+                                System.out.println("WARNING: CNET: Ignoring packet with unknown netmode (" + (mode >>> 6) + ")");
                                 break;
                         }
                     }
                 } catch (IOException ex) {
-                    System.out.println("ERROR: NET: Receiving data failed. Details:");
+                    System.out.println("ERROR: CNET: Receiving data failed. Details:");
                     ex.printStackTrace();
                 }
             }
@@ -417,10 +417,9 @@ public class ClientNetwork2 {
         }
         // Override?
         if (cmdMap[cmdID] != null) {
-            System.out.println("INFO: NET: Overriding cmd " + cmdID);
+            System.out.println("INFO: CNET: Overriding cmd " + cmdID);
         }
         cmdMap[cmdID] = cmd;
-        System.out.println("INFO: NET: Registered STC cmd " + cmdID);
     }
 
     /**
@@ -432,7 +431,6 @@ public class ClientNetwork2 {
             while (true) {
                 // Queues tauschen?
                 if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastInIndex == -1) {
-                    System.out.println("CLIENT QUEUE SWAP");
                     PriorityBlockingQueue<STCPacket> temp = inputQueue;
                     inputQueue = inputQueue2;
                     inputQueue2 = temp;
@@ -584,7 +582,7 @@ public class ClientNetwork2 {
      * @param lerp der neue Lerp-Wert
      */
     void setLerp(int lerp) {
-        System.out.println("INFO: NET: Changed lerp to " + lerp + " upon user request");
+        System.out.println("INFO: CNET: Changed lerp to " + lerp + " upon user request");
         this.lerp = lerp;
     }
 

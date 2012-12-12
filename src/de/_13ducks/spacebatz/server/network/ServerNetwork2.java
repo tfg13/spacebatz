@@ -146,7 +146,7 @@ public class ServerNetwork2 {
                                 // Normales Datenpaket
                                 Client client = Server.game.clients.get((byte) mode); // Der byte-cast darf auf keinen Fall wegfallen
                                 if (client == null) {
-                                    System.out.println("NET: ignoring packet from unknown client (id: " + mode);
+                                    System.out.println("INFO: NET: ignoring packet from unknown client (id: " + mode + ")");
                                     continue;
                                 }
                                 CTSPacket cts = new CTSPacket(data, client);
@@ -169,7 +169,7 @@ public class ServerNetwork2 {
                                 byte clientID = data[1];
                                 Client rtClient = Server.game.clients.get(clientID);
                                 if (rtClient == null) {
-                                    System.out.println("NET: ignoring RT packet from unknown client (id: " + clientID);
+                                    System.out.println("INFO: NET: ignoring RT packet from unknown client (id: " + clientID + ")");
                                     continue;
                                 }
                                 switch (rtMode) {
@@ -259,7 +259,6 @@ public class ServerNetwork2 {
             System.out.println("INFO: NET: Overriding cmd " + cmdID);
         }
         cmdMap[cmdID] = cmd;
-        System.out.println("INFO: NET: Registered CTS cmd " + cmdID);
     }
 
     /**

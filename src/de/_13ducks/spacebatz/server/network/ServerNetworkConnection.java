@@ -156,7 +156,6 @@ public class ServerNetworkConnection {
         while (true) {
             // Queues tauschen?
             if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastPkgIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
-                System.out.println("SERVER QUEUE SWAP");
                 PriorityBlockingQueue<CTSPacket> temp = inputQueue;
                 inputQueue = inputQueue2;
                 inputQueue2 = temp;
