@@ -4,3 +4,4 @@ build/
 nbbuild.xml
 dist/
 *.swp
+*.lvl

@@ -25,7 +25,11 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.util.mapgen.MapGen;
 import de._13ducks.spacebatz.util.mapgen.MapParameters;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -83,7 +87,7 @@ public class Game {
     public Game() {
         entityManager = new EntityManager();
         clients = new HashMap<>();
-        level = MapGen.genMap(new MapParameters());
+        loadOrReloadLevel();
         enemytypes = new EnemyTypes();
         pathfinder = new AStarPathfinder();
 
@@ -108,6 +112,51 @@ public class Game {
         for (Quest quest : level.quests) {
             questManager.addQuest(quest);
         }
+    }
+
+    /**
+     * Läd das Level.
+     * List die Launchparameter aus, um herauszufinden, ob das gepeicherte, letzte Level geladen werden soll.
+     * Wenn ein neues angelegt wird, wird es gespeichert.
+     */
+    public final void loadOrReloadLevel() {
+        MapParameters map = null;
+        if ("true".equals(System.getProperty("spacebatz.reloadlevel"))) {
+            File lastMap = new File("lastLevel.lvl");
+            if (lastMap.canRead()) {
+                try {
+                    try (BufferedReader reader = new BufferedReader(new FileReader(lastMap))) {
+                        StringBuilder mapString = new StringBuilder();
+                        String input;
+                        while ((input = reader.readLine()) != null) {
+                            mapString.append(input);
+                        }
+                        map = new MapParameters(mapString.toString());
+                    }
+                } catch (IOException ex) {
+                    System.out.println("[ERROR]: Cannot reload level");
+                }
+            } else {
+                System.out.println("[ERROR]: Cannot reload level, file does not exist");
+            }
+        }
+        if (map != null && !map.check()) {
+            System.out.println("[ERROR]: Cannot reload level, syntax error! Creating new level...");
+            map = null;
+        }
+        if (map == null) {
+            map = new MapParameters();
+            // Save map
+            try {
+                try (FileWriter writer = new FileWriter(new File("lastLevel.lvl"))) {
+                    writer.write(map.export());
+                    writer.flush();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        level = MapGen.genMap(map);
     }
 
     /**
