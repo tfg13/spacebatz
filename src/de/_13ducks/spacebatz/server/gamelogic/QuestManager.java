@@ -1,6 +1,9 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
+import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.quests.Quest;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -27,6 +30,12 @@ public class QuestManager {
     public void tick() {
         // Neue Quests hinzufügen
         activeQuests.addAll(newQuests);
+        for (Quest q : newQuests) {
+            // An Client senden
+            if (!q.isHidden()) {
+                STC_NEW_QUEST.sendQuest(q);
+            }
+        }
         newQuests.clear();
         Iterator<Quest> iter = activeQuests.iterator();
         while (iter.hasNext()) {
@@ -52,6 +61,8 @@ public class QuestManager {
                     }
                     // Jeder der drei Zustände bedeutet, dass der Quest in Zukunft nichtmehr laufen muss
                     iter.remove();
+                    // Client quest entfernen lassen
+                    STC_QUEST_RESULT.sendQuestResult(quest.questID, (byte) state);
                 }
             } catch (Exception ex) {
                 // Quest ist abgestürzt - Loggen und Quest löschen
@@ -70,5 +81,19 @@ public class QuestManager {
      */
     public void addQuest(Quest quest) {
         newQuests.add(quest);
+    }
+
+    /**
+     * Aufrufen, wenn ein neuer Client eingefügt wurde.
+     * Sendet alle aktiven, nicht geheimen Quests an den neuen.
+     *
+     * @param client
+     */
+    void newClient(Client client) {
+        for (Quest quest : activeQuests) {
+            if (!quest.isHidden()) {
+                STC_NEW_QUEST.sendQuest(quest);
+            }
+        }
     }
 }

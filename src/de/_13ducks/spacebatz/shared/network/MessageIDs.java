@@ -222,4 +222,12 @@ public class MessageIDs {
      * Client will 2 Items im Inventar tauschen, S->C
      */
     public static final byte NET_TCP_CMD_CHAR_ATTACK = 56;
+    /**
+     * Neuer Client-Quest
+     */
+    public static final byte NET_NEW_QUEST = 58;
+    /**
+     * Client-Quest zuende
+     */
+    public static final byte NET_QUEST_RESULT = 59;
 }

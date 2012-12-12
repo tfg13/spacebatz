@@ -4,6 +4,7 @@ import static de._13ducks.spacebatz.Settings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.graphics.controls.HudControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;
+import de._13ducks.spacebatz.client.graphics.controls.QuestControl;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
 import java.lang.reflect.Field;
 import org.lwjgl.input.Keyboard;
@@ -44,6 +45,10 @@ public class GraphicsEngine {
      * Das Hud-Control, zeichnet HP-Balken etc.
      */
     private HudControl hudControl;
+    /**
+     * Infos über Quests.
+     */
+    private QuestControl questControl;
     /**
      * Der Skilltree.
      */
@@ -98,6 +103,7 @@ public class GraphicsEngine {
             // Controls erzeugen:
             godControl = new GodControl(renderer);
             hudControl = new HudControl(renderer);
+            questControl = new QuestControl();
             skilltree = new SkillTreeControl(renderer);
             inventory = new Inventory(renderer);
 
@@ -123,6 +129,7 @@ public class GraphicsEngine {
     public void tick() {
         godControl.render(renderer);
         hudControl.render(renderer);
+        questControl.render(renderer);
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
         if (activeMenu == null) {

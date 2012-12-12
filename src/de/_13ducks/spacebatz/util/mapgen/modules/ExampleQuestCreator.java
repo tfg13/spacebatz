@@ -8,6 +8,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.data.quests.Quest;
+import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
@@ -89,6 +90,22 @@ public class ExampleQuestCreator extends Module {
             @Override
             public String getName() {
                 return "ExampleQuest";
+            }
+
+            @Override
+            public boolean isHidden() {
+                return false;
+            }
+
+            @Override
+            public byte[] getClientData() {
+                byte[] ret = new byte[13];
+                ret[0] = 0; // type
+                Bits.putInt(ret, 1, questID);
+                Coordinate target = targetPoly.getCentroid().getCoordinate();
+                Bits.putFloat(ret, 5, (float) target.x * map.groundTex.length);
+                Bits.putFloat(ret, 9, (float) target.y * map.groundTex[0].length);
+                return ret;
             }
         };
         map.quests.add(q);

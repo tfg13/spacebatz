@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
@@ -47,6 +48,10 @@ public class GameClient {
      * Der Spieler.
      */
     public static PlayerCharacter player;
+    /**
+     * Verwaltet alle Quests.
+     */
+    public static final ClientQuestManager quests = new ClientQuestManager();
     /**
      * Aktuell gültiger Gametick.
      * Heißt frozen, weil er während der Grafikberechnung eingefroren wird.

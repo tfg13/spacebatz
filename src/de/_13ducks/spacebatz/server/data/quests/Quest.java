@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data.quests;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import java.util.Random;
 
 /**
  * Superklasse für alle Quests.
@@ -33,6 +34,11 @@ public abstract class Quest {
      * Zur automatischen Lastverteilung, immer bei diesem (x-ten) Tick einer Sekunde wird checkState aufgerufen
      */
     private final int randomTick = (int) (Math.random() * (1 / Settings.SERVER_TICKRATE));
+    /**
+     * Eindeutige ID für diese Instanz.
+     * Auf dem Client gleich, zur Zuordnung.
+     */
+    public final int questID = new Random(System.nanoTime()).nextInt();
 
     /**
      * Wird jeden Tick ein Mal aufgerufen.
@@ -71,4 +77,21 @@ public abstract class Quest {
      * @return Name des Quests
      */
     public abstract String getName();
+
+    /**
+     * True, wenn versteckt.
+     * Versteckte Quests werden dem Client nicht gesendet.
+     *
+     * @return true, wenn hidden.
+     */
+    public abstract boolean isHidden();
+
+    /**
+     * Liefert alle Daten, um den Quest an den Client zu schicken.
+     * Erstes Byte: Dem Client bekannte Quest-ID. Rest: Daten in dem Client bekanntem Format
+     * Wird für versteckte Quests nicht aufgerufen.
+     *
+     * @return ID
+     */
+    public abstract byte[] getClientData();
 }
