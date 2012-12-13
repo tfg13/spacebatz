@@ -74,7 +74,6 @@ public class ExampleQuestCreator extends Module {
             protected int checkState() {
                 for (Client c : Server.game.clients.values()) {
                     Player p = c.getPlayer();
-                    // Implementierung ist ineffizient, ändern!
                     if (targetPoly.contains(p.getX() / map.groundTex.length, p.getY() / map.groundTex[0].length)) {
                         return Quest.STATE_COMPLETED;
                     }
