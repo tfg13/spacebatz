@@ -367,6 +367,24 @@ public class DebugConsole {
                         System.out.println("LB-Position: " + p.toString());
 
                         break;
+                    case "gotonania":
+                        Player player4 = Server.game.clients.values().iterator().next().getPlayer();
+                        player4.setLinearTarget(player4.getX(), player4.getY(), new EntityLinearTargetObserver() {
+                            @Override
+                            public void targetReached() {
+                            }
+
+                            @Override
+                            public void movementBlocked() {
+                            }
+
+                            @Override
+                            public void movementAborted() {
+                            }
+                        });
+
+
+                        break;
                     case "maphash":
                         System.out.println(Server.game.getLevel().getHash());
                         break;

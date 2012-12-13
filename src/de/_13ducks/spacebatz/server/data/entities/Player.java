@@ -96,7 +96,7 @@ public class Player extends ItemCarrier {
         // Sonderfall stoppen
         if (x == 0 && y == 0) {
             if (isMoving()) {
-                stopMovement();
+//                stopMovement();
             }
         } else {
             // Bewegen wir uns zur Zeit schon (in diese Richtung)
