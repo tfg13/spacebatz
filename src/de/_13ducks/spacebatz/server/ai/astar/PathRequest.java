@@ -47,8 +47,16 @@ public class PathRequest {
             System.out.println("PathRequest: Invalid LB-Position!");
         }
         // Die Position auf die die Entity gehen muss, das sie in das (am Raster ausgerichtete) Kollisionsrechteck passt:
-        double firstPositionX = start.getX() - ((start.getX() + size / 2) - (leftBotFieldX + size));
-        double firstPositionY = start.getY() - ((start.getY() + size / 2) - (leftBotFieldY + size));
+        double firstPositionX = start.getX() - ((start.getX() + (size / 2)) - (leftBotFieldX + size));
+        double firstPositionY = start.getY() - ((start.getY() + (size / 2)) - (leftBotFieldY + size));
+
+        for (int x = (int) (firstPositionX - (size / 2)); x <= (int) (firstPositionX + (size / 2)); x++) {
+            for (int y = (int) (firstPositionY - (size / 2)); y <= (int) (firstPositionY + (size / 2)); y++) {
+                if (Server.game.getLevel().getCollisionMap()[x][y]) {
+                    System.out.println("Invalid LB Position!");
+                }
+            }
+        }
 
         // Die Transformation zwischen Entitykoordinaten und Pathfinderkoordinate berechnen:
         dx = firstPositionX - leftBotFieldX;
@@ -154,9 +162,9 @@ public class PathRequest {
         // botleft feld von den kollisionen weg verschieben (kollision rechts -> nach links verschieben)
 
         if (topCollision) {
-//            leftBotFieldY--;
+            leftBotFieldY--;
         } else if (rightCollision) {
-//            leftBotFieldX--;
+            leftBotFieldX--;
         } else if (botCollision) {
             leftBotFieldY++;
         } else if (leftCollision) {

@@ -96,10 +96,10 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
         }
 
         for (int i = 0; i < path.length; i++) {
-            for (int x = (int) (path[i].getX() - (getSize() / 2)); x < (int) (path[i].getX() + (getSize() / 2)); x++) {
-                for (int y = (int) (path[i].getY() - (getSize() / 2)); y < (int) (path[i].getY() + (getSize() / 2)); y++) {
+            for (int x = (int) (path[i].getX() - (getSize() / 2)); x <= (int) (path[i].getX() + (getSize() / 2)); x++) {
+                for (int y = (int) (path[i].getY() - (getSize() / 2)); y <= (int) (path[i].getY() + (getSize() / 2)); y++) {
                     if (Server.game.getLevel().getCollisionMap()[x][y]) {
-                        System.out.println("Illegal Path position at " + x + " " + y);
+                        throw new IllegalArgumentException("Illegal Path position at " + x + " " + y);
                     }
                 }
             }
@@ -161,9 +161,9 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
     @Override
     public void movementBlocked() {
         System.out.println("blocked at " + getX() + " " + getY() + " . path: ");
-        for (int i = 0; i < path.length; i++) {
-            System.out.println(path[i].getX() + " " + path[i].getY());
-        }
+//        for (int i = 0; i < path.length; i++) {
+//            System.out.println(path[i].getX() + " " + path[i].getY());
+//        }
     }
 
     @Override
