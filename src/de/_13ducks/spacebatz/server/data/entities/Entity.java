@@ -292,6 +292,12 @@ public class Entity {
         if (remainingPathLength != -1) {
             observer.movementAborted();
         }
+        // Sofort da?
+        if (Math.abs(tx - getX()) < Settings.DOUBLE_EQUALS_DIST || Math.abs(ty - getY()) < Settings.DOUBLE_EQUALS_DIST) {
+            // Gar nicht erst bewegen.
+            obs.targetReached();
+            return;
+        }
         observer = obs;
         // Vektor zum Ziel und Länge berechnen:
         normalizeAndSetVector(tx - posX, ty - posY);
