@@ -4,11 +4,10 @@
  */
 package de._13ducks.spacebatz.util.mapgen.modules;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Point;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.mapgen.data.Vector;
 import java.util.HashMap;
 import toxi.math.noise.PerlinNoise;
 
@@ -56,12 +55,11 @@ public class PerlinTerrainFormer extends Module {
                 pnoise[x][y] = noise.noise(x, y);
             }
         }
-        for (int i = 0; i < map.polygons.getNumGeometries(); i++) {
-            MPolygon poly = (MPolygon) map.polygons.getGeometryN(i);
+        for (MPolygon poly : map.polygons.polys) {
             if (poly.border) {
                 continue;
             }
-            Coordinate center = poly.getCentroid().getCoordinate();
+            Vector center = poly.calcCenter();
             if (pnoise[(int) (center.x * sizeX)][(int) (center.y * sizeY)] > 0.5) {
                 poly.solid = true;
             }

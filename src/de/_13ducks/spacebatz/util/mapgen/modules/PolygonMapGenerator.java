@@ -9,6 +9,7 @@ import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -62,20 +63,11 @@ public class PolygonMapGenerator extends Module {
 
         // Voronoi erzeugen
         VoronoiDiagramBuilder vbuilder = new VoronoiDiagramBuilder();
-        GeometryFactory geom = new GeometryFactory() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Polygon createPolygon(LinearRing shell, LinearRing[] holes) {
-                return new MPolygon(shell, holes, this);
-            }
-        };
+        GeometryFactory geom = new GeometryFactory();
 
         vbuilder.setSites(points);
 
         GeometryCollection voronoi = (GeometryCollection) vbuilder.getDiagram(geom);
-
-        map.polygons = voronoi;
 
         // Falls der optionale smoooth-parameter angegeben ist, noch so viele smoothing-Durchgänge drüber laufen lassen
         if (parameters.containsKey("smooth")) {
@@ -84,8 +76,8 @@ public class PolygonMapGenerator extends Module {
                 // Punktwolke neu berechnen, aus Mittelpunkten der Voronoi-Polygone
                 // Dann Voronoi neu berechnen
                 points = new ArrayList<>(number);
-                for (int p = 0; p < map.polygons.getNumGeometries(); p++) {
-                    Polygon poly = (Polygon) map.polygons.getGeometryN(p);
+                for (int p = 0; p < voronoi.getNumGeometries(); p++) {
+                    Polygon poly = (Polygon) voronoi.getGeometryN(p);
                     Coordinate point = poly.getCentroid().getCoordinate();
                     limitPointCoords(point);
                     points.add(point);
@@ -93,9 +85,13 @@ public class PolygonMapGenerator extends Module {
                 // Man braucht unbedingt einen neuen Builder, der lässt sich anscheinend nicht wiederverwenden.
                 VoronoiDiagramBuilder newBuilder = new VoronoiDiagramBuilder();
                 newBuilder.setSites(points);
-                map.polygons = (GeometryCollection) newBuilder.getDiagram(geom);
+                voronoi = (GeometryCollection) newBuilder.getDiagram(geom);
             }
         }
+
+        // Die Polygone von Vididsolutions sind sehr schlecht zu handhaben und können viele interessante Sachen doch nicht.
+        // Deshalb: JTS-Polygone in ein PolyMesh verwandeln.
+        map.polygons = PolyMesh.createFromJTSPolygons(voronoi);
     }
 
     private void limitPointCoords(Coordinate c) {

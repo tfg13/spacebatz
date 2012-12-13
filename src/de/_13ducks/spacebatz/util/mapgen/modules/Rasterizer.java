@@ -1,12 +1,9 @@
 package de._13ducks.spacebatz.util.mapgen.modules;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.mapgen.data.Vector;
 import java.util.HashMap;
 
 /**
@@ -51,20 +48,17 @@ public class Rasterizer extends Module {
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
         map.collision = new boolean[sizeX][sizeY];
-        GeometryFactory fact = new GeometryFactory();
         MPolygon spawnPoly = null; // Wird paralell noch gesucht.
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                Point p = new Point(new CoordinateArraySequence(new Coordinate[]{new Coordinate(x * scaleX, y * scaleY)}), fact);
                 // Suche Polygon
                 MPolygon poly = null;
-                for (int i = 0; i < map.polygons.getNumGeometries(); i++) {
-                    MPolygon po = (MPolygon) map.polygons.getGeometryN(i);
+                for (MPolygon po: map.polygons.polys) {
                     if (po.spawn) {
                         spawnPoly = po;
                     }
-                    if (po.covers(p)) {
+                    if (po.contains(x * scaleX, y * scaleY)) {
                         poly = po;
                         break;
                     }
@@ -92,7 +86,7 @@ public class Rasterizer extends Module {
             }
         }
         // Spawn setzen
-        Coordinate spawn = spawnPoly.getCentroid().getCoordinate();
+        Vector spawn = spawnPoly.calcCenter();
         map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
         map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = 6;
         map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = 6;

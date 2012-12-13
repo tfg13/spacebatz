@@ -1,9 +1,9 @@
 package de._13ducks.spacebatz.util.mapgen.modules;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.mapgen.data.Node;
 import java.util.HashMap;
 
 /**
@@ -40,11 +40,9 @@ public class BorderGenerator extends Module {
 
     @Override
     public void computeMap(InternalMap map, HashMap<String, String> parameters) {
-        for (int i = 0; i < map.polygons.getNumGeometries(); i++) {
-            MPolygon poly = (MPolygon) map.polygons.getGeometryN(i);
-            Coordinate[] coords = poly.getCoordinates();
-            for (Coordinate c : coords) {
-                if (c.x <= 0 || c.x >= 1 || c.y <= 0 || c.y >= 1) {
+        for (MPolygon poly : map.polygons.polys) {
+            for (Node n : poly.getNodes()) {
+                if (n.x <= 0 || n.x >= 1 || n.y <= 0 || n.y >= 1) {
                     poly.border = true;
                     break;
                 }
