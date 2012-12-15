@@ -85,6 +85,19 @@ public class Rasterizer extends Module {
                 }
             }
         }
+        // Undurchdringbaren Rand erzwingen:
+        for (int y = 0; y < sizeY; y++) {
+            map.groundTex[0][y] = 1;
+            map.collision[0][y] = true;
+            map.groundTex[sizeX - 1][y] = 1;
+            map.collision[sizeX - 1][y] = true;
+        }
+        for (int x = 0; x < sizeX; x++) {
+            map.groundTex[x][0] = 1;
+            map.collision[x][0] = true;
+            map.groundTex[x][sizeY - 1] = 1;
+            map.collision[x][sizeY - 1] = true;
+        }
         // Spawn setzen
         Vector spawn = spawnPoly.calcCenter();
         map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
