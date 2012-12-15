@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Entity;
@@ -42,16 +41,20 @@ public class AutoSynchronizer {
      * Wie weit in Client in X-Richtung sehen kann.
      * Denn so weit wird dann auch synchronisiert.
      */
-    private static final int UPDATE_AREA_X_DIST = 20;
+    private static final int UPDATE_AREA_X_DIST = 35;
     /**
      * Wie weit in Client in Y-Richtung sehen kann.
      * Denn so weit wird dann auch synchronisiert.
      */
-    private static final int UPDATE_AREA_Y_DIST = 15;
+    private static final int UPDATE_AREA_Y_DIST = 20;
     /**
      * Wieviele Chunks des Levels in jede Richtung geupdated werden.
      */
-    private static final int UPDATE_LEVEL_DIST = 2;
+    private static final int UPDATE_LEVEL_DIST_X = 4;
+    /**
+     * Wieviele Chunks des Levels in jede Richtung geupdated werden.
+     */
+    private static final int UPDATE_LEVEL_DIST_Y = 3;
     /**
      * Speichert Entities, deren Bewegung sich geändert hat, zwischen.
      */
@@ -131,8 +134,8 @@ public class AutoSynchronizer {
 
             int playerX = ((int) c.getPlayer().getX()) / 8;
             int playerY = ((int) c.getPlayer().getY()) / 8;
-            playerX -= UPDATE_LEVEL_DIST;
-            playerY -= UPDATE_LEVEL_DIST;
+            playerX -= UPDATE_LEVEL_DIST_X;
+            playerY -= UPDATE_LEVEL_DIST_Y;
             if (playerX < 0) {
                 playerX = 0;
             }
@@ -140,8 +143,8 @@ public class AutoSynchronizer {
                 playerY = 0;
             }
 
-            for (int x = playerX; x < playerX + UPDATE_LEVEL_DIST * 2 + 1; x++) {
-                for (int y = playerY; y < playerY + UPDATE_LEVEL_DIST * 2 + 1; y++) {
+            for (int x = playerX; x < playerX + UPDATE_LEVEL_DIST_X * 2 + 1; x++) {
+                for (int y = playerY; y < playerY + UPDATE_LEVEL_DIST_Y * 2 + 1; y++) {
                     if (!context.chunkLoaded(x, y)) {
                         Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TRANSFER_CHUNK, craftTransferChunkCommand(x, y)), c);
                         context.setChunkLoaded(x, y);

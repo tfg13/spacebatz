@@ -13,11 +13,11 @@ public class Camera {
     /**
      * Die Anzahl der Tiles auf dem Bildschirm.
      */
-    private int tilesX, tilesY;
+    private float tilesX, tilesY;
     /**
      * Der aktuelle Zoomfaktor. Wird benötigt, um Schriften immer gleich groß anzeigen zu können
      */
-    private int zoomFactor;
+    private float zoomFactor;
     /**
      * Scrollen des Bildschirms, in Feldern.
      */
@@ -25,11 +25,13 @@ public class Camera {
 
     /**
      * Erzeugt die Kamera und stellt den Standardzoom ein.
+     * @param resX Pixel in X-Richtung
+     * @param resY Pixel in Y-Richtung
      */
-    public Camera() {
-        tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
-        tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
-        zoomFactor = 2;
+    public Camera(int resX, int resY) {
+        // Zoom korrekt berechnen. Man sieht immer 58 * 34 Felder weit.
+        // Höhe hat Prio, bei 4:3 sieht man weniger...
+        setZoomFact(resY / 34.0f / CLIENT_GFX_TILESIZE);
     }
 
     /**
@@ -37,9 +39,9 @@ public class Camera {
      *
      * @param zoomFact
      */
-    public void setZoomFact(int zoomFact) {
+    public final void setZoomFact(float zoomFact) {
         glLoadIdentity();
-        GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+        GLU.gluOrtho2D(0f, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0f, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
         tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact));
         tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
         zoomFactor = zoomFact;
