@@ -29,7 +29,7 @@ import java.util.*;
 public class EnemySpawner {
 
     private static int numSpawns;
-    private static final int MAX_ENEMYS = 1;
+    private static final int MAX_ENEMYS = 10;
     /**
      * Ordnet den Spieler ihre SpawnHistory zu.
      */
