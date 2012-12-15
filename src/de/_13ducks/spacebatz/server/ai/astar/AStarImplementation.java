@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.util.Distance;
 import de._13ducks.spacebatz.util.Position;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.PriorityQueue;
 
 /**
@@ -21,7 +22,7 @@ class AStarImplementation {
     /**
      * Die Liste der Knoten die Sackgassen oder Umwege sind.
      */
-    private ArrayList<Node> closedList;
+    private LinkedHashSet<Node> closedList;
     /**
      * Der Startpunkt des Pfads.
      */
@@ -84,7 +85,7 @@ class AStarImplementation {
         computing = true;
         path = new Node[0];
         factory = new NodeFactory(size);
-        closedList = new ArrayList<>();
+        closedList = new LinkedHashSet<>();
         openList = new PriorityQueue<>(50, comparator);
         this.requester = requester;
 
