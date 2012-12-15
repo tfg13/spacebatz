@@ -41,21 +41,21 @@ public class ItemAttributeTypes {
         }
         if (quality >= 2) {
 
-            double r_evenmoredamage = randomValue(0.8, 0.9, 1);
-            ItemAttribute evenMoreDamage = new ItemAttribute("*" + (r_evenmoredamage + 1) + " Damage");
+            double r_evenmoredamage = randomValue(0.5, 0.7, 1);
+            ItemAttribute evenMoreDamage = new ItemAttribute("+" + (r_evenmoredamage * 100) + "% Damage");
             evenMoreDamage.setQuality(2);
             evenMoreDamage.weaponStats.setDamagemultiplicator(r_evenmoredamage);
             evenMoreDamage.setIsWeaponAttribute(true);
             attributelist.add(evenMoreDamage);
             
-            double r_alldamage = randomValue(0.2, 0.5, 1);
-            ItemAttribute allDamage = new ItemAttribute("*" + (r_alldamage + 1) + " Damage For Every Weapon");
+            double r_alldamage = randomValue(0.2, 0.4, 1);
+            ItemAttribute allDamage = new ItemAttribute("+" + (r_alldamage * 100) + "% Damage For Every Weapon");
             allDamage.setQuality(2);
             allDamage.bonusStats.setDamageMultiplicatorBonus(r_alldamage);
             attributelist.add(allDamage);
 
-            double r_evenmoreattackspeed = randomValue(0.04, 0.06, 2);
-            ItemAttribute evenMoreAttackSpeed = new ItemAttribute("*" + (r_evenmoreattackspeed + 1) + " Attackspeed");
+            double r_evenmoreattackspeed = randomValue(0.05, 0.08, 2);
+            ItemAttribute evenMoreAttackSpeed = new ItemAttribute("+" + (r_evenmoreattackspeed * 100) + "% Attackspeed");
             evenMoreAttackSpeed.setQuality(2);
             evenMoreAttackSpeed.weaponStats.setAttackspeed(r_evenmoreattackspeed);
             evenMoreAttackSpeed.setIsWeaponAttribute(true);
@@ -67,7 +67,7 @@ public class ItemAttributeTypes {
             //        attributelist.add(evenMoreArmor);
 
             double r_moremovespeed = randomValue(0.05, 0.20, 2);
-            ItemAttribute moreMovespeed = new ItemAttribute("*" + (r_moremovespeed + 1) + " Movespeed");
+            ItemAttribute moreMovespeed = new ItemAttribute("+" + (r_moremovespeed * 100) + "% Movespeed");
             moreMovespeed.setQuality(2);
             moreMovespeed.bonusStats.setMovespeedMultiplicatorBonus(r_moremovespeed);
             attributelist.add(moreMovespeed);
@@ -78,15 +78,15 @@ public class ItemAttributeTypes {
         }
         if (quality >= 1) {
 
-            double r_moredamage = randomValue(0.2, 0.7, 1);
-            ItemAttribute moreDamage = new ItemAttribute("*" + (r_moredamage + 1) + " Damage");
+            double r_moredamage = randomValue(0.2, 0.5, 1);
+            ItemAttribute moreDamage = new ItemAttribute("+" + (r_moredamage * 100) + "% Damage");
             moreDamage.setQuality(1);
             moreDamage.weaponStats.setDamagemultiplicator(r_moredamage);
             moreDamage.setIsWeaponAttribute(true);
             attributelist.add(moreDamage);
 
             double r_moreattackspeed = randomValue(0.02, 0.04, 2);
-            ItemAttribute moreAttackSpeed = new ItemAttribute("*" + (r_moreattackspeed + 1) + " Attackspeed");
+            ItemAttribute moreAttackSpeed = new ItemAttribute("+" + (r_moreattackspeed * 100) + "% Attackspeed");
             moreAttackSpeed.setQuality(1);
             moreAttackSpeed.weaponStats.setAttackspeed(r_moreattackspeed);
             moreAttackSpeed.setIsWeaponAttribute(true);
@@ -106,7 +106,7 @@ public class ItemAttributeTypes {
             moreMaxOverheat.setIsWeaponAttribute(true);
             attributelist.add(moreMaxOverheat);
 
-            ItemAttribute moreReduceOverheat = new ItemAttribute("*1.01 Faster Weapon Cooldown");
+            ItemAttribute moreReduceOverheat = new ItemAttribute("Faster Weapon Cooldown");
             moreReduceOverheat.setQuality(1);
             moreReduceOverheat.weaponStats.setReduceoverheat(0.01);
             moreReduceOverheat.setIsWeaponAttribute(true);
