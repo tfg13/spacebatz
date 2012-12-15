@@ -191,23 +191,25 @@ public class GodControl implements Control {
         renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
 
 
-
+        // Boden und Wände zeichnen
+        float panX = renderer.getCamera().getPanX();
+        float panY = renderer.getCamera().getPanY();
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
-        for (int x = -(int) (1 + renderer.getCamera().getPanX()); x < -(1 + renderer.getCamera().getPanX()) + camera.getTilesX() + 2; x++) {
-            for (int y = -(int) (1 + renderer.getCamera().getPanY()); y < -(1 + renderer.getCamera().getPanY()) + camera.getTilesY() + 2; y++) {
-                int tex = textWriter.texAt(GameClient.currentLevel.getGround(), x, y);
+        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                int tex = texAt(GameClient.currentLevel.getGround(), x, y);
                 int tx = tex % 16;
                 int ty = tex / 16;
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                glTexCoord2f(tx * 0.0625f, ty * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-                glVertex3f(x + renderer.getCamera().getPanX(), y + 1 + renderer.getCamera().getPanY(), 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.00390625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+                glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
                 // Die weiteren 3 Ecken im Uhrzeigersinn:
-                glTexCoord2f((tx + 1) * 0.0625f, ty * 0.0625f);
-                glVertex3f(x + 1 + renderer.getCamera().getPanX(), y + 1 + renderer.getCamera().getPanY(), 0);
-                glTexCoord2f((tx + 1) * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + 1 + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
-                glTexCoord2f(tx * 0.0625f, (ty + 1) * 0.0625f);
-                glVertex3f(x + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
+                glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.00390625f);
+                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.12109375f);
+                glVertex3f(x + 1 + panX, y + panY, 0);
+                glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.12109375f);
+                glVertex3f(x + panX, y + panY, 0);
                 glEnd(); // Zeichnen des QUADs fertig
             }
         }
@@ -320,6 +322,14 @@ public class GodControl implements Control {
             }
         }
 
+    }
+
+    private static int texAt(int[][] layer, int x, int y) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
+            return 0;
+        } else {
+            return layer[x][y];
+        }
     }
 
     /**

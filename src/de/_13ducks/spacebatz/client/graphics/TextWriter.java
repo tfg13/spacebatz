@@ -133,12 +133,4 @@ public class TextWriter {
         }
         glColor3f(1f, 1f, 1f);
     }
-
-    public int texAt(int[][] layer, int x, int y) {
-        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
-            return 0;
-        } else {
-            return layer[x][y];
-        }
-    }
 }

@@ -77,7 +77,7 @@ public class Rasterizer extends Module {
                     map.collision[x][y] = true;
                 } else {
                     if (poly.spawn || poly.texture == 0) {
-                        map.groundTex[x][y] = 4;
+                        map.groundTex[x][y] = 3;
                     } else {
                         // Angeforderte Textur setzen
                         map.groundTex[x][y] = poly.texture;
