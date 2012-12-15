@@ -46,9 +46,12 @@ public class PathRequest {
         if (Server.game.getLevel().getCollisionMap()[leftBotFieldX][leftBotFieldY]) {
             System.out.println("PathRequest: Invalid LB-Position!");
         }
+        int occupiedBlocks = (int) (size + 0.5);
+        double freeSpace = occupiedBlocks - size;
+
         // Die Position auf die die Entity gehen muss, das sie in das (am Raster ausgerichtete) Kollisionsrechteck passt:
-        double firstPositionX = start.getX() - ((start.getX() + (size / 2)) - (leftBotFieldX + size));
-        double firstPositionY = start.getY() - ((start.getY() + (size / 2)) - (leftBotFieldY + size));
+        double firstPositionX = leftBotFieldX + (size / 2) + (freeSpace / 2);
+        double firstPositionY = leftBotFieldY + (size / 2) + (freeSpace / 2);
 
         for (int x = (int) (firstPositionX - (size / 2)); x <= (int) (firstPositionX + (size / 2)); x++) {
             for (int y = (int) (firstPositionY - (size / 2)); y <= (int) (firstPositionY + (size / 2)); y++) {
@@ -68,7 +71,8 @@ public class PathRequest {
         // Das linke untere Feld als Startfeld der WEgberechnung setzen:
         this.start = new Position(leftBotFieldX, leftBotFieldY);
         // Linkes unteres Feld der Zielposition bestimmen:
-        this.goal = new Position((int) (target.getX() - size / 2), (int) (target.getY() - size / 2));
+
+        this.goal = getLeftBotPosition(target, size);
 
         // Restliche Wegfindungsinfos setzen:
         this.requester = requester;
