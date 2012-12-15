@@ -28,19 +28,15 @@ public final class Settings {
     /**
      * Die X-Auflösung der Grafikausgabe.
      */
-    public static final int CLIENT_GFX_RES_X = 800;
+    public static final int CLIENT_GFX_RES_X = 1024;
     /**
      * Die Y-Auflösung der Grafikausgabe.
      */
-    public static final int CLIENT_GFX_RES_Y = 640;
+    public static final int CLIENT_GFX_RES_Y = 576;
     /**
      * Die Größe eines Tiles der Tilemaps in Pixeln.
      */
     public static final int CLIENT_GFX_TILESIZE = 16;
-    /**
-     * Der ganzzahlige Zoomfaktor. Für Indie-Pixelartlook mindestens 2 verwenden!
-     */
-    public static final int CLIENT_GFX_TILEZOOM = 2;
     /**
      * Frames auf dieses Anzahl limitieren. Dingend empfohlen. Hinweis: Hier wirkt auch vsync rein. Die tatsächliche max-Framerate ist immer min(framelimit, vsync)
      */

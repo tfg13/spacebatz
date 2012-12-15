@@ -34,7 +34,7 @@ public class ImageLoader {
             for (int i = 0; i < textureFiles.length; i++) {
                 File textureFile = textureFiles[i];
                 if (textureFile.getName().contains(".png")) {
-                    Texture tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(textureFile.getPath()), GL_NEAREST);
+                    Texture tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(textureFile.getPath()));
                     textures.put(textureFile.getName(), tex);
                 } else {
                     System.out.println("Textureloader: Ignoring " + textureFile.getName() + ": no png file.");

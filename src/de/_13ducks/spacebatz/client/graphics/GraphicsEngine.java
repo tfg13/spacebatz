@@ -78,17 +78,16 @@ public class GraphicsEngine {
      */
     public void initialise() {
         try {
-            // Kamera erzeugen:
-            camera = new Camera();
-
             // Fenster erzeugen:
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create();
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
 
+            // Kamera erzeugen:
+            camera = new Camera(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y);
             // OpenGL-Init:
             // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
-            GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * CLIENT_GFX_TILEZOOM));
+           // GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE));
             glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
             //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
             glEnable(GL_BLEND); // Transparenz in Texturen erlauben

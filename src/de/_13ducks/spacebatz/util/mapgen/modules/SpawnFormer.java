@@ -1,7 +1,5 @@
 package de._13ducks.spacebatz.util.mapgen.modules;
 
-import com.sun.swing.internal.plaf.metal.resources.metal;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
@@ -42,8 +40,7 @@ public class SpawnFormer extends Module {
     @Override
     public void computeMap(InternalMap map, HashMap<String, String> parameters) {
         // Simple Implementierung, verbesserungswürdig - einfach erstbesten, freien Polygon nehmen
-        for (int i = 0; i < map.polygons.getNumGeometries(); i++) {
-            MPolygon poly = (MPolygon) map.polygons.getGeometryN(i);
+        for (MPolygon poly : map.polygons.polys) {
             if (!poly.border && !poly.solid) {
                 poly.spawn = true;
                 break;

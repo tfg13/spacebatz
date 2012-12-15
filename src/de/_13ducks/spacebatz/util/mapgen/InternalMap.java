@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.util.mapgen;
 
-import com.vividsolutions.jts.geom.GeometryCollection;
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.server.data.quests.Quest;
+import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class InternalMap {
 
-    public GeometryCollection polygons;
+    public PolyMesh polygons;
     public HashMap<String, Object> metadata = new HashMap<>();
     public int[][] groundTex;
     public boolean[][] collision;

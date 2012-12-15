@@ -131,7 +131,7 @@ public class ClientTerminal {
                         case "zoom":
                             if (words.length == 2) {
                                 try {
-                                    int fact = Integer.parseInt(words[1]);
+                                    float fact = Float.parseFloat(words[1]);
                                     if (fact > 0) {
                                         GameClient.getEngine().getGraphics().getCamera().setZoomFact(fact);
                                         break;
