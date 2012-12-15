@@ -99,7 +99,7 @@ public class DropManager {
         ArrayList<ItemAttribute> attributesofrightclass = new ArrayList<>();
         ArrayList<ItemAttribute> allowedattributes = new ArrayList<>();
 
-        attributesofrightclass.addAll(itemattribute.getAttributelist());
+        attributesofrightclass.addAll(itemattribute.getAttributelist(droplevel));
 
 
         for (int i = 0; i < attributesofrightclass.size(); i++) {
