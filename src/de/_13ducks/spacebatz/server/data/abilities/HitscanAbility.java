@@ -26,11 +26,11 @@ public class HitscanAbility extends WeaponAbility {
     private double damage;
 
     public HitscanAbility(double damage, double attackspeed, double range, double maxoverheat, double reduceoverheat) {
-        setRange(range);
-        setAttackspeed(attackspeed);
+        getWeaponStats().setRange(range);
+        getWeaponStats().setAttackspeed(attackspeed);
         this.damage = damage;
-        setMaxoverheat(maxoverheat);
-        setReduceoverheat(reduceoverheat);
+        getWeaponStats().setMaxoverheat(maxoverheat);
+        getWeaponStats().setReduceoverheat(reduceoverheat);
     }
 
     /**
@@ -41,13 +41,13 @@ public class HitscanAbility extends WeaponAbility {
     @Override
     public void useInAngle(Char user, double angle) {
         STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle);
-        
-        double range = getRange();
+
+        double range = getWeaponStats().getRange();
 
         // Schaden an Gegnern
         ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
 
-        TrueDamageEffect damageeff = new TrueDamageEffect((int) (damage * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus())));
+        TrueDamageEffect damageeff = new TrueDamageEffect((int) (damage * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus())));
         effects.clear();
         effects.add(damageeff);
 
@@ -58,7 +58,7 @@ public class HitscanAbility extends WeaponAbility {
         }
 
         // Block abbauem
-        Position test = CollisionManager.computeHitscanOnBlocks(user, angle, getRange());
+        Position test = CollisionManager.computeHitscanOnBlocks(user, angle, getWeaponStats().getRange());
         if (test != null) {
             if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
                 Server.game.getLevel().destroyBlock(test.getX(), test.getY());

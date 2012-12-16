@@ -63,7 +63,7 @@ public class PlayerCharacter extends Char {
            
             if (weapon != null) {
                 if (i != selectedattack || GameClient.frozenGametick >= attackCooldownTick) {
-                    weapon.increaseOverheat(-weapon.getWeaponAbility().getReduceoverheat());
+                    weapon.increaseOverheat(-weapon.getWeaponAbility().getWeaponStats().getReduceoverheat());
                 }
             }
         }
