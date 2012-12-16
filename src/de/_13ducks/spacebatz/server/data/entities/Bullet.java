@@ -10,15 +10,14 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
-import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
 /**
- * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre
- * lifetime abgelaufen ist
+ * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre lifetime abgelaufen ist
  *
  * @author J.K.
  */
@@ -44,7 +43,6 @@ public class Bullet extends Entity {
     /**
      * Erzeugt ein neues Bullet
      *
-     * @param spawntick der Tick, zu dem das Bullet erzeugt wurde bzw. mit der Bewegung begann
      * @param lifetime die Zahl der Ticks, nach der das Bullet gelöscht wird
      * @param spawnposx X-Koordinate des Anfangspunktes der Bewegung
      * @param spawnposy Y-Koordinate des Anfangspunktes der Bewegung
@@ -54,17 +52,17 @@ public class Bullet extends Entity {
      * @param netID die netID des Bullets
      * @param owner der Besitzer, i.d.R. der Char der das Bullet erzeugt hat
      */
-    public Bullet(int spawntick, int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
+    public Bullet(int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
         super(spawnposx, spawnposy, netID, (byte) 4);
-        moveStartTick = spawntick;
         this.bulletpic = pictureID;
         setVector(Math.cos(angle), Math.sin(angle));
         setSpeed(speed);
         this.owner = owner;
-        this.deletetick = spawntick + lifetime;
+        this.deletetick = Server.game.getTick() + lifetime;
         effects = new ArrayList<>();
+        this.setSize(Settings.BULLETSIZE);
     }
-    
+
     public void hitChar(Entity hitChar) {
         if (hitChar instanceof Char) {
             Char target = (Char) hitChar;
@@ -72,24 +70,18 @@ public class Bullet extends Entity {
             for (Effect effect : effects) {
                 effect.applyToChar(target);
             }
+            //c.decreaseHitpoints();
             // AoE-Effekte auslösen:
             for (Effect effect : effects) {
                 effect.applyToPosition(getX(), getY(), target);
             }
-            // Wenn das Ziel stirbt es entfernen und loot dropen:
-            if (target.getProperties().getHitpoints() <= 0) {
-                Server.game.getEntityManager().removeEntity(target.netID);
-                if (target instanceof Enemy) {
-                    Enemy e = (Enemy) target;
-                    DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
-                }
-            }
+
             // Das Bullet entfernen:
             Server.game.getEntityManager().removeEntity(netID);
         }
     }
-    
-    public void hitGround(double x, double y) {
+
+    private void hitGround(double x, double y) {
         for (Effect effect : effects) {
             effect.applyToPosition(getX(), getY(), null);
         }
@@ -121,12 +113,12 @@ public class Bullet extends Entity {
     public void addEffect(Effect effect) {
         effects.add(effect);
     }
-    
+
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 8;
     }
-    
+
     @Override
     public void netPack(byte[] pack, int offset) {
         super.netPack(pack, offset);
@@ -134,9 +126,21 @@ public class Bullet extends Entity {
         Bits.putInt(pack, super.byteArraySize() + offset + 4, owner.netID);
     }
 
-   @Override
+    @Override
     public void onCollision(Entity other) {
         super.onCollision(other);
         hitChar(other);
+    }
+
+    @Override
+    public void onWallCollision(int[] collidingBlock) {
+        super.onWallCollision(collidingBlock);
+        if (Server.game.getLevel().isBlockDestroyable(collidingBlock[0], collidingBlock[1])) {
+            Server.game.getLevel().destroyBlock(collidingBlock[0], collidingBlock[1]);
+        }
+        // Flächenschaden machen
+        hitGround(getX(), getY());
+        // Immer löschen, wenn Wand getroffen
+        Server.game.getEntityManager().removeEntity(netID);
     }
 }

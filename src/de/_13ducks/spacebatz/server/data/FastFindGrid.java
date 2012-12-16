@@ -77,6 +77,7 @@ public class FastFindGrid {
                     // Entity ganz aus dem Spiel löschen, wenn aus der Map raus.
                     removeEntity(e);
                     Server.game.getEntityManager().removeEntity(e.netID);
+                    throw new IllegalStateException("Entity " + e.netID + " ist jetzt bei " + e.getX() + " " + e.getY() + " und hat damit die Map verlassen!");
                 }
             }
         }

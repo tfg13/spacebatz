@@ -55,14 +55,6 @@ public class HitscanAbility extends WeaponAbility {
             for (Effect effect : effects) {
                 effect.applyToChar((Char) character);
             }
-
-            if (character.getProperties().getHitpoints() <= 0) {
-                Server.game.getEntityManager().removeEntity(character.netID);
-                if (character instanceof Enemy) {
-                    Enemy e = (Enemy) character;
-                    DropManager.dropItem(e.getX(), e.getY(), e.getEnemylevel());
-                }
-            }
         }
 
         // Block abbauem

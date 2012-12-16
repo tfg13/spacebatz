@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
@@ -46,7 +47,8 @@ public class GodControl implements Control {
     private Texture inventoryPic;
     private Texture fxTiles;
     /**
-     * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche andere Eingaben.
+     * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche
+     * andere Eingaben.
      */
     private boolean terminal = false;
     /**
@@ -65,6 +67,7 @@ public class GodControl implements Control {
      * Array mit allen Tilemaps
      */
     private Texture[] tilemaps;
+    public static PrecisePosition debugPath[] = new PrecisePosition[0];
 
     public GodControl(Renderer renderer) {
         tilemaps = new Texture[10];
@@ -233,7 +236,9 @@ public class GodControl implements Control {
         playerTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof PlayerCharacter) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                if (!((PlayerCharacter) c).isDead()) {
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                }
             }
         }
 
@@ -383,8 +388,8 @@ public class GodControl implements Control {
      * @param x Position
      * @param y Position
      * @param dir Richtung
-     * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig, wenn sie beim ersten Bild anfangen soll.
-     * Bei Einzelbild egal.
+     * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig,
+     * wenn sie beim ersten Bild anfangen soll. Bei Einzelbild egal.
      */
     private void renderAnim(Animation animation, double x, double y, double dir, int starttick, Renderer renderer) {
         float picsizex = 0.0625f * animation.getPicsizex();

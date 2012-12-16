@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Das Level des Servers erweitert das ClientLevel um einige Infos die nur der Server braucht
+ * Das Level des Servers erweitert das ClientLevel um einige Infos die nur der
+ * Server braucht
  *
  * @author michael
  */
@@ -37,11 +38,16 @@ public class ServerLevel extends Level {
      */
     private ArrayList<Zone> areas;
     /**
-     * Enthält alle vom MapGenerator für diese Map erstellten Quests.
-     * Die meisten Quests funktionieren nur auf bestimmten Map-Strukturen und müssen daher schon während der Map-Berechung berücksichtigt werden.
-     * Diese Quests sind dann hier zu finden.
+     * Enthält alle vom MapGenerator für diese Map erstellten Quests. Die
+     * meisten Quests funktionieren nur auf bestimmten Map-Strukturen und müssen
+     * daher schon während der Map-Berechung berücksichtigt werden. Diese Quests
+     * sind dann hier zu finden.
      */
     public final List<Quest> quests;
+    /**
+     * Parameter, um diese Map wieder zu erstellen.
+     */
+    private final String hash;
 
     /**
      * Konstruktor
@@ -49,8 +55,9 @@ public class ServerLevel extends Level {
      * @param xSize die Höhe des Levels
      * @param ySize die Breite des Levels
      */
-    public ServerLevel(int xSize, int ySize, List<Quest> quests) {
+    public ServerLevel(int xSize, int ySize, String hash, List<Quest> quests) {
         super(xSize, ySize);
+        this.hash = hash;
         areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
         destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, -1)); // -1: droppt nichts
@@ -88,7 +95,7 @@ public class ServerLevel extends Level {
      */
     public void createDestroyableBlock(int x, int y, int texture) {
         getGround()[x][y] = texture;
-        getCollisionMap()[x][y] = true;
+        //getCollisionMap()[x][y] = true;
         STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, true);
         STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
     }
@@ -127,7 +134,8 @@ public class ServerLevel extends Level {
     }
 
     /**
-     * Gibt das Gebiet mit dem angegebenen Namen zurück oder null wenns keins gibt
+     * Gibt das Gebiet mit dem angegebenen Namen zurück oder null wenns keins
+     * gibt
      *
      * @return das Gebiet mit dem Namen oder null wenns keins gibt
      */
@@ -138,5 +146,9 @@ public class ServerLevel extends Level {
             }
         }
         return null;
+    }
+
+    public String getHash() {
+        return hash;
     }
 }

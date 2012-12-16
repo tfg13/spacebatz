@@ -30,6 +30,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
@@ -55,7 +56,8 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class ClientNetwork2 {
 
     /**
-     * Sagt ob wir zu einem Server verbunden sind, und daher Daten senden und empfangen können.
+     * Sagt ob wir zu einem Server verbunden sind, und daher Daten senden und
+     * empfangen können.
      */
     private boolean connected = false;
     /**
@@ -87,11 +89,13 @@ public class ClientNetwork2 {
      */
     private PriorityBlockingQueue<STCPacket> inputQueue = new PriorityBlockingQueue<>();
     /**
-     * Die zweite Queue der ankommenden Pakete. Der Wrap-Around funktioniert also nicht
+     * Die zweite Queue der ankommenden Pakete. Der Wrap-Around funktioniert
+     * also nicht
      */
     private PriorityBlockingQueue<STCPacket> inputQueue2 = new PriorityBlockingQueue<>();
     /**
-     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann. Enthält sowohl interne, als auch externe Kommandos.
+     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
+     * Enthält sowohl interne, als auch externe Kommandos.
      */
     static STCCommand[] cmdMap = new STCCommand[256];
     /**
@@ -107,33 +111,41 @@ public class ClientNetwork2 {
      */
     OutBuffer outBuffer = new OutBuffer();
     /**
-     * Timer zählt Serverticks so weit wie möglich mit, um Lerp reinrechnen zu können.
+     * Timer zählt Serverticks so weit wie möglich mit, um Lerp reinrechnen zu
+     * können.
      */
     private Timer lerpTimer = new Timer("CNET_LERPTIMER", true);
     /**
-     * Der mehr oder weniger aktuelle Tickwert des Servers. Ist zwangsweise mindestens um die Ping der Sync-Pakete verschoben.
+     * Der mehr oder weniger aktuelle Tickwert des Servers. Ist zwangsweise
+     * mindestens um die Ping der Sync-Pakete verschoben.
      */
     private int serverTick;
     /**
-     * Gibt an, bei welchem Servertick das Paket mit der packID 0 gesendet wurde. Dieser Wert ist notwendig, um bei der Lerp-Berechnung herausfinden zu können, bei welchem Tick ein Paket vom Server
-     * gesendet wurde. Dann kann einfach bestimmt werden, wie lange das Paket noch zurückgehalten werden soll. Wert wird bei jedem Wrap-Around der packIDs neu manipuliert.
+     * Gibt an, bei welchem Servertick das Paket mit der packID 0 gesendet
+     * wurde. Dieser Wert ist notwendig, um bei der Lerp-Berechnung herausfinden
+     * zu können, bei welchem Tick ein Paket vom Server gesendet wurde. Dann
+     * kann einfach bestimmt werden, wie lange das Paket noch zurückgehalten
+     * werden soll. Wert wird bei jedem Wrap-Around der packIDs neu manipuliert.
      */
     private int packZeroServerTick;
     /**
-     * Die Anzahl von Ticks, die der Client absichtlicht hinter dem Server gehalten wird. Der hier initialisierte Wert ist default, kann aber im laufenden Spiel (automatisch) angepasst werden. Der
-     * Defaultwert von 10 entspricht 150 ms. Das ist etwa der minimale Wert, den OutBuffer.MAX_ACKTIME_MS noch zulässt. Wenn dieser Wert geändert wird, sollte auch OutBuffer.MAX_ACKTIME_MS geändert
-     * werden.
+     * Die Anzahl von Ticks, die der Client absichtlicht hinter dem Server
+     * gehalten wird. Der hier initialisierte Wert ist default, kann aber im
+     * laufenden Spiel (automatisch) angepasst werden. Der Defaultwert von 10
+     * entspricht 150 ms. Das ist etwa der minimale Wert, den
+     * OutBuffer.MAX_ACKTIME_MS noch zulässt. Wenn dieser Wert geändert wird,
+     * sollte auch OutBuffer.MAX_ACKTIME_MS geändert werden.
      *
      * @todo: änderbar machen.
      */
     private int lerp = 10;
     /**
-     * Der Zeitpunkt, zu dem der letzte Ping-Request an den Server geschickt wurde.
+     * Der Zeitpunkt, zu dem der letzte Ping-Request an den Server geschickt
+     * wurde.
      */
     private long lastPingOut;
     /**
-     * Die letzte gemessene Netzwerkauslastung.
-     * Ein ganzzahliger Prozentwert
+     * Die letzte gemessene Netzwerkauslastung. Ein ganzzahliger Prozentwert
      */
     private int lastLoad;
 
@@ -168,11 +180,16 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_ATTACK, new STC_CHAR_ATTACK());
         registerSTCCommand(MessageIDs.NET_NEW_QUEST, new STC_NEW_QUEST());
         registerSTCCommand(MessageIDs.NET_QUEST_RESULT, new STC_QUEST_RESULT());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
     }
 
     /**
-     * Weist das Netzwerksystem an, sich zur Zieladdresse/Port zu verbinden. Liefert true bei erfolgreichem Verbindungsaufbau. Anschließend ist der Setup des Netzwerksystems abgeschlossen und es kann
-     * verwendet werden. Wenn false returned wurde, kann diese Methode für weitere Versuche erneut aufgerufen werden. Diese Methode blockt, bis der Server geantwortet hat. (Maximal 1 Sekunde)
+     * Weist das Netzwerksystem an, sich zur Zieladdresse/Port zu verbinden.
+     * Liefert true bei erfolgreichem Verbindungsaufbau. Anschließend ist der
+     * Setup des Netzwerksystems abgeschlossen und es kann verwendet werden.
+     * Wenn false returned wurde, kann diese Methode für weitere Versuche erneut
+     * aufgerufen werden. Diese Methode blockt, bis der Server geantwortet hat.
+     * (Maximal 1 Sekunde)
      *
      * @param targetAddress die Zieladdresse
      * @param port der Ziel-Port
@@ -305,7 +322,8 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Queued ein angekommendes Paket, falls relevant und nicht bereits vorhanden.
+     * Queued ein angekommendes Paket, falls relevant und nicht bereits
+     * vorhanden.
      *
      * @param packet das neue Paket.
      */
@@ -362,7 +380,8 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Baut aus den Befehlen, die derzeit in der Warteschlange sind ein Netzwerkpaket zusammen.
+     * Baut aus den Befehlen, die derzeit in der Warteschlange sind ein
+     * Netzwerkpaket zusammen.
      *
      * @return das DatenPaket
      */
@@ -405,8 +424,10 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Registriert einen neuen Befehl beim Netzwerksystem. Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet. Die gewählte ID muss im erlaubten
-     * Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
+     * Registriert einen neuen Befehl beim Netzwerksystem. Zukünfig werden
+     * empfangene Kommandos, die die angegebene ID haben von dem gegebenen
+     * Kommando bearbeitet. Die gewählte ID muss im erlaubten Bereich für
+     * externe Befehle liegen (siehe Netzwerk-Dokumentation)
      *
      * @param cmdID die BefehlsID
      * @param cmd der Befehl selber
@@ -427,7 +448,8 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Befehle vom Server. Darf erst nach connect aufgerufen werden.
+     * Muss zu Anfang jedes Ticks aufgerufen werden, verarbeitet Befehle vom
+     * Server. Darf erst nach connect aufgerufen werden.
      */
     public synchronized void inTick() {
         if (connected) {
@@ -469,7 +491,8 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Muss zu Ende jedes Ticks aufgerufen werden, sendet Daten an den Server. Darf erst nach connect aufgerufen werden.
+     * Muss zu Ende jedes Ticks aufgerufen werden, sendet Daten an den Server.
+     * Darf erst nach connect aufgerufen werden.
      */
     public void outTick() {
         if (connected) {
@@ -502,8 +525,10 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Registriert dieses Paket. Das bedeutet, dass der Server dieses Paket erhalten soll. Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Server den
-     * Empfang bestätigt hat.
+     * Registriert dieses Paket. Das bedeutet, dass der Server dieses Paket
+     * erhalten soll. Das Netzwerksystem wird dieses Paket so lange
+     * zwischenspeichern und ggf. neu senden, bis der Server den Empfang
+     * bestätigt hat.
      *
      * @param dPack Ein Netzwerkpaket
      * @param packID die PaketID
@@ -518,8 +543,8 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Liefert den aktuellen Logik-Tick zurück - also den geschätzten Tickwert der Servers.
-     * Achtung: Hier wurde bereits Lerp reingerechnet!
+     * Liefert den aktuellen Logik-Tick zurück - also den geschätzten Tickwert
+     * der Servers. Achtung: Hier wurde bereits Lerp reingerechnet!
      *
      * @return
      */
@@ -537,8 +562,8 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Findet heraus, ob die Verbindung steht.
-     * Wenn das false ist, ist die Verbindung entweder noch nicht hergestellt, oder schon wieder kaputt.
+     * Findet heraus, ob die Verbindung steht. Wenn das false ist, ist die
+     * Verbindung entweder noch nicht hergestellt, oder schon wieder kaputt.
      *
      * @return true, wenn connected.
      */
@@ -547,9 +572,9 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Liefert die "Gesundheit" der Connection.
-     * Dieser Wert sollte 100 (%) sein, sonst ist die Verbindung am kaputtgehen.
-     * Nicht definiert, wenn connectionAlive() == false
+     * Liefert die "Gesundheit" der Connection. Dieser Wert sollte 100 (%) sein,
+     * sonst ist die Verbindung am kaputtgehen. Nicht definiert, wenn
+     * connectionAlive() == false
      *
      * @return Gesundheit in Prozent
      */
@@ -558,9 +583,9 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Liefert die Auslastung des Netzwerksystems, in Prozent.
-     * Ist dieser Wert mehrere Ticks lang sehr hoch, so kommt es zu lags.
-     * Nicht definiert, wenn connectionAlive() == false
+     * Liefert die Auslastung des Netzwerksystems, in Prozent. Ist dieser Wert
+     * mehrere Ticks lang sehr hoch, so kommt es zu lags. Nicht definiert, wenn
+     * connectionAlive() == false
      *
      * @return Auslastung in Prozent.
      */
@@ -578,10 +603,11 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Setzt einen neuen Lerp-Wert. (in Ticks)
-     * Derzeit nur per Terminal erreichbar und auch dort mit Vorsicht zu genießen.
-     * Eine Änderungen dieses Wertes wird im Normalfall von kurzen Rucklern/Sprüngen begleitet, bis die Pakete aufgeholt / die Puffer gefüllt sind.
-     * Negative Werte sind nicht explizit verboten, sollten aber keinerlei Sinn machen.
+     * Setzt einen neuen Lerp-Wert. (in Ticks) Derzeit nur per Terminal
+     * erreichbar und auch dort mit Vorsicht zu genießen. Eine Änderungen dieses
+     * Wertes wird im Normalfall von kurzen Rucklern/Sprüngen begleitet, bis die
+     * Pakete aufgeholt / die Puffer gefüllt sind. Negative Werte sind nicht
+     * explizit verboten, sollten aber keinerlei Sinn machen.
      *
      * @param lerp der neue Lerp-Wert
      */
@@ -591,8 +617,9 @@ public class ClientNetwork2 {
     }
 
     /**
-     * Beendet die Verbindung zum Server auf normale Art und Weise.
-     * Dieses Paket wird besonders priorisiert und kann noch vor alten Datenpaketen ankommen und diese damit verwerfen lassen!
+     * Beendet die Verbindung zum Server auf normale Art und Weise. Dieses Paket
+     * wird besonders priorisiert und kann noch vor alten Datenpaketen ankommen
+     * und diese damit verwerfen lassen!
      */
     public void disconnect() {
         try {

@@ -115,9 +115,9 @@ public class Game {
     }
 
     /**
-     * Läd das Level.
-     * List die Launchparameter aus, um herauszufinden, ob das gepeicherte, letzte Level geladen werden soll.
-     * Wenn ein neues angelegt wird, wird es gespeichert.
+     * Läd das Level. List die Launchparameter aus, um herauszufinden, ob das
+     * gepeicherte, letzte Level geladen werden soll. Wenn ein neues angelegt
+     * wird, wird es gespeichert.
      */
     public final void loadOrReloadLevel() {
         MapParameters map = null;

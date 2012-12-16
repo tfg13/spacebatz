@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Die interne Darstellung einer Map, eine Kombination aus Polyonnetzen und Raster.
+ * Die interne Darstellung einer Map, eine Kombination aus Polyonnetzen und
+ * Raster.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -18,12 +19,13 @@ public class InternalMap {
     public int[][] groundTex;
     public boolean[][] collision;
     public ArrayList<Quest> quests = new ArrayList<>();
+    public String hash;
 
     /**
      * Wandelt die interne Map-Darstellung in ein ServerLevel um.
      */
     public ServerLevel toServerLevel() {
-        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, quests);
+        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, hash, quests);
         level.setGround(groundTex);
         for (int x = 0; x < groundTex.length; x++) {
             System.arraycopy(collision[x], 0, level.getCollisionMap()[x], 0, groundTex[0].length);

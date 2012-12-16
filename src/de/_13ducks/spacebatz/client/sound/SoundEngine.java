@@ -17,6 +17,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.newdawn.slick.openal.OggData;

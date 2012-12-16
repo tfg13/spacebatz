@@ -16,7 +16,9 @@ import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.data.entities.StandardEnemy;
+import de._13ducks.spacebatz.server.data.entities.enemys.CleverEnemy;
+import de._13ducks.spacebatz.server.data.entities.enemys.Shooter;
+import de._13ducks.spacebatz.server.data.entities.enemys.StandardEnemy;
 import java.util.*;
 
 /**
@@ -26,6 +28,8 @@ import java.util.*;
  */
 public class EnemySpawner {
 
+    private static int numSpawns;
+    private static final int MAX_ENEMYS = 10;
     /**
      * Ordnet den Spieler ihre SpawnHistory zu.
      */
@@ -37,7 +41,7 @@ public class EnemySpawner {
      */
     public static void tick() {
         Random random = new Random();
-        if (Server.game.getTick() % (1000 / Settings.SERVER_TICKRATE / Settings.SERVER_SPAWNER_EXECSPERSEC) == 0) {
+        if (Server.game.getTick() % (1000 / Settings.SERVER_TICKRATE / Settings.SERVER_SPAWNER_EXECSPERSEC) == 0 && numSpawns < MAX_ENEMYS) {
             // Alle Spieler durchgehen
             for (Entity e : Server.game.getEntityManager().getValues()) {
                 if (e instanceof Player) {
@@ -63,6 +67,7 @@ public class EnemySpawner {
                             if (h.timeSinceLastSpawn() / 300 * random.nextDouble() > .5) {
                                 // Spawnen!
                                 h.spawn(player);
+                                numSpawns++;
                             }
                         } else {
                             // es wird gerade keine Gegnerwelle gespawnt -> lange bis zum nächsten Spawnen
@@ -72,12 +77,20 @@ public class EnemySpawner {
                                 h.startWaveSpawn(enemywave);
                                 // Spawnen!
                                 h.spawn(player);
+                                numSpawns++;
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Wird aufgerufen wenn ein Gegner stirbt, so dass der Spawner weiß dass er wieder neue erzeugen darf.
+     */
+    public static void notifyEnemyDeath() {
+        numSpawns--;
     }
 
     /**
@@ -250,7 +263,20 @@ public class EnemySpawner {
                     enemytype = 1 + random.nextInt(3);
                 }
 
-                Enemy enem = new StandardEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                Enemy enem = null;
+                switch (2) {
+                    case 0:
+                        enem = new StandardEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                        break;
+                    case 1:
+                        enem = new Shooter(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                        break;
+                        case 2:
+                        enem = new CleverEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                        break;
+
+
+                }
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
         }

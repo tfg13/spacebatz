@@ -10,15 +10,19 @@
  */
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
+import de._13ducks.spacebatz.server.ai.astar.PathRequest;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.data.entities.StandardEnemy;
+import de._13ducks.spacebatz.server.data.entities.enemys.StandardEnemy;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Position;
 import java.io.*;
@@ -307,28 +311,82 @@ public class DebugConsole {
                     case "wall":
                         int targetX = Integer.parseInt(words[1]);
                         int targetY = Integer.parseInt(words[2]);
-                        double size = Integer.parseInt(words[3]);
+                        double size = Double.parseDouble(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
-                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY() + 2), new PrecisePosition(targetX, targetY), new PathRequester() {
+                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY()), new PrecisePosition(targetX, targetY), new PathRequester() {
+                            @Override
+                            public void pathComputed(PrecisePosition[] path) {
+                                synchronized (GodControl.debugPath) {
+                                    GodControl.debugPath = path;
+                                }
+                            }
+                        }, size);
+                        break;
+
+                    case "oldwall":
+                        int targetX1 = Integer.parseInt(words[1]);
+                        int targetY1 = Integer.parseInt(words[2]);
+                        double size1 = Double.parseDouble(words[3]);
+                        Player player1 = Server.game.clients.values().iterator().next().getPlayer();
+                        Server.game.pathfinder.requestPath(new PrecisePosition(player1.getX(), player1.getY()), new PrecisePosition(targetX1, targetY1), new PathRequester() {
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
                                 for (int i = 0; i < path.length; i++) {
                                     Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
                                 }
                             }
-                        }, size);
+                        }, size1);
                         break;
 
+                    case "walk":
+                        double targetX2 = Double.parseDouble(words[1]);
+                        double targetY2 = Double.parseDouble(words[2]);
+                        Player player2 = Server.game.clients.values().iterator().next().getPlayer();
+                        player2.setLinearTarget(targetX2, targetY2, new EntityLinearTargetObserver() {
+                            @Override
+                            public void targetReached() {
+                                System.out.println("Target reached!");
+                            }
 
+                            @Override
+                            public void movementBlocked() {
+                                System.out.println("Movement blocked!!");
+                            }
+
+                            @Override
+                            public void movementAborted() {
+                                System.out.println("Movement aborted!!");
+                            }
+                        });
+                        break;
 
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
-                        for (int xx = (int) player3.getX() - 20; xx < player3.getX() + 20; xx++) {
-                            for (int yy = (int) player3.getY() - 20; yy < player3.getY() + 20; yy++) {
+                        System.out.println("Playerpos:: " + player3.getX() + " / " + player3.getY());
+                        Position p = PathRequest.getLeftBotPosition(new PrecisePosition(player3.getX(), player3.getY()), player3.getSize());
+                        System.out.println("LB-Position: " + p.toString());
+
+                        break;
+                    case "gotonania":
+                        Player player4 = Server.game.clients.values().iterator().next().getPlayer();
+                        player4.setLinearTarget(player4.getX(), player4.getY(), new EntityLinearTargetObserver() {
+                            @Override
+                            public void targetReached() {
                             }
-                        }
+
+                            @Override
+                            public void movementBlocked() {
+                            }
+
+                            @Override
+                            public void movementAborted() {
+                            }
+                        });
 
 
+                        break;
+                    case "maphash":
+                        System.out.println(Server.game.getLevel().getHash());
                         break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
@@ -337,6 +395,7 @@ public class DebugConsole {
                         outStream.println("help                 - prints this help");
                         outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
+                        outStream.println("maphash              - Prints the hash of the current map");
                         outStream.println("spawnitem            - Spawns an item on every player's position");
                         outStream.println("spawnenemy           - Spawns an enemy on every player's position");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");

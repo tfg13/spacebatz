@@ -47,7 +47,7 @@ public class ExplosionDamageEffect extends Effect {
          */
         if (hitChar != null) {
             hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
-            STC_CHAR_HIT.sendCharHit(hitChar.netID, damage, false);
+            STC_CHAR_HIT.sendCharHit(hitChar.netID, damage);
         }
         computeBulletExplosion(damage, x, y, hitChar, radius);
     }
@@ -77,21 +77,10 @@ public class ExplosionDamageEffect extends Effect {
                 if (!c.equals(charhit)) {
                     double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
                     // Zurzeit nur Gegnern Schaden machen
-                    if (c instanceof Enemy) {
+                    //if (c instanceof Enemy) {
                         int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
-
-                        c.getProperties().setHitpoints(c.getProperties().getHitpoints() - damagereduced);
-
-                        if (c.getProperties().getHitpoints() <= 0) {
-                            Server.game.getEntityManager().removeEntity(c.netID);
-                            if (c instanceof Enemy) {
-                                Enemy enemy = (Enemy) c;
-                                DropManager.dropItem(enemy.getX(), enemy.getY(), enemy.getEnemylevel());
-                            }
-                        }
-
-                        STC_CHAR_HIT.sendCharHit(c.netID, damagereduced, false);
-                    }
+                        c.decreaseHitpoints(damagereduced);
+                    //}
                 }
             }
         }

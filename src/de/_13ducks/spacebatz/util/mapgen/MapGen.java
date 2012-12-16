@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.server.data.ServerLevel;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,6 +104,12 @@ public class MapGen {
             runModule(rasterModuleName, params);
         }
         System.out.println("INFO: MapGen: Generation took " + (System.currentTimeMillis() - startTime) + "ms");
+        try {
+            // Hash speichern
+            currentMap.hash = params.export();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return currentMap;
     }
 

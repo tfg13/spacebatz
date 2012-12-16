@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
+import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import java.util.Random;
@@ -37,7 +38,7 @@ public class FireBulletAbility extends WeaponAbility {
 
         double damage = getDamage() * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus());
         double range = getRange();
-        int bulletpic = (int) getBulletpic();
+        int bulletpic = getBulletpic();
         double bulletspeed = getBulletspeed();
         double spread = getSpread();
         double explosionradius = getExplosionRadius();
@@ -46,9 +47,11 @@ public class FireBulletAbility extends WeaponAbility {
         angle += random.nextGaussian() * spread;
         int lifetime = (int) (range / bulletspeed);
 
-        Bullet bullet = new Bullet(Server.game.getTick(), lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
-        //bullet.addEffect(new TrueDamageEffect((int) damage));
-        bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+        Bullet bullet = new Bullet(lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+        bullet.addEffect(new TrueDamageEffect((int) damage));
+        if (explosionradius > 0) {
+            bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+        }
         Server.game.getEntityManager().addEntity(bullet.netID, bullet);
 
     }

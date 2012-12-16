@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
@@ -18,6 +19,7 @@ import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 
@@ -41,10 +43,17 @@ public class Player extends ItemCarrier {
      * Der Skilltree, der bestimmt welche Fähigkeiten verfügbar sind.
      */
     private SkillTree skillTree;
+    /**
+     * Spieler ist tot und wartet auf Respawn
+     */
+    private boolean dead = false;
+    /**
+     * Ab wann der Spieler respawnwn kann
+     */
+    private int respawntick;
 
     /**
-     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann
-     * nur einen Player pro Client geben.
+     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
      *
      * @param x Startkoordinate X
      * @param y Startkoordinate Y
@@ -70,17 +79,19 @@ public class Player extends ItemCarrier {
     public void clientMove(boolean w, boolean a, boolean s, boolean d) {
         double x = 0, y = 0;
 
-        if (w) {
-            y += 1;
-        }
-        if (a) {
-            x += -1;
-        }
-        if (s) {
-            y += -1;
-        }
-        if (d) {
-            x += 1;
+        if (!dead) { // Tote bewegen sich nicht
+            if (w) {
+                y += 1;
+            }
+            if (a) {
+                x += -1;
+            }
+            if (s) {
+                y += -1;
+            }
+            if (d) {
+                x += 1;
+            }
         }
         // Sonderfall stoppen
         if (x == 0 && y == 0) {
@@ -93,7 +104,7 @@ public class Player extends ItemCarrier {
                 double length = Math.sqrt((x * x) + (y * y));
                 x /= length;
                 y /= length;
-                if (Math.abs(vecX - x) > .001 || Math.abs(vecY - y) > .001) {
+                if (Math.abs(getVecX() - x) > .001 || Math.abs(getVecY() - y) > .001) {
                     this.setVector(x, y);
                 }
             } else {
@@ -116,23 +127,33 @@ public class Player extends ItemCarrier {
      *
      */
     public void playerShoot(double angle) {
-        if (Server.game.getTick() >= attackCooldownTick) {
+        if (!dead) {
+            if (Server.game.getTick() >= attackCooldownTick) {
 
-            // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
-            double aspeed =  standardAttack.getAttackspeed();
-            if (getActiveWeapon() != null) {
-                aspeed =  getActiveWeapon().getWeaponAbility().getAttackspeed();
-            }
-
-            if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
-                attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                standardAttack.useInAngle(this, angle);
-            } else {
-                if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
-                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                    getActiveWeapon().increaseOverheat(1);
-                    getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+                // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
+                double aspeed = standardAttack.getAttackspeed();
+                if (getActiveWeapon() != null) {
+                    aspeed = getActiveWeapon().getWeaponAbility().getAttackspeed();
                 }
+
+                if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                    standardAttack.useInAngle(this, angle);
+                } else {
+                    if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getMaxoverheat() == 0) {
+                        attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                        getActiveWeapon().increaseOverheat(1);
+                        getActiveWeapon().getWeaponAbility().useInAngle(this, angle);
+                    }
+                }
+            }
+        } else {
+            if (Server.game.getTick() >= respawntick) {
+                // respawnen
+                properties.setHitpoints(Settings.CHARHEALTH);
+                dead = false;
+                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, false);
+                attackCooldownTick = Server.game.getTick() + 30; // damit nicht sofort geschossen wird
             }
         }
     }
@@ -183,5 +204,15 @@ public class Player extends ItemCarrier {
     public void investSkillpoint(String ability) {
         skillTree.investPoint(ability);
         skillTree.sendSkillTreeUpdates(client);
+    }
+
+    @Override
+    public void decreaseHitpoints(int damage) {
+        super.decreaseHitpoints(damage);
+        if (properties.getHitpoints() < 0) {
+            dead = true;
+            respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
+            STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
+        }
     }
 }

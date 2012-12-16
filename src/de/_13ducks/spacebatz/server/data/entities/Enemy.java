@@ -10,18 +10,21 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
+import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.Distance;
-import de._13ducks.spacebatz.util.Position;
 
 /**
  * Ein Gegner.
  *
  * @author J
  */
-public class Enemy extends Char {
+public class Enemy extends Char implements EntityLinearTargetObserver {
 
     /**
      * ID des Gegnertyps.
@@ -32,22 +35,17 @@ public class Enemy extends Char {
      */
     private int enemylevel;
     /**
-     * Der Pfad dem der Gegner gerade folgt.
-     * Enthält Start- und Zielfeld.
+     * Der Pfad dem der Gegner gerade folgt. Enthält Start- und Zielfeld.
      */
-    private Position[] path;
+    private PrecisePosition[] path;
     /**
      * Der Index der Position in Pfad, von der der Gegner gerade kommt.
      */
-    private int currentPathPosition;
+    private int currentPathTarget;
     /**
      * Gibt an ob der Gegner gerade einem Pfad folgt.
      */
     private boolean followingPath;
-    /**
-     * Die Distanz zum nächsten Wegpunkt im Pfad.
-     */
-    private double distanceToNextWaypoint;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -63,7 +61,7 @@ public class Enemy extends Char {
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         getProperties().setHitpoints(estats.getHealthpoints());
         getProperties().setSightrange(estats.getSightrange());
-        speed = estats.getSpeed();
+        setSpeed(estats.getSpeed());
         this.enemylevel = estats.getEnemylevel();
     }
 
@@ -85,88 +83,47 @@ public class Enemy extends Char {
         return enemylevel;
     }
 
-    @Override
-    public void tick(int gameTick) {
-        super.tick(gameTick);
-        if (isFollowingPath()) {
-            // Zurückgelegte Distanz vom letzten Wegpunkt berechnen:
-            double distance = Distance.getDistance(getX(), getY(), path[currentPathPosition].getX(), path[currentPathPosition].getY());
-            // Wenn wir schon weiter sind als die Distanz zum nächsten Wegpunkt, dann setzten wir den übernächsten als Ziel:
-            if (distanceToNextWaypoint - distance < 0.01 || distance >= distanceToNextWaypoint) {
-                // auf den Wegpunkt snappen, da wir nicht ganz drauf stehen (das summiert sich sonst bei jedem Wegpunkt):
-                setStopXY(path[currentPathPosition + 1].getX(), path[currentPathPosition + 1].getY());
-                stopMovement();
-                // den Nächsten Wegpunkt ansteuern:
-                currentPathPosition++;
-                // Anhalten, falls wir am Ende des Pfads sind:
-                if (currentPathPosition == path.length - 1) {
-                    followingPath = false;
-                    path = null;
-                    currentPathPosition = 0;
-                } else {
-                    setVector(path[currentPathPosition + 1].getX() - getX(), path[currentPathPosition + 1].getY() - getY());
-                    // Distanz zum nächsten Wegpunkt berechnen:
-                    double currentX = path[currentPathPosition].getX();
-                    double currentY = path[currentPathPosition].getY();
-                    double targetX = path[currentPathPosition + 1].getX();
-                    double targetY = path[currentPathPosition + 1].getY();
-                    distanceToNextWaypoint = Distance.getDistance(currentX, currentY, targetX, targetY);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onCollision(Entity other) {
-        super.onCollision(other);
-    }
-
-    @Override
-    public void onWallCollision() {
-        super.onWallCollision();
-        // Bei Kollision brechen wir das folgen ab:
-        if (followingPath) {
-            stopFollowongPath();
-        }
-    }
-
     /**
-     * Lässt den Gegner einen Pfad entlang laufen.
-     * Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
+     * Lässt den Gegner einen Pfad entlang laufen. Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
      *
      * @param path der Pfad dem der Gegner folgen soll.
      */
-    public void followPath(Position path[]) {
+    public void followPath(PrecisePosition path[]) {
         if (path.length <= 1) {
             throw new IllegalArgumentException("Der übergebene Pfad muss mindestens 2 Elemente enthalten!");
         }
-        // An den Anfang des Pfads springen:
-        setVector(1, 1);
-        setStopXY(path[0].getX(), path[0].getY());
-        currentPathPosition = 0;
-        this.path = path;
+        if (followingPath) {
+            stopFollowingPath();
+        }
+
+        for (int i = 0; i < path.length; i++) {
+            for (int x = (int) (path[i].getX() - (getSize() / 2)); x <= (int) (path[i].getX() + (getSize() / 2)); x++) {
+                for (int y = (int) (path[i].getY() - (getSize() / 2)); y <= (int) (path[i].getY() + (getSize() / 2)); y++) {
+                    if (Server.game.getLevel().getCollisionMap()[x][y]) {
+                        throw new IllegalArgumentException("Illegal Path position at " + x + " " + y);
+                    }
+                }
+            }
+        }
+
         followingPath = true;
+        this.path = path;
+        currentPathTarget = 0;
+        setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
 
-        // Distanz zum nächsten Wegpunkt berechnen:
-        double currentX = getX();
-        double currentY = getY();
-        double targetX = path[currentPathPosition + 1].getX();
-        double targetY = path[currentPathPosition + 1].getY();
-        distanceToNextWaypoint = Distance.getDistance(currentX, currentY, targetX, targetY);
-
-        // Richtung erster wegpunkt gehen:
-        setVector(path[1].getX() - getX(), path[1].getY() - getY());
     }
 
     /**
      * Hält den Gegner an, falls er gerade einem Pfad folgt.
      */
-    public void stopFollowongPath() {
+    public void stopFollowingPath() {
         if (followingPath) {
-            stopMovement();
             followingPath = false;
+            stopMovement();
             path = null;
-            currentPathPosition = 0;
+            currentPathTarget = -1;
+        } else {
+            throw new IllegalStateException("Cant stop following path while not folling path!");
         }
     }
 
@@ -177,5 +134,169 @@ public class Enemy extends Char {
      */
     public boolean isFollowingPath() {
         return followingPath;
+    }
+
+    @Override
+    public void decreaseHitpoints(int damage) {
+        super.decreaseHitpoints(damage);
+        if (properties.getHitpoints() < 0) {
+            EnemySpawner.notifyEnemyDeath();
+            Server.game.getEntityManager().removeEntity(netID);
+            DropManager.dropItem(getX(), getY(), enemylevel);
+        }
+    }
+
+    @Override
+    public void targetReached() {
+        if (followingPath) {
+            if (currentPathTarget + 1 < path.length) {
+                currentPathTarget++;
+                setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
+            }
+        } else {
+            throw new IllegalStateException("Reached target while not following a path!");
+        }
+
+    }
+
+    @Override
+    public void movementBlocked() {
+        System.out.println("blocked at " + getX() + " " + getY() + " . path: ");
+//        for (int i = 0; i < path.length; i++) {
+//            System.out.println(path[i].getX() + " " + path[i].getY());
+//        }
+    }
+
+    @Override
+    public void movementAborted() {
+        System.out.println("movement aborted!");
+    }
+
+    /**
+     * Gibt an, ob dieser Gegner Luftlinie zur Zielposition laufen könnte.
+     *
+     * @param fromX
+     * @param fromY
+     * @param toX
+     * @param toY
+     * @return
+     */
+    protected boolean lineOfSight(double fromX, double fromY, double toX, double toY) {
+        // Der Vektor der Bewegung:
+        double deltaX = toX - fromX;
+        double deltaY = toY - fromY;
+        // Anfangs- und Ziel-X des Gebiets das gescannt wird
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - getSize() / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + getSize() / 2) + 1;
+        // Anfangs- und Ziel-Y des Gebiets das gescannt wird
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - getSize() / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + getSize() / 2) + 1;
+
+
+        // Gesucht ist der Block, mit dem wir als erstes kollidieren
+        // der Faktor für die weiteste Position auf die wir ohne Kolision vorrücken können: start + d * vector
+        double d;
+        // das kleinste gefundene d
+        double smallestD = Double.MAX_VALUE;
+        // Variablen, die wir in jedem Schleifendurchlauf brauchen:
+        double blockMidX, blockMidY, d1, d2;
+        // Den Block, mit dem wir kollidieren zwischenspeichern
+        int[] collisionBlock = new int[2];
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
+            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
+                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = x + 0.5;
+                    blockMidY = y + 0.5;
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+
+                    // das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
+                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
+
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                            collisionBlock[0] = x;
+                            collisionBlock[1] = y;
+                        }
+                    }
+                }
+            }
+        }
+        double sx = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
+            sx = fromX + smallestD * deltaX;
+        }
+
+        // Für die Y-Berechung die Werte zurücksetzten, für die Block-Berechung aber behalten!
+        double globalsmallestD = smallestD;
+        smallestD = Double.MAX_VALUE;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
+            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
+                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
+
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = x + 0.5;
+                    blockMidY = y + 0.5;
+                    // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    // Das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
+
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                        // Näher als die von X?
+                        if (d < globalsmallestD) {
+                            globalsmallestD = d;
+                            collisionBlock[0] = x;
+                            collisionBlock[1] = y;
+                        }
+                    }
+                }
+            }
+        }
+        double sy = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann
+            sy = fromY + smallestD * deltaY;
+        }
+
+        // Bewegung koorigieren?
+        if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 }

@@ -230,4 +230,9 @@ public class MessageIDs {
      * Client-Quest zuende
      */
     public static final byte NET_QUEST_RESULT = 59;
+    /**
+     *
+     * Player stibt / lebt wieder
+     */
+    public static final byte NET_TCP_CMD_PLAYER_TOGGLE_ALIVE = 60;
 }
