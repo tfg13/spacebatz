@@ -68,6 +68,47 @@ public class GodControl implements Control {
      */
     private Texture[] tilemaps;
     public static PrecisePosition debugPath[] = new PrecisePosition[0];
+    /**
+     * Kopie vom pan der Kamera, aus Performance-Gründen
+     */
+    private float panX, panY;
+    /**
+     * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
+     * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
+     * Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
+     */
+    private final short[] patternRotationLookupTable = new short[]{0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 0 - 7
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 8 - 15
+        0x12, 0x30, 0x12, 0x30, 0x63, 0x70, 0x63, 0x80,// 16 - 23
+        0x12, 0x30, 0x12, 0x30, 0x23, 0x90, 0x23, 0x41,// 24 - 31
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 32 - 39
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 40 - 47
+        0x12, 0x30, 0x12, 0x30, 0x63, 0x70, 0x63, 0x80,// 48 - 55
+        0x12, 0x30, 0x12, 0x30, 0x23, 0x90, 0x23, 0x41,// 56 - 63
+        0x11, 0x61, 0x11, 0x61, 0x31, 0x71, 0x31, 0x91,// 64 - 71
+        0x11, 0x61, 0x11, 0x61, 0x31, 0x71, 0x31, 0x91,// 72 - 79
+        0x62, 0x72, 0x62, 0x72, 0x73, 0xA0, 0x73, 0xB0,// 80 - 87
+        0x62, 0x72, 0x62, 0x72, 0x83, 0xB3, 0x83, 0xC0,// 88 - 95
+        0x11, 0x61, 0x11, 0x61, 0x31, 0x71, 0x31, 0x91,// 96 - 103
+        0x11, 0x61, 0x11, 0x61, 0x31, 0x71, 0x31, 0x91,// 104 - 111
+        0x22, 0x82, 0x22, 0x82, 0x93, 0xB2, 0x93, 0xD0,// 112 - 119
+        0x22, 0x82, 0x22, 0x82, 0x40, 0xC3, 0x40, 0xE0,// 120 - 127
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 128 - 135
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 136 - 143
+        0x12, 0x30, 0x12, 0x30, 0x63, 0x70, 0x63, 0x80,// 144 - 151
+        0x12, 0x30, 0x12, 0x30, 0x23, 0x90, 0x23, 0x41,// 152 - 159
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 160 - 167
+        0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 168 - 175
+        0x12, 0x30, 0x12, 0x30, 0x63, 0x70, 0x63, 0x80,// 176 - 183
+        0x12, 0x30, 0x12, 0x30, 0x23, 0x90, 0x23, 0x41,// 184 - 191
+        0x11, 0x21, 0x11, 0x21, 0x31, 0x81, 0x31, 0x42,// 192 - 199
+        0x11, 0x21, 0x11, 0x21, 0x31, 0x81, 0x31, 0x42,// 200 - 207
+        0x62, 0x92, 0x62, 0x92, 0x73, 0xB1, 0x73, 0xC1,// 208 - 215
+        0x62, 0x92, 0x62, 0x92, 0x83, 0xD1, 0x83, 0xE1,// 216 - 223
+        0x11, 0x21, 0x11, 0x21, 0x31, 0x81, 0x31, 0x42,// 224 - 231
+        0x11, 0x21, 0x11, 0x21, 0x31, 0x81, 0x31, 0x42,// 232 - 239
+        0x22, 0x43, 0x22, 0x43, 0x93, 0xC2, 0x93, 0xE2,// 240 - 247
+        0x22, 0x43, 0x22, 0x43, 0x40, 0xE3, 0x40, 0x50};// 248 - 255
 
     public GodControl(Renderer renderer) {
         tilemaps = new Texture[10];
@@ -193,27 +234,42 @@ public class GodControl implements Control {
         renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
         renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
 
-
+        glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         // Boden und Wände zeichnen
-        float panX = renderer.getCamera().getPanX();
-        float panY = renderer.getCamera().getPanY();
+        panX = renderer.getCamera().getPanX();
+        panY = renderer.getCamera().getPanY();
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = texAt(GameClient.currentLevel.getGround(), x, y);
-                int tx = tex % 16;
-                int ty = tex / 16;
-                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.00390625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-                glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-                // Die weiteren 3 Ecken im Uhrzeigersinn:
-                glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.00390625f);
-                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
-                glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.12109375f);
-                glVertex3f(x + 1 + panX, y + panY, 0);
-                glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.12109375f);
-                glVertex3f(x + panX, y + panY, 0);
-                glEnd(); // Zeichnen des QUADs fertig
+                int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
+                if (tex != 3 && (patRot >> 4) != 5) {
+                    int rot = patRot & 0x0F;
+                    // Boden erzwingen:
+                    drawGroundTile(3, x, y, 0);
+                    // Bild im Stencil-Buffer erzeugen:
+                    glEnable(GL_STENCIL_TEST); // Stenciling ist an
+                    // Stencil-Test schlägt immer fehl, malt also nix. Aber alle verwendeten Pixel erhöhen den Stencil-Buffer:
+                    glStencilFunc(GL_NEVER, 0x0, 0x0);
+                    glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+                    // Pixel dem Alpha nach ignorieren
+                    glAlphaFunc(GL_NOTEQUAL, 0f);
+                    glEnable(GL_ALPHA_TEST);
+                    // Pattern malen, beeinflusst Stencil-Buffer
+                    drawGroundTile(241 + (patRot >> 4), x, y, rot);
+                    glDisable(GL_ALPHA_TEST);
+                    // Jetzt ist der Stencil-Buffer ok. Jetzt Modus auf "malen, wenn stencil das sagt" stellen
+                    glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
+                    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                    // Jetzt Wand malen:
+                    drawGroundTile(tex, x, y, 0);
+                    // Fertig, Stencil abschalten:
+                    glDisable(GL_STENCIL_TEST);
+                    // Zweite Maske drüber, für schönes Aussehen
+                    drawGroundTile(225 + (patRot >> 4), x, y, rot);
+                } else {
+                    drawGroundTile(tex, x, y, 0);
+                }
             }
         }
 
@@ -331,18 +387,10 @@ public class GodControl implements Control {
 
     private static int texAt(int[][] layer, int x, int y) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
-            return 0;
+            return 1;
         } else {
             return layer[x][y];
         }
-    }
-
-    /**
-     * Läd alle benötigten Texturen.
-     *
-     * @throws IOException Wenn was schief geht
-     */
-    private void loadTex() throws IOException {
     }
 
     /**
@@ -428,5 +476,38 @@ public class GodControl implements Control {
         // Fragwürdige Berechnung der Distanz:
         float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * GameClient.getEngine().getGraphics().getCamera().getTilesX() / Display.getWidth();
         CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, (float) dir, distance);
+    }
+
+    private void drawGroundTile(int tile, float x, float y, int numRot) {
+        int tx = tile % 16;
+        int ty = tile / 16;
+        float[][] screenCoords = new float[2][4]; // X, Y dann 4 Ecken
+        screenCoords[0][0] = tx * 0.0625f + 0.001953125f;
+        screenCoords[0][1] = tx * 0.0625f + 0.060546875f;
+        screenCoords[0][2] = tx * 0.0625f + 0.060546875f;
+        screenCoords[0][3] = tx * 0.0625f + 0.001953125f;
+        screenCoords[1][0] = ty * 0.0625f + 0.001953125f;
+        screenCoords[1][1] = ty * 0.0625f + 0.001953125f;
+        screenCoords[1][2] = ty * 0.0625f + 0.060546875f;
+        screenCoords[1][3] = ty * 0.0625f + 0.060546875f;
+        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+        glTexCoord2f(screenCoords[0][(0 + numRot) % 4], screenCoords[1][(0 + numRot) % 4]); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+        glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+        // Die weiteren 3 Ecken im Uhrzeigersinn:
+        glTexCoord2f(screenCoords[0][(1 + numRot) % 4], screenCoords[1][(1 + numRot) % 4]);
+        glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+        glTexCoord2f(screenCoords[0][(2 + numRot) % 4], screenCoords[1][(2 + numRot) % 4]);
+        glVertex3f(x + 1 + panX, y + panY, 0);
+        glTexCoord2f(screenCoords[0][(3 + numRot) % 4], screenCoords[1][(3 + numRot) % 4]);
+        glVertex3f(x + panX, y + panY, 0);
+        glEnd(); // Zeichnen des QUADs fertig
+    }
+
+    /**
+     * Liest das Pattern aus.
+     */
+    private int patternAt(int[][] ground, int x, int y) {
+        int myTex = texAt(ground, x, y);
+        return patternRotationLookupTable[(myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y) ? 1 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y - 1) ? 2 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x, y - 1) ? 4 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y - 1) ? 8 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y) ? 16 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y + 1) ? 32 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x, y + 1) ? 64 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y + 1) ? 128 : 0)];
     }
 }

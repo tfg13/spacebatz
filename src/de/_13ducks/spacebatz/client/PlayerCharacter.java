@@ -36,7 +36,7 @@ public class PlayerCharacter extends Char {
     private int respawntick;
 
     public PlayerCharacter(int netID) {
-        super(netID, new RenderObject(new Animation(0, 2, 2, 1, 1)));
+        super(netID, new RenderObject(new Animation(0, 4, 4, 1, 1)));
         selectedattack = 0;
         healthpoints = Settings.CHARHEALTH;
         healthpointsmax = Settings.CHARHEALTH;
