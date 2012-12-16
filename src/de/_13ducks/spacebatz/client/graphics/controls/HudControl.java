@@ -64,7 +64,7 @@ public class HudControl implements Control {
                 float height = 0.05f;
 
                 renderer.setTilemap(itemTiles);
-                renderer.setTileSize(16, 16);
+                renderer.setTileSize(32, 32);
                 renderer.setScreenMapping(0, 1, 0, 1);
                 renderer.drawTile(item.getPic(), x, y, width, height);
                 renderer.restoreScreenMapping();

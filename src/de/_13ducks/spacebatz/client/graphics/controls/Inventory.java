@@ -29,11 +29,9 @@ public class Inventory implements Control {
     private boolean lmbpressed; // linke maustaste gedrückt
     private int inventorypage; // aktuelle Inventarseite
     private int selecteditemslot; // zuletzt angeklickter Inventarslot
-    private Texture inventoryPic;
     private Texture itemTiles;
 
     public Inventory(Renderer renderer) {
-        inventoryPic = renderer.getTextureByName("inventory2.png");
         itemTiles = renderer.getTextureByName("item.png");
         selecteditemslot = -1;
     }
@@ -43,19 +41,12 @@ public class Inventory implements Control {
         Camera camera = renderer.getCamera();
         TextWriter textWriter = renderer.getTextWriter();
         // Inventory-Hintergrund zeichnen
-        inventoryPic.bind();
 
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        glVertex3f(0, 0, 0);
-        glTexCoord2f(1, 1);
-        glVertex3f(camera.getTilesX(), 0, 0);
-        glTexCoord2f(1, 0);
-        glVertex3f(camera.getTilesX(), camera.getTilesY(), 0);
-        glTexCoord2f(0, 0);
-        glVertex3f(0, camera.getTilesY(), 0);
-        glEnd();
-
+        glDisable(GL_TEXTURE_2D);
+        // dunkler Hintergrund
+        glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+        glRectf(0, 0, camera.getTilesX(), camera.getTilesY());
+        glEnable(GL_TEXTURE_2D);
 
         // Items im Inventory zeichnen
         // Anzahl der Materialien:
