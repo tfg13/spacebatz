@@ -61,7 +61,7 @@ public class Shooter extends Enemy {
                         dir += 2 * Math.PI;
                     }
                     if (gameTick - lastShootTick > 120) {
-                        shootAbility.useInAngle(this, dir);
+                        shootAbility.tryUseInAngle(this, dir);
                         lastShootTick = gameTick;
                     }
 

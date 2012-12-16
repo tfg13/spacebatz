@@ -8,7 +8,7 @@ import java.io.Serializable;
  *
  * @author michael
  */
-public abstract class WeaponAbility implements Ability, Serializable {
+public abstract class WeaponAbility extends Ability implements Serializable {
 
     /**
      * Die Daten der Waffe.

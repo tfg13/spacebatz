@@ -4,6 +4,7 @@
  */
 package de._13ducks.spacebatz.server.data.abilities;
 
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Char;
 
 /**
@@ -13,7 +14,52 @@ import de._13ducks.spacebatz.server.data.entities.Char;
  *
  * @author michael
  */
-public interface Ability {
+public abstract class Ability {
+
+    private int cooldown;
+    private int lastActivation;
+
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    /**
+     * Gibt zurück, ob die Fähigkeit noch auf cooldown ist.
+     *
+     * @return
+     */
+    public boolean isOnCooldown() {
+        return (Server.game.getTick() - lastActivation) < cooldown;
+    }
+
+    /**
+     * Benutzt die Fähigkeit auf eine Position, WENN der cooldown abgelaufen
+     * ist. Macht niochts wenn der cooldown noch läuft.
+     *
+     * @param user
+     * @param x
+     * @param y
+     */
+    public void tryUseOnPosition(Char user, double x, double y) {
+        if (!isOnCooldown()) {
+            lastActivation = Server.game.getTick();
+            useOnPosition(user, x, y);
+        }
+    }
+
+    /**
+     * Benutzt die Fähigkeitin einem Winkel, WENN der cooldown abgelaufen ist.
+     * Macht niochts wenn der cooldown noch läuft.
+     *
+     * @param user
+     * @param angle
+     */
+    public void tryUseInAngle(Char user, double angle) {
+        if (!isOnCooldown()) {
+            lastActivation = Server.game.getTick();
+            useInAngle(user, angle);
+        }
+    }
 
     /**
      * Benutzt die Fähigkeit auf eine Position.
@@ -22,7 +68,7 @@ public interface Ability {
      * @param x die X-Koordinate der Zielposition
      * @param y die Y-Koordinate der Zielposition
      */
-    public abstract void useOnPosition(Char user, double x, double y);
+    protected abstract void useOnPosition(Char user, double x, double y);
 
     /**
      * Benutzt die Fähigkeit in einem Winkel
@@ -30,5 +76,5 @@ public interface Ability {
      * @param user der Benutzer
      * @param angle der Zielwinkel
      */
-    public abstract void useInAngle(Char user, double angle);
+    protected abstract void useInAngle(Char user, double angle);
 }
