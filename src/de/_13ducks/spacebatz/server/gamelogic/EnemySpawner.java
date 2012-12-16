@@ -36,8 +36,8 @@ public class EnemySpawner {
     private static HashMap<Player, PlayerSpawnHistory> history = new HashMap<>();
 
     /**
-     * Muss jeden Gametick aufgerufen werden. Entscheidet für alle Spieler, ob neue Gegner benötigt werden Rechner nicht
-     * bei jedem Tick.
+     * Muss jeden Gametick aufgerufen werden. Entscheidet für alle Spieler, ob
+     * neue Gegner benötigt werden Rechner nicht bei jedem Tick.
      */
     public static void tick() {
         Random random = new Random();
@@ -87,7 +87,8 @@ public class EnemySpawner {
     }
 
     /**
-     * Wird aufgerufen wenn ein Gegner stirbt, so dass der Spawner weiß dass er wieder neue erzeugen darf.
+     * Wird aufgerufen wenn ein Gegner stirbt, so dass der Spawner weiß dass er
+     * wieder neue erzeugen darf.
      */
     public static void notifyEnemyDeath() {
         numSpawns--;
@@ -111,7 +112,8 @@ public class EnemySpawner {
     }
 
     /**
-     * Liefert die History zum gegebenen Player. Wenn es noch keine History gibt, wird eine angelegt.
+     * Liefert die History zum gegebenen Player. Wenn es noch keine History
+     * gibt, wird eine angelegt.
      *
      * @param player der Player, dessen History interessiert
      * @return die gespeicherte oder neu erstellte History
@@ -229,8 +231,8 @@ public class EnemySpawner {
         }
 
         /**
-         * Gibt zurück, ob der nächste Gegner in kurzer Zeit gespawnt werden soll (gehört zur Gegnerwelle) oder erst
-         * nach längerer Zeit
+         * Gibt zurück, ob der nächste Gegner in kurzer Zeit gespawnt werden
+         * soll (gehört zur Gegnerwelle) oder erst nach längerer Zeit
          */
         private boolean inWaveSpawn() {
             if (waveSpawnRemaining > 0) {
@@ -264,14 +266,14 @@ public class EnemySpawner {
                 }
 
                 Enemy enem = null;
-                switch (2) {
+                switch (Server.game.getTick() % 2) {
                     case 0:
                         enem = new StandardEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                         break;
                     case 1:
                         enem = new Shooter(pos[0], pos[1], Server.game.newNetID(), enemytype);
                         break;
-                        case 2:
+                    case 2:
                         enem = new CleverEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                         break;
 

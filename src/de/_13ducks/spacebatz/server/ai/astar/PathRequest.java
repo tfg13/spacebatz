@@ -10,23 +10,39 @@ import de._13ducks.spacebatz.util.Position;
  */
 public class PathRequest {
 
-    /** Die Startposition. */
+    /**
+     * Die Startposition.
+     */
     private Position start;
-    /** Die Zielposition. */
+    /**
+     * Die Zielposition.
+     */
     private Position goal;
-    /** Der Anforderer, der den gertigen Pfad dann bekommt. */
+    /**
+     * Der Anforderer, der den gertigen Pfad dann bekommt.
+     */
     private PathRequester requester;
-    /** Die Breite die der Pfad haben soll. */
+    /**
+     * Die Breite die der Pfad haben soll.
+     */
     private int requesterSize;
-    /** Gibt an zu welchem gameTick das Request erzeugt wurde. */
+    /**
+     * Gibt an zu welchem gameTick das Request erzeugt wurde.
+     */
     private int creationTick;
-    /** Gibt an ob dieses Request noch berechnet ist oder fertig/abgebrochen ist. */
+    /**
+     * Gibt an ob dieses Request noch berechnet ist oder fertig/abgebrochen ist.
+     */
     private boolean computed;
-    /** Der Astar-Algorithmus der verwendet wird. */
+    /**
+     * Der Astar-Algorithmus der verwendet wird.
+     */
     private AStarImplementation aStar;
 //    /** Die Erste Position auf die die Entity laufen muss um am Raster ausgerichtet zu sein. */
 //    private PrecisePosition firstPosition;
-    /** Die Transformation von Entitykoordinaten zu Kollisionsmapkoordinaten. */
+    /**
+     * Die Transformation von Entitykoordinaten zu Kollisionsmapkoordinaten.
+     */
     private double dx, dy;
 
     /**
@@ -102,9 +118,6 @@ public class PathRequest {
         aStar.computeIteration();
         if (aStar.isComputed()) {
             Position path[] = aStar.getPath();
-            for (int i = 0; i < path.length; i++) {
-                Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
-            }
             PrecisePosition finalPath[];
             if (path.length == 0) {
                 finalPath = new PrecisePosition[0];
