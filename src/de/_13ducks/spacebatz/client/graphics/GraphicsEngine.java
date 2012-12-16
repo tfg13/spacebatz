@@ -11,6 +11,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 /**
@@ -80,7 +81,7 @@ public class GraphicsEngine {
         try {
             // Fenster erzeugen:
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
-            Display.create();
+            Display.create(new PixelFormat(8, 8, 8)); // Die dritte acht erzeugt/aktiviert den Stencil-Buffer mit 8 Bits pro Pixel.
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
 
             // Kamera erzeugen:
@@ -92,6 +93,7 @@ public class GraphicsEngine {
             //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
             glEnable(GL_BLEND); // Transparenz in Texturen erlauben
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
+            glClearStencil(0); // Wert von Stencil-Clear auf 0 setzen.
 
             // Tastatureingaben einstallen:
             Keyboard.enableRepeatEvents(true);
