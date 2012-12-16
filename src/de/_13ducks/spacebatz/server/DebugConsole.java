@@ -68,7 +68,8 @@ public class DebugConsole {
      */
     private int loglevel = LOGLEVEL_ALL;
     /**
-     * Ein Stream zum ungefilternen Ausgeben für die interne Nutzung der Debug-Console.
+     * Ein Stream zum ungefilternen Ausgeben für die interne Nutzung der
+     * Debug-Console.
      */
     private PrintStream outStream;
     /**
@@ -81,7 +82,8 @@ public class DebugConsole {
     private ConcurrentHashMap<Byte, Object[]> rcons;
 
     /**
-     * Konstruktor Erzeugt einen neuen Thread der alle Eingaben zwischenspeichert
+     * Konstruktor Erzeugt einen neuen Thread der alle Eingaben
+     * zwischenspeichert
      */
     public DebugConsole() {
         rconOutput = new ArrayList<>();
@@ -316,9 +318,6 @@ public class DebugConsole {
                         Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY()), new PrecisePosition(targetX, targetY), new PathRequester() {
                             @Override
                             public void pathComputed(PrecisePosition[] path) {
-                                synchronized (GodControl.debugPath) {
-                                    GodControl.debugPath = path;
-                                }
                             }
                         }, size);
                         break;

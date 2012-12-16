@@ -67,7 +67,6 @@ public class GodControl implements Control {
      * Array mit allen Tilemaps
      */
     private Texture[] tilemaps;
-    public static PrecisePosition debugPath[] = new PrecisePosition[0];
     /**
      * Kopie vom pan der Kamera, aus Performance-Gründen
      */
