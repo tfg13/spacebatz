@@ -209,7 +209,7 @@ public class Player extends ItemCarrier {
     @Override
     public void decreaseHitpoints(int damage) {
         super.decreaseHitpoints(damage);
-        if (properties.getHitpoints() < 0) {
+        if (properties.getHitpoints() <= 0) {
             dead = true;
             respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
             STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);

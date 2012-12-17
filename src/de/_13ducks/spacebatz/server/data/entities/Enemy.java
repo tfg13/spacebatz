@@ -139,7 +139,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
     @Override
     public void decreaseHitpoints(int damage) {
         super.decreaseHitpoints(damage);
-        if (properties.getHitpoints() < 0) {
+        if (properties.getHitpoints() <= 0) {
             EnemySpawner.notifyEnemyDeath();
             Server.game.getEntityManager().removeEntity(netID);
             DropManager.dropItem(getX(), getY(), enemylevel);
