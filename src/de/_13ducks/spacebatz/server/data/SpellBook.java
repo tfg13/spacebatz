@@ -19,7 +19,7 @@ public class SpellBook {
 
     public void useAbility(byte ability, double posX, double posY, Char user) {
         if (abilities.containsKey(ability)) {
-            abilities.get(ability).useOnPosition(user, posX, posY);
+            abilities.get(ability).tryUseOnPosition(user, posX, posY);
         } else {
             System.out.println("Char hat keine Fähigkeit " + ability + "!");
         }

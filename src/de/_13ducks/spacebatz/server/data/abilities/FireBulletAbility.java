@@ -8,7 +8,8 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import java.util.Random;
 
 /**
- * Die Fähigkeit, Bullets zu schießen. Erzeugt neue Bullets und regisriert sie beim Server.
+ * Die Fähigkeit, Bullets zu schießen. Erzeugt neue Bullets und regisriert sie
+ * beim Server.
  *
  * @author michael
  */
@@ -17,15 +18,15 @@ public class FireBulletAbility extends WeaponAbility {
     private static final long serialVersionUID = 1L;
 
     public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
-        setDamage(damage);
-        setAttackspeed(attackspeed);
-        setRange(range);
-        setBulletpic(bulletpic);
-        setBulletspeed(bulletspeed);
-        setSpread(spread);
-        setExplosionRadius(explosionradius);
-        setMaxoverheat(maxoverheat);
-        setReduceoverheat(reduceoverheat);
+        getWeaponStats().setDamage(damage);
+        getWeaponStats().setAttackspeed(attackspeed);
+        getWeaponStats().setRange(range);
+        getWeaponStats().setBulletpic(bulletpic);
+        getWeaponStats().setBulletspeed(bulletspeed);
+        getWeaponStats().setSpread(spread);
+        getWeaponStats().setExplosionRadius(explosionradius);
+        getWeaponStats().setMaxoverheat(maxoverheat);
+        getWeaponStats().setReduceoverheat(reduceoverheat);
     }
 
     @Override
@@ -36,12 +37,12 @@ public class FireBulletAbility extends WeaponAbility {
     @Override
     public void useInAngle(Char user, double angle) {
 
-        double damage = getDamage() * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getDamageMultiplicatorBonus());
-        double range = getRange();
-        int bulletpic = getBulletpic();
-        double bulletspeed = getBulletspeed();
-        double spread = getSpread();
-        double explosionradius = getExplosionRadius();
+        double damage = getWeaponStats().getDamage() * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
+        double range = getWeaponStats().getRange();
+        int bulletpic = getWeaponStats().getBulletpic();
+        double bulletspeed = getWeaponStats().getBulletspeed();
+        double spread = getWeaponStats().getSpread();
+        double explosionradius = getWeaponStats().getExplosionRadius();
 
         Random random = new Random();
         angle += random.nextGaussian() * spread;

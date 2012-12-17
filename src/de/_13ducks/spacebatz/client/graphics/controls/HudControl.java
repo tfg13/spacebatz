@@ -75,9 +75,9 @@ public class HudControl implements Control {
         for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
 
             Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
-            if (item != null && item.getWeaponAbility().getMaxoverheat() > 0) {
+            if (item != null && item.getWeaponAbility().getWeaponStats().getMaxoverheat() > 0) {
 
-                float overheatpermax = (float) (item.getOverheat() / item.getWeaponAbility().getMaxoverheat());
+                float overheatpermax = (float) (item.getOverheat() / item.getWeaponAbility().getWeaponStats().getMaxoverheat());
                 if (overheatpermax > 1) {
                     overheatpermax = 1.0f;
                 } else if (overheatpermax < 0) {

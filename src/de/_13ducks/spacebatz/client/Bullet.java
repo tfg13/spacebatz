@@ -37,7 +37,7 @@ public class Bullet extends Char {
             Item item = GameClient.getEquippedItems().getEquipslots()[1][weaponnumber];
             if (item != null) {
                 GameClient.getEquippedItems().getEquipslots()[1][weaponnumber].increaseOverheat(1);
-                GameClient.player.attackCooldownTick = GameClient.frozenGametick + (int) Math.ceil(1 / item.getWeaponAbility().getAttackspeed());
+                GameClient.player.attackCooldownTick = GameClient.frozenGametick + (int) Math.ceil(1 / item.getWeaponAbility().getWeaponStats().getAttackspeed());
             }
         }
     }

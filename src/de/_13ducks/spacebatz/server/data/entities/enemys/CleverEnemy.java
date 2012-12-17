@@ -37,12 +37,6 @@ public class CleverEnemy extends Enemy implements PathRequester {
         waiting = false;
         if (path.length > 1) {
             followPath(path);
-
-            synchronized (GodControl.debugPath) {
-                GodControl.debugPath = path;
-            }
-        } else {
-//            System.out.println("bad path.");
         }
     }
 }

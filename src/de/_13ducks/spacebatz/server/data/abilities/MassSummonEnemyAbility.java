@@ -9,7 +9,7 @@ import de._13ducks.spacebatz.server.data.entities.enemys.StandardEnemy;
  *
  * @author michael
  */
-public class MassSummonEnemyAbility implements Ability {
+public class MassSummonEnemyAbility extends Ability {
 
     @Override
     public void useOnPosition(Char user, double x, double y) {
