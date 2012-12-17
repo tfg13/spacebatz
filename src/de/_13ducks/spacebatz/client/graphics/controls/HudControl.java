@@ -49,7 +49,6 @@ public class HudControl implements Control {
             glColor3f(0.7f, 0.0f, 0.0f);
             glRectf(0.03f * camera.getTilesX(), 0.03f * camera.getTilesY(), (0.03f + 0.26f * ((float) hp / maxhp)) * camera.getTilesX(), 0.05f * camera.getTilesY());
             glEnable(GL_TEXTURE_2D);
-            glColor3f(1f, 1f, 1f);
         }
 
         // angelegte Waffen in Hud zeichnen
@@ -59,7 +58,7 @@ public class HudControl implements Control {
 
             if (item != null) {
                 float x = 0.021f;
-                float y = 0.7f - 0.1f * j;
+                float y = 0.705f - 0.1f * j;
                 float width = 0.05f / 16.0f * 9.0f;
                 float height = 0.05f;
 
@@ -71,10 +70,29 @@ public class HudControl implements Control {
             }
         }
 
+        // Rahmen um angelegte Waffen in Hud zeichnen
+        glDisable(GL_TEXTURE_2D);
+        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+
+            glColor3f(0.0f, 0.0f, 0.0f);
+
+            float x1 = 0.019f * camera.getTilesX();
+            float y1 = (0.705f - 0.1f * j) * camera.getTilesY();
+            float x2 = (0.023f + 0.05f / 16.0f * 9.0f) * camera.getTilesX();
+            float y2 = (0.7505f - 0.1f * j) * camera.getTilesY();
+
+            glBegin(GL_LINE_LOOP);
+            glVertex2d(x1, y1);
+            glVertex2d(x2, y1);
+            glVertex2d(x2, y2);
+            glVertex2d(x1, y2);
+
+            glEnd();
+        }
+
         // Waffen-Overheat in Hud zeichnen
         for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
             float height = 0.69f - 0.1f * j;
-            glDisable(GL_TEXTURE_2D);
 
             Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
             if (item != null && item.getWeaponAbility().getWeaponStats().getMaxoverheat() > 0) {
@@ -93,13 +111,10 @@ public class HudControl implements Control {
                 glColor3f(0.7f, 0.0f, 0.0f);
                 glRectf(0.012f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.012f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
             }
-            glEnable(GL_TEXTURE_2D);
             glColor3f(1f, 1f, 1f);
         }
 
         // Markierung an angelegte Waffe:
-        glDisable(GL_TEXTURE_2D);
-        // weißer Hintergrund
         glColor3f(0.7f, 0.0f, 0.0f);
         float height = 0.7f - 0.1f * GameClient.player.getSelectedattack();
         glRectf(0.0f * camera.getTilesX(), height * camera.getTilesY(), 0.005f * camera.getTilesX(), (height + 0.05f) * camera.getTilesY());
