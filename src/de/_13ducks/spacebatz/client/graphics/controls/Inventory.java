@@ -98,9 +98,21 @@ public class Inventory implements Control {
 
         glColor3f(0.7f, 0.0f, 0.0f);
         glRectf(wx * camera.getTilesX(), 0.59f * camera.getTilesY(), (wx + 0.14f) * camera.getTilesX(), 0.6f * camera.getTilesY());
-        glColor3f(1f, 1f, 1f);
-        glEnable(GL_TEXTURE_2D);
 
+        // Linien für Inventar-Items zeichnen
+        glColor3f(0.0f, 0.0f, 0.0f);
+        float x1 = 0.107f * camera.getTilesX();
+        float x2 = 0.88325f * camera.getTilesX();
+        float height1 = (0.07f) * camera.getTilesY();
+        glBegin(GL_LINES);
+        for (int i = 0; i < 4; i++) {
+            glVertex2d(x1, height1 + 0.1f * i * camera.getTilesY());
+            glVertex2d(x2, height1 + 0.1f * i * camera.getTilesY());
+        }
+        glEnd();
+        
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1f, 1f, 1f);
 
         // angelegte Items in ihre Slots im Inventar zeichnen
         itemTiles.bind();
