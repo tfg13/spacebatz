@@ -27,7 +27,7 @@ public class HudControl implements Control {
     @Override
     public void render(Renderer renderer) {
         TextWriter textWriter = renderer.getTextWriter();
-        
+
         if (GameClient.getPlayer().isDead()) {
             if (GameClient.frozenGametick >= GameClient.getPlayer().getRespawntick()) {
                 textWriter.renderText("Press <Fire> to respawn", 10.5f, camera.getTilesY() - 2.5f);
@@ -58,9 +58,9 @@ public class HudControl implements Control {
             Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
 
             if (item != null) {
-                float x = 0.01f;
+                float x = 0.021f;
                 float y = 0.7f - 0.1f * j;
-                float width = 0.05f;
+                float width = 0.05f / 16.0f * 9.0f;
                 float height = 0.05f;
 
                 renderer.setTilemap(itemTiles);
@@ -73,6 +73,8 @@ public class HudControl implements Control {
 
         // Waffen-Overheat in Hud zeichnen
         for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+            float height = 0.69f - 0.1f * j;
+            glDisable(GL_TEXTURE_2D);
 
             Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
             if (item != null && item.getWeaponAbility().getWeaponStats().getMaxoverheat() > 0) {
@@ -84,18 +86,15 @@ public class HudControl implements Control {
                     overheatpermax = 0.0f;
                 }
 
-                float height = 0.69f - 0.1f * j;
-
-                glDisable(GL_TEXTURE_2D);
                 // weißer Hintergrund
                 glColor3f(1.0f, 1.0f, 1.0f);
                 glRectf(0.01f * camera.getTilesX(), height * camera.getTilesY(), 0.06f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
                 // roter HP-Balken, Länge anhängig von HP
                 glColor3f(0.7f, 0.0f, 0.0f);
                 glRectf(0.012f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.012f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
-                glEnable(GL_TEXTURE_2D);
-                glColor3f(1f, 1f, 1f);
             }
+            glEnable(GL_TEXTURE_2D);
+            glColor3f(1f, 1f, 1f);
         }
 
         // Markierung an angelegte Waffe:
