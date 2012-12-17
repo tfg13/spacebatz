@@ -72,7 +72,7 @@ public final class Settings {
     /**
      * Größe des Inventar jedes Spielers
      */
-    public static final int INVENTORY_SIZE = 96;
+    public static final int INVENTORY_SIZE = 30;
     /**
      * Die Reichweite für Kollisionen
      */

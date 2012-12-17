@@ -27,7 +27,6 @@ public class Inventory implements Control {
      * Sagt, ob Inventar gerade geöffnet ist (Taste i)
      */
     private boolean lmbpressed; // linke maustaste gedrückt
-    private int inventorypage; // aktuelle Inventarseite
     private int selecteditemslot; // zuletzt angeklickter Inventarslot
     private Texture itemTiles;
 
@@ -40,7 +39,6 @@ public class Inventory implements Control {
     public void render(Renderer renderer) {
         Camera camera = renderer.getCamera();
         TextWriter textWriter = renderer.getTextWriter();
-        // Inventory-Hintergrund zeichnen
 
         glDisable(GL_TEXTURE_2D);
         // dunkler Hintergrund
@@ -54,27 +52,29 @@ public class Inventory implements Control {
         textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.45f * camera.getTilesX(), 0.44f * camera.getTilesY());
         textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.75f * camera.getTilesX(), 0.44f * camera.getTilesY());
 
-        for (int i = 12 * inventorypage; i < 12 * inventorypage + 12; i++) {
+        itemTiles.bind();
+        for (int i = 0; i < 30; i++) {
 
             if (GameClient.getItems()[i] == null || i == selecteditemslot) {
                 // Slot leer oder gerade selected -> nicht zeichnen
                 continue;
             }
-            itemTiles.bind();
 
             Item item = GameClient.getItems()[i];
 
-            float x = (0.1075f + 0.133f * (i % 6)) * camera.getTilesX();
+            float x = (0.107f + 0.08f * (i % 10)) * camera.getTilesX();
 
             float y;
-            if (i % 12 < 6) {
-                y = 0.191f * camera.getTilesY();
+            if (i < 10) {
+                y = 0.27f * camera.getTilesY();
+            } else if (i < 20) {
+                y = 0.17f * camera.getTilesY();
             } else {
-                y = 0.061f * camera.getTilesY();
+                y = 0.07f * camera.getTilesY();
             }
 
-            float width = 0.11f * camera.getTilesX();
-            float height = 0.11f * camera.getTilesY();
+            float width = (0.1f / 16.0f * 9.0f) * camera.getTilesX();
+            float height = 0.1f * camera.getTilesY();
 
             float v = 0.0625f * (int) item.getPic();
             float w = 0.0625f * ((int) item.getPic() / 16);
@@ -167,19 +167,29 @@ public class Inventory implements Control {
         float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
         float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
 
-        // Maus über Item im Inventar?
+        // Maus über Item im Inventar? 10,7% , 8%
         int slothovered = -1;
-        if (y > 0.1812 && y <= 0.3156) {
-            for (int i = 0; i < 6; i++) {
-                if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                    slothovered = i + inventorypage * 12;
+        double width = 0.08;
+        double left = 0.107;
+
+        if (y > 0.27 && y <= 0.37) {
+            for (int i = 0; i < 10; i++) {
+                if (x > left + i * width && x <= left + (i + 1) * width) {
+                    slothovered = i;
                     break;
                 }
             }
-        } else if (y > 0.05156 && y <= 0.1813) {
-            for (int i = 0; i < 6; i++) {
-                if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                    slothovered = i + 6 + inventorypage * 12;
+        } else if (y > 0.17 && y <= 0.27) {
+            for (int i = 0; i < 10; i++) {
+                if (x > left + i * width && x <= left + (i + 1) * width) {
+                    slothovered = i + 10;
+                    break;
+                }
+            }
+        } else if (y > 0.07 && y <= 0.17) {
+            for (int i = 00; i < 10; i++) {
+                if (x > left + i * width && x <= left + (i + 1) * width) {
+                    slothovered = i + 20;
                     break;
                 }
             }
@@ -286,17 +296,27 @@ public class Inventory implements Control {
 
                     // Inventarslot angeklickt?
                     int slotklicked = -1;
-                    if (y > 0.1812 && y <= 0.3156) {
-                        for (int i = 0; i < 6; i++) {
-                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                                slotklicked = i + inventorypage * 12;
+                    double width = 0.08;
+                    double left = 0.107;
+
+                    if (y > 0.27 && y <= 0.37) {
+                        for (int i = 0; i < 10; i++) {
+                            if (x > left + i * width && x <= left + (i + 1) * width) {
+                                slotklicked = i;
                                 break;
                             }
                         }
-                    } else if (y > 0.05156 && y <= 0.1813) {
-                        for (int i = 0; i < 6; i++) {
-                            if (x > 0.0975 + i * 0.133 && x <= 0.0975 + (i + 1) * 0.133) {
-                                slotklicked = i + 6 + inventorypage * 12;
+                    } else if (y > 0.17 && y <= 0.27) {
+                        for (int i = 0; i < 10; i++) {
+                            if (x > left + i * width && x <= left + (i + 1) * width) {
+                                slotklicked = i + 10;
+                                break;
+                            }
+                        }
+                    } else if (y > 0.07 && y <= 0.17) {
+                        for (int i = 0; i < 10; i++) {
+                            if (x > left + i * width && x <= left + (i + 1) * width) {
+                                slotklicked = i + 20;
                                 break;
                             }
                         }
@@ -315,23 +335,6 @@ public class Inventory implements Control {
                             // es war bereits ein Slot ausgewählt
                             CTS_REQUEST_INV_ITEM_MOVE.sendInvItemMove(selecteditemslot, slotklicked);
                             selecteditemslot = -1;
-                        }
-                    }
-
-                    // nächste / vorherige Seite
-                    if (y > 0.14 && y < 0.22) {
-                        if (x < 0.1) {
-                            if (inventorypage <= 0) {
-                                inventorypage = 0;
-                            } else {
-                                inventorypage--;
-                            }
-                        } else if (x > 0.9) {
-                            if (inventorypage >= 7) {
-                                inventorypage = 7;
-                            } else {
-                                inventorypage++;
-                            }
                         }
                     }
                 }
