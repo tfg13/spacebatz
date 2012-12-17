@@ -24,8 +24,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 
 /**
- * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der
- * Spielwelt.
+ * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -54,8 +53,7 @@ public class Player extends ItemCarrier {
     private int respawntick;
 
     /**
-     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird
-     * auch beim Client registriert. Es kann nur einen Player pro Client geben.
+     * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
      *
      * @param x Startkoordinate X
      * @param y Startkoordinate Y
@@ -71,8 +69,7 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Ein move-Request vom Client ist eingegangen. Teil der Netz-Infrastruktur,
-     * muss schnell verarbeitet werden
+     * Ein move-Request vom Client ist eingegangen. Teil der Netz-Infrastruktur, muss schnell verarbeitet werden
      *
      * @param w W-Button gedrückt.
      * @param a A-Button gedrückt.
@@ -124,8 +121,7 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Lässt den Player seine "Shoot"-Fähigkeit auf ein Ziel einsetzen, falls
-     * Cooldown und Overheat das zulässt
+     * Lässt den Player seine "Shoot"-Fähigkeit auf ein Ziel einsetzen, falls Cooldown und Overheat das zulässt
      *
      * @param angle der Winkel in dem die Fähigkeit benutzt wird
      *
@@ -212,11 +208,13 @@ public class Player extends ItemCarrier {
 
     @Override
     public void decreaseHitpoints(int damage) {
-        super.decreaseHitpoints(damage);
-        if (properties.getHitpoints() <= 0) {
-            dead = true;
-            respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
-            STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
+        if (dead == false) {
+            super.decreaseHitpoints(damage);
+            if (properties.getHitpoints() <= 0) {
+                dead = true;
+                respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
+                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
+            }
         }
     }
 }
