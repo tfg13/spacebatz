@@ -91,32 +91,44 @@ public class Inventory implements Control {
             glEnd(); // Zeichnen des QUADs fertig } }
         }
 
+        glDisable(GL_TEXTURE_2D);
+
+        // Linien für Inventar-Items zeichnen
+        glColor3f(0.0f, 0.0f, 0.0f);
+
+        // waagrechte Linien
+        float x1 = 0.095125f * camera.getTilesX();
+        float x2 = 0.895125f * camera.getTilesX();
+        float bottom1 = 0.07f * camera.getTilesY();
+
+        // senkrechte Linien
+        float y1 = 0.07f * camera.getTilesY();
+        float y2 = 0.37f * camera.getTilesY();
+        float left1 = 0.095125f * camera.getTilesX();
+
+        glBegin(GL_LINES);
+        for (int i = 0; i < 4; i++) {
+            glVertex2d(x1, bottom1 + 0.1f * i * camera.getTilesY());
+            glVertex2d(x2, bottom1 + 0.1f * i * camera.getTilesY());
+        }
+        for (int i = 0; i < 11; i++) {
+            glVertex2d(left1 + 0.08f * i * camera.getTilesX(), y1);
+            glVertex2d(left1 + 0.08f * i * camera.getTilesX(), y2);
+        }
+        glEnd();
 
         // ausgewählten Waffenslot im Inventar markieren:
-        glDisable(GL_TEXTURE_2D);
         float wx = 0.227f + 0.172f * GameClient.getPlayer().getSelectedattack();
 
         glColor3f(0.7f, 0.0f, 0.0f);
         glRectf(wx * camera.getTilesX(), 0.59f * camera.getTilesY(), (wx + 0.14f) * camera.getTilesX(), 0.6f * camera.getTilesY());
 
-        // Linien für Inventar-Items zeichnen
-        glColor3f(0.0f, 0.0f, 0.0f);
-        float x1 = 0.107f * camera.getTilesX();
-        float x2 = 0.88325f * camera.getTilesX();
-        float height1 = (0.07f) * camera.getTilesY();
-        glBegin(GL_LINES);
-        for (int i = 0; i < 4; i++) {
-            glVertex2d(x1, height1 + 0.1f * i * camera.getTilesY());
-            glVertex2d(x2, height1 + 0.1f * i * camera.getTilesY());
-        }
-        glEnd();
-        
+        glColor3f(1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
-        glColor3f(1f, 1f, 1f);
 
         // angelegte Items in ihre Slots im Inventar zeichnen
         itemTiles.bind();
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i < GameClient.getEquippedItems().getEquipslots().length; i++) {
             for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[i].length; j++) {
                 Item item = GameClient.getEquippedItems().getEquipslots()[i][j];
                 if (item != null) {
@@ -179,7 +191,7 @@ public class Inventory implements Control {
         float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
         float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
 
-        // Maus über Item im Inventar? 10,7% , 8%
+        // Maus über Item im Inventar?
         int slothovered = -1;
         double width = 0.08;
         double left = 0.107;
