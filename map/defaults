@@ -4,10 +4,11 @@ polymapgen 2
 bordergenerator 0
 polyVisualizer 0
 perlinterrain 2
- sizex 100
- sizey 100
+ sizex 128
+ sizey 128
+resourceplacer 0
 spawn 0
 examplequest 0
 rasterizer 2
- sizex 100
- sizey 100
+ sizex 128
+ sizey 128

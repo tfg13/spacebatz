@@ -23,6 +23,11 @@ public class MPolygon {
      */
     public boolean solid = false;
     /**
+     * Wenn ungleich 0, dann ist es eine Resource.
+     * Wird nur für solid beachtet.
+     */
+    public int resource = 0;
+    /**
      * Ist dies der (einzige) Spawn-Polygon?
      */
     public boolean spawn = false;
@@ -384,7 +389,7 @@ public class MPolygon {
         for (int i = 0; i < myNodes.size(); i++) {
             Node node = myNodes.get(i);
             Node next = myNodes.get((i + 1) % myNodes.size()); // + 1 mod elementanzahl
-            area += node.x * next.y - next.x - node.y;
+            area += node.x * next.y - next.x * node.y;
         }
         return Math.abs(area / 2);
     }

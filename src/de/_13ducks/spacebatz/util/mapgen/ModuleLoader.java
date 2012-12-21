@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.util.mapgen.modules.PerlinTerrainFormer;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonVisualizer;
 import de._13ducks.spacebatz.util.mapgen.modules.Rasterizer;
+import de._13ducks.spacebatz.util.mapgen.modules.ResourcePlacer;
 import de._13ducks.spacebatz.util.mapgen.modules.SpawnFormer;
 import java.util.HashMap;
 
@@ -29,6 +30,7 @@ public final class ModuleLoader {
             addModule(new PerlinTerrainFormer());
             addModule(new SpawnFormer());
             addModule(new ExampleQuestCreator());
+            addModule(new ResourcePlacer());
         }
         return map;
     }

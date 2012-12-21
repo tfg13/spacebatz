@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
 import de._13ducks.spacebatz.util.mapgen.data.Vector;
 import java.util.HashMap;
 
@@ -48,21 +49,10 @@ public class Rasterizer extends Module {
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
         map.collision = new boolean[sizeX][sizeY];
-        MPolygon spawnPoly = null; // Wird paralell noch gesucht.
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                // Suche Polygon
-                MPolygon poly = null;
-                for (MPolygon po: map.polygons.polys) {
-                    if (po.spawn) {
-                        spawnPoly = po;
-                    }
-                    if (po.contains(x * scaleX, y * scaleY)) {
-                        poly = po;
-                        break;
-                    }
-                }
+                MPolygon poly = polyFor(x * scaleX, y * scaleY, map.polygons);
                 // Textur/Col setzen
                 if (poly == null) {
                     map.collision[x][y] = true;
@@ -73,7 +63,11 @@ public class Rasterizer extends Module {
                     map.groundTex[x][y] = 1;
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
-                    map.groundTex[x][y] = 2;
+                    if (poly.resource == 1) {
+                        map.groundTex[x][y] = 4;
+                    } else {
+                        map.groundTex[x][y] = 2;
+                    }
                     map.collision[x][y] = true;
                 } else {
                     if (poly.spawn || poly.texture == 0) {
@@ -99,6 +93,13 @@ public class Rasterizer extends Module {
             map.collision[x][sizeY - 1] = true;
         }
         // Spawn setzen
+        MPolygon spawnPoly = null;
+        for (MPolygon po : map.polygons.polys) {
+            if (po.spawn) {
+                spawnPoly = po;
+                break;
+            }
+        }
         Vector spawn = spawnPoly.calcCenter();
         map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
         map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = 6;
@@ -109,5 +110,27 @@ public class Rasterizer extends Module {
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = false;
+    }
+
+    /**
+     * Sucht einen Polygon im Mesh, der den gegebene Punkt enthält
+     *
+     * @param x Koordinate X
+     * @param y Koordinate Y
+     * @param mesh PolyMesh mesh
+     * @return Der Polygon, oder null, wenn nicht gefunden
+     */
+    private MPolygon polyFor(double x, double y, PolyMesh mesh) {
+        for (MPolygon po : mesh.polys) {
+            if (po.contains(x, y)) {
+                // Dieser Polygon ist es, aber es könnte rekursiv runter gehen!
+                if (po.getMesh() == null) {
+                    return po;
+                } else {
+                    return polyFor(x, y, po.getMesh());
+                }
+            }
+        }
+        return null;
     }
 }

@@ -25,7 +25,7 @@ public class BorderGenerator extends Module {
 
     @Override
     public String[] provides() {
-        return new String[]{};
+        return new String[]{"BORDER"};
     }
 
     @Override

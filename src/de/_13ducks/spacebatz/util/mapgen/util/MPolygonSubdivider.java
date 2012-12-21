@@ -25,6 +25,7 @@ public class MPolygonSubdivider {
     /**
      * Erzeugt ein gültiges SubMesh.
      * Dieses verwendet auf jeden Fall die Randknoten des vorhandenen Polygons.
+     * Kopiert alle vorhandenen Attribute in die Kinder
      *
      * @param border der Randpolyon
      * @param numberOfPolys wieviele Sub-Polys.
@@ -77,7 +78,15 @@ public class MPolygonSubdivider {
             voronoi = clip(voronoi, border);
         }
 
-        return PolyMesh.createFromJTSPolygons(voronoi);
+        PolyMesh mesh = PolyMesh.createFromJTSPolygons(voronoi);
+        // Attribute in die Kinder kopieren:
+        for (MPolygon subPoly : mesh.polys){
+            subPoly.border = border.border;
+            subPoly.solid = border.solid;
+            subPoly.spawn = border.spawn;
+            subPoly.texture = border.texture;
+        }
+        return mesh;
     }
 
     /**
