@@ -238,7 +238,7 @@ public class MPolygon {
         }
 
         // Linie bauen:
-        Edge edge = new Edge(new Node(x, y), new Node(10000, 10000));
+        Edge edge = new Edge(new Node(x, y), new Node(500000.2, 600000.7));
 
         int intersections = 0;
         for (int i = 0; i < edges.size(); i++) {
