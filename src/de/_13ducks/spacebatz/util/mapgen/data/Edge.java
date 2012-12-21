@@ -194,4 +194,13 @@ public class Edge {
     Edge move(Vector vec) {
         return new Edge(start.toVector().add(vec).toNode(), end.toVector().add(vec).toNode());
     }
+
+    /**
+     * Liefert die Länge der Kante.
+     * Einfach Pythagoras.
+     * @return die Länge der Kante.
+     */
+    public double length() {
+        return new Vector(end.x - start.x, end.y - start.y).length();
+    }
 }

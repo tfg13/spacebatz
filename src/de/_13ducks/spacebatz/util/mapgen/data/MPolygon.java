@@ -365,4 +365,20 @@ public class MPolygon {
         }
         return new Vector(x / myNodes.size(), y / myNodes.size());
     }
+
+    /**
+     * Berechnet die Fläche des Polygons.
+     * Es muss dazu einfach sein. Ob konvex oder konkav ist aber egal.
+     * Verwendet die Gaußsche Trapezformel (siehe Wikipedia).
+     * @return die Fläche dieses Polygons
+     */
+    public double getArea() {
+        double area = 0;
+        for (int i = 0; i < myNodes.size(); i++) {
+            Node node = myNodes.get(i);
+            Node next = myNodes.get((i + 1) % myNodes.size()); // + 1 mod elementanzahl
+            area += node.x * next.y - next.x - node.y;
+        }
+        return Math.abs(area / 2);
+    }
 }
