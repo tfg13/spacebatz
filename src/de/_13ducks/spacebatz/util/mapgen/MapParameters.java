@@ -1,7 +1,10 @@
 package de._13ducks.spacebatz.util.mapgen;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -45,7 +48,27 @@ public class MapParameters {
      */
     public MapParameters() {
         modules = ModuleLoader.loadModules();
-        loadDefaults();
+        try {
+            try (BufferedReader reader = new BufferedReader(new FileReader("map/defaults"))) {
+                // Einstellungen auslesen
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Anzahl Argumente (zusätzliche Zeilen) lesen:
+                    String[] words = line.split("\\s+");
+                    int additionalLines = Integer.parseInt(words[1]);
+                    Module m = modules.get(words[0]);
+                    HashMap<String, String> moduleParam = new HashMap<>();
+                    settings.put(m.getName(), moduleParam);
+                    for (int j = 1; j <= additionalLines; j++) {
+                        String argLine = reader.readLine();
+                        moduleParam.put(argLine.substring(0, argLine.indexOf(" ")), argLine.substring(argLine.indexOf(" ") + 1));
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        masterSeed = new Random().nextLong();
     }
 
     /**
@@ -265,46 +288,6 @@ public class MapParameters {
             }
         }
         return false;
-    }
-
-    /**
-     * Die defaultEinstellungen
-     */
-    private void loadDefaults() {
-        HashMap<String, String> polySettings = new HashMap<>();
-        polySettings.put("PRIORITY", String.valueOf(0));
-        polySettings.put("polynumber", String.valueOf(250));
-        polySettings.put("smooth", String.valueOf(0));
-        settings.put("polymapgen", polySettings);
-
-        HashMap<String, String> polyVisSettings = new HashMap<>();
-        polyVisSettings.put("PRIORITY", String.valueOf(2));
-        settings.put("polyVisualizer", polyVisSettings);
-
-        HashMap<String, String> borderSettings = new HashMap<>();
-        borderSettings.put("PRIORITY", String.valueOf(1));
-        settings.put("bordergenerator", borderSettings);
-
-        HashMap<String, String> perlinSettings = new HashMap<>();
-        perlinSettings.put("PRIORITY", String.valueOf(3));
-        perlinSettings.put("sizex", String.valueOf(100));
-        perlinSettings.put("sizey", String.valueOf(100));
-        settings.put("perlinterrain", perlinSettings);
-
-        HashMap<String, String> spawnSettings = new HashMap<>();
-        spawnSettings.put("PRIORITY", String.valueOf(4));
-        settings.put("spawn", spawnSettings);
-
-        HashMap<String, String> exampleQuestSettings = new HashMap<>();
-        exampleQuestSettings.put("PRIORITY", String.valueOf(5));
-        settings.put("examplequest", exampleQuestSettings);
-
-        HashMap<String, String> rasterSettings = new HashMap<>();
-        rasterSettings.put("sizex", String.valueOf(128));
-        rasterSettings.put("sizey", String.valueOf(128));
-        settings.put("rasterizer", rasterSettings);
-
-        masterSeed = new Random().nextLong();
     }
 
     /**
