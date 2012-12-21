@@ -39,6 +39,12 @@ public class MPolygon {
      * Die bekannten Nachbarn dieses Polygons.
      */
     private List<MPolygon> neighbors;
+    /**
+     * Polygone können selber PolyMeshs sein, also wieder Unterpolygone haben.
+     * Diese sind aber in keiner Weise logisch mit der Ebene darüber verbunden.
+     * Es gibt also insbesondere keine Nachbarschafts-Beziehungen.
+     */
+    private PolyMesh subPolys;
 
     /**
      * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
@@ -370,6 +376,7 @@ public class MPolygon {
      * Berechnet die Fläche des Polygons.
      * Es muss dazu einfach sein. Ob konvex oder konkav ist aber egal.
      * Verwendet die Gaußsche Trapezformel (siehe Wikipedia).
+     *
      * @return die Fläche dieses Polygons
      */
     public double getArea() {
@@ -380,5 +387,53 @@ public class MPolygon {
             area += node.x * next.y - next.x - node.y;
         }
         return Math.abs(area / 2);
+    }
+
+    /**
+     * Liefert das Polygon-Subnetz, falls es existiert.
+     *
+     * @return das Polygon-Subnetz oder null.
+     */
+    public PolyMesh getMesh() {
+        return subPolys;
+    }
+
+    /**
+     * Setzt das Polygon-Subnetz.
+     * Löscht das alte (falls vorhanden) kommentarlos.
+     *
+     * @param mesh das neue Polygon-Subnetz.
+     */
+    public void setMesh(PolyMesh mesh) {
+        subPolys = mesh;
+    }
+
+    /**
+     * Liefert das minimale Rechteck, das den gesamten Polygon enthält.
+     *
+     * @return das minimale Rechteck, das den gesamten Polygon enthält.
+     */
+    public MPolygon calcMinOuterRect() {
+        // Einfach größtes und kleinstes X und Y suchen.
+        double largeX = Double.MIN_VALUE;
+        double smallX = Double.MAX_VALUE;
+        double largeY = Double.MIN_VALUE;
+        double smallY = Double.MAX_VALUE;
+        for (Node node : myNodes) {
+            if (node.x > largeX) {
+                largeX = node.x;
+            }
+            if (node.x < smallX) {
+                smallX = node.x;
+            }
+            if (node.y > largeY) {
+                largeY = node.y;
+            }
+            if (node.y < smallY) {
+                smallY = node.y;
+            }
+        }
+        // Rechteck daraus bauen
+        return new MPolygon(false, new Node(smallX, smallY), new Node(largeX, smallY), new Node(largeX, largeY), new Node(smallX, largeY));
     }
 }
