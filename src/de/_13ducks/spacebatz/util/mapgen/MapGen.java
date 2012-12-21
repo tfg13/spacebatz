@@ -55,53 +55,11 @@ public class MapGen {
         if (!params.check()) {
             throw new IllegalArgumentException("Invalid params!");
         }
-        // Module sortieren und ausführen:
-        ArrayList<String> polyModules = new ArrayList<>();
-        ArrayList<String> rasterModules = new ArrayList<>();
-        String rasterize = null;
-        moduleLoop:
-        for (String moduleName : params.getModules()) {
-            Module module = modules.get(moduleName);
-            // Hat das RASTERIZE?
-            for (String var : module.provides()) {
-                if (var.equals("RASTERIZE")) {
-                    rasterize = moduleName;
-                    // Dann nicht einsortieren
-                    continue moduleLoop;
-                }
-            }
-            // Sonst einsortieren
-            if (module.computesPolygons()) {
-                polyModules.add(moduleName);
-            } else {
-                rasterModules.add(moduleName);
-            }
-        }
-        // Ordnen:
-        Comparator<String> comp = new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return params.getPriority(o1) - params.getPriority(o2);
-            }
-        };
-        Collections.sort(polyModules, comp);
-        Collections.sort(rasterModules, comp);
-
         // Ausführen:
-        // Init
         currentMap = new InternalMap();
         seedGenerator = new Random(params.masterSeed);
-        // Poly
-        for (String polyModuleName : polyModules) {
-            runModule(polyModuleName, params);
-        }
-        // Umwandeln in raster
-        if (rasterize != null) {
-            runModule(rasterize, params);
-        }
-        // Raster
-        for (String rasterModuleName : rasterModules) {
-            runModule(rasterModuleName, params);
+        for (String moduleName : params.getModules()) {
+            runModule(moduleName, params);
         }
         System.out.println("INFO: MapGen: Generation took " + (System.currentTimeMillis() - startTime) + "ms");
         try {

@@ -1,19 +1,13 @@
-polymapgen 3
-PRIORITY 0
-polynumber 250
-smooth 0
-bordergenerator 1
-PRIORITY 1
-polyVisualizer 1
-PRIORITY 2
-perlinterrain 3
-sizex 100
-sizey 100
-PRIORITY 3
-spawn 1
-PRIORITY 4
-examplequest 1
-PRIORITY 5
+polymapgen 2
+ polynumber 250
+ smooth 0
+bordergenerator 0
+polyVisualizer 0
+perlinterrain 2
+ sizex 100
+ sizey 100
+spawn 0
+examplequest 0
 rasterizer 2
-sizex 100
-sizey 100
+ sizex 100
+ sizey 100

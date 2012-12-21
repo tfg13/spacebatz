@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.util.mapgen;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import sun.misc.BASE64Decoder;
@@ -29,6 +28,10 @@ import sun.misc.BASE64Encoder;
  */
 public class MapParameters {
 
+    /**
+     * Die Reihenfolge der verwendeten Module:
+     */
+    private ArrayList<String> moduleOrder = new ArrayList<>();
     /**
      * Die verwendeten Module und deren Parameter
      */
@@ -59,8 +62,13 @@ public class MapParameters {
                     Module m = modules.get(words[0]);
                     HashMap<String, String> moduleParam = new HashMap<>();
                     settings.put(m.getName(), moduleParam);
+                    moduleOrder.add(m.getName());
                     for (int j = 1; j <= additionalLines; j++) {
                         String argLine = reader.readLine();
+                        // Leerzeichen am Anfang raus:
+                        if (argLine.startsWith(" ")) {
+                            argLine = argLine.substring(1);
+                        }
                         moduleParam.put(argLine.substring(0, argLine.indexOf(" ")), argLine.substring(argLine.indexOf(" ") + 1));
                     }
                 }
@@ -88,10 +96,15 @@ public class MapParameters {
         }
         // Version lesen
         int version = Integer.valueOf(s.substring(3, 5));
+        boolean sortAndDeletePrio = false;
         // Compatibility-Conversions
         switch (version) {
             case 01:
-                // Default-Version
+                // Alte Version, nach PRIO sortieren und dann löschen
+                sortAndDeletePrio = true;
+                break;
+            case 02:
+                // Derzeit aktuell, keine speziellen Konvertierungen notwendig.
                 break;
             default:
                 System.out.println("Unknown format version, will try to import without conversions...");
@@ -119,17 +132,67 @@ public class MapParameters {
                 Module m = modules.get(words[0]);
                 HashMap<String, String> moduleParam = new HashMap<>();
                 settings.put(m.getName(), moduleParam);
+                moduleOrder.add(m.getName());
                 for (int j = 1; j <= additionalLines; j++) {
                     String argLine = lines[i + j];
+                    // Leerzeichen am Anfang raus:
+                    if (argLine.startsWith(" ")) {
+                        argLine = argLine.substring(1);
+                    }
                     moduleParam.put(argLine.substring(0, argLine.indexOf(" ")), argLine.substring(argLine.indexOf(" ") + 1));
                 }
                 i += additionalLines;
             }
         }
+        // Kompatibilität mit 01:
+        if (sortAndDeletePrio) {
+            // In Reihenfolge bringen:
+            ArrayList<String> polyModules = new ArrayList<>();
+            ArrayList<String> rasterModules = new ArrayList<>();
+            Module rasterizer = null;
+            moduleLoop:
+            for (String moduleName : settings.keySet()) {
+                Module module = modules.get(moduleName);
+                // Hat das RASTERIZE?
+                for (String var : module.provides()) {
+                    if (var.equals("RASTERIZE")) {
+                        // Dann nicht einsortieren
+                        rasterizer = module;
+                        continue moduleLoop;
+                    }
+                }
+                // Sonst einsortieren
+                if (module.computesPolygons()) {
+                    polyModules.add(moduleName);
+                } else {
+                    rasterModules.add(moduleName);
+                }
+            }
+            // Ordnen:
+            Comparator<String> comp = new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return getPriority(o1) - getPriority(o2);
+                }
+            };
+            Collections.sort(polyModules, comp);
+            Collections.sort(rasterModules, comp);
+            // So einfügen
+            moduleOrder.clear();
+            moduleOrder.addAll(polyModules);
+            if (rasterizer != null) {
+                moduleOrder.add(rasterizer.getName());
+            }
+            moduleOrder.addAll(rasterModules);
+            // Prios löschen:
+            for (HashMap<String, String> moduleParams : settings.values()) {
+                moduleParams.remove("PRIORITY");
+            }
+        }
     }
 
-    public Set<String> getModules() {
-        return settings.keySet();
+    public List<String> getModules() {
+        return Collections.unmodifiableList(moduleOrder);
     }
 
     public HashMap<String, String> getModuleParameters(String module) {
@@ -167,47 +230,15 @@ public class MapParameters {
         if (selectionProvides("CREATE_RASTER") && !checkPolyModules()) {
             return false;
         }
-        // In Reihenfolge bringen:
-        ArrayList<String> polyModules = new ArrayList<>();
-        ArrayList<String> rasterModules = new ArrayList<>();
-        moduleLoop:
-        for (String moduleName : settings.keySet()) {
-            Module module = modules.get(moduleName);
-            // Hat das RASTERIZE?
-            for (String var : module.provides()) {
-                if (var.equals("RASTERIZE")) {
-                    // Dann nicht einsortieren
-                    continue moduleLoop;
-                }
-            }
-            // Sonst einsortieren
-            if (module.computesPolygons()) {
-                polyModules.add(moduleName);
-            } else {
-                rasterModules.add(moduleName);
-            }
-        }
-        // Ordnen:
-        Comparator<String> comp = new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return getPriority(o1) - getPriority(o2);
-            }
-        };
-        Collections.sort(polyModules, comp);
-        Collections.sort(rasterModules, comp);
-        // Jetzt wieder hintereinander hängen:
-        ArrayList<String> allSorted = new ArrayList<>(polyModules);
-        allSorted.addAll(rasterModules);
         // Durchgehen, und schauen, ob Abhängigkeiten erfüllt sind.
-        for (int i = 0; i < allSorted.size(); i++) {
-            Module module = modules.get(allSorted.get(i));
+        for (int i = 0; i < moduleOrder.size(); i++) {
+            Module module = modules.get(moduleOrder.get(i));
             for (String requirement : module.requires()) {
                 boolean requirementFulfilled = false;
                 // Alle vorhergehenden Module prüfen, ob die das bereitstellen
                 outer:
                 for (int r = 0; r < i; r++) {
-                    for (String provides : modules.get(allSorted.get(r)).provides()) {
+                    for (String provides : modules.get(moduleOrder.get(r)).provides()) {
                         if (provides.equals(requirement)) {
                             requirementFulfilled = true;
                             break outer;
@@ -227,6 +258,7 @@ public class MapParameters {
     /**
      * Liest die PRIORITY-Angabe aus. Muss eine Zahl >= 0 sein.
      * Spukt Fehlermeldung aus, wenn nicht vorhanden.
+     * Sollte nicht mehr verwendet werden, ist nurnoch für Kompatibilität mit Version 01 da.
      *
      * @param params das modul
      * @return die gelesenen prio
@@ -300,19 +332,19 @@ public class MapParameters {
      */
     public String export() throws UnsupportedEncodingException, IOException {
         StringBuilder builder = new StringBuilder();
-        // Header (version 01)
-        builder.append("MAP01");
+        // Header (version 02)
+        builder.append("MAP02");
         // Alle Optionen codieren:
         StringBuilder params = new StringBuilder();
         // Allgemeine Sachen (z.B. Masterseed)
         params.append("MAIN 1\n");
         params.append(masterSeed).append("\n");
         // Alle Module
-        for (String module : settings.keySet()) {
+        for (String module : moduleOrder) {
             HashMap<String, String> moduleSettings = settings.get(module);
             params.append(module).append(" ").append(moduleSettings.size()).append('\n');
             for (String moduleVariable : moduleSettings.keySet()) {
-                params.append(moduleVariable).append(" ").append(moduleSettings.get(moduleVariable)).append('\n');
+                params.append(" ").append(moduleVariable).append(" ").append(moduleSettings.get(moduleVariable)).append('\n');
             }
         }
         // Settings-String komprimieren:
