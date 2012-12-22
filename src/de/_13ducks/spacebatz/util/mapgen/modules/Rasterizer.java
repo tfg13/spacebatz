@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
-import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
 import de._13ducks.spacebatz.util.mapgen.data.Vector;
 import java.util.HashMap;
 
@@ -52,7 +51,7 @@ public class Rasterizer extends Module {
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                MPolygon poly = polyFor(x * scaleX, y * scaleY, map.polygons);
+                MPolygon poly = map.polygons.polyFor(x * scaleX, y * scaleY, true);
                 // Textur/Col setzen
                 if (poly == null) {
                     map.collision[x][y] = true;
@@ -110,27 +109,5 @@ public class Rasterizer extends Module {
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = false;
-    }
-
-    /**
-     * Sucht einen Polygon im Mesh, der den gegebene Punkt enthält
-     *
-     * @param x Koordinate X
-     * @param y Koordinate Y
-     * @param mesh PolyMesh mesh
-     * @return Der Polygon, oder null, wenn nicht gefunden
-     */
-    private MPolygon polyFor(double x, double y, PolyMesh mesh) {
-        for (MPolygon po : mesh.polys) {
-            if (po.contains(x, y)) {
-                // Dieser Polygon ist es, aber es könnte rekursiv runter gehen!
-                if (po.getMesh() == null) {
-                    return po;
-                } else {
-                    return polyFor(x, y, po.getMesh());
-                }
-            }
-        }
-        return null;
     }
 }

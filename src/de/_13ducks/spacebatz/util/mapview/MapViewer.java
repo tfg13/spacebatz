@@ -29,10 +29,10 @@ import org.newdawn.slick.util.ResourceLoader;
 public class MapViewer {
 
     private final int[][] ground;
-    private final boolean[][] col;
     private final HashMap<String, Object> metadata;
+    private PolyMesh visPolys;
+    private MPolygon currentPoly;
     boolean renderFrame = false;
-    boolean dragging = false;
     float panX = 0;
     float panY = 0;
     float zoom = 1;
@@ -61,15 +61,16 @@ public class MapViewer {
      */
     public MapViewer(Level level) {
         ground = level.getGround();
-        col = level.getCollisionMap();
         metadata = new HashMap<>();
         startRendering();
     }
 
     public MapViewer(InternalMap map) {
         ground = map.groundTex;
-        col = map.collision;
         metadata = map.metadata;
+        if (metadata != null && metadata.containsKey("VIS_POLYS")) {
+            visPolys = (PolyMesh) metadata.get("VIS_POLYS");
+        }
         startRendering();
     }
 
@@ -87,20 +88,18 @@ public class MapViewer {
                         System.exit(0);
                     }
                     while (Mouse.next()) {
-                        if ((Mouse.getEventButton() == -1 && dragging) || (Mouse.getEventButton() == 0 && Mouse.getEventButtonState())) {
-                            if (!dragging) {
-                                Mouse.setGrabbed(true);
-                                dragging = true;
+                        if (Mouse.getEventButton() == 0 && Mouse.getEventButtonState() && currentPoly == null) {
+                            // Search Poly and zoom:
+                            if (visPolys != null) {
+                                currentPoly = visPolys.polyFor((float) Mouse.getX() / Display.getWidth(), (float) Mouse.getY() / Display.getHeight(), false);
+                                MPolygon zoomRect = currentPoly.calcMinOuterRect();
+                                zoomPanTo((float) zoomRect.getNodes().get(0).x, (float) zoomRect.getNodes().get(0).y, (float) zoomRect.getNodes().get(2).x - (float) zoomRect.getNodes().get(0).x, (float) zoomRect.getNodes().get(2).y - (float) zoomRect.getNodes().get(0).y);
+                                repaint = true;
                             }
-                            panX += Mouse.getDX() / zoom;
-                            panY += Mouse.getDY() / zoom;
-                            repaint = true;
-                        } else {
-                            if (dragging) {
-                                Mouse.setGrabbed(false);
-                                dragging = false;
-                            }
-                            zoom += Mouse.getDWheel() / 20f;
+                        } else if (Mouse.getEventButton() == 1 && Mouse.getEventButtonState()) {
+                            // Rechtklick, wieder zurück
+                            currentPoly = null;
+                            zoomPanTo(0, 0, 1, 1);
                             repaint = true;
                         }
                     }
@@ -221,45 +220,57 @@ public class MapViewer {
             }
         }
         // Vis-Polys rendern, falls vorhanden:
-        if (metadata != null && metadata.containsKey("VIS_POLYS")) {
-            @SuppressWarnings("unchecked")
-            PolyMesh visPolys = (PolyMesh) metadata.get("VIS_POLYS");
-            glDisable(GL_TEXTURE_2D);
+        if (visPolys != null) {
             glColor4f(1f, 1f, 0, 0.3f);
-
-            // Polygone einfärben
-            for (MPolygon poly : visPolys.polys) {
-                if (poly.border) {
-                    glBegin(GL_POLYGON);
-                    for (Node n : poly.getNodes()) {
-                        glVertex2d(n.x, n.y);
-                    }
-                    glEnd();
-                }
+            renderPolyMesh(visPolys, oneX, oneY, 0f, 0f, 1f, 1f);
+            if (currentPoly != null && currentPoly.getMesh() != null) {
+                renderPolyMesh(currentPoly.getMesh(), oneX, oneY, 1f, 0f, 0f, 1f);
             }
 
-            // Linien malen
+        }
+    }
 
-            glColor4f(0f, 1f, 1f, 0.5f);
-            glLineWidth(1);
-            for (MPolygon poly : visPolys.polys) {
-                Node previous = poly.getNodes().get(0);
-                for (Node next : poly.getNodes()) {
-                    glBegin(GL_LINES);
-                    glVertex2d(previous.x, previous.y);
-                    glVertex2d(next.x, next.y);
-                    glEnd();
-                    previous = next;
+    private void renderPolyMesh(PolyMesh mesh, float oneX, float oneY, float lineR, float lineG, float lineB, float lineA) {
+        glDisable(GL_TEXTURE_2D);
+
+
+        // Polygone einfärben
+        for (MPolygon poly : mesh.polys) {
+            if (poly.border || (poly.solid && poly.resource != 0)) {
+                if (poly.border) {
+                    glColor4f(1f, 1f, 0, 0.3f);
+                } else {
+                    glColor4f(1f, 0f, 1f, 0.3f);
                 }
-                // Zumachen
-                glBegin(GL_LINES);
-                glVertex2d(previous.x, previous.y);
-                glVertex2d(poly.getNodes().get(0).x, poly.getNodes().get(0).y);
+                glBegin(GL_POLYGON);
+                for (Node n : poly.getNodes()) {
+                    glVertex2d((n.x + (panX * oneX)) * zoom, (n.y + (panY * oneY)) * zoom);
+                }
                 glEnd();
             }
-            glEnable(GL_TEXTURE_2D);
-            glColor3f(1f, 1f, 1f);
         }
+
+        // Linien malen
+
+        glColor4f(lineR, lineG, lineB, lineA);
+        glLineWidth(1);
+        for (MPolygon poly : mesh.polys) {
+            Node previous = poly.getNodes().get(0);
+            for (Node next : poly.getNodes()) {
+                glBegin(GL_LINES);
+                glVertex2d((previous.x + (panX * oneX)) * zoom, (previous.y + (panY * oneY)) * zoom);
+                glVertex2d((next.x + (panX * oneX)) * zoom, (next.y + (panY * oneY)) * zoom);
+                glEnd();
+                previous = next;
+            }
+            // Zumachen
+            glBegin(GL_LINES);
+            glVertex2d(previous.x, previous.y);
+            glVertex2d(poly.getNodes().get(0).x, poly.getNodes().get(0).y);
+            glEnd();
+        }
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1f, 1f, 1f);
     }
 
     private int texAt(int[][] layer, int x, int y) {
@@ -278,5 +289,21 @@ public class MapViewer {
         // Generate Map
         InternalMap map = MapGen.generateInternal(params);
         new MapViewer(map);
+
+        System.out.println(Mouse.getEventButton());
+    }
+
+    /**
+     * Stellt die Sicht auf diese Werte ein
+     *
+     * @param x x in 0..1
+     * @param y y in 0..1
+     * @param sizex xsize in 0..1
+     * @param sizey ysize in 0..1
+     */
+    private void zoomPanTo(float x, float y, float sizex, float sizey) {
+        zoom = Math.min(1 / sizex, 1 / sizey);
+        panX = -x * ground.length;
+        panY = -y * ground[0].length;
     }
 }

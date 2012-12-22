@@ -83,4 +83,27 @@ public class PolyMesh {
         // Jetzt adden
         polys.add(poly);
     }
+
+    /**
+     * Sucht einen Polygon im Mesh, der den gegebene Punkt enthält
+     * Kann rekursiv in Unternetzen suchen
+     *
+     * @param x Koordinate X
+     * @param y Koordinate Y
+     * @param recursive wenn true, wird rekursiv nach unten weiter gesucht
+     * @return Der Polygon, oder null, wenn nicht gefunden
+     */
+    public MPolygon polyFor(double x, double y, boolean recursive) {
+        for (MPolygon po : polys) {
+            if (po.contains(x, y)) {
+                // Dieser Polygon ist es, aber es könnte rekursiv runter gehen!
+                if (po.getMesh() == null || !recursive) {
+                    return po;
+                } else {
+                    return po.getMesh().polyFor(x, y, true);
+                }
+            }
+        }
+        return null;
+    }
 }
