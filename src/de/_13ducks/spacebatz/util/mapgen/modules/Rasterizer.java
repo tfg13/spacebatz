@@ -51,7 +51,7 @@ public class Rasterizer extends Module {
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                MPolygon poly = map.polygons.polyFor(x * scaleX, y * scaleY, true);
+                MPolygon poly = map.polygons.polyFor((x + 0.5) * scaleX, (y + 0.5) * scaleY, true);
                 // Textur/Col setzen
                 if (poly == null) {
                     map.collision[x][y] = true;
