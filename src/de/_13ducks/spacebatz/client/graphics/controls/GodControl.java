@@ -12,6 +12,7 @@ import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
@@ -26,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
@@ -71,6 +73,10 @@ public class GodControl implements Control {
      * Kopie vom pan der Kamera, aus Performance-Gründen
      */
     private float panX, panY;
+    /**
+     * Links auf die Shader.
+     */
+    private int[] shader;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -130,6 +136,9 @@ public class GodControl implements Control {
         tilemaps[5] = inventoryPic;
         tilemaps[6] = fxTiles;
 
+        // Shader laden
+        //System.out.println("INFO: GFX: Loading/compiling shaders...");
+        //shader = ShaderLoader.load();
     }
 
     /**
@@ -241,6 +250,13 @@ public class GodControl implements Control {
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = texAt(GameClient.currentLevel.getGround(), x, y);
+//                if (tex == 2) {
+//                    glColor4f(0.5f, 0.5f, 0.5f, 1);
+//                    //ARBShaderObjects.glUseProgramObjectARB(shader[0]);
+//                } else {
+//                    glColor4f(1f, 1f, 1f, 1);
+//                    //ARBShaderObjects.glUseProgramObjectARB(0);
+//                }
                 int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
                 if (tex != 3 && (patRot >> 4) != 5) {
                     int rot = patRot & 0x0F;
