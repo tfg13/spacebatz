@@ -52,7 +52,7 @@ public class Engine {
     public Engine() {
         run = true;
         graphics = new GraphicsEngine();
-        SoundEngine s = new SoundEngine();
+        //SoundEngine s = new SoundEngine();
 //        Sound sound = s.createSound("ragtime_warfare_audacity.ogg");
 //        sound.play();
 
