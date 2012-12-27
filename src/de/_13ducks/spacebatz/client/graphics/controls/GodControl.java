@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
+import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
@@ -12,22 +13,18 @@ import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.Renderer;
-import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
-import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
@@ -244,23 +241,23 @@ public class GodControl implements Control {
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         // Boden und Wände zeichnen
+        // Werte cachen
         panX = renderer.getCamera().getPanX();
         panY = renderer.getCamera().getPanY();
+        int lastShadow = 0;
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = texAt(GameClient.currentLevel.getGround(), x, y);
-//                if (tex == 2) {
-//                    glColor4f(0.5f, 0.5f, 0.5f, 1);
-//                    //ARBShaderObjects.glUseProgramObjectARB(shader[0]);
-//                } else {
-//                    glColor4f(1f, 1f, 1f, 1);
-//                    //ARBShaderObjects.glUseProgramObjectARB(0);
-//                }
                 int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
+                int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if (tex != 3 && (patRot >> 4) != 5) {
                     int rot = patRot & 0x0F;
-                    // Boden erzwingen:
+                    // Boden erzwingen: (immer weiß)
+                    if (lastShadow != 0) {
+                        glColor4f(1f, 1f, 1f, 1f);
+                        lastShadow = 0;
+                    }
                     drawGroundTile(3, x, y, 0);
                     // Bild im Stencil-Buffer erzeugen:
                     glEnable(GL_STENCIL_TEST); // Stenciling ist an
@@ -277,12 +274,20 @@ public class GodControl implements Control {
                     glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
                     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                     // Jetzt Wand malen:
+                    if (shadow != lastShadow) {
+                        glColor4f(0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 1f);
+                        lastShadow = shadow;
+                    }
                     drawGroundTile(tex, x, y, 0);
                     // Fertig, Stencil abschalten:
                     glDisable(GL_STENCIL_TEST);
                     // Zweite Maske drüber, für schönes Aussehen
                     drawGroundTile(225 + (patRot >> 4), x, y, rot);
                 } else {
+                    if (shadow != lastShadow) {
+                        glColor4f(0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 1f);
+                        lastShadow = shadow;
+                    }
                     drawGroundTile(tex, x, y, 0);
                 }
             }
@@ -341,13 +346,13 @@ public class GodControl implements Control {
         Iterator<DamageNumber> iter = damageNumbers.iterator();
         while (iter.hasNext()) {
             DamageNumber d = iter.next();
-            if (GameClient.getEngine().getTime() > d.getSpawntime() + DAMAGENUMBER_LIFETIME) {
+            if (Engine.getTime() > d.getSpawntime() + DAMAGENUMBER_LIFETIME) {
                 // alt - > löschen
                 iter.remove();
             } else {
                 //rendern:
-                float height = (GameClient.getEngine().getTime() - d.getSpawntime()) / 250.0f;
-                float visibility = 1 - ((float) (GameClient.getEngine().getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
+                float height = (Engine.getTime() - d.getSpawntime()) / 250.0f;
+                float visibility = 1 - ((float) (Engine.getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
                 visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
                 textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
             }
@@ -394,7 +399,7 @@ public class GodControl implements Control {
             textWriter.renderText(GameClient.terminal.getCurrentLine(), camera.getTilesX() / 3, 0, true);
             int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor());
             for (int i = 0; i < numberoflines - 1; i++) {
-                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3, (float) camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
+                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3, camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
         }
 
@@ -403,6 +408,14 @@ public class GodControl implements Control {
     private static int texAt(int[][] layer, int x, int y) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
             return 1;
+        } else {
+            return layer[x][y];
+        }
+    }
+
+    private static int shadowAt(byte[][] layer, int x, int y) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
+            return 0;
         } else {
             return layer[x][y];
         }
@@ -431,7 +444,7 @@ public class GodControl implements Control {
      * @param y y-Position
      */
     public static void createDamageNumber(int damage, double x, double y) {
-        DamageNumber d = new DamageNumber(damage, x, y, GameClient.getEngine().getTime());
+        DamageNumber d = new DamageNumber(damage, x, y, Engine.getTime());
         damageNumbers.add(d);
     }
 

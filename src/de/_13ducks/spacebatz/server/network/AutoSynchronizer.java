@@ -216,7 +216,8 @@ public class AutoSynchronizer {
     private byte[] craftTransferChunkCommand(int x, int y) {
         int[][] ground = Server.game.getLevel().getGround();
         boolean[][] col = Server.game.getLevel().getCollisionMap();
-        byte[] data = new byte[8 * 8 * 4 + 8 + 8];
+        byte[][] shadow = Server.game.getLevel().shadow;
+        byte[] data = new byte[8 * 8 * 4 + 8 + 8 + 8 * 8];
         Bits.putInt(data, 0, x);
         Bits.putInt(data, 4, y);
         int dataIndex = 8;
@@ -236,6 +237,12 @@ public class AutoSynchronizer {
                 }
             }
             data[dataIndex++] = row;
+        }
+        // Shadow
+        for (int gx = 0; gx < 8; gx++) {
+            for (int gy = 0; gy < 8; gy++) {
+                data[dataIndex++] = shadow[x * 8 + gx][y * 8 + gy];
+            }
         }
         return data;
     }

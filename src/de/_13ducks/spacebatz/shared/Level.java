@@ -25,6 +25,10 @@ public class Level implements java.io.Serializable {
      */
     private int[][] ground;
     /**
+     * Die Beleuchtungsmap.
+     */
+    public byte[][] shadow;
+    /**
      * Kollisionskarte, true = kollision, false = frei
      */
     private boolean collisionMap[][];
@@ -46,6 +50,7 @@ public class Level implements java.io.Serializable {
         this.sizeY = ySize;
         ground = new int[xSize][ySize];
         collisionMap = new boolean[xSize][ySize];
+        shadow = new byte[xSize][ySize];
     }
 
     public int[][] getGround() {
