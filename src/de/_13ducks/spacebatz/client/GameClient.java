@@ -86,14 +86,6 @@ public class GameClient {
      */
     private static int materials[] = new int[Settings.NUMBER_OF_MATERIALS];
     /**
-     * Die Logik-Tickrate in ms Abstand zwischen den Ticks.
-     */
-    public static int tickrate;
-    /**
-     * Der Timer, der die Ticks hochzählt.
-     */
-    private static Timer tickTimer;
-    /**
      * Das Client-Terminal.
      */
     public static ClientTerminal terminal = new ClientTerminal();
