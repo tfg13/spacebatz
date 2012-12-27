@@ -35,7 +35,7 @@ public class Camera {
     }
 
     /**
-     * Setzt den ZoomFaktor der KAmera.
+     * Setzt den ZoomFaktor der Kamera.
      *
      * @param zoomFact
      */
