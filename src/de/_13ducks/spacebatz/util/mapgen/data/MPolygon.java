@@ -50,6 +50,11 @@ public class MPolygon {
      * Es gibt also insbesondere keine Nachbarschafts-Beziehungen.
      */
     private PolyMesh subPolys;
+    /**
+     * Das umgebende Rechteckt.
+     * Wird für extraschnelle contains()-Berechungen vorberechnet.
+     */
+    public final Rect outRect;
 
     /**
      * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
@@ -70,6 +75,7 @@ public class MPolygon {
         if (registerNodes) {
             registerNodes();
         }
+        outRect = calcMinOuterRect();
     }
 
     /**
@@ -238,6 +244,10 @@ public class MPolygon {
      * @return true, wenn innen, sonst false
      */
     public boolean contains(double x, double y) {
+        // Aus Performancegründen erst ein Schnelltest mit der Rechteck-Hülle:
+        if (x < outRect.smallX || x > outRect.largeX || y < outRect.smallY || y > outRect.largeY) {
+            return false;
+        }
         // Verwendet die übliche Strahlmethode. Dabei wird ein Strahl vom zu untersuchenden Punkt in eine beliebige Richtung
         // augesandt. Dann werden die Anzahl der Schnittpunkte mit Kanten des Polygons gezählt.
         // Ist diese Anzahl ungerade, so befindet sich der Punkt innerhalb. Sonst außen.
@@ -270,9 +280,6 @@ public class MPolygon {
      * @return true, wenn konvex.
      */
     public boolean isConvex() {
-        if (this.equals(new MPolygon(false, new Node(421, 401), new Node(403, 301), new Node(403, 221), new Node(403, 115), new Node(338, 42), new Node(350, 30), new Node(421, 0)))) {
-            System.out.println();
-        }
         boolean rechts = false;
         boolean links = false;
         for (int i = 0; i < myNodes.size(); i++) {
@@ -418,7 +425,7 @@ public class MPolygon {
      *
      * @return das minimale Rechteck, das den gesamten Polygon enthält.
      */
-    public MPolygon calcMinOuterRect() {
+    private Rect calcMinOuterRect() {
         // Einfach größtes und kleinstes X und Y suchen.
         double largeX = Double.MIN_VALUE;
         double smallX = Double.MAX_VALUE;
@@ -439,6 +446,6 @@ public class MPolygon {
             }
         }
         // Rechteck daraus bauen
-        return new MPolygon(false, new Node(smallX, smallY), new Node(largeX, smallY), new Node(largeX, largeY), new Node(smallX, largeY));
+        return new Rect(smallX, largeX, smallY, largeY);
     }
 }

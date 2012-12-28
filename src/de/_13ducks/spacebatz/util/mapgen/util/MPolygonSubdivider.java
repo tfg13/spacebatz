@@ -9,8 +9,8 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 import de._13ducks.spacebatz.util.mapgen.data.Edge;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
-import de._13ducks.spacebatz.util.mapgen.data.Node;
 import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
+import de._13ducks.spacebatz.util.mapgen.data.Rect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,17 +36,13 @@ public class MPolygonSubdivider {
     public static PolyMesh createMesh(MPolygon border, int numberOfPolys, int smoothRuns, long randomSeed) {
         Random random = new Random(randomSeed);
         // Punkte in diesem groben Rahmen erzeugen
-        MPolygon rectBorder = border.calcMinOuterRect();
-        Node corner1 = rectBorder.getNodes().get(0);
-        Node corner2 = rectBorder.getNodes().get(2);
-        double startX = corner1.x;
-        double startY = corner1.y;
-        double sizeX = corner2.x - corner1.x;
-        double sizeY = corner2.y - corner1.y;
+        Rect rectBorder = border.outRect;
+        double sizeX = rectBorder.largeX - rectBorder.smallX;
+        double sizeY = rectBorder.largeY - rectBorder.smallY;
         // Punktwolke erzeugen:
         ArrayList<Coordinate> points = new ArrayList<>();
         while (points.size() < numberOfPolys) {
-            Coordinate candidate = new Coordinate(random.nextDouble() * sizeX + startX, random.nextDouble() * sizeY + startY);
+            Coordinate candidate = new Coordinate(random.nextDouble() * sizeX + rectBorder.smallX, random.nextDouble() * sizeY + rectBorder.smallY);
             // Punkt auf jeden Fall in dem Rand-Rechteck, muss aber im Polygon sein:
             if (border.contains(candidate.x, candidate.y)) {
                 points.add(candidate);

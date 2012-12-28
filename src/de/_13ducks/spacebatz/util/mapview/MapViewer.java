@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.util.mapgen.MapParameters;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import de._13ducks.spacebatz.util.mapgen.data.Node;
 import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
+import de._13ducks.spacebatz.util.mapgen.data.Rect;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -92,8 +93,8 @@ public class MapViewer {
                             // Search Poly and zoom:
                             if (visPolys != null) {
                                 currentPoly = visPolys.polyFor((float) Mouse.getX() / Display.getWidth(), (float) Mouse.getY() / Display.getHeight(), false);
-                                MPolygon zoomRect = currentPoly.calcMinOuterRect();
-                                zoomPanTo((float) zoomRect.getNodes().get(0).x, (float) zoomRect.getNodes().get(0).y, (float) zoomRect.getNodes().get(2).x - (float) zoomRect.getNodes().get(0).x, (float) zoomRect.getNodes().get(2).y - (float) zoomRect.getNodes().get(0).y);
+                                Rect zoomRect = currentPoly.outRect;
+                                zoomPanTo((float) zoomRect.smallX, (float) zoomRect.smallY, (float) zoomRect.largeX - (float) zoomRect.smallX, (float) zoomRect.largeY - (float) zoomRect.smallY);
                                 repaint = true;
                             }
                         } else if (Mouse.getEventButton() == 1 && Mouse.getEventButtonState()) {
