@@ -57,6 +57,8 @@ public class MainLoop {
                     Server.game.gameTick();
                     // Wege berechnen:
                     Server.game.pathfinder.computePaths();
+                    // Beleuchtung berechnen
+                    Server.game.shadow.tick();
                     // Änderungen an die Clients schicken.
                     Server.serverNetwork2.outTick();
                     Server.game.incrementTick();

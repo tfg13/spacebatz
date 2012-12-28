@@ -80,6 +80,10 @@ public class Game {
      * Der Questmanager.
      */
     public final QuestManager questManager = new QuestManager();
+    /**
+     * Der Shadowmanager.
+     */
+    public final ShadowManager shadow = new ShadowManager();
 
     /**
      * Konstruktor

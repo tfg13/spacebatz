@@ -235,4 +235,8 @@ public class MessageIDs {
      * Player stibt / lebt wieder
      */
     public static final byte NET_TCP_CMD_PLAYER_TOGGLE_ALIVE = 60;
+    /**
+     * Beleuchtung hat sich geändert
+     */
+    public static final byte NET_SHADOW_CHANGE = 61;
 }

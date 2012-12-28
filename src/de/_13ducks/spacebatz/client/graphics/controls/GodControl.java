@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
@@ -253,10 +254,9 @@ public class GodControl implements Control {
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if (tex != 3 && (patRot >> 4) != 5) {
                     int rot = patRot & 0x0F;
-                    // Boden erzwingen: (immer weiß)
-                    if (lastShadow != 0) {
-                        glColor4f(1f, 1f, 1f, 1f);
-                        lastShadow = 0;
+                    if (shadow != lastShadow) {
+                        glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
+                        lastShadow = shadow;
                     }
                     drawGroundTile(3, x, y, 0);
                     // Bild im Stencil-Buffer erzeugen:
@@ -274,10 +274,6 @@ public class GodControl implements Control {
                     glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
                     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                     // Jetzt Wand malen:
-                    if (shadow != lastShadow) {
-                        glColor4f(0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 1f);
-                        lastShadow = shadow;
-                    }
                     drawGroundTile(tex, x, y, 0);
                     // Fertig, Stencil abschalten:
                     glDisable(GL_STENCIL_TEST);
@@ -285,13 +281,14 @@ public class GodControl implements Control {
                     drawGroundTile(225 + (patRot >> 4), x, y, rot);
                 } else {
                     if (shadow != lastShadow) {
-                        glColor4f(0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 0.0039215686f * (256 - shadow), 1f);
+                        glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
                         lastShadow = shadow;
                     }
                     drawGroundTile(tex, x, y, 0);
                 }
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         // Enemies zeichnen:
         enemyTiles.bind();

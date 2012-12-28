@@ -42,7 +42,7 @@ public class Prelight extends Module {
         for (int x = 0; x < map.groundTex.length; x++) {
             for (int y = 0; y < map.groundTex[0].length; y++) {
                 // Planetenoberfläche: Nur Berge verdeckt
-                if (map.groundTex[x][y] == 2) {
+                if (map.groundTex[x][y] != 3) {
                     map.shadow[x][y] = 127;
                 }
             }

@@ -29,11 +29,12 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SHADOW_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
@@ -181,6 +182,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_NEW_QUEST, new STC_NEW_QUEST());
         registerSTCCommand(MessageIDs.NET_QUEST_RESULT, new STC_QUEST_RESULT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
+        registerSTCCommand(MessageIDs.NET_SHADOW_CHANGE, new STC_SHADOW_CHANGE());
     }
 
     /**

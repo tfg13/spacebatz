@@ -29,7 +29,7 @@ import java.util.LinkedList;
  * Dabei wird grundsätzlich das ältere System mit der "Movement"-Klasse weiter verwendet, allerdings werden Entitys nicht mehr gepollt, sondern benachrichtigen
  * diesen Synchronisierer von sich aus. Hier wird dann entschieden, wem die Änderungen mitgeteilt werden müssen und wem nicht.
  *
- * Weiter wird auch die Map (das Level) auf diese Weise übertragen: Der Client bekommt die Texturdaten erst, wenn er in der Nähe ist.
+ * Weiter wird auch die Map (das Level) auf diese Weise übertragen: Der Client bekommt die Texturdaten und Beleuchtungsdaten erst, wenn er in der Nähe ist.
  * Das beschleunigt den Spielstart massiv und entlastet das Netzwerksystem zu Beginn.
  * Änderungen an der Map werden derzeit aber noch manuell übertragen.
  *
