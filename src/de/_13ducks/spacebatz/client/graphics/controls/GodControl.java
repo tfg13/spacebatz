@@ -16,7 +16,6 @@ import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
@@ -75,6 +74,10 @@ public class GodControl implements Control {
      * Links auf die Shader.
      */
     private int[] shader;
+    /**
+     * Schalter für Shadow an oder aus.
+     */
+    private boolean shadowEnabled = true;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -254,7 +257,7 @@ public class GodControl implements Control {
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if (tex != 3 && (patRot >> 4) != 5) {
                     int rot = patRot & 0x0F;
-                    if (shadow != lastShadow) {
+                    if (isShadowEnabled() && shadow != lastShadow) {
                         glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
                         lastShadow = shadow;
                     }
@@ -280,7 +283,7 @@ public class GodControl implements Control {
                     // Zweite Maske drüber, für schönes Aussehen
                     drawGroundTile(225 + (patRot >> 4), x, y, rot);
                 } else {
-                    if (shadow != lastShadow) {
+                    if (isShadowEnabled() && shadow != lastShadow) {
                         glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
                         lastShadow = shadow;
                     }
@@ -534,5 +537,19 @@ public class GodControl implements Control {
     private int patternAt(int[][] ground, int x, int y) {
         int myTex = texAt(ground, x, y);
         return patternRotationLookupTable[(myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y) ? 1 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y - 1) ? 2 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x, y - 1) ? 4 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y - 1) ? 8 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y) ? 16 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y + 1) ? 32 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x, y + 1) ? 64 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y + 1) ? 128 : 0)];
+    }
+
+    /**
+     * @return the shadowEnabled
+     */
+    public boolean isShadowEnabled() {
+        return shadowEnabled;
+    }
+
+    /**
+     * @param shadowEnabled the shadowEnabled to set
+     */
+    public void setShadowEnabled(boolean shadowEnabled) {
+        this.shadowEnabled = shadowEnabled;
     }
 }

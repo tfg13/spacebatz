@@ -100,129 +100,144 @@ public class ClientTerminal {
                 String[] words = input.split("\\s+");
                 if (words.length >= 1) {
                     String cmd = words[0].toLowerCase();
+                    OUTER:
                     switch (cmd) {
-                        case "net_graph":
-                            if (words.length == 2) {
-                                try {
-                                    int num = Integer.parseInt(words[1]);
-                                    if (num >= 0 || num <= 2) {
-                                        NetStats.netGraph = num;
-                                        break;
-                                    }
-                                } catch (NumberFormatException ex) {
+                    case "net_graph":
+                        if (words.length == 2) {
+                            try {
+                                int num = Integer.parseInt(words[1]);
+                                if (num >= 0 || num <= 2) {
+                                    NetStats.netGraph = num;
+                                    break;
                                 }
-                            }
-                            outln("usage: net_graph MODE (0=off, 1=on)");
-                            break;
-                        case "clear":
-                            outbuffer.clear();
-                            break;
-                        case "rcon":
-                            if (rconOut != null) {
-                                // Rcon ist schon an, wieder aktivieren
-                                rcon = true;
-                                resetInput();
-                            } else {
-                                // Anfragen
-                                CTS_REQUEST_RCON.sendRconRequest();
-                                outln("rcon: request sent");
-                            }
-                            break;
-                        case "zoom":
-                            if (words.length == 2) {
-                                try {
-                                    float fact = Float.parseFloat(words[1]);
-                                    if (fact > 0) {
-                                        GameClient.getEngine().getGraphics().getCamera().setZoomFact(fact);
-                                        break;
-                                    }
-                                } catch (NumberFormatException ex) {
-                                }
-                            }
-                            outln("usage: zoom (>0)");
-                            break;
-                        case "mobmaster":
-                            try {
-                                int count = Integer.parseInt(words[1]);
-                                for (int i = 0; i < count; i++) {
-                                    CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest((byte) 0, (float) 0, 1);
-                                }
-                            } catch (Exception ex) {
-                                outln("usage: mobmaster [count] (Will spawn [count] mobs at the cursor)");
-                            }
-                            break;
-                        case "sendsevens":
-                            try {
-                                int length = Integer.parseInt(words[1]);
-                                byte msg[] = new byte[length * 100];
-
-                                for (int i = 0; i < length * 100; i++) {
-                                    msg[i] = (byte) 7;
-                                }
-                                msg[0] = (byte) length;
-                                GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_DEBUG, msg));
-                            } catch (Exception ex) {
-                                outln("usage: sendsevens x (100*x sevens will be sent)");
-                            }
-                            break;
-                        case "mapskill":
-                            try {
-                                byte slot = Byte.parseByte(words[1]);
-                                String ability = words[2];
-                                CTS_REQUEST_MAP_ABILITY.sendMapAbility(slot, ability);
-
-                            } catch (Exception ex) {
-                                outln("usage: mapskill slot ability (slot is 0,1,2,... and ability is the abilityname.)");
-                            }
-                            break;
-                        case "skill":
-                            try {
-                                String ability = words[1];
-                                CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(ability);
-                            } catch (Exception ex) {
-                                outln("usage: skill skillname (skillname is the name of the skill to skill to kill)");
-                            }
-                            break;
-                        case "cast":
-                            try {
-                                Byte ability = Byte.parseByte(words[1]);
-                                CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, 0, 1);
-                            } catch (Exception ex) {
-                                outln("usage: cast skill (skillname is the skill ocnstant, e.g. 0 for shiftskill)");
-                            }
-                            break;
-                        case "lerp":
-                            try {
-                                int lerp = Integer.parseInt(words[1]);
-                                GameClient.getNetwork2().setLerp(lerp);
                             } catch (NumberFormatException ex) {
-                                outln("usage: lerp [int] (sets client-lerp (in serverticks) to given value)");
                             }
+                        }
+                        outln("usage: net_graph MODE (0=off, 1=on)");
+                        break;
+                    case "clear":
+                        outbuffer.clear();
+                        break;
+                    case "rcon":
+                        if (rconOut != null) {
+                            // Rcon ist schon an, wieder aktivieren
+                            rcon = true;
+                            resetInput();
+                        } else {
+                            // Anfragen
+                            CTS_REQUEST_RCON.sendRconRequest();
+                            outln("rcon: request sent");
+                        }
+                        break;
+                    case "zoom":
+                        if (words.length == 2) {
+                            try {
+                                float fact = Float.parseFloat(words[1]);
+                                if (fact > 0) {
+                                    GameClient.getEngine().getGraphics().getCamera().setZoomFact(fact);
+                                    break;
+                                }
+                            } catch (NumberFormatException ex) {
+                            }
+                        }
+                        outln("usage: zoom (>0)");
+                        break;
+                    case "mobmaster":
+                        try {
+                            int count = Integer.parseInt(words[1]);
+                            for (int i = 0; i < count; i++) {
+                                CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest((byte) 0, (float) 0, 1);
+                            }
+                        } catch (Exception ex) {
+                            outln("usage: mobmaster [count] (Will spawn [count] mobs at the cursor)");
+                        }
+                        break;
+                    case "sendsevens":
+                        try {
+                            int length = Integer.parseInt(words[1]);
+                            byte msg[] = new byte[length * 100];
+
+                            for (int i = 0; i < length * 100; i++) {
+                                msg[i] = (byte) 7;
+                            }
+                            msg[0] = (byte) length;
+                            GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_DEBUG, msg));
+                        } catch (Exception ex) {
+                            outln("usage: sendsevens x (100*x sevens will be sent)");
+                        }
+                        break;
+                    case "mapskill":
+                        try {
+                            byte slot = Byte.parseByte(words[1]);
+                            String ability = words[2];
+                            CTS_REQUEST_MAP_ABILITY.sendMapAbility(slot, ability);
+
+                        } catch (Exception ex) {
+                            outln("usage: mapskill slot ability (slot is 0,1,2,... and ability is the abilityname.)");
+                        }
+                        break;
+                    case "skill":
+                        try {
+                            String ability = words[1];
+                            CTS_INVEST_SKILLPOINT.sendInvestSkillPoint(ability);
+                        } catch (Exception ex) {
+                            outln("usage: skill skillname (skillname is the name of the skill to skill to kill)");
+                        }
+                        break;
+                    case "cast":
+                        try {
+                            Byte ability = Byte.parseByte(words[1]);
+                            CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, 0, 1);
+                        } catch (Exception ex) {
+                            outln("usage: cast skill (skillname is the skill ocnstant, e.g. 0 for shiftskill)");
+                        }
+                        break;
+                    case "lerp":
+                        try {
+                            int lerp = Integer.parseInt(words[1]);
+                            GameClient.getNetwork2().setLerp(lerp);
+                        } catch (NumberFormatException ex) {
+                            outln("usage: lerp [int] (sets client-lerp (in serverticks) to given value)");
+                        }
+                        break;
+                        case "shadow":
+                            if (words.length == 2) {
+                                switch (words[1]) {
+                                    case "on":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(true);
+                                        break OUTER;
+                                    case "off":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(false);
+                                        break OUTER;
+                                }
+                            }
+                            outln("usage: shadow on|off");
                             break;
-                        case "about":
-                            outln("spacebatz aurora");
-                            outln("13ducks PROPRIETARY/CONFIDENTIAL");
-                            outln("internal testing only. DO NOT DISTRIBUTE");
-                            outln("");
-                            outln("Copyright 2012 13ducks");
-                            outln("All rights reserved.");
-                            break;
-                        case "help":
-                            outln("available commands:");
-                            outln("-------------------");
-                            outln("about");
-                            outln("clear");
-                            outln("help");
-                            outln("lerp");
-                            outln("net_graph");
-                            outln("rcon");
-                            outln("sendsevens");
-                            outln("zoom");
-                            outln("-------------------");
-                            break;
-                        default:
-                            outln("unknown command. try help");
-                            break;
+                    case "about":
+                        outln("spacebatz aurora");
+                        outln("13ducks PROPRIETARY/CONFIDENTIAL");
+                        outln("internal testing only. DO NOT DISTRIBUTE");
+                        outln("");
+                        outln("Copyright 2012 13ducks");
+                        outln("All rights reserved.");
+                        break;
+                    case "help":
+                        outln("available commands:");
+                        outln("-------------------");
+                        outln("about");
+                        outln("clear");
+                        outln("help");
+                        outln("lerp");
+                        outln("net_graph");
+                        outln("rcon");
+                        outln("sendsevens");
+                        outln("shadow");
+                        outln("zoom");
+                        outln("-------------------");
+                        break;
+                    default:
+                        outln("unknown command. try help");
+                        break;
                     }
                 }
             }

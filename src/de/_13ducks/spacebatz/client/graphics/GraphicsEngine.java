@@ -204,4 +204,8 @@ public class GraphicsEngine {
             activeMenu = null;
         }
     }
+
+    public GodControl defactoRenderer() {
+        return godControl;
+    }
 }
