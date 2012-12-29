@@ -255,39 +255,41 @@ public class GodControl implements Control {
                 int tex = texAt(GameClient.currentLevel.getGround(), x, y);
                 int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                if (tex != 3 && (patRot >> 4) != 5) {
-                    int rot = patRot & 0x0F;
-                    if (isShadowEnabled() && shadow != lastShadow) {
-                        glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
-                        lastShadow = shadow;
+                if (shadow != 127) {
+                    if (tex != 3 && (patRot >> 4) != 5) {
+                        int rot = patRot & 0x0F;
+                        if (isShadowEnabled() && shadow != lastShadow) {
+                            glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
+                            lastShadow = shadow;
+                        }
+                        drawGroundTile(3, x, y, 0);
+                        // Bild im Stencil-Buffer erzeugen:
+                        glEnable(GL_STENCIL_TEST); // Stenciling ist an
+                        // Stencil-Test schlägt immer fehl, malt also nix. Aber alle verwendeten Pixel erhöhen den Stencil-Buffer:
+                        glStencilFunc(GL_NEVER, 0x0, 0x0);
+                        glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+                        // Pixel dem Alpha nach ignorieren
+                        glAlphaFunc(GL_NOTEQUAL, 0f);
+                        glEnable(GL_ALPHA_TEST);
+                        // Pattern malen, beeinflusst Stencil-Buffer
+                        drawGroundTile(241 + (patRot >> 4), x, y, rot);
+                        glDisable(GL_ALPHA_TEST);
+                        // Jetzt ist der Stencil-Buffer ok. Jetzt Modus auf "malen, wenn stencil das sagt" stellen
+                        glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
+                        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                        // Jetzt Wand malen:
+                        drawGroundTile(tex, x, y, 0);
+                        // Fertig, Stencil abschalten:
+                        glDisable(GL_STENCIL_TEST);
+                        // Zweite Maske drüber, für schönes Aussehen
+                        drawGroundTile(225 + (patRot >> 4), x, y, rot);
+                    } else {
+                        if (isShadowEnabled() && shadow != lastShadow) {
+                            glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
+                            lastShadow = shadow;
+                        }
+                        drawGroundTile(tex, x, y, 0);
                     }
-                    drawGroundTile(3, x, y, 0);
-                    // Bild im Stencil-Buffer erzeugen:
-                    glEnable(GL_STENCIL_TEST); // Stenciling ist an
-                    // Stencil-Test schlägt immer fehl, malt also nix. Aber alle verwendeten Pixel erhöhen den Stencil-Buffer:
-                    glStencilFunc(GL_NEVER, 0x0, 0x0);
-                    glStencilOp(GL_INCR, GL_INCR, GL_INCR);
-                    // Pixel dem Alpha nach ignorieren
-                    glAlphaFunc(GL_NOTEQUAL, 0f);
-                    glEnable(GL_ALPHA_TEST);
-                    // Pattern malen, beeinflusst Stencil-Buffer
-                    drawGroundTile(241 + (patRot >> 4), x, y, rot);
-                    glDisable(GL_ALPHA_TEST);
-                    // Jetzt ist der Stencil-Buffer ok. Jetzt Modus auf "malen, wenn stencil das sagt" stellen
-                    glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
-                    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-                    // Jetzt Wand malen:
-                    drawGroundTile(tex, x, y, 0);
-                    // Fertig, Stencil abschalten:
-                    glDisable(GL_STENCIL_TEST);
-                    // Zweite Maske drüber, für schönes Aussehen
-                    drawGroundTile(225 + (patRot >> 4), x, y, rot);
-                } else {
-                    if (isShadowEnabled() && shadow != lastShadow) {
-                        glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
-                        lastShadow = shadow;
-                    }
-                    drawGroundTile(tex, x, y, 0);
                 }
             }
         }

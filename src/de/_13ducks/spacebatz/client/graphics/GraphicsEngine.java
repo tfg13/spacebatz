@@ -129,6 +129,7 @@ public class GraphicsEngine {
      * Rendert den Bildschirm und verarbeitet Eingaben.
      */
     public void tick() {
+        glClear(GL_COLOR_BUFFER_BIT);
         godControl.render(renderer);
         hudControl.render(renderer);
         questControl.render(renderer);
