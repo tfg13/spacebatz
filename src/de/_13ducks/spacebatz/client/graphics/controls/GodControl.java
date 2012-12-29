@@ -417,7 +417,7 @@ public class GodControl implements Control {
 
     private static int shadowAt(byte[][] layer, int x, int y) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
-            return 0;
+            return 127;
         } else {
             return layer[x][y];
         }

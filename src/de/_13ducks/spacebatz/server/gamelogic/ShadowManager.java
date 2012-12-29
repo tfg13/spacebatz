@@ -119,8 +119,8 @@ public class ShadowManager {
      * @return true, wenn Feld ok
      */
     private boolean checkPosition(int px, int py, int x, int y) {
-        return x > 0
-                && y > 0
+        return x >= 0
+                && y >= 0
                 && x < Server.game.getLevel().shadow.length
                 && y < Server.game.getLevel().shadow[0].length
                 && Math.abs(x - px) < 16
@@ -128,7 +128,7 @@ public class ShadowManager {
     }
 
     private int shadowAt(Vector position) {
-        if (position.x > 0 && position.y > 0 && position.x < Server.game.getLevel().shadow.length && position.y < Server.game.getLevel().shadow[0].length) {
+        if (position.x >= 0 && position.y >= 0 && position.x < Server.game.getLevel().shadow.length && position.y < Server.game.getLevel().shadow[0].length) {
             return Server.game.getLevel().shadow[(int) position.x][(int) position.y];
         }
         return 127;
