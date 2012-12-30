@@ -255,7 +255,7 @@ public class GodControl implements Control {
                 int tex = texAt(GameClient.currentLevel.getGround(), x, y);
                 int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                if (shadow != 127) {
+                if (shadow != 127 || !shadowEnabled) {
                     if (tex != 3 && (patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
                         if (isShadowEnabled() && shadow != lastShadow) {
