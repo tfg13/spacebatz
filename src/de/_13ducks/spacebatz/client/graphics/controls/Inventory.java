@@ -44,6 +44,41 @@ public class Inventory implements Control {
         // dunkler Hintergrund
         glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
         glRectf(0, 0, camera.getTilesX(), camera.getTilesY());
+
+        // waagrechte Linien
+        float x1 = 0.095125f * camera.getTilesX();
+        float x2 = 0.895125f * camera.getTilesX();
+        float bottom1 = 0.07f * camera.getTilesY();
+
+        // senkrechte Linien
+        float y1 = 0.07f * camera.getTilesY();
+        float y2 = 0.37f * camera.getTilesY();
+        float left1 = 0.095125f * camera.getTilesX();
+
+        // Hintergrund  für Inventar-Items zeichnen
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glRectf(x1, y1, x2, y2);
+
+        // Linien für Inventar-Items zeichnen
+        glColor3f(0.0f, 0.0f, 0.0f);
+
+        glBegin(GL_LINES);
+        for (int i = 0; i < 4; i++) {
+            glVertex2d(x1, bottom1 + 0.1f * i * camera.getTilesY());
+            glVertex2d(x2, bottom1 + 0.1f * i * camera.getTilesY());
+        }
+        for (int i = 0; i < 11; i++) {
+            glVertex2d(left1 + 0.08f * i * camera.getTilesX(), y1);
+            glVertex2d(left1 + 0.08f * i * camera.getTilesX(), y2);
+        }
+        glEnd();
+
+        // ausgewählten Waffenslot im Inventar markieren:
+        float wx = 0.227f + 0.172f * GameClient.getPlayer().getSelectedattack();
+
+        glColor3f(0.7f, 0.0f, 0.0f);
+        glRectf(wx * camera.getTilesX(), 0.59f * camera.getTilesY(), (wx + 0.14f) * camera.getTilesX(), 0.6f * camera.getTilesY());
+
         glEnable(GL_TEXTURE_2D);
 
         // Items im Inventory zeichnen
@@ -91,37 +126,6 @@ public class Inventory implements Control {
             glEnd(); // Zeichnen des QUADs fertig } }
         }
 
-        glDisable(GL_TEXTURE_2D);
-
-        // Linien für Inventar-Items zeichnen
-        glColor3f(0.0f, 0.0f, 0.0f);
-
-        // waagrechte Linien
-        float x1 = 0.095125f * camera.getTilesX();
-        float x2 = 0.895125f * camera.getTilesX();
-        float bottom1 = 0.07f * camera.getTilesY();
-
-        // senkrechte Linien
-        float y1 = 0.07f * camera.getTilesY();
-        float y2 = 0.37f * camera.getTilesY();
-        float left1 = 0.095125f * camera.getTilesX();
-
-        glBegin(GL_LINES);
-        for (int i = 0; i < 4; i++) {
-            glVertex2d(x1, bottom1 + 0.1f * i * camera.getTilesY());
-            glVertex2d(x2, bottom1 + 0.1f * i * camera.getTilesY());
-        }
-        for (int i = 0; i < 11; i++) {
-            glVertex2d(left1 + 0.08f * i * camera.getTilesX(), y1);
-            glVertex2d(left1 + 0.08f * i * camera.getTilesX(), y2);
-        }
-        glEnd();
-
-        // ausgewählten Waffenslot im Inventar markieren:
-        float wx = 0.227f + 0.172f * GameClient.getPlayer().getSelectedattack();
-
-        glColor3f(0.7f, 0.0f, 0.0f);
-        glRectf(wx * camera.getTilesX(), 0.59f * camera.getTilesY(), (wx + 0.14f) * camera.getTilesX(), 0.6f * camera.getTilesY());
 
         glColor3f(1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
@@ -141,8 +145,8 @@ public class Inventory implements Control {
                     }
                     float y = (0.61f + 0.2f * (i - 1)) * camera.getTilesY();
 
-                    float width = 0.11f * camera.getTilesX();
-                    float height = 0.11f * camera.getTilesY();
+                    float width = 0.1f / 16 * 9 * camera.getTilesX();
+                    float height = 0.1f * camera.getTilesY();
 
                     float v = 0.0625f * (int) item.getPic();
                     float w = 0.0625f * ((int) item.getPic() / 16);
