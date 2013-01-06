@@ -35,17 +35,33 @@ public class HudControl implements Control {
         glEnable(GL_TEXTURE_2D);
 
         hud1.bind();
+        
+        // HUD-Bild bei HP
         float width1 = (0.475f / 16.0f * 9.0f) * camera.getTilesX();
-        float height1 = 0.475f * camera.getTilesY();
+        float height1 = 0.475f * camera.getTilesY() * 0.262f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0, 1);
         glVertex3f(0, 0, 0.0f);
         glTexCoord2f(1, 1);
         glVertex3f(width1, 0, 0.0f);
-        glTexCoord2f(1, 0);
+        glTexCoord2f(1, 0.738f);
         glVertex3f(width1, height1, 0.0f);
-        glTexCoord2f(0, 0);
+        glTexCoord2f(0, 0.738f);
         glVertex3f(0, height1, 0.0f);
+        glEnd(); // Zeichnen des QUADs fertig } }
+
+        // HUD-Bild bei Waffen
+        float height2 = 0.42f * camera.getTilesY();
+        float height3 = 0.77f * camera.getTilesY();
+        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+        glTexCoord2f(0, 0.738f);
+        glVertex3f(0, height2, 0.0f);
+        glTexCoord2f(1, 0.738f);
+        glVertex3f(width1, height2, 0.0f);
+        glTexCoord2f(1, 0.0f);
+        glVertex3f(width1, height3, 0.0f);
+        glTexCoord2f(0, 0.0f);
+        glVertex3f(0, height3, 0.0f);
         glEnd(); // Zeichnen des QUADs fertig } }
 
 
@@ -76,7 +92,7 @@ public class HudControl implements Control {
             Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
 
             if (item != null) {
-                float x = 0.021f;
+                float x = 0.016f;
                 float y = 0.705f - 0.1f * j;
                 float width = 0.05f / 16.0f * 9.0f;
                 float height = 0.05f;
@@ -95,9 +111,9 @@ public class HudControl implements Control {
 
             glColor3f(0.0f, 0.0f, 0.0f);
 
-            float x1 = 0.019f * camera.getTilesX();
+            float x1 = 0.014f * camera.getTilesX();
             float y1 = (0.705f - 0.1f * j) * camera.getTilesY();
-            float x2 = (0.023f + 0.05f / 16.0f * 9.0f) * camera.getTilesX();
+            float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * camera.getTilesX();
             float y2 = (0.7505f - 0.1f * j) * camera.getTilesY();
 
             glBegin(GL_LINE_LOOP);
@@ -125,10 +141,10 @@ public class HudControl implements Control {
 
                 // weißer Hintergrund
                 glColor3f(1.0f, 1.0f, 1.0f);
-                glRectf(0.01f * camera.getTilesX(), height * camera.getTilesY(), 0.06f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
                 // roter HP-Balken, Länge anhängig von HP
                 glColor3f(0.7f, 0.0f, 0.0f);
-                glRectf(0.012f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.012f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
+                glRectf(0.007f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.007f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
             }
             glColor3f(1f, 1f, 1f);
         }
