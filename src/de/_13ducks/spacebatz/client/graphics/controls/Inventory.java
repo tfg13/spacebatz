@@ -126,9 +126,7 @@ public class Inventory implements Control {
             glEnd(); // Zeichnen des QUADs fertig } }
         }
 
-
         glColor3f(1.0f, 1.0f, 1.0f);
-        glEnable(GL_TEXTURE_2D);
 
         // angelegte Items in ihre Slots im Inventar zeichnen
         itemTiles.bind();

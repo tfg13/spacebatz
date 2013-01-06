@@ -17,16 +17,37 @@ import de._13ducks.spacebatz.client.graphics.TextWriter;
 public class HudControl implements Control {
 
     private Texture itemTiles;
+    private Texture hud1;
     private Camera camera;
 
     public HudControl(Renderer renderer) {
         itemTiles = renderer.getTextureByName("item.png");
+        hud1 = renderer.getTextureByName("hud1.png");
         camera = renderer.getCamera();
     }
 
     @Override
     public void render(Renderer renderer) {
         TextWriter textWriter = renderer.getTextWriter();
+
+        // HUD-Hintergrund:
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+
+        hud1.bind();
+        float width1 = (0.475f / 16.0f * 9.0f) * camera.getTilesX();
+        float height1 = 0.475f * camera.getTilesY();
+        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+        glTexCoord2f(0, 1);
+        glVertex3f(0, 0, 0.0f);
+        glTexCoord2f(1, 1);
+        glVertex3f(width1, 0, 0.0f);
+        glTexCoord2f(1, 0);
+        glVertex3f(width1, height1, 0.0f);
+        glTexCoord2f(0, 0);
+        glVertex3f(0, height1, 0.0f);
+        glEnd(); // Zeichnen des QUADs fertig } }
+
 
         if (GameClient.getPlayer().isDead()) {
             if (GameClient.frozenGametick >= GameClient.getPlayer().getRespawntick()) {
@@ -35,21 +56,19 @@ public class HudControl implements Control {
                 int seconds = (int) Math.ceil((GameClient.getPlayer().getRespawntick() - GameClient.frozenGametick) * Settings.SERVER_TICKRATE / 1000.0);
                 textWriter.renderText("Respawn in " + seconds + " Seconds", 10.5f, camera.getTilesY() - 2.5f);
             }
-        } else {
-            // Lebensenergie-Balken im HUD zeichnen
-            int maxhp = Math.max(1, GameClient.getPlayer().getHealthpointsmax());
-            int hp = Math.min(GameClient.getPlayer().getHealthpoints(), maxhp);
-            hp = Math.max(hp, 0);
-
-            glDisable(GL_TEXTURE_2D);
-            // schwarzer Hintergrund
-            glColor3f(0.0f, 0.0f, 0.0f);
-            glRectf(0.02f * camera.getTilesX(), 0.02f * camera.getTilesY(), 0.3f * camera.getTilesX(), 0.06f * camera.getTilesY());
-            // roter HP-Balken, Länge anhängig von HP
-            glColor3f(0.7f, 0.0f, 0.0f);
-            glRectf(0.03f * camera.getTilesX(), 0.03f * camera.getTilesY(), (0.03f + 0.26f * ((float) hp / maxhp)) * camera.getTilesX(), 0.05f * camera.getTilesY());
-            glEnable(GL_TEXTURE_2D);
         }
+
+        // Lebensenergie-Balken im HUD zeichnen
+        int maxhp = Math.max(1, GameClient.getPlayer().getHealthpointsmax());
+        int hp = Math.min(GameClient.getPlayer().getHealthpoints(), maxhp);
+        hp = Math.max(hp, 0);
+
+        glDisable(GL_TEXTURE_2D);
+        // roter HP-Balken, Länge anhängig von HP
+        glColor3f(0.7f, 0.0f, 0.0f);
+        glRectf(0.0295f * camera.getTilesX(), 0.028f * camera.getTilesY(), (0.0295f + 0.1655f * ((float) hp / maxhp)) * camera.getTilesX(), 0.04f * camera.getTilesY());
+        glEnable(GL_TEXTURE_2D);
+
 
         // angelegte Waffen in Hud zeichnen
         for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
