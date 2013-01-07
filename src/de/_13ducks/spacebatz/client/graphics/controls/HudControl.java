@@ -35,7 +35,7 @@ public class HudControl implements Control {
         glEnable(GL_TEXTURE_2D);
 
         hud1.bind();
-        
+
         // HUD-Bild bei HP
         float width1 = (0.475f / 16.0f * 9.0f) * camera.getTilesX();
         float height1 = 0.475f * camera.getTilesY() * 0.262f;
@@ -142,9 +142,13 @@ public class HudControl implements Control {
                 // weißer Hintergrund
                 glColor3f(1.0f, 1.0f, 1.0f);
                 glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
-                // roter HP-Balken, Länge anhängig von HP
+                // roter Overheat-Balken
                 glColor3f(0.7f, 0.0f, 0.0f);
                 glRectf(0.007f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.007f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
+            } else {
+                // grauer Hintergrund
+                glColor3f(0.6f, 0.6f, 0.6f);
+                glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
             }
             glColor3f(1f, 1f, 1f);
         }

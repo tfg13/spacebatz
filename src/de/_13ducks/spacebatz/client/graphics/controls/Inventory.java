@@ -42,8 +42,8 @@ public class Inventory implements Control {
 
         glDisable(GL_TEXTURE_2D);
         // dunkler Hintergrund
-        glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
-        glRectf(0, 0, camera.getTilesX(), camera.getTilesY());
+//        glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+//        glRectf(0, 0, camera.getTilesX(), camera.getTilesY());
 
         // waagrechte Linien
         float x1 = 0.095125f * camera.getTilesX();
