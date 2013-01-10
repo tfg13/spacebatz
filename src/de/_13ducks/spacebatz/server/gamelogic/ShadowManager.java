@@ -37,7 +37,7 @@ public class ShadowManager {
             ArrayList<Vector> updatedChunks = new ArrayList<>();
             for (Client c : Server.game.clients.values()) {
                 Player p = c.getPlayer();
-                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 8, 15, (byte) 0, (byte) 0, (byte) 32, 0, Server.game.getLevel().shadow));
+                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 20, 20, (byte) 0, (byte) 8, (byte) 32, 4, Server.game.getLevel().shadow, Server.game.getLevel().getGround()));
             }
             for (Vector v : updatedChunks) {
                 STC_SHADOW_CHANGE.sendShadowChange(v);
@@ -58,9 +58,10 @@ public class ShadowManager {
      * @param wallDarkening Um wieviel Wände die Sicht einschränken
      * @param fullVisFreeSightDistance Wieviele Blöcke weit man auf Freiflächen uneingeschränkt sehen kann (also ohne das freeDarkening) (Abstand ist euklid)
      * @param shadowMap die Shadowmap, die verändert werden soll
+     * @param texMap die Texturmap, wird konsultiert, um herauszufinden, wo Freiflächen/Hindernisse sind
      * @return eine Liste mit modifizierten Schatten-Chunks
      */
-    public static Set<Vector> lightShadows(int lightX, int lightY, int maxLightX, int maxLightY, byte initialShadow, byte freeDarkening, byte wallDarkening, double fullVisFreeSightDistance, final byte[][] shadowMap) {
+    public static Set<Vector> lightShadows(int lightX, int lightY, int maxLightX, int maxLightY, byte initialShadow, byte freeDarkening, byte wallDarkening, double fullVisFreeSightDistance, final byte[][] shadowMap, final int[][] texMap) {
         // Hier die geupdateten Chunks speichern
         HashSet<Vector> updatedChunks = new HashSet<>();
         // Das erste Feld nicht bearbeiten, das bekommt initalShadow
@@ -73,10 +74,6 @@ public class ShadowManager {
         // Alle Elemente einfüllen:
         for (int x = -maxLightX; x <= maxLightX; x++) {
             for (int y = -maxLightY; y <= maxLightY; y++) {
-                // Das Startfeld nicht:
-                if (x == 0 && y == 0) {
-                    continue;
-                }
                 // Keine Felder außerhalb der Map:
                 if (lightX + x < 0 || lightY + y < 0 || lightX + x >= shadowMap.length || lightY + y >= shadowMap[0].length) {
                     continue;
@@ -113,7 +110,7 @@ public class ShadowManager {
                 light = 127;
             }
             // Schatten der Nachbarn senken, falls nötig:
-            if (position.x + 1 >= 0 && position.y >= 0 && position.x - 1 < shadowMap.length && position.y < shadowMap[0].length && shadowMap[(int) position.x + 1][(int) position.y] > light) {
+            if (position.x + 1 >= 0 && position.y >= 0 && position.x + 1 < shadowMap.length && position.y < shadowMap[0].length && shadowMap[(int) position.x + 1][(int) position.y] > light) {
                 shadowMap[(int) position.x + 1][(int) position.y] = (byte) light;
                 updatedChunks.add(chunkFor((int) position.x + 1, (int) position.y));
             }
