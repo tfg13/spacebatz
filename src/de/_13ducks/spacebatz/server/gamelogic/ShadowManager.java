@@ -37,7 +37,7 @@ public class ShadowManager {
             ArrayList<Vector> updatedChunks = new ArrayList<>();
             for (Client c : Server.game.clients.values()) {
                 Player p = c.getPlayer();
-                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 8, 15, (byte) 0, (byte) 0, (byte) 32,  Server.game.getLevel().shadow));
+                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 8, 15, (byte) 0, (byte) 0, (byte) 32, 0, Server.game.getLevel().shadow));
             }
             for (Vector v : updatedChunks) {
                 STC_SHADOW_CHANGE.sendShadowChange(v);
@@ -56,10 +56,11 @@ public class ShadowManager {
      * @param initialShadow Helligkeit der Lichtquelle am Startpunkt der Beleuchtung
      * @param freeDarkening Um wieviel Freiflächen die Sicht einschränken
      * @param wallDarkening Um wieviel Wände die Sicht einschränken
+     * @param fullVisFreeSightDistance Wieviele Blöcke weit man auf Freiflächen uneingeschränkt sehen kann (also ohne das freeDarkening) (Abstand ist euklid)
      * @param shadowMap die Shadowmap, die verändert werden soll
      * @return eine Liste mit modifizierten Schatten-Chunks
      */
-    public static Set<Vector> lightShadows(int lightX, int lightY, int maxLightX, int maxLightY, byte initialShadow, byte freeDarkening, byte wallDarkening, final byte[][] shadowMap) {
+    public static Set<Vector> lightShadows(int lightX, int lightY, int maxLightX, int maxLightY, byte initialShadow, byte freeDarkening, byte wallDarkening, double fullVisFreeSightDistance, final byte[][] shadowMap) {
         // Hier die geupdateten Chunks speichern
         HashSet<Vector> updatedChunks = new HashSet<>();
         // Das erste Feld nicht bearbeiten, das bekommt initalShadow
@@ -103,7 +104,10 @@ public class ShadowManager {
             if (Server.game.getLevel().getGround()[(int) position.x][(int) position.y] != 3) {
                 light += wallDarkening;
             } else {
-                light += freeDarkening;
+                // Weit genug weg, dass es auch auf Freiflächen abdunkelt?
+                if (Math.sqrt((position.x - lightX) * (position.x - lightX) + (position.y - lightY) * (position.y - lightY)) > fullVisFreeSightDistance) {
+                    light += freeDarkening;
+                }
             }
             if (light > 127) {
                 light = 127;
@@ -128,9 +132,10 @@ public class ShadowManager {
         }
         return updatedChunks;
     }
-    
+
     /**
      * Liefert den Chunk für eine gegebene Koordinate
+     *
      * @param x X
      * @param y Y
      * @return den Chunk als Vector
