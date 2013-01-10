@@ -73,6 +73,10 @@ public class ShadowManager {
         // Alle Elemente einfüllen:
         for (int x = -maxLightX; x <= maxLightX; x++) {
             for (int y = -maxLightY; y <= maxLightY; y++) {
+                // Das Startfeld nicht:
+                if (x == 0 && y == 0) {
+                    continue;
+                }
                 // Keine Felder außerhalb der Map:
                 if (lightX + x < 0 || lightY + y < 0 || lightX + x >= shadowMap.length || lightY + y >= shadowMap[0].length) {
                     continue;
@@ -97,7 +101,7 @@ public class ShadowManager {
             // Maximale Helligkeit der Nachbarfelder hängt von der Lichtstufe dieses Felds ab:
             int light = shadowMap[(int) position.x][(int) position.y];
             // Erhöht die Textur dieses Feldes den Schattenwert?
-            if (Server.game.getLevel().getGround()[(int) position.x][(int) position.y] != 3) {
+            if (texMap[(int) position.x][(int) position.y] != 3 && texMap[(int) position.x][(int) position.y] != 5) {
                 light += wallDarkening;
             } else {
                 // Weit genug weg, dass es auch auf Freiflächen abdunkelt?
