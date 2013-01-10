@@ -73,10 +73,6 @@ public class ShadowManager {
         // Alle Elemente einfüllen:
         for (int x = -maxLightX; x <= maxLightX; x++) {
             for (int y = -maxLightY; y <= maxLightY; y++) {
-                // Das Startfeld nicht:
-                if (x == 0 && y == 0) {
-                    continue;
-                }
                 // Keine Felder außerhalb der Map:
                 if (lightX + x < 0 || lightY + y < 0 || lightX + x >= shadowMap.length || lightY + y >= shadowMap[0].length) {
                     continue;
