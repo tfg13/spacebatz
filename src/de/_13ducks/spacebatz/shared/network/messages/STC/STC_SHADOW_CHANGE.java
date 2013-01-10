@@ -42,14 +42,20 @@ public class STC_SHADOW_CHANGE extends STCCommand {
         return 31 * 31 + 8;
     }
 
-    public static void sendShadowChange(int px, int py, byte[][] changeMap) {
+    public static void sendShadowChange(int px, int py) {
         byte[] data = new byte[31 * 31 + 8];
         Bits.putInt(data, 0, px);
         Bits.putInt(data, 4, py);
         int index = 8;
-        for (int x = 0; x < 31; x++) {
-            System.arraycopy(changeMap[x], 0, data, index, 31);
-            index += 31;
+        byte[][] shadow = Server.game.getLevel().shadow;
+        for (int x = -15; x <= 15; x++) {
+            for (int y = -15; y <= 15; y++) {
+                if (px + x < 0 || py + y < 0 || px + x >= shadow.length || py + y >= shadow[0].length) {
+                    index++;
+                    continue;
+                }
+                data[index++] = shadow[px + x][py + y];
+            }
         }
         for (Client c : Server.game.clients.values()) {
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_SHADOW_CHANGE, data), c);
