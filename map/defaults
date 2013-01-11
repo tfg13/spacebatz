@@ -12,4 +12,5 @@ examplequest 0
 rasterizer 2
  sizex 128
  sizey 128
-prelight 0
+prelight 1
+ type surface

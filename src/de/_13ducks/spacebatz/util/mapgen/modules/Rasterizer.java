@@ -101,10 +101,10 @@ public class Rasterizer extends Module {
         }
         Vector spawn = spawnPoly.calcCenter();
         map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
-        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = 6;
-        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = 6;
-        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = 6;
-        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = 6;
+        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = 5;
+        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = 5;
+        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = 5;
+        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = 5;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
