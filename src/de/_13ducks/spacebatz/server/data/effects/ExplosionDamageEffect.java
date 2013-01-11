@@ -40,49 +40,38 @@ public class ExplosionDamageEffect extends Effect {
         // Dieser Effekt wird nicht direkt auf Chars angewandt
     }
 
+    /**
+     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit dieser nicht nochmal Schaden kriegt
+     *
+     * @param x Position
+     * @param y Position
+     * @param hitChar  Gegner, der direkt getroffen wird (oder null)
+     */
     @Override
     public void applyToPosition(double x, double y, Char hitChar) {
         /**
          * Hier wird der Flächenschaden berechnet und ausgeteilt. hitChar ist der Char der direkt getroffen wurde.
          */
-        if (hitChar != null) {
-            hitChar.getProperties().setHitpoints(hitChar.getProperties().getHitpoints() - damage);
-            STC_CHAR_HIT.sendCharHit(hitChar.netID, damage);
-        }
-        computeBulletExplosion(damage, x, y, hitChar, radius);
-    }
-
-    @Override
-    public void remove() {
-        // da der Effekt nicht auf Chars angewandt wird wird er auch nicht entfernt
-    }
-
-    /**
-     * Berechnet Flächenschaden von Bullet-Explosionen Bekommt den Char übergeben, den es direkt getroffen hat, damit
-     * dieser nicht nochmal Schaden kriegt
-     *
-     * @param damage Schaden, den die Explosion macht (wird evtl durch Distanz abgeschwächt)
-     * @param x Position
-     * @param y Position
-     * @param charhit Gegner, der direkt getroffen wird (oder null)
-     * @param radius der Explosionsradius
-     */
-    public static void computeBulletExplosion(int damage, double x, double y, Char charhit, double radius) {
         Iterator<Entity> iter = Server.entityMap.getEntitiesAroundPoint(x, y, radius).iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
             if (e instanceof Char) {
                 Char c = (Char) e;
                 // Nicht für den direkt getroffenen durchführen
-                if (!c.equals(charhit)) {
+                if (!c.equals(hitChar)) {
                     double distance = Math.sqrt((x - c.getX()) * (x - c.getX()) + (y - c.getY()) * (y - c.getY()));
                     // Zurzeit nur Gegnern Schaden machen
                     //if (c instanceof Enemy) {
-                        int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
-                        c.decreaseHitpoints(damagereduced);
+                    int damagereduced = (int) (damage * (1.0 - distance / radius * 0.66)); // 34% - 100%
+                    c.decreaseHitpoints(damagereduced);
                     //}
                 }
             }
         }
+    }
+
+    @Override
+    public void remove() {
+        // da der Effekt nicht auf Chars angewandt wird wird er auch nicht entfernt
     }
 }
