@@ -88,15 +88,20 @@ public class ShadowManager {
                 return Integer.compare(shadowMap[(int) o1.x][(int) o1.y], shadowMap[(int) o2.x][(int) o2.y]);
             }
         };
+        int lastLight = -1;
         // Alle Elemente durchgehen
         while (!queue.isEmpty()) {
-            // Erst sortieren
-            Collections.sort(queue, sorter);
+            // Performance-Optimierung: Nur sortieren, wenn Helligkeit des nächsten abweicht:
+            if (lastLight != shadowMap[(int) queue.getFirst().x][(int) queue.getFirst().y]) {
+                // Erst sortieren
+                Collections.sort(queue, sorter);
+            }
             // Position aus Liste nehmen
             Vector position = queue.remove();
             // Jetzt dieses Feld bearbeiten:
             // Maximale Helligkeit der Nachbarfelder hängt von der Lichtstufe dieses Felds ab:
             int light = shadowMap[(int) position.x][(int) position.y];
+            lastLight = light;
             // Erhöht die Textur dieses Feldes den Schattenwert?
             if (texMap[(int) position.x][(int) position.y] != 3 && texMap[(int) position.x][(int) position.y] != 5) {
                 light += wallDarkening;
