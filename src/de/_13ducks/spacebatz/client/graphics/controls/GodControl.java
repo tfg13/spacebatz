@@ -248,7 +248,6 @@ public class GodControl implements Control {
         // Werte cachen
         panX = renderer.getCamera().getPanX();
         panY = renderer.getCamera().getPanY();
-        int lastShadow = 0;
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
@@ -258,10 +257,6 @@ public class GodControl implements Control {
                 if (shadow != 127 || !shadowEnabled) {
                     if (tex != 3 && (patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
-                        if (isShadowEnabled() && shadow != lastShadow) {
-                            glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
-                            lastShadow = shadow;
-                        }
                         drawGroundTile(3, x, y, 0);
                         // Bild im Stencil-Buffer erzeugen:
                         glEnable(GL_STENCIL_TEST); // Stenciling ist an
@@ -284,11 +279,9 @@ public class GodControl implements Control {
                         // Zweite Maske drüber, für schönes Aussehen
                         drawGroundTile(225 + (patRot >> 4), x, y, rot);
                     } else {
-                        if (isShadowEnabled() && shadow != lastShadow) {
-                            glColor4f(1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f - 0.0078740157f * shadow, 1f);
-                            lastShadow = shadow;
+                        if (shadow != 127 || !shadowEnabled) {
+                            drawGroundTile(tex, x, y, 0);
                         }
-                        drawGroundTile(tex, x, y, 0);
                     }
                 }
             }
@@ -359,6 +352,26 @@ public class GodControl implements Control {
                 textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
             }
         }
+
+        // Shadow zeichnen:
+        int lastShadow = -1;
+        glDisable(GL_TEXTURE_2D);
+        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                if (shadow != lastShadow) {
+                    glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
+                    lastShadow = shadow;
+                }
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                glVertex3f(x + 1 + panX, y + panY, 0);
+                glVertex3f(x + panX, y + panY, 0);
+                glEnd(); // Zeichnen des QUADs fertig
+            }
+        }
+        glEnable(GL_TEXTURE_2D);
 
         // Net-Graph?
         if (NetStats.netGraph > 0) {
