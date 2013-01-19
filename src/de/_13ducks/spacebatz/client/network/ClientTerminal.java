@@ -203,15 +203,20 @@ public class ClientTerminal {
                         case "shadow":
                             if (words.length == 2) {
                                 switch (words[1]) {
-                                    case "on":
+                                    case "smooth":
                                         GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(true);
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowSmoothing(true);
+                                        break OUTER;
+                                    case "block":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(true);
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowSmoothing(false);
                                         break OUTER;
                                     case "off":
                                         GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(false);
                                         break OUTER;
                                 }
                             }
-                            outln("usage: shadow on|off");
+                            outln("usage: shadow smooth|block|off");
                             break;
                     case "about":
                         outln("spacebatz aurora");

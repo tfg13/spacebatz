@@ -79,6 +79,10 @@ public class GodControl implements Control {
      */
     private boolean shadowEnabled = true;
     /**
+     * Schalter für HQ-Schatten (smooth)
+     */
+    private boolean smoothShadows = true;
+    /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
      * Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
@@ -254,7 +258,7 @@ public class GodControl implements Control {
                 int tex = texAt(GameClient.currentLevel.getGround(), x, y);
                 int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                if (shadow != 127 || !shadowEnabled) {
+                if (shadow != 127 || !shadowEnabled || smoothShadows) {
                     if (tex != 3 && (patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
                         drawGroundTile(3, x, y, 0);
@@ -279,7 +283,7 @@ public class GodControl implements Control {
                         // Zweite Maske drüber, für schönes Aussehen
                         drawGroundTile(225 + (patRot >> 4), x, y, rot);
                     } else {
-                        if (shadow != 127 || !shadowEnabled) {
+                        if (shadow != 127 || !shadowEnabled || smoothShadows) {
                             drawGroundTile(tex, x, y, 0);
                         }
                     }
@@ -355,24 +359,58 @@ public class GodControl implements Control {
 
         // Shadow zeichnen:
         if (shadowEnabled) {
-            int lastShadow = -1;
-            glDisable(GL_TEXTURE_2D);
-            for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-                for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
-                    int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                    if (shadow != lastShadow) {
-                        glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
-                        lastShadow = shadow;
+            if (!smoothShadows) {
+                int lastShadow = -1;
+                glDisable(GL_TEXTURE_2D);
+                for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+                    for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                        int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                        if (shadow != lastShadow) {
+                            glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
+                            lastShadow = shadow;
+                        }
+                        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                        glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                        glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                        glVertex3f(x + 1 + panX, y + panY, 0);
+                        glVertex3f(x + panX, y + panY, 0);
+                        glEnd(); // Zeichnen des QUADs fertig
                     }
-                    glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                    glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-                    glVertex3f(x + 1 + panX, y + 1 + panY, 0);
-                    glVertex3f(x + 1 + panX, y + panY, 0);
-                    glVertex3f(x + panX, y + panY, 0);
-                    glEnd(); // Zeichnen des QUADs fertig
                 }
+                glEnable(GL_TEXTURE_2D);
+            } else {
+                byte[][] shadowMap = GameClient.currentLevel.shadow;
+                // Neue smooth-Schatten:
+                glDisable(GL_TEXTURE_2D);
+                for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+                    for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                        int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                        // 4 Schattenpunkte
+                        float lo, lu, ro, ru;
+                        // Default-Schatten
+                        lo = (shadowAt(shadowMap, x - 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x - 1, y) + shadow) / 4f;
+                        lu = (shadowAt(shadowMap, x - 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x - 1, y) + shadow) / 4f;
+                        ro = (shadowAt(shadowMap, x + 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x + 1, y) + shadow) / 4f;
+                        ru = (shadowAt(shadowMap, x + 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x + 1, y) + shadow) / 4f;
+                        lo *= 0.0078740157f;
+                        lu *= 0.0078740157f;
+                        ro *= 0.0078740157f;
+                        ru *= 0.0078740157f;
+                        // Jetzt zeichnen
+                        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                        glColor4f(0f, 0f, 0f, lo);
+                        glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                        glColor4f(0f, 0f, 0f, ro);
+                        glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                        glColor4f(0f, 0f, 0f, ru);
+                        glVertex3f(x + 1 + panX, y + panY, 0);
+                        glColor4f(0f, 0f, 0f, lu);
+                        glVertex3f(x + panX, y + panY, 0);
+                        glEnd(); // Zeichnen des QUADs fertig
+                    }
+                }
+                glEnable(GL_TEXTURE_2D);
             }
-            glEnable(GL_TEXTURE_2D);
         }
 
         // Net-Graph?
@@ -568,5 +606,19 @@ public class GodControl implements Control {
      */
     public void setShadowEnabled(boolean shadowEnabled) {
         this.shadowEnabled = shadowEnabled;
+    }
+
+    /**
+     * @return the smoothShadows
+     */
+    public boolean isShadowSmoothing() {
+        return smoothShadows;
+    }
+
+    /**
+     * @param smoothShadows the smoothShadows to set
+     */
+    public void setShadowSmoothing(boolean smoothShadows) {
+        this.smoothShadows = smoothShadows;
     }
 }
