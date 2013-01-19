@@ -354,24 +354,26 @@ public class GodControl implements Control {
         }
 
         // Shadow zeichnen:
-        int lastShadow = -1;
-        glDisable(GL_TEXTURE_2D);
-        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
-                int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                if (shadow != lastShadow) {
-                    glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
-                    lastShadow = shadow;
+        if (shadowEnabled) {
+            int lastShadow = -1;
+            glDisable(GL_TEXTURE_2D);
+            for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+                for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                    int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                    if (shadow != lastShadow) {
+                        glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
+                        lastShadow = shadow;
+                    }
+                    glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                    glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+                    glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                    glVertex3f(x + 1 + panX, y + panY, 0);
+                    glVertex3f(x + panX, y + panY, 0);
+                    glEnd(); // Zeichnen des QUADs fertig
                 }
-                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-                glVertex3f(x + 1 + panX, y + 1 + panY, 0);
-                glVertex3f(x + 1 + panX, y + panY, 0);
-                glVertex3f(x + panX, y + panY, 0);
-                glEnd(); // Zeichnen des QUADs fertig
             }
+            glEnable(GL_TEXTURE_2D);
         }
-        glEnable(GL_TEXTURE_2D);
 
         // Net-Graph?
         if (NetStats.netGraph > 0) {
