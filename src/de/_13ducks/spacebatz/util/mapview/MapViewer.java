@@ -257,7 +257,8 @@ public class MapViewer {
         glLineWidth(1);
         for (MPolygon poly : mesh.polys) {
             Node previous = poly.getNodes().get(0);
-            for (Node next : poly.getNodes()) {
+            for (int i = 1; i < poly.getNodes().size(); i++) {
+                Node next = poly.getNodes().get(i);
                 glBegin(GL_LINES);
                 glVertex2d((previous.x + (panX * oneX)) * zoom, (previous.y + (panY * oneY)) * zoom);
                 glVertex2d((next.x + (panX * oneX)) * zoom, (next.y + (panY * oneY)) * zoom);
@@ -266,8 +267,8 @@ public class MapViewer {
             }
             // Zumachen
             glBegin(GL_LINES);
-            glVertex2d(previous.x, previous.y);
-            glVertex2d(poly.getNodes().get(0).x, poly.getNodes().get(0).y);
+            glVertex2d((previous.x + (panX * oneX)) * zoom, (previous.y + (panY * oneY)) * zoom);
+            glVertex2d((poly.getNodes().get(0).x + (panX * oneX)) * zoom, (poly.getNodes().get(0).y + (panY * oneY)) * zoom);
             glEnd();
         }
         glEnable(GL_TEXTURE_2D);
