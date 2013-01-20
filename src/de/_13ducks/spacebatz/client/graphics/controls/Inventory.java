@@ -175,9 +175,8 @@ public class Inventory implements Control {
         Item itemx = GameClient.getEquippedItems().getEquipslots()[2][0];
         if (itemx != null) {
             // Item zeichnen;
-            float x = 0.41f * camera.getTilesX();
-
-            float y = (0.61f + 0.2f * (1 - 1)) * camera.getTilesY();
+            float x = 0.11f * camera.getTilesX();
+            float y = 0.53f * camera.getTilesY();
 
             float width = 0.1f / 16 * 9 * camera.getTilesX();
             float height = 0.1f * camera.getTilesY();
@@ -203,9 +202,8 @@ public class Inventory implements Control {
             Item item1 = GameClient.getEquippedItems().getEquipslots()[1][j];
             if (item1 != null) {
                 // Item zeichnen;
-                float x = 0.41f * camera.getTilesX();
-
-                float y = (0.61f + 0.2f * (1 - 1)) * camera.getTilesY();
+                float x = (0.26f + 0.1f * j) * camera.getTilesX();
+                float y = 0.53f * camera.getTilesY();
 
                 float width = 0.1f / 16 * 9 * camera.getTilesX();
                 float height = 0.1f * camera.getTilesY();
