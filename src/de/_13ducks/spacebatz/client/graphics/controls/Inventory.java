@@ -123,9 +123,9 @@ public class Inventory implements Control {
 
         // Items im Inventory zeichnen
         // Anzahl der Materialien:
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.12f * camera.getTilesX(), 0.44f * camera.getTilesY());
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.45f * camera.getTilesX(), 0.44f * camera.getTilesY());
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.75f * camera.getTilesX(), 0.44f * camera.getTilesY());
+        textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * camera.getTilesX(), 0.64f * camera.getTilesY());
+        textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * camera.getTilesX(), 0.59f * camera.getTilesY());
+        textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * camera.getTilesX(), 0.54f * camera.getTilesY());
 
         itemTiles.bind();
         for (int i = 0; i < 30; i++) {
