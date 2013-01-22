@@ -16,8 +16,22 @@ public class FireBulletAbility extends WeaponAbility {
 
     private static final long serialVersionUID = 1L;
 
-    public FireBulletAbility(double damage, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
+    /**
+     * Legt eine FireBulletAbility an
+     * @param damage der Schaden des Bullets
+     * @param damagespread Um wieviel der zufällige Schaden vom Mittelwert abweichen darf
+     * @param attackspeed Angriffsgeschwindigkeit in Schüsse / Tick
+     * @param range Reichweite der Waffe
+     * @param bulletpic Bild des Bullets
+     * @param bulletspeed Geschwindigkeit des Bulltes
+     * @param spread Streuung der Bullets
+     * @param explosionradius Flächenschaden
+     * @param maxoverheat Wie oft die Waffe schiessen kann, bis sie überhitzt ist
+     * @param reduceoverheat 
+     */
+    public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
         getWeaponStats().setDamage(damage);
+        getWeaponStats().setDamagespread(damagespread);
         getWeaponStats().setAttackspeed(attackspeed);
         getWeaponStats().setRange(range);
         getWeaponStats().setBulletpic(bulletpic);
@@ -36,7 +50,7 @@ public class FireBulletAbility extends WeaponAbility {
     @Override
     public void useInAngle(Char user, double angle) {
 
-        double damage = getWeaponStats().getDamage() * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
+        double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
         double range = getWeaponStats().getRange();
         int bulletpic = getWeaponStats().getBulletpic();
         double bulletspeed = getWeaponStats().getBulletspeed();

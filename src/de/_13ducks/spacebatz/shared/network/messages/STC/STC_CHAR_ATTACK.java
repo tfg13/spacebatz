@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.client.GameClient;
@@ -16,7 +12,7 @@ import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
- *
+ * Erhöht Waffen-Overheat und kann Animation erstellen
  * @author Johannes
  */
 public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {

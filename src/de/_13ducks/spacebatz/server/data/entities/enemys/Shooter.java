@@ -20,7 +20,7 @@ public class Shooter extends Enemy {
 
     public Shooter(double x, double y, int netId, int enemyTypeId) {
         super(x, y, netId, enemyTypeId);
-        shootAbility = new FireBulletAbility(3, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
+        shootAbility = new FireBulletAbility(5, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
     }
 
     /**

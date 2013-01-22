@@ -66,7 +66,7 @@ public class ItemTypes {
         pistol.setItemClass(1);
         pistol.setQuality(1);
         pistol.setAmount(0);
-        pistol.setWeaponAbility(new FireBulletAbility(7, 0.067, 12.0, 1, 0.35, 0.05, 0.0, 0, 0));
+        pistol.setWeaponAbility(new FireBulletAbility(7, 6, 0.067, 12.0, 1, 0.35, 0.05, 0.0, 0, 0));
         itemtypelist.add(pistol);
 
         ItemAttribute laser = new ItemAttribute("Laser");
@@ -74,7 +74,7 @@ public class ItemTypes {
         laser.setItemClass(1);
         laser.setQuality(1);
         laser.setAmount(0);
-        laser.setWeaponAbility(new FireBulletAbility(5, 0.167, 11.0, 3, 0.35, 0.1, 0.0, 30, 0.05));
+        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.167, 11.0, 3, 0.35, 0.1, 0.0, 30, 0.05));
         itemtypelist.add(laser);
 
         ItemAttribute superlaser = new ItemAttribute("Super Laser");
@@ -82,7 +82,7 @@ public class ItemTypes {
         superlaser.setItemClass(1);
         superlaser.setQuality(1);
         superlaser.setAmount(0);
-        superlaser.setWeaponAbility(new FireBulletAbility(25, 0.04, 15.0, 2, 0.5, 0.02, 0.0, 5, 0.01));
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 20, 0.04, 15.0, 2, 0.5, 0.02, 0.0, 5, 0.01));
         itemtypelist.add(superlaser);
 
         ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
@@ -90,7 +90,7 @@ public class ItemTypes {
         rocketlauncher.setItemClass(1);
         rocketlauncher.setQuality(1);
         rocketlauncher.setAmount(0);
-        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0.025, 17.0, 4, 0.25, 0.0, 6.0, 4, 0.01));
+        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0, 0.025, 17.0, 4, 0.25, 0.0, 6.0, 4, 0.01));
         itemtypelist.add(rocketlauncher);
 
         ItemAttribute drill = new ItemAttribute("Drill");
@@ -114,7 +114,7 @@ public class ItemTypes {
         superrocketlauncher.setItemClass(1);
         superrocketlauncher.setQuality(3);
         superrocketlauncher.setAmount(0);
-        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0.08, 17.0, 4, 0.35, 0.0, 4.0, 12, 0.025));
+        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 17.0, 4, 0.35, 0.0, 4.0, 12, 0.025));
         itemtypelist.add(superrocketlauncher);
 
         ItemAttribute superpistol = new ItemAttribute("Super Pistol");
@@ -122,7 +122,7 @@ public class ItemTypes {
         superpistol.setItemClass(1);
         superpistol.setQuality(3);
         superpistol.setAmount(0);
-        superpistol.setWeaponAbility(new FireBulletAbility(12, 0.1, 14.0, 1, 0.35, 0.02, 0.0, 0, 0));
+        superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 14.0, 1, 0.35, 0.02, 0.0, 0, 0));
         itemtypelist.add(superpistol);
 
         ItemAttribute superdrill = new ItemAttribute("Super Drill");
