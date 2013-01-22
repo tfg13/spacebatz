@@ -98,7 +98,7 @@ public class ItemTypes {
         drill.setItemClass(1);
         drill.setQuality(1);
         drill.setAmount(0);
-        drill.setWeaponAbility(new HitscanAbility(50, 0.0167, 4.0, 0, 0));
+        drill.setWeaponAbility(new HitscanAbility(50, 5, 0.0167, 4.0, 0, 0));
         itemtypelist.add(drill);
 
         ItemAttribute saw = new ItemAttribute("Saw");
@@ -106,7 +106,7 @@ public class ItemTypes {
         saw.setItemClass(1);
         saw.setQuality(1);
         saw.setAmount(0);
-        saw.setWeaponAbility(new HitscanAbility(15, 0.083, 4.0, 10, 0.04));
+        saw.setWeaponAbility(new HitscanAbility(15, 3, 0.083, 4.0, 10, 0.04));
         itemtypelist.add(saw);
 
         ItemAttribute superrocketlauncher = new ItemAttribute("Super Rocket Launcher");
@@ -130,7 +130,7 @@ public class ItemTypes {
         superdrill.setItemClass(1);
         superdrill.setQuality(3);
         superdrill.setAmount(0);
-        superdrill.setWeaponAbility(new HitscanAbility(35, 0.07, 4.0, 0, 0));
+        superdrill.setWeaponAbility(new HitscanAbility(35, 20, 0.07, 4.0, 0, 0));
         itemtypelist.add(superdrill);
 
 

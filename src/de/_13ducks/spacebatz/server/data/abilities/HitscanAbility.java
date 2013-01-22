@@ -21,12 +21,13 @@ public class HitscanAbility extends WeaponAbility {
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects = new ArrayList<>();
-    private double damage;
+    //private double damage;
 
-    public HitscanAbility(double damage, double attackspeed, double range, double maxoverheat, double reduceoverheat) {
-        getWeaponStats().setRange(range);
+    public HitscanAbility(double damage, double damagespread, double attackspeed, double range, double maxoverheat, double reduceoverheat) {
+        getWeaponStats().setDamage(damage);
+        getWeaponStats().setDamagespread(damagespread);
         getWeaponStats().setAttackspeed(attackspeed);
-        this.damage = damage;
+        getWeaponStats().setRange(range);
         getWeaponStats().setMaxoverheat(maxoverheat);
         getWeaponStats().setReduceoverheat(reduceoverheat);
     }
@@ -45,7 +46,7 @@ public class HitscanAbility extends WeaponAbility {
         // Schaden an Gegnern
         ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
 
-        TrueDamageEffect damageeff = new TrueDamageEffect((int) (damage * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus())));
+        TrueDamageEffect damageeff = new TrueDamageEffect((int) ((getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus())));
         effects.clear();
         effects.add(damageeff);
 
