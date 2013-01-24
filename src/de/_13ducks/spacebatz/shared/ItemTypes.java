@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.shared;
 
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.server.data.abilities.FireMultipleBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import java.util.ArrayList;
 
@@ -68,6 +69,22 @@ public class ItemTypes {
         pistol.setAmount(0);
         pistol.setWeaponAbility(new FireBulletAbility(7, 6, 0.067, 12.0, 1, 0.35, 0.05, 0.0, 0, 0));
         itemtypelist.add(pistol);
+
+        ItemAttribute bla = new ItemAttribute("Bla");
+        bla.setPic(20);
+        bla.setItemClass(1);
+        bla.setQuality(1);
+        bla.setAmount(0);
+        bla.setWeaponAbility(new FireMultipleBulletAbility(7, 2, 0.045, 11.0, 3, 0.35, 5, 0.1, 0.0, 8, 0.045));
+        itemtypelist.add(bla);
+
+        ItemAttribute bla2 = new ItemAttribute("Bla 2");
+        bla2.setPic(21);
+        bla2.setItemClass(1);
+        bla2.setQuality(1);
+        bla2.setAmount(0);
+        bla2.setWeaponAbility(new FireMultipleBulletAbility(13, 4, 0.022, 14.0, 3, 0.45, 3, 0.1, 0.0, 6, 0.022));
+        itemtypelist.add(bla2);
 
         ItemAttribute laser = new ItemAttribute("Laser");
         laser.setPic(2);
