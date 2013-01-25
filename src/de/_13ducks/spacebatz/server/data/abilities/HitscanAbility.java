@@ -39,7 +39,7 @@ public class HitscanAbility extends WeaponAbility {
      */
     @Override
     public void useInAngle(Char user, double angle) {
-        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle);
+        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, true);
 
         double range = getWeaponStats().getRange();
 

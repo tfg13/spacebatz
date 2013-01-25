@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 
 /**
  * Die Fähigkeit, mehrere Bullets auf einmal zu schießen. Erzeugt neue Bullets und regisriert sie beim Server.
@@ -55,6 +56,7 @@ public class FireMultipleBulletAbility extends WeaponAbility {
 
     @Override
     public void useInAngle(Char user, double angle) {
+        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);
 
         double range = getWeaponStats().getRange();
         int bulletpic = getWeaponStats().getBulletpic();

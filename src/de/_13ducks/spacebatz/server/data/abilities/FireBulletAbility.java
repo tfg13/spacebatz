@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
 import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import java.util.Random;
 
 /**
@@ -18,6 +19,7 @@ public class FireBulletAbility extends WeaponAbility {
 
     /**
      * Legt eine FireBulletAbility an
+     *
      * @param damage der Schaden des Bullets
      * @param damagespread Um wieviel der zufällige Schaden vom Mittelwert abweichen darf
      * @param attackspeed Angriffsgeschwindigkeit in Schüsse / Tick
@@ -27,7 +29,7 @@ public class FireBulletAbility extends WeaponAbility {
      * @param spread Streuung der Bullets
      * @param explosionradius Flächenschaden
      * @param maxoverheat Wie oft die Waffe schiessen kann, bis sie überhitzt ist
-     * @param reduceoverheat 
+     * @param reduceoverheat
      */
     public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
         getWeaponStats().setDamage(damage);
@@ -49,6 +51,7 @@ public class FireBulletAbility extends WeaponAbility {
 
     @Override
     public void useInAngle(Char user, double angle) {
+        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);
 
         double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
         double range = getWeaponStats().getRange();
@@ -67,7 +70,7 @@ public class FireBulletAbility extends WeaponAbility {
             bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
         }
         bullet.addEffect(new TrueDamageEffect((int) damage));
-        
+
         Server.game.getEntityManager().addEntity(bullet.netID, bullet);
 
     }
