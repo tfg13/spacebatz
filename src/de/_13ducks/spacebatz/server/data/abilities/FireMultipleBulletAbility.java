@@ -6,16 +6,19 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
-import java.util.Random;
 
 /**
- * Die Fähigkeit, Bullets zu schießen. Erzeugt neue Bullets und regisriert sie beim Server.
+ * Die Fähigkeit, mehrere Bullets auf einmal zu schießen. Erzeugt neue Bullets und regisriert sie beim Server.
  *
- * @author michael
+ * @author jjkk
  */
-public class FireBulletAbility extends WeaponAbility {
+public class FireMultipleBulletAbility extends WeaponAbility {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Anzahl Bullets pro Schuss, fester Wert, wird nicht geändert
+     */
+    private int amount;
 
     /**
      * Legt eine FireBulletAbility an
@@ -25,13 +28,14 @@ public class FireBulletAbility extends WeaponAbility {
      * @param attackspeed Angriffsgeschwindigkeit in Schüsse / Tick
      * @param range Reichweite der Waffe
      * @param bulletpic Bild des Bullets
-     * @param bulletspeed Geschwindigkeit des Bulltes
+     * @param bulletspeed Geschwindigkeit des Bullets
+     * @param amount Anzahl Bullets, die verschossen werden
      * @param spread Streuung der Bullets
      * @param explosionradius Flächenschaden
      * @param maxoverheat Wie oft die Waffe schiessen kann, bis sie überhitzt ist
      * @param reduceoverheat
      */
-    public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
+    public FireMultipleBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, int amount, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
         getWeaponStats().setDamage(damage);
         getWeaponStats().setDamagespread(damagespread);
         getWeaponStats().setAttackspeed(attackspeed);
@@ -42,6 +46,7 @@ public class FireBulletAbility extends WeaponAbility {
         getWeaponStats().setExplosionRadius(explosionradius);
         getWeaponStats().setMaxoverheat(maxoverheat);
         getWeaponStats().setReduceoverheat(reduceoverheat);
+        this.amount = amount;
     }
 
     @Override
@@ -53,25 +58,25 @@ public class FireBulletAbility extends WeaponAbility {
     public void useInAngle(Char user, double angle) {
         STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);
 
-        double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
         double range = getWeaponStats().getRange();
         int bulletpic = getWeaponStats().getBulletpic();
         double bulletspeed = getWeaponStats().getBulletspeed();
         double spread = getWeaponStats().getSpread();
         double explosionradius = getWeaponStats().getExplosionRadius();
-
-        Random random = new Random();
-        angle += random.nextGaussian() * spread;
         int lifetime = (int) (range / bulletspeed);
 
-        Bullet bullet = new Bullet(lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+        for (int i = 1; i <= amount; i++) {
+            double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
+            double newangle = angle + (i - (amount + 1) / 2.0) * spread;
 
-        if (explosionradius > 0) {
-            bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+            Bullet bullet = new Bullet(lifetime, user.getX(), user.getY(), newangle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+
+            if (explosionradius > 0) {
+                bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+            }
+            bullet.addEffect(new TrueDamageEffect((int) damage));
+
+            Server.game.getEntityManager().addEntity(bullet.netID, bullet);
         }
-        bullet.addEffect(new TrueDamageEffect((int) damage));
-
-        Server.game.getEntityManager().addEntity(bullet.netID, bullet);
-
     }
 }
