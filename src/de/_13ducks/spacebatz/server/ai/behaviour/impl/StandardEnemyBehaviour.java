@@ -1,6 +1,7 @@
-package de._13ducks.spacebatz.server.data.entities.enemys;
+package de._13ducks.spacebatz.server.ai.behaviour.impl;
 
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
@@ -13,7 +14,7 @@ import de._13ducks.spacebatz.util.Distance;
  *
  * @author michael
  */
-public class StandardEnemy extends Enemy {
+public class StandardEnemyBehaviour extends Behaviour {
 
     /**
      * Der Char, den dieser Enemy gerade verfolgt
@@ -28,8 +29,8 @@ public class StandardEnemy extends Enemy {
      * @param netID
      * @param enemyTypeID
      */
-    public StandardEnemy(double x, double y, int netID, int enemyTypeID) {
-        super(x, y, netID, enemyTypeID);
+    public StandardEnemyBehaviour(Enemy enemy) {
+        super(enemy);
     }
 
     /**
@@ -38,12 +39,13 @@ public class StandardEnemy extends Enemy {
      * @param other
      */
     @Override
-    public void onCollision(Entity other) {
+    public Behaviour onCollision(Entity other) {
         super.onCollision(other);
         // Bei Kollision mit Spielern diese verfolgen:
         if (other instanceof Player) {
             myTarget = (Player) other;
         }
+        return this;
     }
 
     /**
@@ -52,11 +54,11 @@ public class StandardEnemy extends Enemy {
      * @param gameTick der GameTick für den berechnet wird.
      */
     @Override
-    public void tick(int gameTick) {
+    public Behaviour tick(int gameTick) {
         super.tick(gameTick);
         // Nur alle 20 Ticks berechnen, um Auslastung zu veringern:
         if (gameTick % 20 == 0) {
-            return;
+            return this;
         }
 
         // Haben wir schon ein Ziel?
@@ -64,23 +66,23 @@ public class StandardEnemy extends Enemy {
             // wenn er kein Ziel hat sucht er ob eines in dwer Nähe ist:
             for (Client client : Server.game.clients.values()) {
                 Player player = client.getPlayer();
-                if (getProperties().getSightrange() > Distance.getDistance(getX(), getY(), player.getX(), player.getY())) {
+                if (owner.getProperties().getSightrange() > Distance.getDistance(owner.getX(), owner.getY(), player.getX(), player.getY())) {
                     myTarget = player;
                 }
             }
         } else {
             // wenn er eins hat schaut er ob es noch in reichweite ist:
-            if (getProperties().getSightrange() * 2 < Distance.getDistance(getX(), getY(), myTarget.getX(), myTarget.getY())) {
+            if (owner.getProperties().getSightrange() * 2 < Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                 myTarget = null;
-                stopMovement();
+                owner.stopMovement();
             } else {
                 // Wenn wir schon nahe genug dran sind anhalten:
-                if (1.0 > Distance.getDistance(getX(), getY(), myTarget.getX(), myTarget.getY())) {
-                    stopMovement();
+                if (1.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
+                    owner.stopMovement();
                 } else {
                     // wenn wir noch zu weit entfernt sind hinbewegen:
-                    double vectorX = myTarget.getX() - getX();
-                    double vectorY = myTarget.getY() - getY();
+                    double vectorX = myTarget.getX() - owner.getX();
+                    double vectorY = myTarget.getY() - owner.getY();
                     // Sicher gehen, dass die Vektoren nicht 0 sind:
                     if (vectorX == 0.0) {
                         vectorX = 0.1;
@@ -88,12 +90,13 @@ public class StandardEnemy extends Enemy {
                     if (vectorY == 0.0) {
                         vectorY = 0.1;
                     }
-                    setVector(vectorX, vectorY);
+                    owner.setVector(vectorX, vectorY);
                 }
 
 
 
             }
         }
+        return this;
     }
 }
