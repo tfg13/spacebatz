@@ -198,7 +198,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * @param toY
      * @return
      */
-    protected boolean lineOfSight(double fromX, double fromY, double toX, double toY) {
+    public boolean lineOfSight(double fromX, double fromY, double toX, double toY) {
         // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;

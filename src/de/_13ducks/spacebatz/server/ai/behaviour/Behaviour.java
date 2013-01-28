@@ -6,6 +6,9 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 
 /**
  * A Behaviour for an enemy.
+ * Behaviours can react to the events given by their owner.
+ * Each event function returns a behaviour, whom the next events will be given.
+ * By returning a new / other Behaviour than self, the behavioutr of an enemy can be changed.
  *
  * @author michael
  */
