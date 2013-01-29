@@ -12,7 +12,9 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
+import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
@@ -24,7 +26,7 @@ import de._13ducks.spacebatz.util.Distance;
  *
  * @author J
  */
-public class Enemy extends Char implements EntityLinearTargetObserver {
+public class Enemy extends Char implements EntityLinearTargetObserver, PathRequester {
 
     /**
      * ID des Gegnertyps.
@@ -46,6 +48,10 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
      * Gibt an ob der Gegner gerade einem Pfad folgt.
      */
     private boolean followingPath;
+    /**
+     * The enemys AI.
+     */
+    private Behaviour behaviour;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -154,22 +160,33 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
                 setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
             }
         } else {
-            throw new IllegalStateException("Reached target while not following a path!");
+            behaviour = behaviour.targetReached();
         }
 
     }
 
     @Override
     public void movementBlocked() {
-        System.out.println("blocked at " + getX() + " " + getY() + " . path: ");
-//        for (int i = 0; i < path.length; i++) {
-//            System.out.println(path[i].getX() + " " + path[i].getY());
-//        }
+        behaviour = behaviour.movementBlocked();
     }
 
     @Override
     public void movementAborted() {
-        System.out.println("movement aborted!");
+        behaviour = behaviour.movementAborted();
+    }
+
+    @Override
+    public void onCollision(Entity other) {
+        behaviour = behaviour.onCollision(other);
+    }
+
+    /**
+     * Set the Behaviour of this enemy.
+     *
+     * @param behaviour
+     */
+    public void setBehaviour(Behaviour behaviour) {
+        this.behaviour = behaviour;
     }
 
     /**
@@ -181,7 +198,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
      * @param toY
      * @return
      */
-    protected boolean lineOfSight(double fromX, double fromY, double toX, double toY) {
+    public boolean lineOfSight(double fromX, double fromY, double toX, double toY) {
         // Der Vektor der Bewegung:
         double deltaX = toX - fromX;
         double deltaY = toY - fromY;
@@ -298,5 +315,16 @@ public class Enemy extends Char implements EntityLinearTargetObserver {
             return true;
         }
 
+    }
+
+    @Override
+    public void pathComputed(PrecisePosition[] path) {
+        behaviour = behaviour.pathComputed(path);
+    }
+
+    @Override
+    public void tick(int gametick) {
+        super.tick(gametick);
+        behaviour.tick(gametick);
     }
 }

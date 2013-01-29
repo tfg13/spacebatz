@@ -14,6 +14,10 @@ public class WeaponStats implements Serializable {
      */
     private double damage;
     /**
+     * Um wieviel der zufällige Schaden vom Mittelwert abweichen darf
+     */
+    private double damagespread;
+    /**
      * Der Schadensmultiplikator, wird auf den Schaden draufgerechnet.
      */
     private double damageMultiplicatorBonus;
@@ -59,6 +63,7 @@ public class WeaponStats implements Serializable {
      */
     public void addStats(WeaponStats other) {
         damage += other.getDamage();
+        damagespread += other.getDamagespread();
         damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
         attackspeed += other.getAttackspeed();
         range += other.getRange();
@@ -226,5 +231,19 @@ public class WeaponStats implements Serializable {
      */
     public void setReduceoverheat(double reduceoverheat) {
         this.reduceoverheat = reduceoverheat;
+    }
+
+    /**
+     * @return the damagespread
+     */
+    public double getDamagespread() {
+        return damagespread;
+    }
+
+    /**
+     * @param damagespread the damagespread to set
+     */
+    public void setDamagespread(double damagespread) {
+        this.damagespread = damagespread;
     }
 }

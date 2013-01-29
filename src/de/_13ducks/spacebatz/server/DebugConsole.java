@@ -22,7 +22,7 @@ import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.data.entities.enemys.StandardEnemy;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Position;
 import java.io.*;
@@ -306,7 +306,8 @@ public class DebugConsole {
                         break;
                     case "spawnenemy":
                         for (Client c : Server.game.clients.values()) {
-                            Enemy e1 = new StandardEnemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1);
+                            Enemy e1 = new Enemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1);
+                            e1.setBehaviour(new StandardEnemyBehaviour(e1));
                             Server.game.getEntityManager().addEntity(e1.netID, e1);
                         }
                         break;

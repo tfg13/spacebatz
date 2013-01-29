@@ -53,13 +53,14 @@ public class HudControl implements Control {
         // HUD-Bild bei Waffen
         float height2 = 0.42f * camera.getTilesY();
         float height3 = 0.77f * camera.getTilesY();
+        float width2 = width1 * 0.234f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0, 0.738f);
         glVertex3f(0, height2, 0.0f);
-        glTexCoord2f(1, 0.738f);
-        glVertex3f(width1, height2, 0.0f);
-        glTexCoord2f(1, 0.0f);
-        glVertex3f(width1, height3, 0.0f);
+        glTexCoord2f(0.234f, 0.738f);
+        glVertex3f(width2, height2, 0.0f);
+        glTexCoord2f(0.234f, 0.0f);
+        glVertex3f(width2, height3, 0.0f);
         glTexCoord2f(0, 0.0f);
         glVertex3f(0, height3, 0.0f);
         glEnd(); // Zeichnen des QUADs fertig } }
