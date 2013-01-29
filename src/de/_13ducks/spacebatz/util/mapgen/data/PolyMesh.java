@@ -100,7 +100,11 @@ public class PolyMesh {
                 if (po.getMesh() == null || !recursive) {
                     return po;
                 } else {
-                    return po.getMesh().polyFor(x, y, true);
+                    MPolygon result = po.getMesh().polyFor(x, y, true);
+                    if (result == null) {
+                        return po;
+                    }
+                    return result;
                 }
             }
         }
