@@ -37,7 +37,7 @@ public class ShadowManager {
             ArrayList<Vector> updatedChunks = new ArrayList<>();
             for (Client c : Server.game.clients.values()) {
                 Player p = c.getPlayer();
-                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, Server.game.getLevel().shadow, Server.game.getLevel().ground));
+                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, Server.game.getLevel().shadow, Server.game.getLevel().top));
             }
             for (Vector v : updatedChunks) {
                 STC_SHADOW_CHANGE.sendShadowChange(v);
@@ -103,7 +103,7 @@ public class ShadowManager {
             int light = shadowMap[(int) position.x][(int) position.y];
             lastLight = light;
             // Erhöht die Textur dieses Feldes den Schattenwert?
-            if (texMap[(int) position.x][(int) position.y] != 3 && texMap[(int) position.x][(int) position.y] != 5) {
+            if (texMap[(int) position.x][(int) position.y] != 0) {
                 light += wallDarkening;
             } else {
                 // Weit genug weg, dass es auch auf Freiflächen abdunkelt?

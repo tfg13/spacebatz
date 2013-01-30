@@ -47,6 +47,9 @@ public class Rasterizer extends Module {
         double scaleX = 1.0 / sizeX;
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
+        map.topTex = new int[sizeX][sizeY];
+        map.dye_ground = new int[sizeX][sizeY];
+        map.dye_top = new int[sizeX][sizeY];
         map.collision = new boolean[sizeX][sizeY];
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
@@ -58,20 +61,22 @@ public class Rasterizer extends Module {
                     continue;
                 }
                 // Hier kommen wir nur hin, wenn der Polygon gefunden wurde
+                // Boden erstmal immer gleich setzen:
+                map.groundTex[x][y] = 1;
                 if (poly.border) {
-                    map.groundTex[x][y] = 1;
+                    map.topTex[x][y] = 1;
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
                     if (poly.resource == 1) {
-                        map.groundTex[x][y] = 4;
+                        map.topTex[x][y] = 4;
                     } else {
-                        map.groundTex[x][y] = 2;
+                        map.topTex[x][y] = 2;
                     }
                     map.collision[x][y] = true;
                 } else {
-                    if (poly.spawn || poly.texture == 0) {
-                        map.groundTex[x][y] = 3;
-                    } else {
+                    if (poly.spawn) {
+                        map.groundTex[x][y] = 2;
+                    } else if (poly.texture != 0) {
                         // Angeforderte Textur setzen
                         map.groundTex[x][y] = poly.texture;
                     }

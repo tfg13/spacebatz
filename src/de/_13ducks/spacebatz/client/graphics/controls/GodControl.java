@@ -239,17 +239,30 @@ public class GodControl implements Control {
         panX = renderer.getCamera().getPanX();
         panY = renderer.getCamera().getPanY();
         int[][] ground = GameClient.currentLevel.ground;
-        int[][] top = GameClient.currentLevel.top;
+        int[][] dye_ground = GameClient.currentLevel.dye_ground;
+        // Boden zuerst
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = texAt(ground, x, y);
-                int patRot = patternAt(ground, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if (shadow != 127 || !shadowEnabled || smoothShadows) {
-                    if (tex != 3 && (patRot >> 4) != 5) {
+                    drawUncoloredTile(tex, x, y, 0);
+                }
+            }
+        }
+        
+        int[][] top = GameClient.currentLevel.top;
+        int[][] dye_top = GameClient.currentLevel.dye_top;
+        topTiles.bind(); // groundTiles-Textur wird jetzt verwendet
+        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                int tex = texAt(top, x, y);
+                int patRot = patternAt(top, x, y);
+                int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                if ((shadow != 127 || !shadowEnabled || smoothShadows) && tex != 0) {
+                    if ((patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
-                        drawGroundTile(3, x, y, 0);
                         // Bild im Stencil-Buffer erzeugen:
                         glEnable(GL_STENCIL_TEST); // Stenciling ist an
                         // Stencil-Test schlägt immer fehl, malt also nix. Aber alle verwendeten Pixel erhöhen den Stencil-Buffer:
@@ -259,26 +272,25 @@ public class GodControl implements Control {
                         glAlphaFunc(GL_NOTEQUAL, 0f);
                         glEnable(GL_ALPHA_TEST);
                         // Pattern malen, beeinflusst Stencil-Buffer
-                        drawGroundTile(241 + (patRot >> 4), x, y, rot);
+                        drawUncoloredTile(241 + (patRot >> 4), x, y, rot);
                         glDisable(GL_ALPHA_TEST);
                         // Jetzt ist der Stencil-Buffer ok. Jetzt Modus auf "malen, wenn stencil das sagt" stellen
                         glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
                         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                         // Jetzt Wand malen:
-                        drawGroundTile(tex, x, y, 0);
+                        drawUncoloredTile(tex, x, y, 0);
                         // Fertig, Stencil abschalten:
                         glDisable(GL_STENCIL_TEST);
                         // Zweite Maske drüber, für schönes Aussehen
-                        drawGroundTile(225 + (patRot >> 4), x, y, rot);
+                        drawUncoloredTile(225 + (patRot >> 4), x, y, rot);
                     } else {
-                        if (shadow != 127 || !shadowEnabled || smoothShadows) {
-                            drawGroundTile(tex, x, y, 0);
-                        }
+                        drawUncoloredTile(tex, x, y, 0);
                     }
                 }
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
+        
 
         // Enemies zeichnen:
         enemyTiles.bind();
@@ -549,7 +561,7 @@ public class GodControl implements Control {
         CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, (float) dir, distance);
     }
 
-    private void drawGroundTile(int tile, float x, float y, int numRot) {
+    private void drawUncoloredTile(int tile, float x, float y, int numRot) {
         int tx = tile % 16;
         int ty = tile / 16;
         float[][] screenCoords = new float[2][4]; // X, Y dann 4 Ecken
@@ -577,9 +589,9 @@ public class GodControl implements Control {
     /**
      * Liest das Pattern aus.
      */
-    private int patternAt(int[][] ground, int x, int y) {
-        int myTex = texAt(ground, x, y);
-        return patternRotationLookupTable[(myTex == texAt(GameClient.currentLevel.ground, x + 1, y) ? 1 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x + 1, y - 1) ? 2 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x, y - 1) ? 4 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x - 1, y - 1) ? 8 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x - 1, y) ? 16 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x - 1, y + 1) ? 32 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x, y + 1) ? 64 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x + 1, y + 1) ? 128 : 0)];
+    private int patternAt(int[][] tex, int x, int y) {
+        int myTex = texAt(tex, x, y);
+        return patternRotationLookupTable[(myTex == texAt(tex, x + 1, y) ? 1 : 0) | (myTex == texAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == texAt(tex, x, y - 1) ? 4 : 0) | (myTex == texAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == texAt(tex, x - 1, y) ? 16 : 0) | (myTex == texAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == texAt(tex, x, y + 1) ? 64 : 0) | (myTex == texAt(tex, x + 1, y + 1) ? 128 : 0)];
     }
 
     /**

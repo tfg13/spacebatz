@@ -58,10 +58,10 @@ public class Prelight extends Module {
         int[] spawn = (int[]) map.metadata.get("SPAWN");
         if ("surface".equals(parameters.get("type"))) {
             // Planetenoberfläche (unendliche Sichtweite)
-            ShadowManager.lightShadows(spawn[0], spawn[1], Math.max(map.groundTex.length - spawn[0], spawn[0]) + 1, Math.max(map.groundTex[0].length - spawn[1], spawn[1]) + 1, (byte) 0, (byte) 0, (byte) 32, 0, map.shadow, map.groundTex);
+            ShadowManager.lightShadows(spawn[0], spawn[1], Math.max(map.groundTex.length - spawn[0], spawn[0]) + 1, Math.max(map.groundTex[0].length - spawn[1], spawn[1]) + 1, (byte) 0, (byte) 0, (byte) 32, 0, map.shadow, map.topTex);
         } else {
             // Sonstige: Höhlensichtweite
-            ShadowManager.lightShadows(spawn[0], spawn[1], 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, map.shadow, map.groundTex);
+            ShadowManager.lightShadows(spawn[0], spawn[1], 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, map.shadow, map.topTex);
         }
     }
 }
