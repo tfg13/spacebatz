@@ -13,7 +13,7 @@ package de._13ducks.spacebatz.server.data;
 import de._13ducks.spacebatz.server.data.quests.Quest;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_TOP_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,15 +74,15 @@ public class ServerLevel extends Level {
      */
     public void destroyBlock(int x, int y) {
         // Material droppen
-        int material = destroyableBlockTypes.get(ground[x][y]).dropMaterial;
+        int material = destroyableBlockTypes.get(top[x][y]).dropMaterial;
         if (material >= 0) {
             // Material mit angepasster Position (int -> double) droppen
-            DropManager.dropMaterial(destroyableBlockTypes.get(ground[x][y]).dropMaterial, 1);
+            DropManager.dropMaterial(destroyableBlockTypes.get(top[x][y]).dropMaterial, 1);
         }
 
         STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, false);
-        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, destroyableBlockTypes.get(ground[x][y]).backgroundTexture);
-        ground[x][y] = destroyableBlockTypes.get(ground[x][y]).backgroundTexture;
+        STC_BROADCAST_TOP_CHANGE.broadcastTopChange(x, y, 0);
+        top[x][y] = 0; // Wand löschen
         getCollisionMap()[x][y] = false;
     }
 
@@ -94,10 +94,10 @@ public class ServerLevel extends Level {
      * @param texture die Textur des Blocks
      */
     public void createDestroyableBlock(int x, int y, int texture) {
-        ground[x][y] = texture;
+        top[x][y] = texture;
         //getCollisionMap()[x][y] = true;
         STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, true);
-        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
+        STC_BROADCAST_TOP_CHANGE.broadcastTopChange(x, y, texture);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ServerLevel extends Level {
      */
     public boolean isBlockDestroyable(int x, int y) {
         if (0 < x && x < getSizeX() && 0 < y && y < getSizeY()) {
-            return destroyableBlockTypes.containsKey(ground[x][y]);
+            return destroyableBlockTypes.containsKey(top[x][y]);
         } else {
             return false;
         }

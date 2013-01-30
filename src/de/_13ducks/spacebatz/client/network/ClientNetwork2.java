@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_GROUND_CHANGE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_TOP_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
@@ -164,7 +164,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_GROUND, new STC_BROADCAST_GROUND_CHANGE());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_TOP, new STC_BROADCAST_TOP_CHANGE());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_COLLISION, new STC_CHANGE_COLLISION());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_SWITCH_WEAPON, new STC_SWITCH_WEAPON());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_SPAWN_ITEM, new STC_ITEM_DROP());

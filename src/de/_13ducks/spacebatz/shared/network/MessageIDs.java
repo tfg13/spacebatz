@@ -157,7 +157,7 @@ public class MessageIDs {
     /**
      * Die cmdID für geänderten Boden
      */
-    public static final byte NET_TCP_CMD_CHANGE_GROUND = 35;
+    public static final byte NET_TCP_CMD_CHANGE_TOP = 35;
     /**
      * Die cmdId für Kollisionsänderung
      */
