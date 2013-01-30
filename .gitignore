@@ -3,5 +3,6 @@ manifest.mf
 build/
 nbbuild.xml
 dist/
+research/
 *.swp
 *.lvl
