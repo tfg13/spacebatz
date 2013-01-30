@@ -39,6 +39,7 @@ public class GodControl implements Control {
      * Tilemaps.
      */
     private Texture groundTiles;
+    private Texture topTiles;
     private Texture playerTiles;
     private Texture enemyTiles;
     private Texture bulletTiles;
@@ -62,10 +63,6 @@ public class GodControl implements Control {
      * Konstante, die angibt wie lange Schadenszahlen sichtbar sind
      */
     private final int DAMAGENUMBER_LIFETIME = 1000;
-    /**
-     * Array mit allen Tilemaps
-     */
-    private Texture[] tilemaps;
     /**
      * Kopie vom pan der Kamera, aus Performance-Gründen
      */
@@ -121,25 +118,14 @@ public class GodControl implements Control {
         0x22, 0x43, 0x22, 0x43, 0x40, 0xE3, 0x40, 0x50};// 248 - 255
 
     public GodControl(Renderer renderer) {
-        tilemaps = new Texture[10];
-
-
-        // Der letzte Parameter sagt OpenGL, dass es Pixel beim vergrößern/verkleinern nicht aus Mittelwerten von mehreren berechnen soll,
-        // sondern einfach den nächstbesten nehmen. Das sort für den Indie-Pixelart-Look
         groundTiles = renderer.getTextureByName("ground.png");
+        topTiles = renderer.getTextureByName("top.png");
         playerTiles = renderer.getTextureByName("player.png");
         enemyTiles = renderer.getTextureByName("enemy.png");
         bulletTiles = renderer.getTextureByName("bullet.png");
         itemTiles = renderer.getTextureByName("item.png");
         inventoryPic = renderer.getTextureByName("inventory2.png");
         fxTiles = renderer.getTextureByName("fx.png");
-        tilemaps[0] = groundTiles;
-        tilemaps[1] = playerTiles;
-        tilemaps[2] = enemyTiles;
-        tilemaps[3] = bulletTiles;
-        tilemaps[4] = itemTiles;
-        tilemaps[5] = inventoryPic;
-        tilemaps[6] = fxTiles;
 
         // Shader laden
         //System.out.println("INFO: GFX: Loading/compiling shaders...");
