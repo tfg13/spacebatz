@@ -11,7 +11,7 @@ public class STC_TRANSFER_CHUNK extends STCCommand {
 
     @Override
     public void execute(byte[] data) {
-        int[][] ground = GameClient.currentLevel.getGround();
+        int[][] ground = GameClient.currentLevel.ground;
         boolean[][] col = GameClient.currentLevel.getCollisionMap();
         byte[][] shadow = GameClient.currentLevel.shadow;
         int startX = Bits.getInt(data, 0) * 8;

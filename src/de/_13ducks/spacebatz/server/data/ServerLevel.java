@@ -74,15 +74,15 @@ public class ServerLevel extends Level {
      */
     public void destroyBlock(int x, int y) {
         // Material droppen
-        int material = destroyableBlockTypes.get(getGround()[x][y]).dropMaterial;
+        int material = destroyableBlockTypes.get(ground[x][y]).dropMaterial;
         if (material >= 0) {
             // Material mit angepasster Position (int -> double) droppen
-            DropManager.dropMaterial(destroyableBlockTypes.get(getGround()[x][y]).dropMaterial, 1);
+            DropManager.dropMaterial(destroyableBlockTypes.get(ground[x][y]).dropMaterial, 1);
         }
 
         STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, false);
-        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture);
-        getGround()[x][y] = destroyableBlockTypes.get(getGround()[x][y]).backgroundTexture;
+        STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, destroyableBlockTypes.get(ground[x][y]).backgroundTexture);
+        ground[x][y] = destroyableBlockTypes.get(ground[x][y]).backgroundTexture;
         getCollisionMap()[x][y] = false;
     }
 
@@ -94,7 +94,7 @@ public class ServerLevel extends Level {
      * @param texture die Textur des Blocks
      */
     public void createDestroyableBlock(int x, int y, int texture) {
-        getGround()[x][y] = texture;
+        ground[x][y] = texture;
         //getCollisionMap()[x][y] = true;
         STC_CHANGE_COLLISION.broadcastCollisionChange(x, y, true);
         STC_BROADCAST_GROUND_CHANGE.broadcastGroundChange(x, y, texture);
@@ -109,7 +109,7 @@ public class ServerLevel extends Level {
      */
     public boolean isBlockDestroyable(int x, int y) {
         if (0 < x && x < getSizeX() && 0 < y && y < getSizeY()) {
-            return destroyableBlockTypes.containsKey(getGround()[x][y]);
+            return destroyableBlockTypes.containsKey(ground[x][y]);
         } else {
             return false;
         }

@@ -238,11 +238,13 @@ public class GodControl implements Control {
         // Werte cachen
         panX = renderer.getCamera().getPanX();
         panY = renderer.getCamera().getPanY();
+        int[][] ground = GameClient.currentLevel.ground;
+        int[][] top = GameClient.currentLevel.top;
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
-                int tex = texAt(GameClient.currentLevel.getGround(), x, y);
-                int patRot = patternAt(GameClient.currentLevel.getGround(), x, y);
+                int tex = texAt(ground, x, y);
+                int patRot = patternAt(ground, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if (shadow != 127 || !shadowEnabled || smoothShadows) {
                     if (tex != 3 && (patRot >> 4) != 5) {
@@ -577,7 +579,7 @@ public class GodControl implements Control {
      */
     private int patternAt(int[][] ground, int x, int y) {
         int myTex = texAt(ground, x, y);
-        return patternRotationLookupTable[(myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y) ? 1 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y - 1) ? 2 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x, y - 1) ? 4 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y - 1) ? 8 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y) ? 16 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x - 1, y + 1) ? 32 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x, y + 1) ? 64 : 0) | (myTex == texAt(GameClient.currentLevel.getGround(), x + 1, y + 1) ? 128 : 0)];
+        return patternRotationLookupTable[(myTex == texAt(GameClient.currentLevel.ground, x + 1, y) ? 1 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x + 1, y - 1) ? 2 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x, y - 1) ? 4 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x - 1, y - 1) ? 8 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x - 1, y) ? 16 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x - 1, y + 1) ? 32 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x, y + 1) ? 64 : 0) | (myTex == texAt(GameClient.currentLevel.ground, x + 1, y + 1) ? 128 : 0)];
     }
 
     /**

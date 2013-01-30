@@ -214,7 +214,7 @@ public class AutoSynchronizer {
      * @return die transfer-Daten
      */
     private byte[] craftTransferChunkCommand(int x, int y) {
-        int[][] ground = Server.game.getLevel().getGround();
+        int[][] ground = Server.game.getLevel().ground;
         boolean[][] col = Server.game.getLevel().getCollisionMap();
         byte[][] shadow = Server.game.getLevel().shadow;
         byte[] data = new byte[8 * 8 * 4 + 8 + 8 + 8 * 8];

@@ -37,7 +37,7 @@ public class ShadowManager {
             ArrayList<Vector> updatedChunks = new ArrayList<>();
             for (Client c : Server.game.clients.values()) {
                 Player p = c.getPlayer();
-                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, Server.game.getLevel().shadow, Server.game.getLevel().getGround()));
+                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, Server.game.getLevel().shadow, Server.game.getLevel().ground));
             }
             for (Vector v : updatedChunks) {
                 STC_SHADOW_CHANGE.sendShadowChange(v);

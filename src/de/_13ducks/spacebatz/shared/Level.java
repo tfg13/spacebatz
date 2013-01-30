@@ -23,11 +23,23 @@ public class Level implements java.io.Serializable {
     /**
      * Die Bodentexturen. Indizes der Tiles
      */
-    private int[][] ground;
+    public int[][] ground;
+    /**
+     * Die Wandtexturen.
+     */
+    public int[][] top;
     /**
      * Die Beleuchtungsmap.
      */
     public byte[][] shadow;
+    /**
+     * Die Farbmap für den Boden.
+     */
+    public int[][] dye_ground;
+    /**
+     * Die Farbmap für die Wände.
+     */
+    public int[][] dye_top;
     /**
      * Kollisionskarte, true = kollision, false = frei
      */
@@ -49,16 +61,11 @@ public class Level implements java.io.Serializable {
         this.sizeX = xSize;
         this.sizeY = ySize;
         ground = new int[xSize][ySize];
+        top = new int[xSize][ySize];
+        dye_ground = new int[xSize][ySize];
+        dye_top = new int[xSize][ySize];
         collisionMap = new boolean[xSize][ySize];
         shadow = new byte[xSize][ySize];
-    }
-
-    public int[][] getGround() {
-        return ground;
-    }
-
-    public void setGround(int[][] ground) {
-        this.ground = ground;
     }
 
     /**

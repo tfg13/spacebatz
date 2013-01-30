@@ -27,7 +27,7 @@ public class InternalMap {
      */
     public ServerLevel toServerLevel() {
         ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, hash, quests);
-        level.setGround(groundTex);
+        level.ground = groundTex;
         for (int x = 0; x < groundTex.length; x++) {
             System.arraycopy(collision[x], 0, level.getCollisionMap()[x], 0, groundTex[0].length);
         }

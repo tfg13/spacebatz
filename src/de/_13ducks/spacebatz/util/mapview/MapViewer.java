@@ -61,7 +61,7 @@ public class MapViewer {
      * @param level
      */
     public MapViewer(Level level) {
-        ground = level.getGround();
+        ground = level.ground;
         metadata = new HashMap<>();
         startRendering();
     }

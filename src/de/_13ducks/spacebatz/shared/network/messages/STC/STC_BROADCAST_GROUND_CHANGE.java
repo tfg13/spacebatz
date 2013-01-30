@@ -25,7 +25,7 @@ public class STC_BROADCAST_GROUND_CHANGE extends FixedSizeSTCCommand {
         int x = Bits.getInt(data, 0);
         int y = Bits.getInt(data, 4);
         int newGround = Bits.getInt(data, 8);
-        GameClient.currentLevel.getGround()[x][y] = newGround;
+        GameClient.currentLevel.ground[x][y] = newGround;
     }
 
     /**
