@@ -8,15 +8,17 @@ package de._13ducks.spacebatz.util.mapgen.data;
 public class Theme {
     
     public final int ground;
-    public final int wall;
+    public final int belowWall;
     public final int spawn;
     public final int border;
+    public final int wall;
     
-    public Theme(int ground, int wall, int spawn, int border) {
+    public Theme(int ground, int belowWall, int spawn, int border, int wall) {
         this.ground = ground;
-        this.wall = wall;
+        this.belowWall = belowWall;
         this.spawn = spawn;
         this.border = border;
+        this.wall = wall;
     }
 
 }

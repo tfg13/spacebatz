@@ -1,4 +1,5 @@
 ground=E85533
-wall=CF570D
+belowWall=CF4525
 spawn=A2A2A2
 border=9A4100
+wall=A33B20

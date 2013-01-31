@@ -1,4 +1,5 @@
 ground=E1E1E1
-wall=CACACA
+belowWall=00FF00
 spawn=CA3D3D
 border=676767
+wall=AEAEAE

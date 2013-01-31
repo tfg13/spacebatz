@@ -21,6 +21,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import java.awt.Color;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.lwjgl.input.Keyboard;
@@ -74,7 +75,7 @@ public class GodControl implements Control {
     /**
      * Schalter für Shadow an oder aus.
      */
-    private boolean shadowEnabled = true;
+    private boolean shadowEnabled = false;
     /**
      * Schalter für HQ-Schatten (smooth)
      */
@@ -246,11 +247,14 @@ public class GodControl implements Control {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = texAt(ground, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                int dye = dyeAt(dye_ground, x, y);
                 if (shadow != 127 || !shadowEnabled || smoothShadows) {
-                    drawUncoloredTile(tex, x, y, 0);
+                    glColor3ub((byte) ((0x00FF0000 & dye) >>> 16), (byte) ((0x0000FF00 & dye) >>> 8), (byte) (0x000000FF & dye));
+                    drawColoredTile(tex, x + 0.5f, y + 0.5f, 0, dye, dyeAt(dye_ground, x, y + 1), dyeAt(dye_ground, x + 1, y), dyeAt(dye_ground, x + 1, y + 1));
                 }
             }
         }
+        glColor3f(1f, 1f, 1f);
         
         int[][] top = GameClient.currentLevel.top;
         int[][] dye_top = GameClient.currentLevel.dye_top;
@@ -475,6 +479,14 @@ public class GodControl implements Control {
             return layer[x][y];
         }
     }
+    
+    private static int dyeAt(int[][] layer, int x, int y) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
+            return Color.WHITE.getRGB();
+        } else {
+            return layer[x][y];
+        }
+    }
 
     /**
      * Sagt dem Server, das geschossen werden soll
@@ -564,24 +576,53 @@ public class GodControl implements Control {
     private void drawUncoloredTile(int tile, float x, float y, int numRot) {
         int tx = tile % 16;
         int ty = tile / 16;
-        float[][] screenCoords = new float[2][4]; // X, Y dann 4 Ecken
-        screenCoords[0][0] = tx * 0.0625f + 0.001953125f;
-        screenCoords[0][1] = tx * 0.0625f + 0.060546875f;
-        screenCoords[0][2] = tx * 0.0625f + 0.060546875f;
-        screenCoords[0][3] = tx * 0.0625f + 0.001953125f;
-        screenCoords[1][0] = ty * 0.0625f + 0.001953125f;
-        screenCoords[1][1] = ty * 0.0625f + 0.001953125f;
-        screenCoords[1][2] = ty * 0.0625f + 0.060546875f;
-        screenCoords[1][3] = ty * 0.0625f + 0.060546875f;
+        float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
+        tileCoords[0][0] = tx * 0.0625f + 0.001953125f;
+        tileCoords[0][1] = tx * 0.0625f + 0.060546875f;
+        tileCoords[0][2] = tx * 0.0625f + 0.060546875f;
+        tileCoords[0][3] = tx * 0.0625f + 0.001953125f;
+        tileCoords[1][0] = ty * 0.0625f + 0.001953125f;
+        tileCoords[1][1] = ty * 0.0625f + 0.001953125f;
+        tileCoords[1][2] = ty * 0.0625f + 0.060546875f;
+        tileCoords[1][3] = ty * 0.0625f + 0.060546875f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-        glTexCoord2f(screenCoords[0][(0 + numRot) % 4], screenCoords[1][(0 + numRot) % 4]); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+        glTexCoord2f(tileCoords[0][(0 + numRot) % 4], tileCoords[1][(0 + numRot) % 4]); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
         glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
         // Die weiteren 3 Ecken im Uhrzeigersinn:
-        glTexCoord2f(screenCoords[0][(1 + numRot) % 4], screenCoords[1][(1 + numRot) % 4]);
+        glTexCoord2f(tileCoords[0][(1 + numRot) % 4], tileCoords[1][(1 + numRot) % 4]);
         glVertex3f(x + 1 + panX, y + 1 + panY, 0);
-        glTexCoord2f(screenCoords[0][(2 + numRot) % 4], screenCoords[1][(2 + numRot) % 4]);
+        glTexCoord2f(tileCoords[0][(2 + numRot) % 4], tileCoords[1][(2 + numRot) % 4]);
         glVertex3f(x + 1 + panX, y + panY, 0);
-        glTexCoord2f(screenCoords[0][(3 + numRot) % 4], screenCoords[1][(3 + numRot) % 4]);
+        glTexCoord2f(tileCoords[0][(3 + numRot) % 4], tileCoords[1][(3 + numRot) % 4]);
+        glVertex3f(x + panX, y + panY, 0);
+        glEnd(); // Zeichnen des QUADs fertig
+    }
+    
+    private void drawColoredTile(int tile, float x, float y, int numRot, int colLU, int colLO, int colRU, int colRO) {
+        int tx = tile % 16;
+        int ty = tile / 16;
+        float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
+        tileCoords[0][0] = tx * 0.0625f + 0.001953125f;
+        tileCoords[0][1] = tx * 0.0625f + 0.060546875f;
+        tileCoords[0][2] = tx * 0.0625f + 0.060546875f;
+        tileCoords[0][3] = tx * 0.0625f + 0.001953125f;
+        tileCoords[1][0] = ty * 0.0625f + 0.001953125f;
+        tileCoords[1][1] = ty * 0.0625f + 0.001953125f;
+        tileCoords[1][2] = ty * 0.0625f + 0.060546875f;
+        tileCoords[1][3] = ty * 0.0625f + 0.060546875f;
+        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+        glTexCoord2f(tileCoords[0][(0 + numRot) % 4], tileCoords[1][(0 + numRot) % 4]); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+        glColor3ub((byte) ((0x00FF0000 & colLO) >>> 16), (byte) ((0x0000FF00 & colLO) >>> 8), (byte) (0x000000FF & colLO));
+        glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+        // Die weiteren 3 Ecken im Uhrzeigersinn:
+        glTexCoord2f(tileCoords[0][(1 + numRot) % 4], tileCoords[1][(1 + numRot) % 4]);
+        glColor3ub((byte) ((0x00FF0000 & colRO) >>> 16), (byte) ((0x0000FF00 & colRO) >>> 8), (byte) (0x000000FF & colRO));
+        glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+        glTexCoord2f(tileCoords[0][(2 + numRot) % 4], tileCoords[1][(2 + numRot) % 4]);
+        glColor3ub((byte) ((0x00FF0000 & colRU) >>> 16), (byte) ((0x0000FF00 & colRU) >>> 8), (byte) (0x000000FF & colRU));
+        glVertex3f(x + 1 + panX, y + panY, 0);
+        glTexCoord2f(tileCoords[0][(3 + numRot) % 4], tileCoords[1][(3 + numRot) % 4]);
+        glColor3ub((byte) ((0x00FF0000 & colLU) >>> 16), (byte) ((0x0000FF00 & colLU) >>> 8), (byte) (0x000000FF & colLU));
         glVertex3f(x + panX, y + panY, 0);
         glEnd(); // Zeichnen des QUADs fertig
     }

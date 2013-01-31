@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import de._13ducks.spacebatz.util.mapgen.data.Theme;
 import de._13ducks.spacebatz.util.mapgen.data.Vector;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -60,6 +61,7 @@ public class Rasterizer extends Module {
         if (theme == null) {
             throw new RuntimeException("ERROR: Theme " + parameters.get("theme") + " not found!");
         }
+        int white = Color.WHITE.getRGB();
         double scaleX = 1.0 / sizeX;
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
@@ -79,20 +81,22 @@ public class Rasterizer extends Module {
                 // Hier kommen wir nur hin, wenn der Polygon gefunden wurde
                 // Boden erstmal immer gleich setzen:
                 map.groundTex[x][y] = 1;
+                // Färbung immer gleich setzen:
+                map.dye_ground[x][y] = theme.ground;
                 if (poly.border) {
                     map.topTex[x][y] = 1;
+                    map.dye_ground[x][y] = theme.border;
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
+                    map.dye_ground[x][y] = theme.belowWall;
+                    map.collision[x][y] = true;
                     if (poly.resource == 1) {
                         map.topTex[x][y] = 4;
                     } else {
                         map.topTex[x][y] = 2;
                     }
-                    map.collision[x][y] = true;
                 } else {
-                    if (poly.spawn) {
-                        map.groundTex[x][y] = 2;
-                    } else if (poly.texture != 0) {
+                    if (poly.texture != 0) {
                         // Angeforderte Textur setzen
                         map.groundTex[x][y] = poly.texture;
                     }
@@ -122,10 +126,10 @@ public class Rasterizer extends Module {
         }
         Vector spawn = spawnPoly.calcCenter();
         map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
-        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = 5;
-        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = 5;
-        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = 5;
-        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = 5;
+        map.dye_ground[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = theme.spawn;
+        map.dye_ground[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = theme.spawn;
+        map.dye_ground[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = theme.spawn;
+        map.dye_ground[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = theme.spawn;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
@@ -143,26 +147,29 @@ public class Rasterizer extends Module {
         File[] themeFiles = themeFolder.listFiles();
         OUTER:
         for (File themeFile : themeFiles) {
-            int ground = 0, wall = 0, spawn = 0, border = 0;
+            int ground = 0, belowWall = 0, spawn = 0, border = 0, wall = 0;
             // Versuche es zu parsen
             try {
                 try (BufferedReader reader = new BufferedReader(new FileReader(themeFile))) {
                    String line;
                    while ((line = reader.readLine()) != null) {
                        String[] lineSplit = line.split("=");
-                       int val = Integer.parseInt(lineSplit[1], 16) << 8;
+                       int val = Integer.parseInt(lineSplit[1], 16);
                        switch (lineSplit[0]) {
                            case "ground":
                                ground = val;
                                break;
-                           case "wall":
-                               wall = val;
+                           case "belowWall":
+                               belowWall = val;
                                break;
                            case "spawn":
                                spawn = val;
                                break;
                            case "border":
                                border = val;
+                               break;
+                           case "wall":
+                               wall = val;
                                break;
                            default:
                                System.out.println("Error parsing theme " + themeFile.getName());
@@ -173,7 +180,7 @@ public class Rasterizer extends Module {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            themes.put(themeFile.getName(), new Theme(ground, wall, spawn, border));
+            themes.put(themeFile.getName(), new Theme(ground, belowWall, spawn, border, wall));
         }
     }
 }

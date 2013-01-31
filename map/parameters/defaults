@@ -12,6 +12,6 @@ examplequest 0
 rasterizer 3
  sizex 128
  sizey 128
- theme mars
+ theme moon
 prelight 1
  type underground
