@@ -52,7 +52,7 @@ public class MapParameters {
     public MapParameters() {
         modules = ModuleLoader.loadModules();
         try {
-            try (BufferedReader reader = new BufferedReader(new FileReader("map/defaults"))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("map/parameters/defaults"))) {
                 // Einstellungen auslesen
                 String line;
                 while ((line = reader.readLine()) != null) {

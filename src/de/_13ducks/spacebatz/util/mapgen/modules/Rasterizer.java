@@ -3,7 +3,13 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.mapgen.data.Theme;
 import de._13ducks.spacebatz.util.mapgen.data.Vector;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -12,6 +18,12 @@ import java.util.HashMap;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Rasterizer extends Module {
+
+    private HashMap<String, Theme> themes;
+
+    public Rasterizer() {
+        readThemes();
+    }
 
     @Override
     public String getName() {
@@ -44,6 +56,10 @@ public class Rasterizer extends Module {
         // Parameter lesen
         int sizeX = Integer.parseInt(parameters.get("sizex"));
         int sizeY = Integer.parseInt(parameters.get("sizey"));
+        Theme theme = themes.get(parameters.get("theme"));
+        if (theme == null) {
+            throw new RuntimeException("ERROR: Theme " + parameters.get("theme") + " not found!");
+        }
         double scaleX = 1.0 / sizeX;
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
@@ -114,5 +130,50 @@ public class Rasterizer extends Module {
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = false;
+    }
+
+    /**
+     * Liest alle Themes aus map/themes/ ein.
+     *
+     * @return eine Liste mit allen geladenen Themes.
+     */
+    private void readThemes() {
+        themes = new HashMap<>();
+        File themeFolder = new File("map/themes");
+        File[] themeFiles = themeFolder.listFiles();
+        OUTER:
+        for (File themeFile : themeFiles) {
+            int ground = 0, wall = 0, spawn = 0, border = 0;
+            // Versuche es zu parsen
+            try {
+                try (BufferedReader reader = new BufferedReader(new FileReader(themeFile))) {
+                   String line;
+                   while ((line = reader.readLine()) != null) {
+                       String[] lineSplit = line.split("=");
+                       int val = Integer.parseInt(lineSplit[1], 16) << 8;
+                       switch (lineSplit[0]) {
+                           case "ground":
+                               ground = val;
+                               break;
+                           case "wall":
+                               wall = val;
+                               break;
+                           case "spawn":
+                               spawn = val;
+                               break;
+                           case "border":
+                               border = val;
+                               break;
+                           default:
+                               System.out.println("Error parsing theme " + themeFile.getName());
+                               continue OUTER;
+                       }
+                   }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            themes.put(themeFile.getName(), new Theme(ground, wall, spawn, border));
+        }
     }
 }

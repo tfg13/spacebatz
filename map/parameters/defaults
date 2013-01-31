@@ -9,8 +9,9 @@ perlinterrain 2
 resourceplacer 0
 spawn 0
 examplequest 0
-rasterizer 2
+rasterizer 3
  sizex 128
  sizey 128
+ theme mars
 prelight 1
  type underground
