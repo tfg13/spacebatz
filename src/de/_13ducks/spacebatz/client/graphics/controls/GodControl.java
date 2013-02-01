@@ -247,10 +247,10 @@ public class GodControl implements Control {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = texAt(ground, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                int dye = dyeAt(dye_ground, x, y);
+                int dye = dyeAt(dye_ground, x, y, Color.WHITE.getRGB());
                 if (shadow != 127 || !shadowEnabled || smoothShadows) {
                     glColor3ub((byte) ((0x00FF0000 & dye) >>> 16), (byte) ((0x0000FF00 & dye) >>> 8), (byte) (0x000000FF & dye));
-                    drawColoredTile(tex, x + 0.5f, y + 0.5f, 0, dye, dyeAt(dye_ground, x, y + 1), dyeAt(dye_ground, x + 1, y), dyeAt(dye_ground, x + 1, y + 1));
+                    drawColoredTile(tex, x + 0.5f, y + 0.5f, 0, dye, dyeAt(dye_ground, x, y + 1, Color.WHITE.getRGB()), dyeAt(dye_ground, x + 1, y, Color.WHITE.getRGB()), dyeAt(dye_ground, x + 1, y + 1, Color.WHITE.getRGB()));
                 }
             }
         }
@@ -264,6 +264,7 @@ public class GodControl implements Control {
                 int tex = texAt(top, x, y);
                 int patRot = patternAt(top, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                int dye = dyeAt(dye_top, x, y, Color.GRAY.getRGB());
                 if ((shadow != 127 || !shadowEnabled || smoothShadows) && tex != 0) {
                     if ((patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
@@ -282,12 +283,14 @@ public class GodControl implements Control {
                         glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
                         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                         // Jetzt Wand malen:
+                        glColor3ub((byte) ((0x00FF0000 & dye) >>> 16), (byte) ((0x0000FF00 & dye) >>> 8), (byte) (0x000000FF & dye));
                         drawUncoloredTile(tex, x, y, 0);
                         // Fertig, Stencil abschalten:
                         glDisable(GL_STENCIL_TEST);
                         // Zweite Maske drüber, für schönes Aussehen
                         drawUncoloredTile(225 + (patRot >> 4), x, y, rot);
                     } else {
+                        glColor3ub((byte) ((0x00FF0000 & dye) >>> 16), (byte) ((0x0000FF00 & dye) >>> 8), (byte) (0x000000FF & dye));
                         drawUncoloredTile(tex, x, y, 0);
                     }
                 }
@@ -480,9 +483,9 @@ public class GodControl implements Control {
         }
     }
     
-    private static int dyeAt(int[][] layer, int x, int y) {
+    private static int dyeAt(int[][] layer, int x, int y, int errorColor) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
-            return Color.WHITE.getRGB();
+            return errorColor;
         } else {
             return layer[x][y];
         }

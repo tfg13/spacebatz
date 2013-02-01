@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -86,11 +85,14 @@ public class Rasterizer extends Module {
                 if (poly.border) {
                     map.topTex[x][y] = 1;
                     map.dye_ground[x][y] = theme.border;
+                    map.dye_top[x][y] = theme.wall;
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
                     map.dye_ground[x][y] = theme.belowWall;
+                    map.dye_top[x][y] = theme.wall;
                     map.collision[x][y] = true;
                     if (poly.resource == 1) {
+                        map.dye_top[x][y] = white;
                         map.topTex[x][y] = 4;
                     } else {
                         map.topTex[x][y] = 2;
