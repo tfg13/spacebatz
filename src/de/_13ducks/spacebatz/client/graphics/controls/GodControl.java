@@ -250,7 +250,7 @@ public class GodControl implements Control {
                 int tex = texAt(ground, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 int dye = dyeAt(dye_ground, x, y, Color.WHITE.getRGB());
-                if (shadow != 127 || shadowLevel != 1) {
+                if ((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) {
                     glColor3ub((byte) ((0x00FF0000 & dye) >>> 16), (byte) ((0x0000FF00 & dye) >>> 8), (byte) (0x000000FF & dye));
                     drawColoredTile(tex, x + 0.5f, y + 0.5f, 0, dye, dyeAt(dye_ground, x, y + 1, Color.WHITE.getRGB()), dyeAt(dye_ground, x + 1, y, Color.WHITE.getRGB()), dyeAt(dye_ground, x + 1, y + 1, Color.WHITE.getRGB()));
                 }
@@ -258,6 +258,7 @@ public class GodControl implements Control {
         }
         glColor3f(1f, 1f, 1f);
 
+        // Top rendern
         int[][] top = GameClient.currentLevel.top;
         int[][] dye_top = GameClient.currentLevel.dye_top;
         topTiles.bind(); // groundTiles-Textur wird jetzt verwendet
@@ -267,7 +268,7 @@ public class GodControl implements Control {
                 int patRot = patternAt(top, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 int dye = dyeAt(dye_top, x, y, Color.GRAY.getRGB());
-                if ((shadow != 127 || shadowLevel != 1) && tex != 0) {
+                if (((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) && tex != 0) {
                     if ((patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
                         // Bild im Stencil-Buffer erzeugen:
@@ -694,6 +695,10 @@ public class GodControl implements Control {
     private int patternAt(int[][] tex, int x, int y) {
         int myTex = texAt(tex, x, y);
         return patternRotationLookupTable[(myTex == texAt(tex, x + 1, y) ? 1 : 0) | (myTex == texAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == texAt(tex, x, y - 1) ? 4 : 0) | (myTex == texAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == texAt(tex, x - 1, y) ? 16 : 0) | (myTex == texAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == texAt(tex, x, y + 1) ? 64 : 0) | (myTex == texAt(tex, x + 1, y + 1) ? 128 : 0)];
+    }
+    
+    private boolean surroundingDark(byte[][] shadowMap, int x, int y) {
+        return (shadowAt(shadowMap, x, y) == 127 && shadowAt(shadowMap, x - 1, y - 1) == 127 && shadowAt(shadowMap, x, y - 1) == 127 && shadowAt(shadowMap, x + 1, y - 1) == 127 && shadowAt(shadowMap, x - 1, y) == 127 && shadowAt(shadowMap, x + 1, y) == 127 && shadowAt(shadowMap, x - 1, y + 1) == 127 && shadowAt(shadowMap, x, y + 1) == 127 && shadowAt(shadowMap, x + 1, y + 1) == 127);
     }
 
     /**
