@@ -376,7 +376,7 @@ public class GodControl implements Control {
                         int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                         if (shadow != lastShadow) {
                             glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
-                        lastShadow = shadow;
+                            lastShadow = shadow;
                         }
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
@@ -387,16 +387,8 @@ public class GodControl implements Control {
                     }
                 }
                 glEnable(GL_TEXTURE_2D);
-            } else if (shadowLevel >= 2) {
+            } else if (shadowLevel == 2) {
                 byte[][] shadowMap = GameClient.currentLevel.shadow;
-                if (shadowLevel == 3) {
-                    // Shader aktivieren
-                    ARBShaderObjects.glUseProgramObjectARB(shader[0]);
-                    int pixelPerSprite = ARBShaderObjects.glGetUniformLocationARB(shader[0], "pixelPerSprite");
-                    ARBShaderObjects.glUniform1fARB(pixelPerSprite, Settings.CLIENT_GFX_RES_Y / 34f);
-                }
-                float xFact = 1f / (Settings.CLIENT_GFX_RES_X / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_X;
-                float yFact = 1f / (Settings.CLIENT_GFX_RES_Y / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_Y;
                 // Neue smooth-Schatten:
                 glDisable(GL_TEXTURE_2D);
                 for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
@@ -405,21 +397,66 @@ public class GodControl implements Control {
                         // 4 Schattenpunkte
                         float lo, lu, ro, ru;
                         // Default-Schatten
-                        lo = (shadowAt(shadowMap, x - 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x - 1, y) + shadow) / 4f;
-                        lu = (shadowAt(shadowMap, x - 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x - 1, y) + shadow) / 4f;
-                        ro = (shadowAt(shadowMap, x + 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x + 1, y) + shadow) / 4f;
-                        ru = (shadowAt(shadowMap, x + 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x + 1, y) + shadow) / 4f;
-                        lo *= 0.0078740157f;
-                        lu *= 0.0078740157f;
-                        ro *= 0.0078740157f;
-                        ru *= 0.0078740157f;
-                        if (shadowLevel == 3) {
-                            int loAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLO");
-                            int luAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLU");
-                            int roAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowRO");
-                            int ruAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowRU");
-                            int bxAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "bx");
-                            int byAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "by");
+                        lo = (shadowAt(shadowMap, x - 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x - 1, y) + shadow) * 0.0019685039f;
+                        lu = (shadowAt(shadowMap, x - 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x - 1, y) + shadow) * 0.0019685039f;
+                        ro = (shadowAt(shadowMap, x + 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x + 1, y) + shadow) * 0.0019685039f;
+                        ru = (shadowAt(shadowMap, x + 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x + 1, y) + shadow) * 0.0019685039f;
+                        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                        glColor4f(0f, 0f, 0f, lo);
+                        glVertex3f(x + panX, y + 1 + panY, 0);
+                        glColor4f(0f, 0f, 0f, ro);
+                        glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+                        glColor4f(0f, 0f, 0f, ru);
+                        glVertex3f(x + 1 + panX, y + panY, 0);
+                        glColor4f(0f, 0f, 0f, lu);
+                        glVertex3f(x + panX, y + panY, 0);
+                        glEnd();
+                    }
+                }
+            } else if (shadowLevel == 3) {
+                glDisable(GL_TEXTURE_2D);
+                glColor4f(0f, 0f, 0f, 1f);
+                boolean shaderActive = false;
+                // Werte precachen:
+                float xFact = 1f / (Settings.CLIENT_GFX_RES_X / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_X;
+                float yFact = 1f / (Settings.CLIENT_GFX_RES_Y / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_Y;
+                int pixelPerSpriteAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "pixelPerSprite");
+                int loAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLO");
+                int luAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLU");
+                int roAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowRO");
+                int ruAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowRU");
+                int bxAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "bx");
+                int byAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "by");
+                ARBShaderObjects.glUseProgramObjectARB(shader[0]);
+                // Shader vorkonfigurieren
+                ARBShaderObjects.glUniform1fARB(pixelPerSpriteAdr, Settings.CLIENT_GFX_RES_Y / 34f);
+                ARBShaderObjects.glUseProgramObjectARB(0);
+                byte[][] shadowMap = GameClient.currentLevel.shadow;
+                // Renderloop
+                for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
+                    for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                        int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
+                        // Schatten an 4 Punkten ausrechnen
+                        float lo, lu, ro, ru;
+                        lo = (shadowAt(shadowMap, x - 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x - 1, y) + shadow) * 0.0019685039f;
+                        lu = (shadowAt(shadowMap, x - 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x - 1, y) + shadow) * 0.0019685039f;
+                        ro = (shadowAt(shadowMap, x + 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x + 1, y) + shadow) * 0.0019685039f;
+                        ru = (shadowAt(shadowMap, x + 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x + 1, y) + shadow) * 0.0019685039f;
+                        // Schatten überall gleich?
+                        if (lo == lu && lu == ro && ro == ru) {
+                            // Lässt sich ohne Shader machen:
+                            if (shaderActive) {
+                                ARBShaderObjects.glUseProgramObjectARB(0);
+                                shaderActive = false;
+                            }
+                            glColor4f(0f, 0f, 0f, lu);
+                        } else {
+                            // Muss mit Shader gezeichnet werden:
+                            if (!shaderActive) {
+                                ARBShaderObjects.glUseProgramObjectARB(shader[0]);
+                                shaderActive = true;
+                            }
+                            // Shader konfigurieren
                             ARBShaderObjects.glUniform1fARB(loAdr, lo);
                             ARBShaderObjects.glUniform1fARB(luAdr, lu);
                             ARBShaderObjects.glUniform1fARB(roAdr, ro);
@@ -427,23 +464,16 @@ public class GodControl implements Control {
                             ARBShaderObjects.glUniform1fARB(bxAdr, (x + panX) * xFact);
                             ARBShaderObjects.glUniform1fARB(byAdr, (y + panY) * yFact);
                         }
-                        // Jetzt zeichnen
-                        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-                        glColor4f(0f, 0f, 0f, lo);
-                        glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-                        glColor4f(0f, 0f, 0f, ro);
+                        glBegin(GL_QUADS);
+                        glVertex3f(x + panX, y + 1 + panY, 0);
                         glVertex3f(x + 1 + panX, y + 1 + panY, 0);
-                        glColor4f(0f, 0f, 0f, ru);
                         glVertex3f(x + 1 + panX, y + panY, 0);
-                        glColor4f(0f, 0f, 0f, lu);
                         glVertex3f(x + panX, y + panY, 0);
-                        glEnd(); // Zeichnen des QUADs fertig
+                        glEnd();
                     }
                 }
-                if (shadowLevel == 3) {
-                    // Shader abschalten
-                    ARBShaderObjects.glUseProgramObjectARB(0);
-                }
+                // Shader abschalten
+                ARBShaderObjects.glUseProgramObjectARB(0);
                 glEnable(GL_TEXTURE_2D);
             }
         }
