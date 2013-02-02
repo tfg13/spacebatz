@@ -13,6 +13,7 @@ import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
@@ -26,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
@@ -73,13 +75,13 @@ public class GodControl implements Control {
      */
     private int[] shader;
     /**
-     * Schalter für Shadow an oder aus.
+     * Schatten-Einstellung.
+     * 0 - Aus
+     * 1 - Blöcke
+     * 2 - Smooth
+     * 3 - Shader (best)
      */
-    private boolean shadowEnabled = false;
-    /**
-     * Schalter für HQ-Schatten (smooth)
-     */
-    private boolean smoothShadows = true;
+    private int shadowLevel = 3;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -129,8 +131,8 @@ public class GodControl implements Control {
         fxTiles = renderer.getTextureByName("fx.png");
 
         // Shader laden
-        //System.out.println("INFO: GFX: Loading/compiling shaders...");
-        //shader = ShaderLoader.load();
+        System.out.println("INFO: GFX: Loading/compiling shaders...");
+        shader = ShaderLoader.load();
     }
 
     /**
@@ -248,14 +250,14 @@ public class GodControl implements Control {
                 int tex = texAt(ground, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 int dye = dyeAt(dye_ground, x, y, Color.WHITE.getRGB());
-                if (shadow != 127 || !shadowEnabled || smoothShadows) {
+                if (shadow != 127 || shadowLevel != 1) {
                     glColor3ub((byte) ((0x00FF0000 & dye) >>> 16), (byte) ((0x0000FF00 & dye) >>> 8), (byte) (0x000000FF & dye));
                     drawColoredTile(tex, x + 0.5f, y + 0.5f, 0, dye, dyeAt(dye_ground, x, y + 1, Color.WHITE.getRGB()), dyeAt(dye_ground, x + 1, y, Color.WHITE.getRGB()), dyeAt(dye_ground, x + 1, y + 1, Color.WHITE.getRGB()));
                 }
             }
         }
         glColor3f(1f, 1f, 1f);
-        
+
         int[][] top = GameClient.currentLevel.top;
         int[][] dye_top = GameClient.currentLevel.dye_top;
         topTiles.bind(); // groundTiles-Textur wird jetzt verwendet
@@ -265,7 +267,7 @@ public class GodControl implements Control {
                 int patRot = patternAt(top, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 int dye = dyeAt(dye_top, x, y, Color.GRAY.getRGB());
-                if ((shadow != 127 || !shadowEnabled || smoothShadows) && tex != 0) {
+                if ((shadow != 127 || shadowLevel != 1) && tex != 0) {
                     if ((patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
                         // Bild im Stencil-Buffer erzeugen:
@@ -297,7 +299,7 @@ public class GodControl implements Control {
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
-        
+
 
         // Enemies zeichnen:
         enemyTiles.bind();
@@ -365,8 +367,8 @@ public class GodControl implements Control {
         }
 
         // Shadow zeichnen:
-        if (shadowEnabled) {
-            if (!smoothShadows) {
+        if (shadowLevel > 0) {
+            if (shadowLevel == 1) {
                 int lastShadow = -1;
                 glDisable(GL_TEXTURE_2D);
                 for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
@@ -374,7 +376,7 @@ public class GodControl implements Control {
                         int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                         if (shadow != lastShadow) {
                             glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
-                            lastShadow = shadow;
+                        lastShadow = shadow;
                         }
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
@@ -385,8 +387,16 @@ public class GodControl implements Control {
                     }
                 }
                 glEnable(GL_TEXTURE_2D);
-            } else {
+            } else if (shadowLevel >= 2) {
                 byte[][] shadowMap = GameClient.currentLevel.shadow;
+                if (shadowLevel == 3) {
+                    // Shader aktivieren
+                    ARBShaderObjects.glUseProgramObjectARB(shader[0]);
+                    int pixelPerSprite = ARBShaderObjects.glGetUniformLocationARB(shader[0], "pixelPerSprite");
+                    ARBShaderObjects.glUniform1fARB(pixelPerSprite, Settings.CLIENT_GFX_RES_Y / 34f);
+                }
+                float xFact = 1f / (Settings.CLIENT_GFX_RES_X / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_X;
+                float yFact = 1f / (Settings.CLIENT_GFX_RES_Y / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_Y;
                 // Neue smooth-Schatten:
                 glDisable(GL_TEXTURE_2D);
                 for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
@@ -403,6 +413,20 @@ public class GodControl implements Control {
                         lu *= 0.0078740157f;
                         ro *= 0.0078740157f;
                         ru *= 0.0078740157f;
+                        if (shadowLevel == 3) {
+                            int loAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLO");
+                            int luAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLU");
+                            int roAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowRO");
+                            int ruAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowRU");
+                            int bxAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "bx");
+                            int byAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "by");
+                            ARBShaderObjects.glUniform1fARB(loAdr, lo);
+                            ARBShaderObjects.glUniform1fARB(luAdr, lu);
+                            ARBShaderObjects.glUniform1fARB(roAdr, ro);
+                            ARBShaderObjects.glUniform1fARB(ruAdr, ru);
+                            ARBShaderObjects.glUniform1fARB(bxAdr, (x + panX) * xFact);
+                            ARBShaderObjects.glUniform1fARB(byAdr, (y + panY) * yFact);
+                        }
                         // Jetzt zeichnen
                         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                         glColor4f(0f, 0f, 0f, lo);
@@ -415,6 +439,10 @@ public class GodControl implements Control {
                         glVertex3f(x + panX, y + panY, 0);
                         glEnd(); // Zeichnen des QUADs fertig
                     }
+                }
+                if (shadowLevel == 3) {
+                    // Shader abschalten
+                    ARBShaderObjects.glUseProgramObjectARB(0);
                 }
                 glEnable(GL_TEXTURE_2D);
             }
@@ -482,7 +510,7 @@ public class GodControl implements Control {
             return layer[x][y];
         }
     }
-    
+
     private static int dyeAt(int[][] layer, int x, int y, int errorColor) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
             return errorColor;
@@ -600,7 +628,7 @@ public class GodControl implements Control {
         glVertex3f(x + panX, y + panY, 0);
         glEnd(); // Zeichnen des QUADs fertig
     }
-    
+
     private void drawColoredTile(int tile, float x, float y, int numRot, int colLU, int colLO, int colRU, int colRO) {
         int tx = tile % 16;
         int ty = tile / 16;
@@ -639,30 +667,16 @@ public class GodControl implements Control {
     }
 
     /**
-     * @return the shadowEnabled
+     * @return the shadowLevel
      */
-    public boolean isShadowEnabled() {
-        return shadowEnabled;
+    public int getShadowLevel() {
+        return shadowLevel;
     }
 
     /**
-     * @param shadowEnabled the shadowEnabled to set
+     * @param shadowLevel the shadowLevel to set
      */
-    public void setShadowEnabled(boolean shadowEnabled) {
-        this.shadowEnabled = shadowEnabled;
-    }
-
-    /**
-     * @return the smoothShadows
-     */
-    public boolean isShadowSmoothing() {
-        return smoothShadows;
-    }
-
-    /**
-     * @param smoothShadows the smoothShadows to set
-     */
-    public void setShadowSmoothing(boolean smoothShadows) {
-        this.smoothShadows = smoothShadows;
+    public void setShadowLevel(int shadowLevel) {
+        this.shadowLevel = shadowLevel;
     }
 }

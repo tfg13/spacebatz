@@ -203,20 +203,21 @@ public class ClientTerminal {
                         case "shadow":
                             if (words.length == 2) {
                                 switch (words[1]) {
-                                    case "smooth":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(true);
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowSmoothing(true);
+                                    case "off":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(0);
                                         break OUTER;
                                     case "block":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(true);
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowSmoothing(false);
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(1);
                                         break OUTER;
-                                    case "off":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowEnabled(false);
+                                    case "smooth":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(2);
+                                        break OUTER;
+                                    case "shader":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(3);
                                         break OUTER;
                                 }
                             }
-                            outln("usage: shadow smooth|block|off");
+                            outln("usage: shadow off|block|smooth|shader");
                             break;
                     case "about":
                         outln("spacebatz aurora");
