@@ -325,6 +325,6 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     @Override
     public void tick(int gametick) {
         super.tick(gametick);
-        behaviour.tick(gametick);
+        behaviour = behaviour.tick(gametick);
     }
 }

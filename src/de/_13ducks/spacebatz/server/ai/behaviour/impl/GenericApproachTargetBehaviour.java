@@ -12,12 +12,12 @@ import de._13ducks.spacebatz.server.data.entities.Player;
  *
  * @author michael
  */
-public abstract class GenericFollowOnPathBehaviour extends Behaviour {
+public abstract class GenericApproachTargetBehaviour extends Behaviour {
 
     /**
      * The maximal age of the path in gameticks before it is recalculated.
      */
-    private int maxPathAge;
+    private int maxPathAge = 300;
     private Player target;
     /**
      * The time of creation of the path we are currently following.
@@ -25,9 +25,8 @@ public abstract class GenericFollowOnPathBehaviour extends Behaviour {
      */
     private int pathCreationTime = -1;
 
-    public GenericFollowOnPathBehaviour(Enemy enemy, Player target, int maxPathAge) {
+    public GenericApproachTargetBehaviour(Enemy enemy, Player target) {
         super(enemy);
-        this.maxPathAge = maxPathAge;
         this.target = target;
     }
 
@@ -35,7 +34,7 @@ public abstract class GenericFollowOnPathBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
             return targetInSight(owner, target);
-        } else if ((Server.game.getTick() - pathCreationTime) > maxPathAge) {
+        } else if ((Server.game.getTick() - pathCreationTime) > getMaxPathAge()) {
             Server.game.pathfinder.requestPath(new PrecisePosition(owner.getX(), owner.getY()), new PrecisePosition(target.getX(), target.getY()), owner, owner.getSize());
             return this;
         } else {
@@ -48,6 +47,21 @@ public abstract class GenericFollowOnPathBehaviour extends Behaviour {
     @Override
     public Behaviour pathComputed(PrecisePosition[] path) {
         owner.followPath(path);
+        pathCreationTime = Server.game.getTick();
         return this;
+    }
+
+    /**
+     * @return the maxPathAge
+     */
+    public int getMaxPathAge() {
+        return maxPathAge;
+    }
+
+    /**
+     * @param maxPathAge the maxPathAge to set
+     */
+    public void setMaxPathAge(int maxPathAge) {
+        this.maxPathAge = maxPathAge;
     }
 }
