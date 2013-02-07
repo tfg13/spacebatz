@@ -6,8 +6,6 @@ import de._13ducks.spacebatz.client.graphics.controls.HudControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;
 import de._13ducks.spacebatz.client.graphics.controls.QuestControl;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
-import de._13ducks.spacebatz.client.sound.Sound;
-import de._13ducks.spacebatz.client.sound.SoundEngine;
 import java.lang.reflect.Field;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
