@@ -16,15 +16,10 @@ import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.cleverenemy.CleverEnemyBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.follower.FollowerLurkBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.OldShooterBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
-import de._13ducks.spacebatz.shared.EnemyTypeStats.BehaviourType;
 import java.util.*;
 
 /**
@@ -265,9 +260,11 @@ public class EnemySpawner {
             waveSpawnRemaining--;
             double[] pos = calcPosition(player);
             if (pos != null) {
+                // Einen zufälligen Gegner aus der EnemytypeList wählen:
                 int enemytype = random.nextInt(Server.game.enemytypes.getEnemytypelist().size());
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                 EnemyTypeStats stats = Server.game.enemytypes.getEnemytypelist().get(enemytype);
+                // AI-Verhalten einrichten:
                 switch (stats.getBehaviour()) {
                     case SHOOTER:
                         enem.setBehaviour(new ShooterLurkBehaviour(enem));
@@ -276,6 +273,7 @@ public class EnemySpawner {
                         enem.setBehaviour(new SpectatorLurkBehaviour(enem));
                         break;
                 }
+                // GGF Ability setzen:
                 switch (stats.getShootAbility()) {
                     case FIREBULLET:
                         // @TODO: Die Werte, mit denen die Firebulletability initialisiert wird in den Enemytypestats abspeichern.
@@ -284,8 +282,6 @@ public class EnemySpawner {
                         enem.getShootAbility().setCooldown(100);
                         break;
                 }
-
-
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
         }
