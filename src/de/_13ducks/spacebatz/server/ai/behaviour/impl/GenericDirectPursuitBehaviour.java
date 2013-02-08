@@ -10,12 +10,12 @@ import de._13ducks.spacebatz.util.Distance;
  *
  * @author michael
  */
-public abstract class GenericFrontalAttackBehaviour extends Behaviour {
+public abstract class GenericDirectPursuitBehaviour extends Behaviour {
 
     private Player target;
     private double desiredDisntance;
 
-    public GenericFrontalAttackBehaviour(Enemy owner, Player target, int desiredDistance) {
+    public GenericDirectPursuitBehaviour(Enemy owner, Player target, int desiredDistance) {
         super(owner);
         this.target = target;
         this.desiredDisntance = desiredDistance;

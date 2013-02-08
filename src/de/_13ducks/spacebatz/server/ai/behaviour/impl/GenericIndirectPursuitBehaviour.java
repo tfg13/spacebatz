@@ -12,7 +12,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
  *
  * @author michael
  */
-public abstract class GenericApproachTargetBehaviour extends Behaviour {
+public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
 
     /**
      * The maximal age of the path in gameticks before it is recalculated.
@@ -25,7 +25,7 @@ public abstract class GenericApproachTargetBehaviour extends Behaviour {
      */
     private int pathCreationTime = -1;
 
-    public GenericApproachTargetBehaviour(Enemy enemy, Player target) {
+    public GenericIndirectPursuitBehaviour(Enemy enemy, Player target) {
         super(enemy);
         this.target = target;
     }

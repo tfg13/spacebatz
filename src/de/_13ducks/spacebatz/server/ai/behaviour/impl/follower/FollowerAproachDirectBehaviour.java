@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.follower;
 
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericFrontalAttackBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericDirectPursuitBehaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 
@@ -9,7 +9,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
  *
  * @author michael
  */
-public class FollowerAproachDirectBehaviour extends GenericFrontalAttackBehaviour {
+public class FollowerAproachDirectBehaviour extends GenericDirectPursuitBehaviour {
 
     public FollowerAproachDirectBehaviour(Enemy owner, Player target) {
         super(owner, target, 2);
