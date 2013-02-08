@@ -16,9 +16,9 @@ import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.CleverEnemyBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.ShooterBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.StandardEnemyBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.cleverenemy.CleverEnemyBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
 import java.util.*;
 

@@ -22,7 +22,7 @@ import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.StandardEnemyBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.Position;
 import java.io.*;

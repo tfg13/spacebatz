@@ -7,7 +7,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.StandardEnemyBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 
 /**
  *

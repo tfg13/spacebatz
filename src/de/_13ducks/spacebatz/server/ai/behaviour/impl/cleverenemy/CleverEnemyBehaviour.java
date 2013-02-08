@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.server.ai.behaviour.impl;
+package de._13ducks.spacebatz.server.ai.behaviour.impl.cleverenemy;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
