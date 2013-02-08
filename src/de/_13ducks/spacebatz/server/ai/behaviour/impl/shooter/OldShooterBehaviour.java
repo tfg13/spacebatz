@@ -13,13 +13,13 @@ import de._13ducks.spacebatz.util.Distance;
  *
  * @author michael
  */
-public class ShooterBehaviour extends Behaviour {
+public class OldShooterBehaviour extends Behaviour {
 
     private Player myTarget;
     private Ability shootAbility;
     private int lastShootTick;
 
-    public ShooterBehaviour(Enemy enemy) {
+    public OldShooterBehaviour(Enemy enemy) {
         super(enemy);
         shootAbility = new FireBulletAbility(5, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
     }

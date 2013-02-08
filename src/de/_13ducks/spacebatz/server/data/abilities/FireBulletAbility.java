@@ -46,7 +46,11 @@ public class FireBulletAbility extends WeaponAbility {
 
     @Override
     public void useOnPosition(Char user, double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        double dir = Math.atan2(y, x);
+        if (dir < 0) {
+            dir += 2 * Math.PI;
+        }
+        useInAngle(user, dir);
     }
 
     @Override

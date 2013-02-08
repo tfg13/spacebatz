@@ -18,9 +18,11 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.cleverenemy.CleverEnemyBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.follower.FollowerLurkBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.OldShooterBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import java.util.*;
 
 /**
@@ -266,10 +268,11 @@ public class EnemySpawner {
                 if (randomenemy == 0) {
                     enemytype = 1 + random.nextInt(3);
                 }
-
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
-                enem.setBehaviour(new FollowerLurkBehaviour(enem));
+                enem.setBehaviour(new ShooterLurkBehaviour(enem));
                 enem.getProperties().setSightrange(5.0);
+                enem.setShootAbility(new FireBulletAbility(1, 0, 0.5, 100, 1, 0.15, 0.15, 0, 10, 1));
+                enem.getShootAbility().setCooldown(100);
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
         }

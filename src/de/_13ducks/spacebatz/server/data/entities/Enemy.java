@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
+import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
@@ -48,6 +49,10 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * Gibt an ob der Gegner gerade einem Pfad folgt.
      */
     private boolean followingPath;
+    /**
+     * Die primäre Angriffsfähigkeit des Gegners.
+     */
+    private Ability shootAbility;
     /**
      * The enemys AI.
      */
@@ -335,5 +340,19 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void tick(int gametick) {
         super.tick(gametick);
         behaviour = behaviour.tick(gametick);
+    }
+
+    /**
+     * @return the shootAbility
+     */
+    public Ability getShootAbility() {
+        return shootAbility;
+    }
+
+    /**
+     * @param shootAbility the shootAbility to set
+     */
+    public void setShootAbility(Ability shootAbility) {
+        this.shootAbility = shootAbility;
     }
 }
