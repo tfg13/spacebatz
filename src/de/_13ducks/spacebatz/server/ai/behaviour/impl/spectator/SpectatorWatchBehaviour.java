@@ -1,14 +1,14 @@
-package de._13ducks.spacebatz.server.ai.behaviour.impl.follower;
+package de._13ducks.spacebatz.server.ai.behaviour.impl.spectator;
 
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 
-class FollowerWatchBehaviour extends Behaviour {
+class SpectatorWatchBehaviour extends Behaviour {
 
     private Player target;
 
-    public FollowerWatchBehaviour(Enemy owner, Player target) {
+    public SpectatorWatchBehaviour(Enemy owner, Player target) {
         super(owner);
         this.target = target;
     }
@@ -18,7 +18,7 @@ class FollowerWatchBehaviour extends Behaviour {
             if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
             return this;
         } else {
-            return new FollowerApproachTargetBehaviour(owner, target);
+            return new SpectatorApproachTargetBehaviour(owner, target);
         }
     }
 }
