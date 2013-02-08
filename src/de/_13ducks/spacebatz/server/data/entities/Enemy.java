@@ -112,9 +112,18 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
             }
         }
 
+
+        // Eventuell liegt der Anfang des Pfads hinter uns, weil wir uns bewegt haben bevor er fertig berechnet war.
+        // Also auf das vorderste per Luftlinie erreichbare Feld gehen:
+        currentPathTarget = 0;
+        for (int i = path.length - 1; i >= 0; i--) {
+            if (lineOfSight(getX(), getY(), path[i].getX(), path[i].getY())) {
+                currentPathTarget = i;
+                break;
+            }
+        }
         followingPath = true;
         this.path = path;
-        currentPathTarget = 0;
         setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
 
     }
