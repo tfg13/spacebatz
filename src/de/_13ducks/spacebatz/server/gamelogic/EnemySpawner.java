@@ -17,6 +17,7 @@ import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.cleverenemy.CleverEnemyBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.follower.FollowerLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
@@ -267,7 +268,7 @@ public class EnemySpawner {
                 }
 
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
-                enem.setBehaviour(new SpectatorLurkBehaviour(enem));
+                enem.setBehaviour(new FollowerLurkBehaviour(enem));
                 enem.getProperties().setSightrange(5.0);
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
