@@ -10,21 +10,18 @@
  */
 package de._13ducks.spacebatz.server;
 
-import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.controls.GodControl;
-import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.ai.astar.PathRequest;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
-import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.util.geo.IntVector;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -316,9 +313,9 @@ public class DebugConsole {
                         int targetY = Integer.parseInt(words[2]);
                         double size = Double.parseDouble(words[3]);
                         Player player = Server.game.clients.values().iterator().next().getPlayer();
-                        Server.game.pathfinder.requestPath(new PrecisePosition(player.getX(), player.getY()), new PrecisePosition(targetX, targetY), new PathRequester() {
+                        Server.game.pathfinder.requestPath(new Vector(player.getX(), player.getY()), new Vector(targetX, targetY), new PathRequester() {
                             @Override
-                            public void pathComputed(PrecisePosition[] path) {
+                            public void pathComputed(Vector[] path) {
                             }
                         }, size);
                         break;
@@ -328,11 +325,11 @@ public class DebugConsole {
                         int targetY1 = Integer.parseInt(words[2]);
                         double size1 = Double.parseDouble(words[3]);
                         Player player1 = Server.game.clients.values().iterator().next().getPlayer();
-                        Server.game.pathfinder.requestPath(new PrecisePosition(player1.getX(), player1.getY()), new PrecisePosition(targetX1, targetY1), new PathRequester() {
+                        Server.game.pathfinder.requestPath(new Vector(player1.getX(), player1.getY()), new Vector(targetX1, targetY1), new PathRequester() {
                             @Override
-                            public void pathComputed(PrecisePosition[] path) {
+                            public void pathComputed(Vector[] path) {
                                 for (int i = 0; i < path.length; i++) {
-                                    Server.game.getLevel().createDestroyableBlock((int) path[i].getX(), (int) path[i].getY(), 10);
+                                    Server.game.getLevel().createDestroyableBlock((int) path[i].x, (int) path[i].y, 10);
                                 }
                             }
                         }, size1);
@@ -363,7 +360,7 @@ public class DebugConsole {
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
                         System.out.println("Playerpos:: " + player3.getX() + " / " + player3.getY());
-                        IntVector p = PathRequest.getLeftBotPosition(new PrecisePosition(player3.getX(), player3.getY()), player3.getSize());
+                        IntVector p = PathRequest.getLeftBotPosition(new Vector(player3.getX(), player3.getY()), player3.getSize());
                         System.out.println("LB-Position: " + p.toString());
 
                         break;

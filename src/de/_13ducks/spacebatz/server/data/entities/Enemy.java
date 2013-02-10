@@ -13,14 +13,13 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
-import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Ein Gegner.
@@ -40,7 +39,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     /**
      * Der Pfad dem der Gegner gerade folgt. Enthält Start- und Zielfeld.
      */
-    private PrecisePosition[] path;
+    private Vector[] path;
     /**
      * Der Index der Position in Pfad, von der der Gegner gerade kommt.
      */
@@ -99,7 +98,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      *
      * @param path der Pfad dem der Gegner folgen soll.
      */
-    public void followPath(PrecisePosition path[]) {
+    public void followPath(Vector path[]) {
         if (path.length <= 1) {
             throw new IllegalArgumentException("Der übergebene Pfad muss mindestens 2 Elemente enthalten!");
         }
@@ -108,8 +107,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         }
 
         for (int i = 0; i < path.length; i++) {
-            for (int x = (int) (path[i].getX() - (getSize() / 2)); x <= (int) (path[i].getX() + (getSize() / 2)); x++) {
-                for (int y = (int) (path[i].getY() - (getSize() / 2)); y <= (int) (path[i].getY() + (getSize() / 2)); y++) {
+            for (int x = (int) (path[i].x - (getSize() / 2)); x <= (int) (path[i].x + (getSize() / 2)); x++) {
+                for (int y = (int) (path[i].y - (getSize() / 2)); y <= (int) (path[i].y + (getSize() / 2)); y++) {
                     if (Server.game.getLevel().getCollisionMap()[x][y]) {
                         throw new IllegalArgumentException("Illegal Path position at " + x + " " + y);
                     }
@@ -122,14 +121,14 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         // Also auf das vorderste per Luftlinie erreichbare Feld gehen:
         currentPathTarget = 0;
         for (int i = path.length - 1; i >= 0; i--) {
-            if (lineOfSight(getX(), getY(), path[i].getX(), path[i].getY())) {
+            if (lineOfSight(getX(), getY(), path[i].x, path[i].y)) {
                 currentPathTarget = i;
                 break;
             }
         }
         followingPath = true;
         this.path = path;
-        setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
+        setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
 
     }
 
@@ -171,7 +170,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         if (followingPath) {
             if (currentPathTarget + 1 < path.length) {
                 currentPathTarget++;
-                setLinearTarget(path[currentPathTarget].getX(), path[currentPathTarget].getY(), this);
+                setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
             }
         } else {
             behaviour = behaviour.targetReached();
@@ -332,7 +331,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     }
 
     @Override
-    public void pathComputed(PrecisePosition[] path) {
+    public void pathComputed(Vector[] path) {
         behaviour = behaviour.pathComputed(path);
     }
 

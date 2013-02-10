@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
-import de._13ducks.spacebatz.util.geo.IntVector;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Klassen, die mit dem AstarPathfinder Wege berechnen wollen, müssen dieses Interface implementieren.
@@ -15,5 +15,5 @@ public interface PathRequester {
      *
      * @param path der fertig berechnete Pfad
      */
-    public void pathComputed(PrecisePosition path[]);
+    public void pathComputed(Vector path[]);
 }

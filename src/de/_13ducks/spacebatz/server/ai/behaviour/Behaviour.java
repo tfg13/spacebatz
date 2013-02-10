@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.server.ai.behaviour;
 
-import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * A Behaviour for an enemy.
@@ -42,7 +42,7 @@ public class Behaviour {
      *
      * @param path
      */
-    public Behaviour pathComputed(PrecisePosition[] path) {
+    public Behaviour pathComputed(Vector[] path) {
         return this;
     }
 

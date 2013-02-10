@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.geo.IntVector;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -58,7 +57,7 @@ public class AStarPathfinder {
      * @param requester der PathRequester, der das Ergebnis der berechnung erhält.
      * @param size die Breite des Pfads in Feldern
      */
-    public void requestPath(PrecisePosition start, PrecisePosition target, PathRequester requester, double size) {
+    public void requestPath(Vector start, Vector target, PathRequester requester, double size) {
         pathRequests.push(new PathRequest(start, target, requester, size, aStar));
     }
 

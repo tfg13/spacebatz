@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.server.Server;
+import java.util.LinkedList;
 
 /**
  * Erzeugt und Verwaltet Nodes, so dass bereits erstellte Nodes verwendet werden und nicht immer neue erzeugt werden müssen.
@@ -12,7 +13,7 @@ class NodeFactory {
     /**
      * Die Karte der schon erzeugten Nodes.
      */
-    private Node[][] nodeMap;
+    private AStarNode[][] nodeMap;
     /**
      * Die Größe des Feldes das frei sein muss, dass eine Node als frei gilt.
      * 0 = 1x1, 1=2x2, ...
@@ -23,7 +24,7 @@ class NodeFactory {
      * Initialisiert eine neue NodeFactory.
      */
     public NodeFactory(int size) {
-        nodeMap = new Node[Server.game.getLevel().getSizeX()][Server.game.getLevel().getSizeY()];
+        nodeMap = new AStarNode[Server.game.getLevel().getSizeX()][Server.game.getLevel().getSizeY()];
         this.size = size - 1;
     }
 
@@ -34,11 +35,11 @@ class NodeFactory {
      * @param y
      * @return
      */
-    public Node getNode(int x, int y) {
+    public AStarNode getNode(int x, int y) {
         if (nodeMap[x][y] != null) {
             return nodeMap[x][y];
         } else {
-            Node node = new Node(x, y);
+            AStarNode node = new AStarNode(x, y);
             nodeMap[x][y] = node;
             return node;
         }
@@ -50,18 +51,17 @@ class NodeFactory {
      *
      * @return
      */
-    public Node[] getNeighbors(Node node) {
+    public LinkedList<AStarNode> getNeighbors(AStarNode node) {
         int posX = node.x;
         int posY = node.y;
-        Node neighbors[] = new Node[8];
-
-        int numNeighbors = 8;
-        boolean top = true, bot = true, left = true, right = true, topLeft = true, topRight = true, botLeft = true, botRight = true;
+        LinkedList<AStarNode> neighbors = new LinkedList<>();
 
 
+        // Werte cachen:
+        int sizeX = Server.game.getLevel().getSizeX();
+        int sizeY = Server.game.getLevel().getSizeY();
+        boolean[][] collisionMap = Server.game.getLevel().getCollisionMap();
 
-
-        int i = 0;
         for (int x = posX - 1; x <= posX + 1; x++) {
             for (int y = posY - 1; y <= posY + 1; y++) {
 
@@ -138,22 +138,20 @@ class NodeFactory {
 
                     for (int colX = startColX; colX <= endColX; colX++) {
                         for (int colY = startColY; colY <= endColY; colY++) {
-                            if (0 < colX && colX < Server.game.getLevel().getSizeX() && 0 < colY && colY < Server.game.getLevel().getSizeY() && Server.game.getLevel().getCollisionMap()[colX][colY]) {
+                            if (0 < colX && colX < sizeX && 0 < colY && colY < sizeY && collisionMap[colX][colY]) {
                                 blocked = true;
+                                break;
                             }
                         }
                     }
                     // Wenn kein Feld blockiert ist:
                     if (!blocked) {
-                        neighbors[i] = getNode(x, y);
-                        i++;
+                        neighbors.add(getNode(x, y));
 
                     }
                 }
             }
         }
-        Node newNeighbors[] = new Node[i];
-        System.arraycopy(neighbors, 0, newNeighbors, 0, i);
-        return newNeighbors;
+        return neighbors;
     }
 }
