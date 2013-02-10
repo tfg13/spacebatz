@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.util.geo.IntVector;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Eine Anforderung für eine Wegberechnung.
@@ -52,7 +53,7 @@ public class PathRequest {
      * @param target
      * @param requester
      */
-    PathRequest(PrecisePosition start, PrecisePosition target, PathRequester requester, double size, AStarImplementation astar) {
+    PathRequest(Vector start, Vector target, PathRequester requester, double size, AStarImplementation astar) {
 
         // Das linke untere Feld des Kollisionsrechtecks der Entity berechnen:
         IntVector leftBotPosition = getLeftBotPosition(start, size);
@@ -108,7 +109,7 @@ public class PathRequest {
     public void abort() {
         computed = true;
         aStar.abort();
-        requester.pathComputed(new PrecisePosition[0]);
+        requester.pathComputed(new Vector[0]);
     }
 
     void computeIteration() {
@@ -118,17 +119,17 @@ public class PathRequest {
         aStar.computeIteration();
         if (aStar.isComputed()) {
             IntVector path[] = aStar.getPath();
-            PrecisePosition finalPath[];
+            Vector finalPath[];
             if (path.length == 0) {
-                finalPath = new PrecisePosition[0];
+                finalPath = new Vector[0];
             } else {
                 // Startposition vorne anhängen und den Weg zu Entitykoordinaten transformieren:
-                finalPath = new PrecisePosition[path.length];
+                finalPath = new Vector[path.length];
 
 //                finalPath[0] = firstPosition;
 
                 for (int i = 0; i < path.length; i++) {
-                    finalPath[i] = new PrecisePosition(path[i].x + dx, path[i].y + dy);
+                    finalPath[i] = new Vector(path[i].x + dx, path[i].y + dy);
                 }
             }
 
@@ -143,37 +144,37 @@ public class PathRequest {
         return Server.game.getTick() - creationTick;
     }
 
-    public static IntVector getLeftBotPosition(PrecisePosition actualPosition, double size) {
+    public static IntVector getLeftBotPosition(Vector actualPosition, double size) {
         // oben, links, rechts und unten auf kollision prüfen
         boolean topCollision = false, rightCollision = false, botCollision = false, leftCollision = false;
 
 
-        for (int x = (int) (actualPosition.getX() - size / 2); x <= (int) (actualPosition.getX() + size / 2); x++) {
-            if (Server.game.getLevel().getCollisionMap()[x][(int) (actualPosition.getY() + (size / 2))]) {
+        for (int x = (int) (actualPosition.x - size / 2); x <= (int) (actualPosition.x + size / 2); x++) {
+            if (Server.game.getLevel().getCollisionMap()[x][(int) (actualPosition.y + (size / 2))]) {
                 topCollision = true;
 //                System.out.println("top");
             }
-            if (Server.game.getLevel().getCollisionMap()[x][(int) (actualPosition.getY() - (size / 2))]) {
+            if (Server.game.getLevel().getCollisionMap()[x][(int) (actualPosition.y - (size / 2))]) {
                 botCollision = true;
 //                System.out.println("bot");
             }
         }
 
-        for (int y = (int) (actualPosition.getY() - size / 2); y <= (int) (actualPosition.getY() + size / 2); y++) {
-            if (Server.game.getLevel().getCollisionMap()[(int) (actualPosition.getX() + (size / 2))][y]) {
+        for (int y = (int) (actualPosition.y - size / 2); y <= (int) (actualPosition.y + size / 2); y++) {
+            if (Server.game.getLevel().getCollisionMap()[(int) (actualPosition.x + (size / 2))][y]) {
                 rightCollision = true;
 //                System.out.println("right");
 
             }
-            if (Server.game.getLevel().getCollisionMap()[(int) (actualPosition.getX() - (size / 2))][y]) {
+            if (Server.game.getLevel().getCollisionMap()[(int) (actualPosition.x - (size / 2))][y]) {
                 leftCollision = true;
 //                System.out.println("left");
             }
         }
 
         // botleft feld normal berechnen:
-        int leftBotFieldX = (int) (actualPosition.getX() - (size / 2));
-        int leftBotFieldY = (int) (actualPosition.getY() - (size / 2));
+        int leftBotFieldX = (int) (actualPosition.x - (size / 2));
+        int leftBotFieldY = (int) (actualPosition.y - (size / 2));
 
 //        System.out.println("wrong field: " + leftBotFieldX + " " + leftBotFieldY);
         // botleft feld von den kollisionen weg verschieben (kollision rechts -> nach links verschieben)

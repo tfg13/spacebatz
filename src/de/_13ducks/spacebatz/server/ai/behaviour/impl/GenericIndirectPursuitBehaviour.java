@@ -1,10 +1,10 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.server.ai.astar.PrecisePosition;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Calculates a path and follows that path untill the target is in direct sightline.
@@ -35,7 +35,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
         if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
             return targetInSight(owner, target);
         } else if ((Server.game.getTick() - pathCreationTime) > getMaxPathAge()) {
-            Server.game.pathfinder.requestPath(new PrecisePosition(owner.getX(), owner.getY()), new PrecisePosition(target.getX(), target.getY()), owner, owner.getSize());
+            Server.game.pathfinder.requestPath(new Vector(owner.getX(), owner.getY()), new Vector(target.getX(), target.getY()), owner, owner.getSize());
             return this;
         } else {
             return this;
@@ -45,7 +45,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
     public abstract Behaviour targetInSight(Enemy owner, Player target);
 
     @Override
-    public Behaviour pathComputed(PrecisePosition[] path) {
+    public Behaviour pathComputed(Vector[] path) {
         owner.followPath(path);
         pathCreationTime = Server.game.getTick();
         return this;

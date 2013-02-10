@@ -2,9 +2,11 @@ package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.util.geo.Distance;
 import de._13ducks.spacebatz.util.geo.IntVector;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 /**
@@ -17,19 +19,23 @@ class AStarImplementation {
     /**
      * Die Liste der Knoten, die noch untersucht werden müssen.
      */
-    private PriorityQueue<Node> openList;
+    private PriorityQueue<AStarNode> openList;
+    /**
+     * Enthält die gleichen Elemente wie die openList, kann aber schneller herausfinden, ob ein bestimmtes enthalten ist.
+     */
+    private LinkedHashSet<AStarNode> containOpenList;
     /**
      * Die Liste der Knoten die Sackgassen oder Umwege sind.
      */
-    private LinkedHashSet<Node> closedList;
+    private LinkedHashSet<AStarNode> closedList;
     /**
      * Der Startpunkt des Pfads.
      */
-    private Node start;
+    private AStarNode start;
     /**
      * Das Ziel des Pfads.
      */
-    private Node goal;
+    private AStarNode goal;
     /**
      * Derjenige, der den Weg bekommt wenn er fertig berechnet ist.
      */
@@ -41,7 +47,7 @@ class AStarImplementation {
     /**
      * Der berechnete Pfad.
      */
-    private Node[] path;
+    private AStarNode[] path;
     /**
      * Die Nodefactory die die Wegknoten erzeugt und verwaltet.
      * Muss für jede Wegberechnung neu erzeugt werden.
@@ -50,12 +56,12 @@ class AStarImplementation {
     /**
      * Vergleicht 2 Nodes ob sie identisch sind.
      */
-    private static Comparator<Node> comparator = new Comparator<Node>() {
+    private static Comparator<AStarNode> comparator = new Comparator<AStarNode>() {
         @Override
-        public int compare(Node t, Node t1) {
-            if (t.getFValue() < t1.getFValue()) {
+        public int compare(AStarNode t, AStarNode t1) {
+            if (t.fValue < t1.fValue) {
                 return -1;
-            } else if (t.getFValue() > t1.getFValue()) {
+            } else if (t.fValue > t1.fValue) {
                 return 1;
             } else {
                 return 0;
@@ -82,15 +88,17 @@ class AStarImplementation {
             throw new IllegalStateException("Der alte Weg ist nocht nicht fertoig!");
         }
         computing = true;
-        path = new Node[0];
+        path = new AStarNode[0];
         factory = new NodeFactory(size);
         closedList = new LinkedHashSet<>();
         openList = new PriorityQueue<>(50, comparator);
+        containOpenList = new LinkedHashSet<>(50);
         this.requester = requester;
 
         this.goal = factory.getNode(goal.x, goal.y);
         this.start = factory.getNode(start.x, start.y);
         openList.add(this.start);
+        containOpenList.add(this.start);
     }
 
     /**
@@ -103,7 +111,8 @@ class AStarImplementation {
             throw new IllegalStateException("Kein Weg geladen, habe nichts zum Berechnen!");
         }
         if (!openList.isEmpty()) {
-            Node current = openList.poll();
+            AStarNode current = openList.poll();
+            containOpenList.remove(current);
             if (current.equals(goal)) {
                 buildPath(goal);
             } else {
@@ -111,7 +120,7 @@ class AStarImplementation {
                 closedList.add(current);
             }
         } else {
-            requester.pathComputed(new PrecisePosition[0]);
+            requester.pathComputed(new Vector[0]);
         }
     }
 
@@ -120,17 +129,17 @@ class AStarImplementation {
      *
      * @param goal der gefundene ZielKnoten.
      */
-    private void buildPath(Node goal) {
-        ArrayList<Node> nodes = new ArrayList<>();
-        Node current = goal;
+    private void buildPath(AStarNode goal) {
+        ArrayList<AStarNode> nodes = new ArrayList<>();
+        AStarNode current = goal;
         while (!current.equals(start)) {
             nodes.add(current);
-            current = current.getPredecessor();
+            current = current.predecessor;
         }
         nodes.add(start);
-        path = new Node[nodes.size()];
+        path = new AStarNode[nodes.size()];
         int i = 0;
-        for (Node n : nodes) {
+        for (AStarNode n : nodes) {
             path[path.length - 1 - i] = n;
             i++;
         }
@@ -142,26 +151,24 @@ class AStarImplementation {
      *
      * @param current
      */
-    private void expandNode(Node current) {
-        Node neighbors[] = factory.getNeighbors(current);
-        for (int i = 0; i < neighbors.length; i++) {
-            Node successor = neighbors[i];
+    private void expandNode(AStarNode current) {
+        LinkedList<AStarNode> neighbors = factory.getNeighbors(current);
+        for (AStarNode successor: neighbors) {
             if (closedList.contains(successor)) {
                 continue;
             }
-            float weight = current.getWayLength() + getWeight(current, successor);
+            float weight = current.wayLength + getWeight(current, successor);
             // Wenn der successor bereits auf der openlost ist, aber der Weg zu ihm nicht kürzer ist abbrechen:
-            if (openList.contains(successor) && weight >= successor.getWayLength()) {
+            if (containOpenList.contains(successor) && weight >= successor.wayLength) {
                 continue;
             }
-            successor.setPredecessor(current);
-            successor.setWayLength(weight);
+            successor.predecessor = current;
+            successor.wayLength = weight;
 
-            float cost = current.getWayLength() + getWeight(successor, goal);
-            successor.setFValue(cost);
-            if (openList.contains(successor)) {
-                openList.remove(successor);
-            }
+            float cost = current.wayLength + getWeight(successor, goal);
+            successor.fValue = cost;
+            // Neu einfügen, damit die Sortierung stimmt
+            openList.remove(successor);
             openList.add(successor);
 
         }
@@ -174,7 +181,7 @@ class AStarImplementation {
      * @param successor
      * @return
      */
-    private float getWeight(Node current, Node successor) {
+    private static float getWeight(AStarNode current, AStarNode successor) {
         return (float) Distance.getDistance(current.x, current.y, successor.x, successor.y);
     }
 
