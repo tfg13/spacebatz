@@ -14,9 +14,9 @@ import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
-import de._13ducks.spacebatz.util.Distance;
-import de._13ducks.spacebatz.util.Position;
-import de._13ducks.spacebatz.util.Vector;
+import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.IntVector;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -150,13 +150,13 @@ public class CollisionManager {
                 // Schnittpunkt der 2 Geraden
                 Vector s = adir.intersectionWith(apos, bpos, bdir);
 
-                double distance = Math.sqrt((s.getX() - c.getX()) * (s.getX() - c.getX()) + (s.getY() - c.getY()) * (s.getY() - c.getY()));
+                double distance = Math.sqrt((s.x - c.getX()) * (s.x - c.getX()) + (s.y - c.getY()) * (s.y - c.getY()));
 
                 // Hitscan-Gerade nah genug am Gegner?
                 if (distance < Settings.CHARSIZE / 2) {
                     // Nicht hinter dem Abilityuser?
-                    double dx = s.getX() - x;
-                    double dy = s.getY() - y;
+                    double dx = s.x - x;
+                    double dy = s.y - y;
                     double testangle = Math.atan2(dy, dx); // zwischen 0 und 2 pi
                     if (testangle < 0) {
                         testangle += 2 * Math.PI;
@@ -179,8 +179,8 @@ public class CollisionManager {
      * @param range Reichweite der Ability
      * @return
      */
-    public static Position computeHitscanOnBlocks(Char owner, double angle, double range) {
-        ArrayList<Position> positionsInHitscan = new ArrayList<>();
+    public static IntVector computeHitscanOnBlocks(Char owner, double angle, double range) {
+        ArrayList<IntVector> positionsInHitscan = new ArrayList<>();
 
         double betaX = owner.getX() + range * Math.cos(angle);
         double betaY = owner.getY() + range * Math.sin(angle);
@@ -190,24 +190,24 @@ public class CollisionManager {
         if (Math.abs(vX) >= Math.abs(vY)) {
             if (vX > 0) {
                 for (int i = 0; i < vX; i++) {
-                    Position argh = new Position((int) owner.getX() + i, (int) (owner.getY() + (i * vY / vX)));
+                    IntVector argh = new IntVector((int) owner.getX() + i, (int) (owner.getY() + (i * vY / vX)));
                     positionsInHitscan.add(argh);
                 }
             } else {
                 for (int i = 0; i > vX; i--) {
-                    Position argh = new Position((int) owner.getX() + i, (int) (owner.getY() + (i * vY / vX)));
+                    IntVector argh = new IntVector((int) owner.getX() + i, (int) (owner.getY() + (i * vY / vX)));
                     positionsInHitscan.add(argh);
                 }
             }
         } else {
             if (vY > 0) {
                 for (int i = 0; i < vY; i++) {
-                    Position argh = new Position((int) (owner.getX() + (i * vX / vY)), (int) owner.getY() + i);
+                    IntVector argh = new IntVector((int) (owner.getX() + (i * vX / vY)), (int) owner.getY() + i);
                     positionsInHitscan.add(argh);
                 }
             } else {
                 for (int i = 0; i > vY; i--) {
-                    Position argh = new Position((int) (owner.getX() + (i * vX / vY)), (int) owner.getY() + i);
+                    IntVector argh = new IntVector((int) (owner.getX() + (i * vX / vY)), (int) owner.getY() + i);
                     positionsInHitscan.add(argh);
                 }
             }
@@ -217,8 +217,8 @@ public class CollisionManager {
         int nearestblock = -1;
         for (int i = 0; i < positionsInHitscan.size(); i++) {
 
-            int bx = positionsInHitscan.get(i).getX();
-            int by = positionsInHitscan.get(i).getY();
+            int bx = positionsInHitscan.get(i).x;
+            int by = positionsInHitscan.get(i).y;
             if (Server.game.getLevel().getCollisionMap()[bx][by]) {
                 double distance = Math.sqrt((owner.getX() - bx) * (owner.getX() - bx) + (owner.getY() - by) * (owner.getY() - by));
                 if (distance < mindistance) {

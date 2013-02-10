@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.util.mapgen.data;
+package de._13ducks.spacebatz.util.geo;
 
 import de._13ducks.spacebatz.Settings;
 

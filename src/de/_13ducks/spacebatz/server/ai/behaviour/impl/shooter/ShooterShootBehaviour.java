@@ -1,10 +1,9 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.shooter;
 
-import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.*;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.geo.Distance;
 
 class ShooterShootBehaviour extends Behaviour {
 

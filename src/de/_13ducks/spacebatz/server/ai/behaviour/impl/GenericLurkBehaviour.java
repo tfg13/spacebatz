@@ -6,7 +6,7 @@ import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.geo.Distance;
 
 /**
  * Waits until shot by a player or sighting a player.

@@ -6,7 +6,7 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.IntVector;
 import java.util.ArrayList;
 
 /**
@@ -57,10 +57,10 @@ public class HitscanAbility extends WeaponAbility {
         }
 
         // Block abbauem
-        Position test = CollisionManager.computeHitscanOnBlocks(user, angle, getWeaponStats().getRange());
+        IntVector test = CollisionManager.computeHitscanOnBlocks(user, angle, getWeaponStats().getRange());
         if (test != null) {
-            if (Server.game.getLevel().isBlockDestroyable(test.getX(), test.getY())) {
-                Server.game.getLevel().destroyBlock(test.getX(), test.getY());
+            if (Server.game.getLevel().isBlockDestroyable(test.x, test.y)) {
+                Server.game.getLevel().destroyBlock(test.x, test.y);
             }
         }
 

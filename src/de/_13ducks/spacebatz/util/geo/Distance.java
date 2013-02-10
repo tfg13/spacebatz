@@ -8,7 +8,7 @@
  *
  * 13ducks PROPRIETARY/CONFIDENTIAL - do not distribute
  */
-package de._13ducks.spacebatz.util;
+package de._13ducks.spacebatz.util.geo;
 
 /**
  * Hilfsklasse zum berechnen des Abstandes zweier Punkte.

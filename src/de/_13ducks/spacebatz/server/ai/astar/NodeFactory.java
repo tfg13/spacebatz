@@ -51,8 +51,8 @@ class NodeFactory {
      * @return
      */
     public Node[] getNeighbors(Node node) {
-        int posX = node.getX();
-        int posY = node.getY();
+        int posX = node.x;
+        int posY = node.y;
         Node neighbors[] = new Node[8];
 
         int numNeighbors = 8;

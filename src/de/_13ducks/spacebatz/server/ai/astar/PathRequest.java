@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.IntVector;
 
 /**
  * Eine Anforderung für eine Wegberechnung.
@@ -13,11 +13,11 @@ public class PathRequest {
     /**
      * Die Startposition.
      */
-    private Position start;
+    private IntVector start;
     /**
      * Die Zielposition.
      */
-    private Position goal;
+    private IntVector goal;
     /**
      * Der Anforderer, der den gertigen Pfad dann bekommt.
      */
@@ -55,9 +55,9 @@ public class PathRequest {
     PathRequest(PrecisePosition start, PrecisePosition target, PathRequester requester, double size, AStarImplementation astar) {
 
         // Das linke untere Feld des Kollisionsrechtecks der Entity berechnen:
-        Position leftBotPosition = getLeftBotPosition(start, size);
-        int leftBotFieldX = leftBotPosition.getX();
-        int leftBotFieldY = leftBotPosition.getY();
+        IntVector leftBotPosition = getLeftBotPosition(start, size);
+        int leftBotFieldX = leftBotPosition.x;
+        int leftBotFieldY = leftBotPosition.y;
 
         if (Server.game.getLevel().getCollisionMap()[leftBotFieldX][leftBotFieldY]) {
             System.out.println("PathRequest: Invalid LB-Position!");
@@ -85,7 +85,7 @@ public class PathRequest {
 //        firstPosition = new PrecisePosition(firstPositionX, firstPositionY);
 
         // Das linke untere Feld als Startfeld der WEgberechnung setzen:
-        this.start = new Position(leftBotFieldX, leftBotFieldY);
+        this.start = new IntVector(leftBotFieldX, leftBotFieldY);
         // Linkes unteres Feld der Zielposition bestimmen:
 
         this.goal = getLeftBotPosition(target, size);
@@ -117,7 +117,7 @@ public class PathRequest {
         }
         aStar.computeIteration();
         if (aStar.isComputed()) {
-            Position path[] = aStar.getPath();
+            IntVector path[] = aStar.getPath();
             PrecisePosition finalPath[];
             if (path.length == 0) {
                 finalPath = new PrecisePosition[0];
@@ -128,7 +128,7 @@ public class PathRequest {
 //                finalPath[0] = firstPosition;
 
                 for (int i = 0; i < path.length; i++) {
-                    finalPath[i] = new PrecisePosition(path[i].getX() + dx, path[i].getY() + dy);
+                    finalPath[i] = new PrecisePosition(path[i].x + dx, path[i].y + dy);
                 }
             }
 
@@ -143,7 +143,7 @@ public class PathRequest {
         return Server.game.getTick() - creationTick;
     }
 
-    public static Position getLeftBotPosition(PrecisePosition actualPosition, double size) {
+    public static IntVector getLeftBotPosition(PrecisePosition actualPosition, double size) {
         // oben, links, rechts und unten auf kollision prüfen
         boolean topCollision = false, rightCollision = false, botCollision = false, leftCollision = false;
 
@@ -197,6 +197,6 @@ public class PathRequest {
 
 
 
-        return new Position(leftBotFieldX, leftBotFieldY);
+        return new IntVector(leftBotFieldX, leftBotFieldY);
     }
 }

@@ -5,7 +5,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SHADOW_CHANGE;
-import de._13ducks.spacebatz.util.mapgen.data.Vector;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

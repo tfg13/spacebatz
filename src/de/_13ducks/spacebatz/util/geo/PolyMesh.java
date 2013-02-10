@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.util.mapgen.data;
+package de._13ducks.spacebatz.util.geo;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryCollection;

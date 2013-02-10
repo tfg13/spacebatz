@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.server.ai.behaviour.impl;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.geo.Distance;
 
 /**
  * Directly walks towards the target until the desired distance is reached or sightline is interrupted.
