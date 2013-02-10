@@ -1,51 +1,27 @@
-package de._13ducks.spacebatz.server.ai.behaviour.impl;
+package de._13ducks.spacebatz.server.ai.behaviour.impl.shooter;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.entities.Char;
+import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
-import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.Distance;
 
 /**
- * Ein Standardgegner, der auf den Spieler zurennt.
  *
  * @author michael
  */
-public class StandardEnemyBehaviour extends Behaviour {
+public class ShooterBehaviour extends Behaviour {
 
-    /**
-     * Der Char, den dieser Enemy gerade verfolgt
-     */
-    private Char myTarget;
+    private Player myTarget;
+    private Ability shootAbility;
+    private int lastShootTick;
 
-    /**
-     * Erzeugt einen neuen StandardGegner.
-     *
-     * @param x
-     * @param y
-     * @param netID
-     * @param enemyTypeID
-     */
-    public StandardEnemyBehaviour(Enemy enemy) {
+    public ShooterBehaviour(Enemy enemy) {
         super(enemy);
-    }
-
-    /**
-     * Wird bei Kollisionen aufgerufen.
-     *
-     * @param other
-     */
-    @Override
-    public Behaviour onCollision(Entity other) {
-        super.onCollision(other);
-        // Bei Kollision mit Spielern diese verfolgen:
-        if (other instanceof Player) {
-            myTarget = (Player) other;
-        }
-        return this;
+        shootAbility = new FireBulletAbility(5, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
     }
 
     /**
@@ -77,8 +53,19 @@ public class StandardEnemyBehaviour extends Behaviour {
                 owner.stopMovement();
             } else {
                 // Wenn wir schon nahe genug dran sind anhalten:
-                if (1.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
+                if (3.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                     owner.stopMovement();
+                    double dx = myTarget.getX() - owner.getX();
+                    double dy = myTarget.getY() - owner.getY();
+                    double dir = Math.atan2(dy, dx);
+                    if (dir < 0) {
+                        dir += 2 * Math.PI;
+                    }
+                    if (gameTick - lastShootTick > 120) {
+                        shootAbility.tryUseInAngle(owner, dir);
+                        lastShootTick = gameTick;
+                    }
+
                 } else {
                     // wenn wir noch zu weit entfernt sind hinbewegen:
                     double vectorX = myTarget.getX() - owner.getX();
