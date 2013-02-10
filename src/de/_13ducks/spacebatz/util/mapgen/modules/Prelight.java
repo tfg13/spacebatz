@@ -61,7 +61,7 @@ public class Prelight extends Module {
             ShadowManager.lightShadows(spawn[0], spawn[1], Math.max(map.groundTex.length - spawn[0], spawn[0]) + 1, Math.max(map.groundTex[0].length - spawn[1], spawn[1]) + 1, (byte) 0, (byte) 0, (byte) 32, 0, map.shadow, map.topTex);
         } else {
             // Sonstige: Höhlensichtweite
-            ShadowManager.lightShadows(spawn[0], spawn[1], 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, map.shadow, map.topTex);
+            ShadowManager.lightShadows(spawn[0], spawn[1], 25, 20, (byte) 0, (byte) 8, (byte) 48, 12, map.shadow, map.topTex);
         }
     }
 }

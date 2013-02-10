@@ -37,7 +37,7 @@ public class ShadowManager {
             ArrayList<Vector> updatedChunks = new ArrayList<>();
             for (Client c : Server.game.clients.values()) {
                 Player p = c.getPlayer();
-                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 20, 20, (byte) 0, (byte) 16, (byte) 32, 12, Server.game.getLevel().shadow, Server.game.getLevel().top));
+                updatedChunks.addAll(lightShadows((int) p.getX(), (int) p.getY(), 25, 20, (byte) 0, (byte) 8, (byte) 48, 12, Server.game.getLevel().shadow, Server.game.getLevel().top));
             }
             for (Vector v : updatedChunks) {
                 STC_SHADOW_CHANGE.sendShadowChange(v);
@@ -102,12 +102,14 @@ public class ShadowManager {
             // Maximale Helligkeit der Nachbarfelder hängt von der Lichtstufe dieses Felds ab:
             int light = shadowMap[(int) position.x][(int) position.y];
             lastLight = light;
-            // Erhöht die Textur dieses Feldes den Schattenwert?
+            // Massives Hinderniss oder Freifläche?
             if (texMap[(int) position.x][(int) position.y] != 0) {
+                // Wand
                 light += wallDarkening;
             } else {
-                // Weit genug weg, dass es auch auf Freiflächen abdunkelt?
-                if (Math.sqrt((position.x - lightX) * (position.x - lightX) + (position.y - lightY) * (position.y - lightY)) > fullVisFreeSightDistance) {
+                // Freifläche, ab einem gewissen Abstand dunkeln die auch ab
+                // Außerdem dunkeln die ab, wenn schon stark gedunkelt wurde, also wohl eine Wand dazwischen war.
+                if (Math.sqrt((position.x - lightX) * (position.x - lightX) + (position.y - lightY) * (position.y - lightY)) > fullVisFreeSightDistance || light >= wallDarkening) {
                     light += freeDarkening;
                 }
             }
