@@ -216,11 +216,9 @@ public class AutoSynchronizer {
     private byte[] craftTransferChunkCommand(int x, int y) {
         int[][] ground = Server.game.getLevel().ground;
         int[][] top = Server.game.getLevel().top;
-        int[][] dye_ground = Server.game.getLevel().dye_ground;
-        int[][] dye_top = Server.game.getLevel().dye_top;
         boolean[][] col = Server.game.getLevel().getCollisionMap();
         byte[][] shadow = Server.game.getLevel().shadow;
-        byte[] data = new byte[8 * 8 * 4 * 4 + 8 + 8 + 8 * 8];
+        byte[] data = new byte[8 * 8 * 4 * 2 + 8 + 8 + 8 * 8];
         Bits.putInt(data, 0, x);
         Bits.putInt(data, 4, y);
         int dataIndex = 8;
@@ -235,20 +233,6 @@ public class AutoSynchronizer {
         for (int gx = 0; gx < 8; gx++) {
             for (int gy = 0; gy < 8; gy++) {
                 Bits.putInt(data, dataIndex, top[x * 8 + gx][y * 8 + gy]);
-                dataIndex += 4;
-            }
-        }
-        // dye_ground
-        for (int gx = 0; gx < 8; gx++) {
-            for (int gy = 0; gy < 8; gy++) {
-                Bits.putInt(data, dataIndex, dye_ground[x * 8 + gx][y * 8 + gy]);
-                dataIndex += 4;
-            }
-        }
-        // dye_top
-        for (int gx = 0; gx < 8; gx++) {
-            for (int gy = 0; gy < 8; gy++) {
-                Bits.putInt(data, dataIndex, dye_top[x * 8 + gx][y * 8 + gy]);
                 dataIndex += 4;
             }
         }

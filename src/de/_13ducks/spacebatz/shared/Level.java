@@ -33,14 +33,6 @@ public class Level implements java.io.Serializable {
      */
     public byte[][] shadow;
     /**
-     * Die Farbmap für den Boden.
-     */
-    public int[][] dye_ground;
-    /**
-     * Die Farbmap für die Wände.
-     */
-    public int[][] dye_top;
-    /**
      * Kollisionskarte, true = kollision, false = frei
      */
     private boolean collisionMap[][];
@@ -62,8 +54,6 @@ public class Level implements java.io.Serializable {
         this.sizeY = ySize;
         ground = new int[xSize][ySize];
         top = new int[xSize][ySize];
-        dye_ground = new int[xSize][ySize];
-        dye_top = new int[xSize][ySize];
         collisionMap = new boolean[xSize][ySize];
         shadow = new byte[xSize][ySize];
     }

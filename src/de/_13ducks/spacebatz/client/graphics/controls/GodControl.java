@@ -534,14 +534,6 @@ public class GodControl implements Control {
         }
     }
 
-    private static int dyeAt(int[][] layer, int x, int y, int errorColor) {
-        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
-            return errorColor;
-        } else {
-            return layer[x][y];
-        }
-    }
-
     /**
      * Sagt dem Server, das geschossen werden soll
      */

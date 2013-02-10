@@ -65,8 +65,6 @@ public class Rasterizer extends Module {
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
         map.topTex = new int[sizeX][sizeY];
-        map.dye_ground = new int[sizeX][sizeY];
-        map.dye_top = new int[sizeX][sizeY];
         map.collision = new boolean[sizeX][sizeY];
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
@@ -80,19 +78,12 @@ public class Rasterizer extends Module {
                 // Hier kommen wir nur hin, wenn der Polygon gefunden wurde
                 // Boden erstmal immer gleich setzen:
                 map.groundTex[x][y] = 1;
-                // Färbung immer gleich setzen:
-                map.dye_ground[x][y] = theme.ground;
                 if (poly.border) {
                     map.topTex[x][y] = 1;
-                    map.dye_ground[x][y] = theme.border;
-                    map.dye_top[x][y] = theme.wall;
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
-                    map.dye_ground[x][y] = theme.belowWall;
-                    map.dye_top[x][y] = theme.wall;
                     map.collision[x][y] = true;
                     if (poly.resource == 1) {
-                        map.dye_top[x][y] = white;
                         map.topTex[x][y] = 4;
                     } else {
                         map.topTex[x][y] = 2;
@@ -128,10 +119,6 @@ public class Rasterizer extends Module {
         }
         Vector spawn = spawnPoly.calcCenter();
         map.metadata.put("SPAWN", new int[]{(int) (spawn.x * sizeX), (int) (spawn.y * sizeY)});
-        map.dye_ground[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = theme.spawn;
-        map.dye_ground[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = theme.spawn;
-        map.dye_ground[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = theme.spawn;
-        map.dye_ground[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = theme.spawn;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;

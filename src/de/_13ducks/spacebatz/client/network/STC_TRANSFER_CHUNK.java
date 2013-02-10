@@ -13,8 +13,6 @@ public class STC_TRANSFER_CHUNK extends STCCommand {
     public void execute(byte[] data) {
         int[][] ground = GameClient.currentLevel.ground;
         int[][] top = GameClient.currentLevel.top;
-        int[][] dye_ground = GameClient.currentLevel.dye_ground;
-        int[][] dye_top = GameClient.currentLevel.dye_top;
         boolean[][] col = GameClient.currentLevel.getCollisionMap();
         byte[][] shadow = GameClient.currentLevel.shadow;
         int startX = Bits.getInt(data, 0) * 8;
@@ -31,20 +29,6 @@ public class STC_TRANSFER_CHUNK extends STCCommand {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 top[startX + x][startY + y] = Bits.getInt(data, dataIndex);
-                dataIndex += 4;
-            }
-        }
-        // dye_ground
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                dye_ground[startX + x][startY + y] = Bits.getInt(data, dataIndex);
-                dataIndex += 4;
-            }
-        }
-        // dye_top
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                dye_top[startX + x][startY + y] = Bits.getInt(data, dataIndex);
                 dataIndex += 4;
             }
         }
@@ -71,7 +55,7 @@ public class STC_TRANSFER_CHUNK extends STCCommand {
     @Override
     public int getSize(byte sizeData) {
         // Zwei mal Koordinaten, 64 ints texturen, 8 byte kollisionsdaten
-        return 8 * 8 * 4 * 4 + 8 + 8;
+        return 8 * 8 * 4 * 2 + 8 + 8;
     }
     
 }
