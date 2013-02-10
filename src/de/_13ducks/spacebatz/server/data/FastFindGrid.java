@@ -12,7 +12,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.geo.Distance;
 import java.util.Iterator;
 import java.util.LinkedList;
 

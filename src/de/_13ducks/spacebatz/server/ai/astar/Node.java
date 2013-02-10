@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.IntVector;
 
 /**
  * Ein Knoten des Wegfindungsnetzes.
@@ -9,7 +8,7 @@ import de._13ducks.spacebatz.util.Position;
  *
  * @author michael
  */
-class Node extends Position {
+class Node extends IntVector {
 
     /**
      * Die Länge des Wegs zu diesem Knoten.
@@ -51,7 +50,7 @@ class Node extends Position {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof Node && ((Node) obj).getX() == getX() && ((Node) obj).getY() == getY());
+        return (obj instanceof Node && ((Node) obj).x == x && ((Node) obj).y == y);
     }
 
     @Override

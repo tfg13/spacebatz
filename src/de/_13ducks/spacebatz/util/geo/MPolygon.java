@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.util.mapgen.data;
+package de._13ducks.spacebatz.util.geo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

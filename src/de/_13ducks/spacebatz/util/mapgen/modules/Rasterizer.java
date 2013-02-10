@@ -2,9 +2,9 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
-import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.geo.MPolygon;
+import de._13ducks.spacebatz.util.geo.Vector;
 import de._13ducks.spacebatz.util.mapgen.data.Theme;
-import de._13ducks.spacebatz.util.mapgen.data.Vector;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

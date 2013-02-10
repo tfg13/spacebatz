@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.server.data.quests.Quest;
-import de._13ducks.spacebatz.util.mapgen.data.PolyMesh;
+import de._13ducks.spacebatz.util.geo.PolyMesh;
 import java.util.ArrayList;
 import java.util.HashMap;
 

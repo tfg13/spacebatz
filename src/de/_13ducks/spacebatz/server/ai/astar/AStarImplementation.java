@@ -1,8 +1,7 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
-import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.Distance;
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.IntVector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -78,7 +77,7 @@ class AStarImplementation {
      * @param goal
      * @param requester
      */
-    public void loadPathRequest(Position start, Position goal, PathRequester requester, int size) {
+    public void loadPathRequest(IntVector start, IntVector goal, PathRequester requester, int size) {
         if (computing) {
             throw new IllegalStateException("Der alte Weg ist nocht nicht fertoig!");
         }
@@ -89,8 +88,8 @@ class AStarImplementation {
         openList = new PriorityQueue<>(50, comparator);
         this.requester = requester;
 
-        this.goal = factory.getNode(goal.getX(), goal.getY());
-        this.start = factory.getNode(start.getX(), start.getY());
+        this.goal = factory.getNode(goal.x, goal.y);
+        this.start = factory.getNode(start.x, start.y);
         openList.add(this.start);
     }
 
@@ -176,7 +175,7 @@ class AStarImplementation {
      * @return
      */
     private float getWeight(Node current, Node successor) {
-        return (float) Distance.getDistance(current.getX(), current.getY(), successor.getX(), successor.getY());
+        return (float) Distance.getDistance(current.x, current.y, successor.x, successor.y);
     }
 
     /**
@@ -201,7 +200,7 @@ class AStarImplementation {
      *
      * @return
      */
-    public Position[] getPath() {
+    public IntVector[] getPath() {
         if (computing) {
             throw new IllegalStateException("Pfad noch nicht fertig berechnet!");
         } else {

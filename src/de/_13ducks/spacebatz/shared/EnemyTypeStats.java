@@ -11,13 +11,27 @@
 package de._13ducks.spacebatz.shared;
 
 /**
- * Die Werte, die eine bestimmte Gegnersortesorte hat
+ * Beschreibt alle eigenschaften eines Gegnertyps.
  *
  * @author Jj
  */
 public class EnemyTypeStats implements java.io.Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
+
+    /**
+     * @return the serialVersionUID
+     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    /**
+     * @param aSerialVersionUID the serialVersionUID to set
+     */
+    public static void setSerialVersionUID(long aSerialVersionUID) {
+        serialVersionUID = aSerialVersionUID;
+    }
     private int healthpoints;
     private int damage;
     private int picture;
@@ -28,6 +42,138 @@ public class EnemyTypeStats implements java.io.Serializable {
     private float color_green;
     private float color_blue;
     private float color_alpha;
+    /**
+     * Das Verhalten dieses Gegnertyps.
+     */
+    private BehaviourType behaviour;
+    /**
+     * Die Schieß-Fähigkeit dieses Gegnertyps.
+     */
+    private AbilityType shootAbility;
+
+    /**
+     * Liste der möglichen Gegner-Verhalten
+     */
+    public static enum BehaviourType {
+
+        SHOOTER, SPECTATOR
+    };
+
+    /**
+     * Liste der möglichen Gegnerfähigkeiten.
+     */
+    public static enum AbilityType {
+
+        FIREBULLET, NONE
+    };
+
+    /**
+     * @return the behaviour
+     */
+    public BehaviourType getBehaviour() {
+        return behaviour;
+    }
+
+    /**
+     * @param behaviour the behaviour to set
+     */
+    public void setBehaviour(BehaviourType behaviour) {
+        this.behaviour = behaviour;
+    }
+
+    /**
+     * @param healthpoints the healthpoints to set
+     */
+    public void setHealthpoints(int healthpoints) {
+        this.healthpoints = healthpoints;
+    }
+
+    /**
+     * @param damage the damage to set
+     */
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    /**
+     * @param picture the picture to set
+     */
+    public void setPicture(int picture) {
+        this.picture = picture;
+    }
+
+    /**
+     * @param speed the speed to set
+     */
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    /**
+     * @param sightrange the sightrange to set
+     */
+    public void setSightrange(int sightrange) {
+        this.sightrange = sightrange;
+    }
+
+    /**
+     * @param enemylevel the enemylevel to set
+     */
+    public void setEnemylevel(int enemylevel) {
+        this.enemylevel = enemylevel;
+    }
+
+    /**
+     * @param color_red the color_red to set
+     */
+    public void setColor_red(float color_red) {
+        this.color_red = color_red;
+    }
+
+    /**
+     * @param color_green the color_green to set
+     */
+    public void setColor_green(float color_green) {
+        this.color_green = color_green;
+    }
+
+    /**
+     * @param color_blue the color_blue to set
+     */
+    public void setColor_blue(float color_blue) {
+        this.color_blue = color_blue;
+    }
+
+    /**
+     * @param color_alpha the color_alpha to set
+     */
+    public void setColor_alpha(float color_alpha) {
+        this.color_alpha = color_alpha;
+    }
+
+    /**
+     * @return the shootAbility
+     */
+    public AbilityType getShootAbility() {
+        return shootAbility;
+    }
+
+    /**
+     * @param shootAbility the shootAbility to set
+     */
+    public void setShootAbility(AbilityType shootAbility) {
+        this.shootAbility = shootAbility;
+    }
+
+    /**
+     * Initialisiert ein leeres EnemytypeStats-Objekt.
+     */
+    public EnemyTypeStats() {
+        color_alpha = 1.0f;
+        color_blue = 1.0f;
+        color_green = 1.0f;
+        color_red = 1.0f;
+    }
 
     /**
      * Werte für einen Gegnertyp

@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.server.Server;
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.IntVector;
 import java.util.Iterator;
 import java.util.LinkedList;
 

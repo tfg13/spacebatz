@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.geo.Distance;
 
 /**
  * Ein Standardgegner, der auf den Spieler zurennt.

@@ -24,7 +24,7 @@ import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.IntVector;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -363,7 +363,7 @@ public class DebugConsole {
                     case "test":
                         Player player3 = Server.game.clients.values().iterator().next().getPlayer();
                         System.out.println("Playerpos:: " + player3.getX() + " / " + player3.getY());
-                        Position p = PathRequest.getLeftBotPosition(new PrecisePosition(player3.getX(), player3.getY()), player3.getSize());
+                        IntVector p = PathRequest.getLeftBotPosition(new PrecisePosition(player3.getX(), player3.getY()), player3.getSize());
                         System.out.println("LB-Position: " + p.toString());
 
                         break;

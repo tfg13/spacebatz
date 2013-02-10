@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.Distance;
+import de._13ducks.spacebatz.util.geo.Distance;
 
 /**
  *

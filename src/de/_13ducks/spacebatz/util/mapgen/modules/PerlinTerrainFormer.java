@@ -6,8 +6,8 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
-import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
-import de._13ducks.spacebatz.util.mapgen.data.Vector;
+import de._13ducks.spacebatz.util.geo.MPolygon;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.HashMap;
 import toxi.math.noise.PerlinNoise;
 

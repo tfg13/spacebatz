@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
-import de._13ducks.spacebatz.util.Position;
+import de._13ducks.spacebatz.util.geo.IntVector;
 
 /**
  * Klassen, die mit dem AstarPathfinder Wege berechnen wollen, müssen dieses Interface implementieren.

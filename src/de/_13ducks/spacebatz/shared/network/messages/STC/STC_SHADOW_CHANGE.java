@@ -7,7 +7,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
-import de._13ducks.spacebatz.util.mapgen.data.Vector;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Wird gesendet, wenn sich ein Chunk der Beleuchtung geändert hat.

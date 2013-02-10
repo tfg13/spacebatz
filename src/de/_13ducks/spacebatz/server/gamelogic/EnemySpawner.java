@@ -16,11 +16,10 @@ import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.cleverenemy.CleverEnemyBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.follower.FollowerLurkBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import java.util.*;
 
 /**
@@ -261,15 +260,28 @@ public class EnemySpawner {
             waveSpawnRemaining--;
             double[] pos = calcPosition(player);
             if (pos != null) {
-                int enemytype = 0;
-                int randomenemy = random.nextInt(4);
-                if (randomenemy == 0) {
-                    enemytype = 1 + random.nextInt(3);
-                }
-
+                // Einen zufälligen Gegner aus der EnemytypeList wählen:
+                int enemytype = random.nextInt(Server.game.enemytypes.getEnemytypelist().size());
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
-                enem.setBehaviour(new FollowerLurkBehaviour(enem));
-                enem.getProperties().setSightrange(5.0);
+                EnemyTypeStats stats = Server.game.enemytypes.getEnemytypelist().get(enemytype);
+                // AI-Verhalten einrichten:
+                switch (stats.getBehaviour()) {
+                    case SHOOTER:
+                        enem.setBehaviour(new ShooterLurkBehaviour(enem));
+                        break;
+                    case SPECTATOR:
+                        enem.setBehaviour(new SpectatorLurkBehaviour(enem));
+                        break;
+                }
+                // GGF Ability setzen:
+                switch (stats.getShootAbility()) {
+                    case FIREBULLET:
+                        // @TODO: Die Werte, mit denen die Firebulletability initialisiert wird in den Enemytypestats abspeichern.
+                        // dann kann jeder Gegner seine eigene FireBulletAbility haben.
+                        enem.setShootAbility(new FireBulletAbility(1, 0, 0.5, 100, 1, 0.15, 0.15, 0, 10, 1));
+                        enem.getShootAbility().setCooldown(100);
+                        break;
+                }
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
         }

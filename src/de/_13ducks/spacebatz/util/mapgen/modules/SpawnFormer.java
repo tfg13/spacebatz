@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.util.mapgen.modules;
 
 import de._13ducks.spacebatz.util.mapgen.InternalMap;
 import de._13ducks.spacebatz.util.mapgen.Module;
-import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
+import de._13ducks.spacebatz.util.geo.MPolygon;
 import java.util.HashMap;
 
 /**
