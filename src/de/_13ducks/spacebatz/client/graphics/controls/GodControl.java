@@ -241,11 +241,12 @@ public class GodControl implements Control {
         panX = renderer.getCamera().getPanX();
         panY = renderer.getCamera().getPanY();
         int[][] ground = GameClient.currentLevel.ground;
+        byte[][] ground_random = GameClient.currentLevel.ground_randomize;
         // Boden zuerst
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
-                int tex = texAt(ground, x, y);
+                int tex = realTexAt(ground, ground_random, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if ((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) {
                     drawUncoloredTile(tex, x, y, 0);
@@ -256,13 +257,14 @@ public class GodControl implements Control {
 
         // Top rendern
         int[][] top = GameClient.currentLevel.top;
+        byte[][] top_random = GameClient.currentLevel.top_randomize;
         topTiles.bind(); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
-                int tex = texAt(top, x, y);
-                int patRot = patternAt(top, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
-                if (((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) && tex != 0) {
+                if (((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) && baseTexAt(top, x, y) != 0) {
+                    int tex = realTexAt(top, top_random, x, y);
+                    int patRot = patternAt(top, x, y);
                     if ((patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
                         // Bild im Stencil-Buffer erzeugen:
@@ -518,7 +520,15 @@ public class GodControl implements Control {
 
     }
 
-    private static int texAt(int[][] layer, int x, int y) {
+    private static int realTexAt(int[][] layer, byte[][] random, int x, int y) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
+            return 1;
+        } else {
+            return layer[x][y] + random[x][y];
+        }
+    }
+
+    private static int baseTexAt(int[][] layer, int x, int y) {
         if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
             return 1;
         } else {
@@ -677,10 +687,10 @@ public class GodControl implements Control {
      * Liest das Pattern aus.
      */
     private int patternAt(int[][] tex, int x, int y) {
-        int myTex = texAt(tex, x, y);
-        return patternRotationLookupTable[(myTex == texAt(tex, x + 1, y) ? 1 : 0) | (myTex == texAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == texAt(tex, x, y - 1) ? 4 : 0) | (myTex == texAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == texAt(tex, x - 1, y) ? 16 : 0) | (myTex == texAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == texAt(tex, x, y + 1) ? 64 : 0) | (myTex == texAt(tex, x + 1, y + 1) ? 128 : 0)];
+        int myTex = baseTexAt(tex, x, y);
+        return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
     }
-    
+
     private boolean surroundingDark(byte[][] shadowMap, int x, int y) {
         return (shadowAt(shadowMap, x, y) == 127 && shadowAt(shadowMap, x - 1, y - 1) == 127 && shadowAt(shadowMap, x, y - 1) == 127 && shadowAt(shadowMap, x + 1, y - 1) == 127 && shadowAt(shadowMap, x - 1, y) == 127 && shadowAt(shadowMap, x + 1, y) == 127 && shadowAt(shadowMap, x - 1, y + 1) == 127 && shadowAt(shadowMap, x, y + 1) == 127 && shadowAt(shadowMap, x + 1, y + 1) == 127);
     }

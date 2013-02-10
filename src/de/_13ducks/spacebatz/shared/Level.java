@@ -29,6 +29,16 @@ public class Level implements java.io.Serializable {
      */
     public int[][] top;
     /**
+     * Wird für die endgültige Textur auf ground addiert.
+     * Wird nicht für die Begrenzungsberechung verwendet.
+     */
+    public byte[][] ground_randomize;
+    /**
+     * Wird für die endgültige Textur auf ground addiert.
+     * Wird nicht für die Begrenzungsberechung verwendet.
+     */
+    public byte[][] top_randomize;
+    /**
      * Die Beleuchtungsmap.
      */
     public byte[][] shadow;
@@ -54,6 +64,8 @@ public class Level implements java.io.Serializable {
         this.sizeY = ySize;
         ground = new int[xSize][ySize];
         top = new int[xSize][ySize];
+        ground_randomize = new byte[xSize][ySize];
+        top_randomize = new byte[xSize][ySize];
         collisionMap = new boolean[xSize][ySize];
         shadow = new byte[xSize][ySize];
     }

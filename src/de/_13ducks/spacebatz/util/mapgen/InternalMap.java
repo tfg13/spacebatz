@@ -18,6 +18,8 @@ public class InternalMap {
     public HashMap<String, Object> metadata = new HashMap<>();
     public int[][] groundTex;
     public int[][] topTex;
+    public byte[][] ground_randomize;
+    public byte[][] top_randomize;
     public boolean[][] collision;
     public byte[][] shadow;
     public ArrayList<Quest> quests = new ArrayList<>();
@@ -30,6 +32,8 @@ public class InternalMap {
         ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, hash, quests);
         level.ground = groundTex;
         level.top = topTex;
+        level.ground_randomize = ground_randomize;
+        level.top_randomize = top_randomize;
         for (int x = 0; x < groundTex.length; x++) {
             System.arraycopy(collision[x], 0, level.getCollisionMap()[x], 0, groundTex[0].length);
         }

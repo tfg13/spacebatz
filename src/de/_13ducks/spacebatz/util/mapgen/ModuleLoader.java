@@ -9,6 +9,7 @@ import de._13ducks.spacebatz.util.mapgen.modules.Prelight;
 import de._13ducks.spacebatz.util.mapgen.modules.Rasterizer;
 import de._13ducks.spacebatz.util.mapgen.modules.ResourcePlacer;
 import de._13ducks.spacebatz.util.mapgen.modules.SpawnFormer;
+import de._13ducks.spacebatz.util.mapgen.modules.SurfaceRandomizer;
 import java.util.HashMap;
 
 /**
@@ -33,6 +34,7 @@ public final class ModuleLoader {
             addModule(new ExampleQuestCreator());
             addModule(new ResourcePlacer());
             addModule(new Prelight());
+            addModule(new SurfaceRandomizer());
         }
         return map;
     }

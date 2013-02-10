@@ -5,7 +5,6 @@ import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.MPolygon;
 import de._13ducks.spacebatz.util.mapgen.data.Theme;
 import de._13ducks.spacebatz.util.mapgen.data.Vector;
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -60,11 +59,12 @@ public class Rasterizer extends Module {
         if (theme == null) {
             throw new RuntimeException("ERROR: Theme " + parameters.get("theme") + " not found!");
         }
-        int white = Color.WHITE.getRGB();
         double scaleX = 1.0 / sizeX;
         double scaleY = 1.0 / sizeY;
         map.groundTex = new int[sizeX][sizeY];
         map.topTex = new int[sizeX][sizeY];
+        map.ground_randomize = new byte[sizeX][sizeY];
+        map.top_randomize = new byte[sizeX][sizeY];
         map.collision = new boolean[sizeX][sizeY];
         // Trivialer Rasterize-Algorithmus. Es gibt bessere - siehe Wikipedia
         for (int x = 0; x < sizeX; x++) {
