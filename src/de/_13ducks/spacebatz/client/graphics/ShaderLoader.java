@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
+import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -21,28 +22,65 @@ public class ShaderLoader {
      * @return Links auf die Shader
      */
     public static int[] load() {
-        int[] shaders = new int[]{0};
+        int[] shaders = new int[2];
         try {
-            int shadow = createFragmentShader("shaders/shadow.glsl");
-            shaders[0] = ARBShaderObjects.glCreateProgramObjectARB();
-            if (shaders[0] == 0) {
-                throw new RuntimeException("Error creating shader!");
-            }
-            ARBShaderObjects.glAttachObjectARB(shaders[0], shadow);
-            ARBShaderObjects.glLinkProgramARB(shaders[0]);
-            if (ARBShaderObjects.glGetObjectParameteriARB(shaders[0], ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
-                System.err.println(getLogInfo(shaders[0]));
-            }
-
-            ARBShaderObjects.glValidateProgramARB(shaders[0]);
-            if (ARBShaderObjects.glGetObjectParameteriARB(shaders[0], ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
-                System.err.println(getLogInfo(shaders[0]));
-            }
+            linkSingleFragmentShader(shaders, 0, createShader("shaders/shadow.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
+            linkShaders(shaders, 1, createShader("shaders/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         return shaders;
+    }
+
+    /**
+     * Linkt Vertex und Fragment Shader zusammen in ein Shaderprogramm
+     *
+     * @param shaders Die Shader-Liste
+     * @param index Position des neuen Shaders
+     * @param shader Der geladenene, compilierte Shader
+     */
+    private static void linkShaders(int[] shaders, int index, int vertexShader, int fragmentShader) {
+        shaders[index] = ARBShaderObjects.glCreateProgramObjectARB();
+        if (shaders[index] == 0) {
+            throw new RuntimeException("Error creating shader!");
+        }
+        ARBShaderObjects.glAttachObjectARB(shaders[index], vertexShader);
+        ARBShaderObjects.glAttachObjectARB(shaders[index], fragmentShader);
+        
+        ARBShaderObjects.glLinkProgramARB(shaders[index]);
+        if (ARBShaderObjects.glGetObjectParameteriARB(shaders[index], ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
+            System.err.println(getLogInfo(shaders[index]));
+        }
+
+        ARBShaderObjects.glValidateProgramARB(shaders[index]);
+        if (ARBShaderObjects.glGetObjectParameteriARB(shaders[index], ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
+            System.err.println(getLogInfo(shaders[index]));
+        }
+    }
+    
+    /**
+     * Linkt den Shader in ein Shaderprogramm
+     *
+     * @param shaders Die Shader-Liste
+     * @param index Position des neuen Shaders
+     * @param shader Der geladenene, compilierte Shader
+     */
+    private static void linkSingleFragmentShader(int[] shaders, int index, int shader) {
+        shaders[index] = ARBShaderObjects.glCreateProgramObjectARB();
+        if (shaders[index] == 0) {
+            throw new RuntimeException("Error creating shader!");
+        }
+        ARBShaderObjects.glAttachObjectARB(shaders[index], shader);
+        ARBShaderObjects.glLinkProgramARB(shaders[index]);
+        if (ARBShaderObjects.glGetObjectParameteriARB(shaders[index], ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
+            System.err.println(getLogInfo(shaders[index]));
+        }
+
+        ARBShaderObjects.glValidateProgramARB(shaders[index]);
+        if (ARBShaderObjects.glGetObjectParameteriARB(shaders[index], ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
+            System.err.println(getLogInfo(shaders[index]));
+        }
     }
 
     /**
@@ -52,10 +90,10 @@ public class ShaderLoader {
      * @return der Shader
      * @throws Exception, wenn das Compilen nicht will
      */
-    private static int createFragmentShader(String filename) throws Exception {
+    private static int createShader(String filename, int type) throws Exception {
         int shader = 0;
         try {
-            shader = ARBShaderObjects.glCreateShaderObjectARB(ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
+            shader = ARBShaderObjects.glCreateShaderObjectARB(type);
 
             if (shader == 0) {
                 return 0;
