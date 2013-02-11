@@ -83,6 +83,7 @@ public class Rasterizer extends Module {
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
                     map.collision[x][y] = true;
+                    map.groundTex[x][y] = 32;
                     if (poly.resource == 1) {
                         map.topTex[x][y] = 4;
                     } else {
