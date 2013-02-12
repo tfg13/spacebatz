@@ -31,7 +31,7 @@ public class EnemyTypes implements java.io.Serializable {
         smallShooter.setShootAbility(EnemyTypeStats.AbilityType.FIREBULLET);
         smallShooter.setHealthpoints(12);
         smallShooter.setDamage(1);
-        smallShooter.setPicture(1);
+        smallShooter.setPicture(0);
         smallShooter.setSpeed(0.15f);
         smallShooter.setSightrange(5);
         smallShooter.setEnemylevel(0);
@@ -42,7 +42,7 @@ public class EnemyTypes implements java.io.Serializable {
         bigShooter.setShootAbility(EnemyTypeStats.AbilityType.FIREBULLET);
         bigShooter.setHealthpoints(30);
         bigShooter.setDamage(5);
-        bigShooter.setPicture(2);
+        bigShooter.setPicture(24);
         bigShooter.setSpeed(0.1f);
         bigShooter.setSightrange(5);
         bigShooter.setEnemylevel(1);

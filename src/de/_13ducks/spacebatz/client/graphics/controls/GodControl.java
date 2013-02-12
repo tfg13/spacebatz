@@ -131,7 +131,7 @@ public class GodControl implements Control {
         groundTiles = renderer.getTextureByName("ground.png");
         topTiles = renderer.getTextureByName("top.png");
         playerTiles = renderer.getTextureByName("player.png");
-        enemyTiles = renderer.getTextureByName("enemy.png");
+        enemyTiles = renderer.getTextureByName("enemy00.png");
         bulletTiles = renderer.getTextureByName("bullet.png");
         itemTiles = renderer.getTextureByName("item.png");
         inventoryPic = renderer.getTextureByName("inventory2.png");
