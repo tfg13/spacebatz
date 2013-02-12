@@ -1,9 +1,9 @@
 package de._13ducks.spacebatz.util.mapgen.modules;
 
-import de._13ducks.spacebatz.util.mapgen.InternalMap;
-import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.geo.MPolygon;
 import de._13ducks.spacebatz.util.geo.Vector;
+import de._13ducks.spacebatz.util.mapgen.InternalMap;
+import de._13ducks.spacebatz.util.mapgen.Module;
 import de._13ducks.spacebatz.util.mapgen.data.Theme;
 import java.io.BufferedReader;
 import java.io.File;
@@ -77,17 +77,17 @@ public class Rasterizer extends Module {
                 }
                 // Hier kommen wir nur hin, wenn der Polygon gefunden wurde
                 // Boden erstmal immer gleich setzen:
-                map.groundTex[x][y] = 1;
+                map.groundTex[x][y] = theme.ground;
                 if (poly.border) {
-                    map.topTex[x][y] = 1;
+                    map.topTex[x][y] = theme.border;
                     map.collision[x][y] = true;
                 } else if (poly.solid) {
                     map.collision[x][y] = true;
-                    map.groundTex[x][y] = 32;
+                    map.groundTex[x][y] = theme.belowWall;
                     if (poly.resource == 1) {
                         map.topTex[x][y] = 4;
                     } else {
-                        map.topTex[x][y] = 2;
+                        map.topTex[x][y] = theme.wall;
                     }
                 } else {
                     if (poly.texture != 0) {
@@ -99,13 +99,13 @@ public class Rasterizer extends Module {
         }
         // Undurchdringbaren Rand erzwingen:
         for (int y = 0; y < sizeY; y++) {
-            map.groundTex[0][y] = 1;
+            map.groundTex[0][y] = theme.border;
             map.collision[0][y] = true;
             map.groundTex[sizeX - 1][y] = 1;
             map.collision[sizeX - 1][y] = true;
         }
         for (int x = 0; x < sizeX; x++) {
-            map.groundTex[x][0] = 1;
+            map.groundTex[x][0] = theme.border;
             map.collision[x][0] = true;
             map.groundTex[x][sizeY - 1] = 1;
             map.collision[x][sizeY - 1] = true;
@@ -124,6 +124,10 @@ public class Rasterizer extends Module {
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = false;
         map.collision[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = false;
         map.collision[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = false;
+        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY)] = theme.spawn;
+        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY)] = theme.spawn;
+        map.groundTex[(int) (spawn.x * sizeX)][(int) (spawn.y * sizeY) - 1] = theme.spawn;
+        map.groundTex[(int) (spawn.x * sizeX) - 1][(int) (spawn.y * sizeY) - 1] = theme.spawn;
     }
 
     /**
@@ -144,7 +148,7 @@ public class Rasterizer extends Module {
                    String line;
                    while ((line = reader.readLine()) != null) {
                        String[] lineSplit = line.split("=");
-                       int val = Integer.parseInt(lineSplit[1], 16);
+                       int val = Integer.parseInt(lineSplit[1]);
                        switch (lineSplit[0]) {
                            case "ground":
                                ground = val;

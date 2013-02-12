@@ -1,5 +1,5 @@
-ground=E1E1E1
-belowWall=8E8E8E
-spawn=CA3D3D
-border=676767
-wall=959595
+ground=1
+belowWall=32
+spawn=33
+border=1
+wall=2

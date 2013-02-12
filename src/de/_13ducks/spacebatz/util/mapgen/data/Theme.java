@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.util.mapgen.data;
 
 /**
- * Eine Sammlung für Farben für Blöcke.
+ * Eine Sammlung von Blocktexturen.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
