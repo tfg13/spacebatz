@@ -62,7 +62,7 @@ public class ExampleQuestCreator extends Module {
 
         // Zufälligen nehmen:
         final MPolygon targetPoly = acceptablePolys.get(random.nextInt(acceptablePolys.size()));
-        targetPoly.texture = 5;
+        targetPoly.texture = 34;
         // Quest bauen:
         Quest q = new Quest() {
             @Override

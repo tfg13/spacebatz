@@ -258,8 +258,8 @@ public class GodControl implements Control {
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if ((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) {
                     int patRot = patternAt(ground, x, y);
-                    if (smoothGround && tex < 32 && (patRot >> 4) != 5) {
-                        int blendTex = blendTexAt(ground, x, y, patRot >> 4, patRot & 0x0F);
+                    int blendTex = blendTexAt(ground, x, y, patRot >> 4, patRot & 0x0F);
+                    if (smoothGround && tex < 32 && blendTex >= 32 && (patRot >> 4) != 5) {
                         ARBShaderObjects.glUseProgramObjectARB(shader[1]);
                         int dx1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaX");
                         int dy1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaY");
