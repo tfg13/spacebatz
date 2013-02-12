@@ -82,6 +82,14 @@ public class GodControl implements Control {
      */
     private int shadowLevel = 3;
     /**
+     * Übergänge in Top mit Konturen zeichnen?
+     */
+    private boolean fancyTop = true;
+    /**
+     * Bestimmte Übergänge im Boden weichzeichnen?
+     */
+    private boolean smoothGround = true;
+    /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
      * Gegen den Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
@@ -250,7 +258,7 @@ public class GodControl implements Control {
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if ((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) {
                     int patRot = patternAt(ground, x, y);
-                    if (tex < 32 && (patRot >> 4) != 5) {
+                    if (smoothGround && tex < 32 && (patRot >> 4) != 5) {
                         int blendTex = blendTexAt(ground, x, y, patRot >> 4, patRot & 0x0F);
                         ARBShaderObjects.glUseProgramObjectARB(shader[1]);
                         int dx1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaX");
@@ -288,7 +296,7 @@ public class GodControl implements Control {
                 if (((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) && baseTexAt(top, x, y) != 0) {
                     int tex = realTexAt(top, top_random, x, y);
                     int patRot = patternAt(top, x, y);
-                    if ((patRot >> 4) != 5) {
+                    if (fancyTop && (patRot >> 4) != 5) {
                         int rot = patRot & 0x0F;
                         // Bild im Stencil-Buffer erzeugen:
                         glEnable(GL_STENCIL_TEST); // Stenciling ist an
@@ -802,5 +810,33 @@ public class GodControl implements Control {
      */
     public void setShadowLevel(int shadowLevel) {
         this.shadowLevel = shadowLevel;
+    }
+
+    /**
+     * @return the smoothGround
+     */
+    public boolean isSmoothGround() {
+        return smoothGround;
+    }
+
+    /**
+     * @param smoothGround the smoothGround to set
+     */
+    public void setSmoothGround(boolean smoothGround) {
+        this.smoothGround = smoothGround;
+    }
+
+    /**
+     * @return the fancyTop
+     */
+    public boolean isFancyTop() {
+        return fancyTop;
+    }
+
+    /**
+     * @param fancyTop the fancyTop to set
+     */
+    public void setFancyTop(boolean fancyTop) {
+        this.fancyTop = fancyTop;
     }
 }
