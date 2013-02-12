@@ -66,6 +66,7 @@ public class GraphicsEngine {
      * Der Renderer, der Geometrie und Texturen zeichnet.
      */
     private Renderer renderer;
+    private ShadowAnimator shadowAnimator = new ShadowAnimator();
 
     /**
      * Initialisiert die GrafikEngine.
@@ -87,7 +88,7 @@ public class GraphicsEngine {
             camera = new Camera(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y);
             // OpenGL-Init:
             // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
-           // GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE));
+            // GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE));
             glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
             //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
             glEnable(GL_BLEND); // Transparenz in Texturen erlauben
@@ -111,7 +112,6 @@ public class GraphicsEngine {
         } catch (Exception ex) {
             ex.printStackTrace();
             Display.destroy();
-            return;
         }
     }
 
@@ -127,6 +127,10 @@ public class GraphicsEngine {
      * Rendert den Bildschirm und verarbeitet Eingaben.
      */
     public void tick() {
+        // Schatten-Aufdecken animieren:
+        shadowAnimator.tick();
+
+        // Bild löschen, neu malen
         glClear(GL_COLOR_BUFFER_BIT);
         godControl.render(renderer);
         hudControl.render(renderer);
@@ -169,7 +173,7 @@ public class GraphicsEngine {
      * @param y
      */
     public void createDamageNumber(int damage, double x, double y) {
-        godControl.createDamageNumber(damage, x, y);
+        GodControl.createDamageNumber(damage, x, y);
     }
 
     /**
@@ -178,7 +182,7 @@ public class GraphicsEngine {
      * @param fx
      */
     public void addFx(Fx fx) {
-        godControl.addFx(fx);
+        GodControl.addFx(fx);
     }
 
     public SkillTreeControl getSkillTree() {
@@ -206,5 +210,14 @@ public class GraphicsEngine {
 
     public GodControl defactoRenderer() {
         return godControl;
+    }
+
+    /**
+     * Liefert den ShadowAnimator.
+     *
+     * @return der ShadowAnimator
+     */
+    public ShadowAnimator getShadowAnimator() {
+        return shadowAnimator;
     }
 }

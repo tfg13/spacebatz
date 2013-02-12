@@ -21,12 +21,13 @@ public class STC_SHADOW_CHANGE extends STCCommand {
         int px = Bits.getInt(data, 0);
         int py = Bits.getInt(data, 4);
         int index = 8;
-        byte[][] shadow = GameClient.currentLevel.shadow;
+        byte[][] shadow = new byte[8][8];
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                shadow[px * 8 + x][py * 8 + y] = data[index++];
+                shadow[x][y] = data[index++];
             }
         }
+        GameClient.getEngine().getGraphics().getShadowAnimator().receivedChunk(px, py, shadow);
     }
 
     @Override
