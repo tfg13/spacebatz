@@ -45,8 +45,6 @@ public class GodControl implements Control {
     private Texture playerTiles;
     private Texture enemyTiles;
     private Texture bulletTiles;
-    private Texture itemTiles;
-    private Texture inventoryPic;
     private Texture fxTiles;
     /**
      * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche
@@ -133,8 +131,6 @@ public class GodControl implements Control {
         playerTiles = renderer.getTextureByName("player.png");
         enemyTiles = renderer.getTextureByName("enemy00.png");
         bulletTiles = renderer.getTextureByName("bullet.png");
-        itemTiles = renderer.getTextureByName("item.png");
-        inventoryPic = renderer.getTextureByName("inventory2.png");
         fxTiles = renderer.getTextureByName("fx.png");
 
         // Shader laden
