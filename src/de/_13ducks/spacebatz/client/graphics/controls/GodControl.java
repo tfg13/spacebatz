@@ -84,7 +84,7 @@ public class GodControl implements Control {
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
-     * Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
+     * Gegen den Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
      */
     private final short[] patternRotationLookupTable = new short[]{0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 0 - 7
         0x00, 0x10, 0x00, 0x10, 0x13, 0x60, 0x13, 0x20,// 8 - 15
@@ -249,7 +249,30 @@ public class GodControl implements Control {
                 int tex = realTexAt(ground, ground_random, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if ((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) {
-                    drawUncoloredTile(tex, x, y, 0);
+                    int patRot = patternAt(ground, x, y);
+                    if (tex < 32 && (patRot >> 4) != 5) {
+                        int blendTex = blendTexAt(ground, x, y, patRot >> 4, patRot & 0x0F);
+                        ARBShaderObjects.glUseProgramObjectARB(shader[1]);
+                        int dx1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaX");
+                        int dy1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaY");
+                        int dx2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaX");
+                        int dy2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaY");
+                        int texX = tex % 16;
+                        int texY = tex / 16;
+                        int blendX = blendTex % 16;
+                        int blendY = blendTex / 16;
+                        int patX = (241 + (patRot >> 4)) % 16;
+                        int patY = (241 + (patRot >> 4)) / 16;
+                        ARBShaderObjects.glUniform1fARB(dx1adr, (blendX - texX) * 0.0625f);
+                        ARBShaderObjects.glUniform1fARB(dy1adr, (blendY - texY) * 0.0625f);
+                        ARBShaderObjects.glUniform1fARB(dx2adr, (patX - texX) * 0.0625f);
+                        ARBShaderObjects.glUniform1fARB(dy2adr, (patY - texY) * 0.0625f);
+                        drawUncoloredTile(tex, x, y, patRot & 0x0F);
+                        ARBShaderObjects.glUseProgramObjectARB(0);
+                    } else {
+                        // Normales Bodenzeichnen
+                        drawUncoloredTile(tex, x, y, 0);
+                    }
                 }
             }
         }
@@ -689,6 +712,78 @@ public class GodControl implements Control {
     private int patternAt(int[][] tex, int x, int y) {
         int myTex = baseTexAt(tex, x, y);
         return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
+    }
+
+    /**
+     * Liest in Abhängigkeit von dem gegebenen Pattern und Rotation die Nachbartextur aus.
+     */
+    private int blendTexAt(int[][] tex, int x, int y, int pattern, int rot) {
+        switch (pattern) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                // oben (ohne Rotation)
+                switch (rot) {
+                    case 0:
+                        return baseTexAt(tex, x, y + 1);
+                    case 1:
+                        return baseTexAt(tex, x - 1, y);
+                    case 2:
+                        return baseTexAt(tex, x, y - 1);
+                    case 3:
+                        return baseTexAt(tex, x + 1, y);
+                }
+                break;
+            case 4:
+                // rechts (ohne Rotation)
+                switch (rot) {
+                    case 0:
+                        return baseTexAt(tex, x + 1, y);
+                    case 1:
+                        return baseTexAt(tex, x, y + 1);
+                    case 2:
+                        return baseTexAt(tex, x - 1, y);
+                    case 3:
+                        return baseTexAt(tex, x, y - 1);
+                }
+                break;
+            case 5:
+                // Kein Pattern (=egal)
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                // oben (ohne Rotation)
+                switch (rot) {
+                    case 0:
+                        return baseTexAt(tex, x, y + 1);
+                    case 1:
+                        return baseTexAt(tex, x - 1, y);
+                    case 2:
+                        return baseTexAt(tex, x, y - 1);
+                    case 3:
+                        return baseTexAt(tex, x + 1, y);
+                }
+                break;
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                // rechts oben (ohne Rotation)
+                switch (rot) {
+                    case 0:
+                        return baseTexAt(tex, x + 1, y + 1);
+                    case 1:
+                        return baseTexAt(tex, x - 1, y + 1);
+                    case 2:
+                        return baseTexAt(tex, x - 1, y - 1);
+                    case 3:
+                        return baseTexAt(tex, x + 1, y - 1);
+                }
+        }
+        return 0; // sollte nie erreicht werden, falls doch findet man so hoffentlich den Fehler
     }
 
     private boolean surroundingDark(byte[][] shadowMap, int x, int y) {
