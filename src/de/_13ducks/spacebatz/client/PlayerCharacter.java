@@ -34,9 +34,18 @@ public class PlayerCharacter extends Char {
      * Ab wann der Spieler respawnwn kann
      */
     private int respawntick;
+    /**
+     * RenderObject für das drehbare Turret.
+     */
+    private RenderObject turretRenderObject;
+    /**
+     * Richtung, in die das Turret gerade schaut.
+     */
+    private double turretDir;
 
     public PlayerCharacter(int netID) {
         super(netID, new RenderObject(new Animation(0, 4, 4, 1, 1)));
+        turretRenderObject = new RenderObject(new Animation(4, 4, 4, 1, 1));
         selectedattack = 0;
         healthpoints = Settings.CHARHEALTH;
         healthpointsmax = Settings.CHARHEALTH;
@@ -60,7 +69,7 @@ public class PlayerCharacter extends Char {
     public void tick(int gameTick) {
         for (int i = 0; i <= 2; i++) {
             Item weapon = GameClient.getEquippedItems().getEquipslots()[1][i];
-           
+
             if (weapon != null) {
                 if (i != selectedattack || GameClient.frozenGametick >= attackCooldownTick) {
                     weapon.increaseOverheat(-weapon.getWeaponAbility().getWeaponStats().getReduceoverheat());
@@ -90,5 +99,27 @@ public class PlayerCharacter extends Char {
      */
     public int getRespawntick() {
         return respawntick;
+    }
+
+    /**
+     * Liefert das RO des drehbaren Turrets.
+     *
+     * @return das RO des drehbaren Turrets
+     */
+    public RenderObject getTurretRenderObject() {
+        return turretRenderObject;
+    }
+
+    /**
+     * Liefert die Richtung, in die das Turret gerade schaut.
+     *
+     * @return die Richtung, in die das Turret gerade schaut
+     */
+    public double getTurretDir() {
+        return turretDir;
+    }
+
+    public void setTurretDir(double dir) {
+        turretDir = dir;
     }
 }

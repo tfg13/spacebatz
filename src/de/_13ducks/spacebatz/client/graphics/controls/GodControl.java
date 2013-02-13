@@ -236,8 +236,12 @@ public class GodControl implements Control {
         Camera camera = renderer.getCamera();
         TextWriter textWriter = renderer.getTextWriter();
 
+        // Player in der Mitte
         renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
         renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
+
+        // Turret zeigt auf Maus
+        GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         // Boden und Wände zeichnen
@@ -342,8 +346,10 @@ public class GodControl implements Control {
         playerTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof PlayerCharacter) {
-                if (!((PlayerCharacter) c).isDead()) {
-                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                PlayerCharacter player = (PlayerCharacter) c;
+                if (!player.isDead()) {
+                    renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
+                    renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
                 }
             }
         }
@@ -753,7 +759,7 @@ public class GodControl implements Control {
                 }
                 break;
             case 5:
-                // Kein Pattern (=egal)
+            // Kein Pattern (=egal)
             case 6:
             case 7:
             case 8:
