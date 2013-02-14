@@ -24,7 +24,7 @@ public class EnemyTypes implements java.io.Serializable {
     public EnemyTypes() {
         enemytypelist = new ArrayList<>();
         //int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel, (Farbe in floats)
-
+        
         EnemyTypeStats smallShooter = new EnemyTypeStats();
         enemytypelist.add(smallShooter);
         smallShooter.setBehaviour(EnemyTypeStats.BehaviourType.SHOOTER);
@@ -56,6 +56,18 @@ public class EnemyTypes implements java.io.Serializable {
         spectator.setSpeed(0.3f);
         spectator.setSightrange(5);
         spectator.setEnemylevel(1);
+        
+        EnemyTypeStats crab = new EnemyTypeStats();
+        enemytypelist.add(crab);
+        crab.setBehaviour(EnemyTypeStats.BehaviourType.SHOOTER);
+        crab.setShootAbility(EnemyTypeStats.AbilityType.FIREBULLET);
+        crab.setHealthpoints(12);
+        crab.setDamage(1);
+        crab.setPicture(40);
+        crab.setSpeed(0.15f);
+        crab.setSightrange(5);
+        crab.setEnemylevel(2);
+
 
 
 //
