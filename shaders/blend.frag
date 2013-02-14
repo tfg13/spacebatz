@@ -8,7 +8,7 @@ void main()
 {  
    vec4 texel0, texel1, texel2;
 
-   texel0 = texture2D(Texture0, gl_TexCoord[0]);
+   texel0 = texture2D(Texture0, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y));
    texel1 = texture2D(Texture0, vec2(gl_TexCoord[0].x + tex1deltaX, gl_TexCoord[0].y + tex1deltaY));
    texel2 = texture2D(Texture0, vec2(gl_TexCoord[0].x + tex2deltaX, gl_TexCoord[0].y + tex2deltaY));
 
