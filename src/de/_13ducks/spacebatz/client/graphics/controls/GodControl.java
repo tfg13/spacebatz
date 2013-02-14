@@ -632,19 +632,20 @@ public class GodControl implements Control {
 
         float v = (currentpic % (16 / animation.getPicsizex())) * picsizex;
         float w = (currentpic / (16 / animation.getPicsizey())) * picsizey;
+        float onepixel = 1.0f / 512; // einen pixel vom Bild in jede Richtung abschneiden
 
         glPushMatrix();
         glTranslated(x + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
         glRotated(dir / Math.PI * 180.0, 0, 0, 1);
         glTranslated(-(x + renderer.getCamera().getPanX()), -(y + renderer.getCamera().getPanY()), 0);
         glBegin(GL_QUADS);
-        glTexCoord2f(v, w + picsizey);
+        glTexCoord2f(v + onepixel, w + picsizey - onepixel);
         glVertex3f((float) x + renderer.getCamera().getPanX() - 1, (float) y + renderer.getCamera().getPanY() + 1, 0);
-        glTexCoord2f(v + picsizex, w + picsizey);
+        glTexCoord2f(v + picsizex - onepixel, w + picsizey - onepixel);
         glVertex3f((float) x + renderer.getCamera().getPanX() + 1, (float) y + renderer.getCamera().getPanY() + 1, 0);
-        glTexCoord2f(v + picsizex, w);
+        glTexCoord2f(v + picsizex - onepixel, w + onepixel);
         glVertex3f((float) x + renderer.getCamera().getPanX() + 1, (float) y + renderer.getCamera().getPanY() - 1, 0);
-        glTexCoord2f(v, w);
+        glTexCoord2f(v + onepixel, w + onepixel);
         glVertex3f((float) x + renderer.getCamera().getPanX() - 1, (float) y + renderer.getCamera().getPanY() - 1, 0);
         glEnd();
         glPopMatrix();

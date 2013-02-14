@@ -34,7 +34,7 @@ public class EnemyTypes implements java.io.Serializable {
         smallShooter.setPicture(0);
         smallShooter.setSpeed(0.15f);
         smallShooter.setSightrange(5);
-        smallShooter.setEnemylevel(0);
+        smallShooter.setEnemylevel(2);
 
         EnemyTypeStats bigShooter = new EnemyTypeStats();
         enemytypelist.add(bigShooter);
@@ -45,7 +45,7 @@ public class EnemyTypes implements java.io.Serializable {
         bigShooter.setPicture(24);
         bigShooter.setSpeed(0.1f);
         bigShooter.setSightrange(5);
-        bigShooter.setEnemylevel(1);
+        bigShooter.setEnemylevel(3);
         
         EnemyTypeStats spectator = new EnemyTypeStats();
         enemytypelist.add(spectator);
