@@ -30,6 +30,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
@@ -183,6 +184,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_QUEST_RESULT, new STC_QUEST_RESULT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
         registerSTCCommand(MessageIDs.NET_SHADOW_CHANGE, new STC_SHADOW_CHANGE());
+        registerSTCCommand(MessageIDs.NET_UPDATE_TURRET_DIR, new STC_PLAYER_TURRET_DIR_UPDATE());
     }
 
     /**

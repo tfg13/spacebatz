@@ -239,4 +239,8 @@ public class MessageIDs {
      * Beleuchtung hat sich geändert
      */
     public static final byte NET_SHADOW_CHANGE = 61;
+    /**
+     * Update der Drehung des Turrets.
+     */
+    public static final byte NET_UPDATE_TURRET_DIR = 62;
 }

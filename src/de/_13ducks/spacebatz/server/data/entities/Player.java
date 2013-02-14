@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 
@@ -51,6 +52,14 @@ public class Player extends ItemCarrier {
      * Ab wann der Spieler respawnwn kann
      */
     private int respawntick;
+    /**
+     * Die letzte empfangene Drehrichtung des Turrets.
+     */
+    private double turretDir;
+    /**
+     * In wieviel Ticks die Turret-Drehung das nächste mal versendet wird.
+     */
+    private int ticksUntilNextSend = 1;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -76,7 +85,8 @@ public class Player extends ItemCarrier {
      * @param s S-Button gedrückt.
      * @param d D-Button gedrückt.
      */
-    public void clientMove(boolean w, boolean a, boolean s, boolean d) {
+    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir) {
+        this.turretDir = turretDir;
         double x = 0, y = 0;
 
         if (!dead) { // Tote bewegen sich nicht
@@ -215,6 +225,15 @@ public class Player extends ItemCarrier {
                 respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
             }
+        }
+    }
+
+    @Override
+    public void tick(int gametick) {
+        super.tick(gametick);
+        if (--ticksUntilNextSend < 0) {
+            ticksUntilNextSend = Settings.TURRET_DIR_UPDATE_INTERVAL;
+            STC_PLAYER_TURRET_DIR_UPDATE.broadcastTurretDir(netID, (float) turretDir);
         }
     }
 }

@@ -113,4 +113,9 @@ public final class Settings {
      * Zeit, bis Spieler nach seinem Tod respawnt, in Ticks
      */
     public static final int RESPAWNTIME = 300;
+    /**
+     * Alle wieviel Ticks die Turret-Drehung eines Spielers gebroadcastet wird.
+     * Für Leitungen mit geringerem Durchsatz höher einstellen.
+     */
+    public static final int TURRET_DIR_UPDATE_INTERVAL = 1;
 }
