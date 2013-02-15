@@ -444,7 +444,7 @@ public class GodControl implements Control {
             } else if (shadowLevel == 3) {
                 glDisable(GL_TEXTURE_2D);
                 glColor4f(0f, 0f, 0f, 1f);
-                boolean shaderActive = false;
+                //boolean shaderActive = false;
                 // Werte precachen:
                 float xFact = 1f / (Settings.CLIENT_GFX_RES_X / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_X;
                 float yFact = 1f / (Settings.CLIENT_GFX_RES_Y / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_Y;
@@ -470,20 +470,15 @@ public class GodControl implements Control {
                         lu = (shadowAt(shadowMap, x - 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x - 1, y) + shadow) * 0.0019685039f;
                         ro = (shadowAt(shadowMap, x + 1, y + 1) + shadowAt(shadowMap, x, y + 1) + shadowAt(shadowMap, x + 1, y) + shadow) * 0.0019685039f;
                         ru = (shadowAt(shadowMap, x + 1, y - 1) + shadowAt(shadowMap, x, y - 1) + shadowAt(shadowMap, x + 1, y) + shadow) * 0.0019685039f;
+                        boolean shaderOn = false;
                         // Schatten überall gleich?
                         if (lo == lu && lu == ro && ro == ru) {
-                            // Lässt sich ohne Shader machen:
-                            if (shaderActive) {
-                                ARBShaderObjects.glUseProgramObjectARB(0);
-                                shaderActive = false;
-                            }
                             glColor4f(0f, 0f, 0f, lu);
                         } else {
+                            shaderOn = true;
                             // Muss mit Shader gezeichnet werden:
-                            if (!shaderActive) {
-                                ARBShaderObjects.glUseProgramObjectARB(shader[0]);
-                                shaderActive = true;
-                            }
+                            ARBShaderObjects.glUseProgramObjectARB(shader[0]);
+
                             // Shader konfigurieren
                             ARBShaderObjects.glUniform1fARB(loAdr, lo);
                             ARBShaderObjects.glUniform1fARB(luAdr, lu);
@@ -498,6 +493,9 @@ public class GodControl implements Control {
                         glVertex3f(x + 1 + panX, y + panY, 0);
                         glVertex3f(x + panX, y + panY, 0);
                         glEnd();
+                        if (shaderOn) {
+                            ARBShaderObjects.glUseProgramObjectARB(0);
+                        }
                     }
                 }
                 // Shader abschalten
