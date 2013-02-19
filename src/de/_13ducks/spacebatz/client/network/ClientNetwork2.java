@@ -397,7 +397,7 @@ public class ClientNetwork2 {
         buf[3] = 0; // MAC
         int pos = 4;
         // Erst Packete mit höherer Priorität verwenden:
-        while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+        while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 1459 - pos) {
             // Befehl passt noch rein
             OutgoingCommand cmd = priorityCmdOutQueue.poll();
             buf[pos++] = (byte) cmd.cmdID;
@@ -405,7 +405,7 @@ public class ClientNetwork2 {
             pos += cmd.data.length;
         }
         // Dann normale Packete:
-        while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+        while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 1459 - pos) {
             // Befehl passt noch rein
             OutgoingCommand cmd = cmdOutQueue.poll();
             buf[pos++] = (byte) cmd.cmdID;

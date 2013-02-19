@@ -245,7 +245,7 @@ public class ServerNetworkConnection {
             buf[pos++] = (byte) 0x88;
         }
         // Nachrichten mit hoher Priorität
-        while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+        while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 1459 - pos) {
             // Befehl passt noch rein
             OutgoingCommand cmd = priorityCmdOutQueue.poll();
             buf[pos++] = (byte) cmd.cmdID;
@@ -253,7 +253,7 @@ public class ServerNetworkConnection {
             pos += cmd.data.length;
         }
         // Normale Nachrichten:
-        while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 511 - pos) {
+        while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 1459 - pos) {
             // Befehl passt noch rein
             OutgoingCommand cmd = cmdOutQueue.poll();
             buf[pos++] = (byte) cmd.cmdID;
