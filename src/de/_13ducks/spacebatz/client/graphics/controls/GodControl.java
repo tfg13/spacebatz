@@ -22,6 +22,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.lwjgl.input.Keyboard;
@@ -87,6 +88,10 @@ public class GodControl implements Control {
      * Bestimmte Übergänge im Boden weichzeichnen?
      */
     private boolean smoothGround = true;
+    /**
+     * Alternativer Sichtmodus, bei dem die Einheit nicht immer in der Mitte ist, sondern stark von der Mausposition abhängt.
+     */
+    private boolean lookAhead = false;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -237,8 +242,19 @@ public class GodControl implements Control {
         TextWriter textWriter = renderer.getTextWriter();
 
         // Player in der Mitte
-        renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
-        renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
+        if (!lookAhead) {
+            renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
+            renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
+        } else {
+            // Maus-Richtung von der Mitte aus:
+            Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(1.0 / 16);
+            // Länge limitieren:
+            if (vec.length() > 5) {
+                vec = vec.normalize().multiply(5);
+            }
+            renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
+            renderer.getCamera().setPanY((float) (-GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f + vec.y));
+        }
 
         // Turret zeigt auf Maus
         GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
@@ -839,5 +855,19 @@ public class GodControl implements Control {
      */
     public void setFancyTop(boolean fancyTop) {
         this.fancyTop = fancyTop;
+    }
+
+    /**
+     * @return the lookAhead
+     */
+    public boolean isLookAhead() {
+        return lookAhead;
+    }
+
+    /**
+     * @param lookAhead the lookAhead to set
+     */
+    public void setLookAhead(boolean lookAhead) {
+        this.lookAhead = lookAhead;
     }
 }

@@ -200,6 +200,19 @@ public class ClientTerminal {
                                 outln("usage: lerp [int] (sets client-lerp (in serverticks) to given value)");
                             }
                             break;
+                        case "lookahead":
+                            if (words.length == 2) {
+                                switch (words[1]) {
+                                    case "off":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setLookAhead(false);
+                                        break OUTER;
+                                    case "on":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setLookAhead(true);
+                                        break OUTER;
+                                }
+                            }
+                            outln("usage: lookahead on|off");
+                            break;
                         case "shadow":
                             if (words.length == 2) {
                                 switch (words[1]) {
