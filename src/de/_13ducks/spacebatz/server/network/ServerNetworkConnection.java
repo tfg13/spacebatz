@@ -81,9 +81,13 @@ public class ServerNetworkConnection {
      * Der Wissensstand dieses Clients.
      */
     ClientContext2 context = new ClientContext2();
+    /**
+     * Netzwerkstatistiken zu dieser Verbindung.
+     */
+    ServerNetStats stats = new ServerNetStats();
 
     /**
-     * Konstruktor, erstellt eine neue NetworkCOnnection zu einem Client.
+     * Konstruktor, erstellt eine neue NetworkConnection zu einem Client.
      *
      * @param socket der Socket, der mit dem Client verbunden ist
      */
@@ -183,9 +187,10 @@ public class ServerNetworkConnection {
     int getPort() {
         return port;
     }
-    
+
     /**
      * Liefert die Adresse
+     *
      * @return die Adresse
      */
     public InetAddress getInetAddress() {
@@ -244,6 +249,11 @@ public class ServerNetworkConnection {
         if (multi) {
             buf[pos++] = (byte) 0x88;
         }
+        // Stats
+        int numberOfPrioCmds = 0;
+        int numberOfNormalCmds = 0;
+        double avgPrioCmdSize = 0;
+        double avgNormalCmdSize = 0;
         // Nachrichten mit hoher Priorität
         while (!priorityCmdOutQueue.isEmpty() && priorityCmdOutQueue.peek().data.length + 1 <= 1459 - pos) {
             // Befehl passt noch rein
@@ -251,6 +261,9 @@ public class ServerNetworkConnection {
             buf[pos++] = (byte) cmd.cmdID;
             System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
             pos += cmd.data.length;
+            numberOfPrioCmds++;
+            // Online calculation of mean (average):
+            avgPrioCmdSize = avgPrioCmdSize + ((cmd.data.length + 1 - avgPrioCmdSize) / numberOfPrioCmds);
         }
         // Normale Nachrichten:
         while (!cmdOutQueue.isEmpty() && cmdOutQueue.peek().data.length + 1 <= 1459 - pos) {
@@ -259,11 +272,15 @@ public class ServerNetworkConnection {
             buf[pos++] = (byte) cmd.cmdID;
             System.arraycopy(cmd.data, 0, buf, pos, cmd.data.length);
             pos += cmd.data.length;
+            numberOfNormalCmds++;
+            // Online calculation of mean (average):
+            avgNormalCmdSize = avgNormalCmdSize + ((cmd.data.length + 1 - avgNormalCmdSize) / numberOfNormalCmds);
         }
         if (pos == 3) {
             // NOOP einbauen
             buf[3] = 0;
         }
+        stats.craftedPacket(numberOfNormalCmds, numberOfPrioCmds, avgNormalCmdSize, avgPrioCmdSize);
         return new DatagramPacket(buf, pos + 1, clientAddress, port);
     }
 
@@ -277,6 +294,7 @@ public class ServerNetworkConnection {
     /**
      * Liefert true, wenn noch viele Befehle raus müssen, es also sinnvoll erscheint ein weiteres ("multi")-Paket zu schicken.
      * Wird unmittelbar nach dem leeren der queues durch craftPaket aufgerufen
+     *
      * @return true, wenn multi sinnvoll
      */
     boolean qualifiesForMultiPacket() {
@@ -288,5 +306,23 @@ public class ServerNetworkConnection {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Liefert die Anzahl wartender Befehle in der Befehlswarteschlange.
+     *
+     * @return die Größe der Warteschlange
+     */
+    public int getOutQueueSize() {
+        return cmdOutQueue.size();
+    }
+
+    /**
+     * Liefert die Anzahl wartender Befehle in der Prio-Befehlswarteschlange.
+     *
+     * @return die Größe der Prio-Warteschlange (ohne Ultra-Prio)
+     */
+    public int getPrioOutQueueSize() {
+        return priorityCmdOutQueue.size();
     }
 }

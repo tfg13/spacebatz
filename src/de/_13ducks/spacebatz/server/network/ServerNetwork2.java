@@ -216,14 +216,17 @@ public class ServerNetwork2 {
 
         for (Client c : Server.game.clients.values()) {
             if (c.getNetworkConnection().getPort() != 0) {
+                int numberOfPackets = 0;
                 for (int i = 0; i < Settings.SERVER_MAXPACKPERCLIENT; i++) {
                     DatagramPacket dPack = c.getNetworkConnection().craftPacket(i != 0);
                     schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
+                    numberOfPackets++;
                     // Wiederholen, falls noch viel da:
                     if (!c.getNetworkConnection().qualifiesForMultiPacket()) {
                         break;
                     }
                 }
+                c.getNetworkConnection().stats.sentPackets(numberOfPackets, c.getNetworkConnection().getOutBuffer().getBufferRatio(), c.getNetworkConnection().getOutQueueSize(), c.getNetworkConnection().getPrioOutQueueSize());
             }
         }
 
@@ -236,6 +239,7 @@ public class ServerNetwork2 {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            c.getNetworkConnection().stats.resentPackets(c.getNetworkConnection().getOutBuffer().getAndResetRetransmitCounter());
         }
     }
 

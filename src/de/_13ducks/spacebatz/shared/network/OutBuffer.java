@@ -45,6 +45,10 @@ public class OutBuffer {
      * Anzahl Elemente im Ringbuffer. Muss immer kleiner MAXIMUM_SIZE sein.
      */
     private int bufferSize = 0;
+    /**
+     * Zählt, wie oft Pakete neu gesendet werden, weil ihre ACK-Zeit abgelaufen ist.
+     */
+    private int numberOfRetransmits;
 
     /**
      * Fügt ein Paket dem Puffer hinzu.
@@ -111,6 +115,7 @@ public class OutBuffer {
                     // Neu senden
                     sendList.add(buf.pack);
                     buf.sendTime = time;
+                    numberOfRetransmits++;
                 }
             }
 
@@ -157,8 +162,25 @@ public class OutBuffer {
         }
     }
 
+    /**
+     * Gibt die Auslastung des Puffers in ganzen Prozent zurück.
+     *
+     * @return die Auslastung des Puffers in ganzen Prozent
+     */
     public int getBufferRatio() {
         return (int) (100.0 * bufferSize / MAXIMUM_SIZE);
+    }
+
+    /**
+     * Liefert die Anzahl von Paketen zurück, die erneut versendet wurden.
+     * Setzt diese Anzahl anschließend zurück.
+     *
+     * @return Anzahl von Resends
+     */
+    public int getAndResetRetransmitCounter() {
+        int result = numberOfRetransmits;
+        numberOfRetransmits = 0;
+        return result;
     }
 
     private class Buffer {
