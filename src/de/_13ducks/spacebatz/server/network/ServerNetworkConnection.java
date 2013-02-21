@@ -325,4 +325,13 @@ public class ServerNetworkConnection {
     public int getPrioOutQueueSize() {
         return priorityCmdOutQueue.size();
     }
+
+    /**
+     * Liefert die Netzwerkstatistiken
+     *
+     * @return die Netzwerkstatistiken
+     */
+    public ServerNetStats getStats() {
+        return stats;
+    }
 }

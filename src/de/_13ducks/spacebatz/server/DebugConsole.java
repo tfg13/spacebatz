@@ -385,6 +385,12 @@ public class DebugConsole {
                     case "maphash":
                         System.out.println(Server.game.getLevel().getHash());
                         break;
+                    case "netstats":
+                        // Keine Argumente = einmal printen.
+                        for (Client c: Server.game.clients.values()) {
+                            c.getNetworkConnection().getStats().printAll();
+                        }
+                        break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
@@ -393,6 +399,7 @@ public class DebugConsole {
                         outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
                         outStream.println("maphash              - Prints the hash of the current map");
+                        outStream.println("netstats (N)         - Prints network statistics");
                         outStream.println("spawnitem            - Spawns an item on every player's position");
                         outStream.println("spawnenemy           - Spawns an enemy on every player's position");
                         outStream.println("su                   - Shut Up! short for \"loglevel 3\"");

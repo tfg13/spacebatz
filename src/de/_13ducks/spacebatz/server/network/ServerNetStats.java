@@ -10,13 +10,13 @@ import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
  * - Auslastung der Retransmit-Puffer
  * - Auslastung des Puffers für ausgehende Befehle
  * - Absolute Lag Factor (ALF) (berechnet vor allem aus den beiden drüber)
- * 
+ *
  * Mit diesen Informationen kann das Netzwerksystem zukünftig versuchen, die Last besser automatisch zu regeln.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class ServerNetStats {
-    
+
     /**
      * Größe der Puffer für Rolling-Checksums in Ticks.
      * Bestimmt im Wesentlichen die Reaktionsgeschwindigkeit des Netzwerksystems auf Änderungen an der Last oder der Übertragungsqualität.
@@ -102,10 +102,11 @@ public class ServerNetStats {
 
     /**
      * Aufrufen, um ein neu gebautes Paket zu erfassen.
+     *
      * @param numberOfNormalCmds Anzahl Befehle in diesem Paket
      * @param numberOfPrioCmds Anzahl Prio-Befehle in diesem Paket (ohne Ultra-Prio)
      * @param avgNormalCmdSize Durchschnittliche Größe eines Befehls in diesem Paket
-     * @param avgPrioCmdSize Durchschnittliche Größe eines Prio-Befehls in diesem Paket (ohne Ultra-Prio) 
+     * @param avgPrioCmdSize Durchschnittliche Größe eines Prio-Befehls in diesem Paket (ohne Ultra-Prio)
      */
     void craftedPacket(int numberOfNormalCmds, int numberOfPrioCmds, double avgNormalCmdSize, double avgPrioCmdSize) {
         trackedPackets++;
@@ -117,11 +118,12 @@ public class ServerNetStats {
         // Auslastung dieses Pakets berechnen:
         double packetLoad = ((numberOfNormalCmds * avgNormalCmdSize) + (numberOfPrioCmds * avgPrioCmdSize)) / 1460;
         // Auch hier Durchschnitt updaten:
-        avgLoadPerPacket = avgLoadPerPacket +  ((packetLoad - avgLoadPerPacket) / trackedPackets);
+        avgLoadPerPacket = avgLoadPerPacket + ((packetLoad - avgLoadPerPacket) / trackedPackets);
     }
 
     /**
      * Aufrufen, um die Anzahl und den Zustand des Systems nach dem Sender aller Pakete nach einem Tick zu erfassen.
+     *
      * @param numberOfPackets Anzahl der in diesem Tick versendeten Pakete
      * @param bufferRatio Ganzzahlige Prozentzahl, wie stark der Paketpuffer ausgelastet ist
      * @param outQueueSize Anzahl Befehle in der Befehlswarteschlange
@@ -146,10 +148,21 @@ public class ServerNetStats {
     /**
      * Aufrufen, um die Anzahl von erneut gesendeten Paketen zu erfassen.
      * Pakete müssen neu gesendet werden, wenn nach einer bestimmten Zeit noch kein ACK eingegangen ist
-     * @param retransmitCounter 
+     *
+     * @param retransmitCounter
      */
     void resentPackets(int retransmitCounter) {
         avgNumberOfRetransmitsPerTick = avgNumberOfRetransmitsPerTick + ((retransmitCounter - avgNumberOfRetransmitsPerTick) / trackedTicks);
         recentRetransmitNumber.push(retransmitCounter);
+    }
+
+    /**
+     * Gibt alle Werte aus.
+     */
+    public void printAll() {
+        System.out.println(String.format("Tracked %d Packets, %d Ticks", trackedPackets, trackedTicks));
+        System.out.println(String.format("Per Packet: Cmds: %.3f Prio: %.3f Load: %.3f", avgNumberOfCmdsPerPacket, avgNumberOfPrioCmdsPerPacket, avgLoadPerPacket));
+        System.out.println(String.format("Per Tick: #Packets: %.3f OutBuffer Load: %.3f retrans: %.3f", avgNumberOfPacketsPerTick, avgOutBufferLoad, avgNumberOfRetransmitsPerTick));
+        System.out.println("Recent: Packets:" + recentNumberOfPacketsPerTick.getNiceAvg() + " OutBuffer Load: " + recentOutBufferLoad.getNiceAvg() + " OutQueueSize: " + recentOutQueueSize.getNiceAvg() + " PrioOutQueueSize: " + recentPrioOutQueueSize.getNiceAvg() + " retrans: " + recentRetransmitNumber.getNiceAvg());
     }
 }

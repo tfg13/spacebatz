@@ -56,4 +56,13 @@ public class StatisticRingBuffer {
     public double getAvg() {
         return avg;
     }
+
+    /**
+     * Liefert den Durchschnitt aller gespeicherten Werte in vernünftig lesbarer Form.
+     *
+     * @return den Durchschnitt aller gespeicherten Werte in vernüngtig lesbarer Form
+     */
+    public String getNiceAvg() {
+        return String.format("%.3f", getAvg());
+    }
 }
