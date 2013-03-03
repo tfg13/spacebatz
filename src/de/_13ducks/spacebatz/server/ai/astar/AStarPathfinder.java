@@ -73,10 +73,12 @@ public class AStarPathfinder {
      * @param id 
      */
     public void deletePathRequest(int id) {
-        if (pathRequests.get(id).equals(currentRequest)) {
-            currentRequest = null;
+        if (pathRequests.containsKey(id)) {
+            if (pathRequests.get(id).equals(currentRequest)) {
+                currentRequest = null;
+            }
+            pathRequests.remove(id);
         }
-        pathRequests.remove(id);
     }
 
     /**
