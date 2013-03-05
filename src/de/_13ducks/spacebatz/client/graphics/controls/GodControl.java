@@ -255,6 +255,10 @@ public class GodControl implements Control {
             renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
             renderer.getCamera().setPanY((float) (-GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f + vec.y));
         }
+        // Pan auf volle Pixel runden:
+        int pixelPerSprite = Display.getHeight() / 34;
+        renderer.getCamera().setPanX((int) (renderer.getCamera().getPanX() * pixelPerSprite) / 1f / pixelPerSprite);
+        renderer.getCamera().setPanY((int) (renderer.getCamera().getPanY() * pixelPerSprite) / 1f / pixelPerSprite);
 
         // Turret zeigt auf Maus
         GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
