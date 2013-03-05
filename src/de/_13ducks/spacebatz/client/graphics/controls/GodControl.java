@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
 import de._13ducks.spacebatz.Settings;
+import static de._13ducks.spacebatz.Settings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
@@ -91,7 +92,7 @@ public class GodControl implements Control {
     /**
      * Alternativer Sichtmodus, bei dem die Einheit nicht immer in der Mitte ist, sondern stark von der Mausposition abhängt.
      */
-    private boolean lookAhead = false;
+    private boolean lookahead = false;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -242,15 +243,15 @@ public class GodControl implements Control {
         TextWriter textWriter = renderer.getTextWriter();
 
         // Player in der Mitte
-        if (!lookAhead) {
+        if (!lookahead) {
             renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
             renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
         } else {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(1.0 / 16);
             // Länge limitieren:
-            if (vec.length() > 5) {
-                vec = vec.normalize().multiply(5);
+            if (vec.length() > 8) {
+                vec = vec.normalize().multiply(8);
             }
             renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
             renderer.getCamera().setPanY((float) (-GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f + vec.y));
@@ -477,7 +478,7 @@ public class GodControl implements Control {
                 int byAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "by");
                 ARBShaderObjects.glUseProgramObjectARB(shader[0]);
                 // Shader vorkonfigurieren
-                ARBShaderObjects.glUniform1fARB(pixelPerSpriteAdr, Settings.CLIENT_GFX_RES_Y / 34f);
+                ARBShaderObjects.glUniform1fARB(pixelPerSpriteAdr, lookahead ? Settings.CLIENT_GFX_RES_Y / 20f : Settings.CLIENT_GFX_RES_Y / 34f);
                 ARBShaderObjects.glUseProgramObjectARB(0);
                 byte[][] shadowMap = GameClient.currentLevel.shadow;
                 // Renderloop
@@ -865,13 +866,18 @@ public class GodControl implements Control {
      * @return the lookAhead
      */
     public boolean isLookAhead() {
-        return lookAhead;
+        return lookahead;
     }
 
     /**
      * @param lookAhead the lookAhead to set
      */
     public void setLookAhead(boolean lookAhead) {
-        this.lookAhead = lookAhead;
+        if (lookAhead) {
+            GameClient.getEngine().getGraphics().getCamera().setZoomFact(Display.getHeight() / 20.0f / CLIENT_GFX_TILESIZE);
+        } else {
+            GameClient.getEngine().getGraphics().getCamera().setZoomFact(Display.getHeight() / 34.0f / CLIENT_GFX_TILESIZE);
+        }
+        this.lookahead = lookAhead;
     }
 }
