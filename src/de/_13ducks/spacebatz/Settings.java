@@ -25,11 +25,11 @@ public final class Settings {
     /**
      * Die X-Auflösung der Grafikausgabe.
      */
-    public static final int CLIENT_GFX_RES_X = 1024;
+    public static final int CLIENT_GFX_RES_X = 1280;
     /**
      * Die Y-Auflösung der Grafikausgabe.
      */
-    public static final int CLIENT_GFX_RES_Y = 576;
+    public static final int CLIENT_GFX_RES_Y = 720;
     /**
      * Die Größe eines Tiles der Tilemaps in Pixeln.
      */

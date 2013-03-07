@@ -6,20 +6,20 @@
 
 Content:
 
-- Features (planned)
+- Features (* = planned)
 - Specifications
 
 
 FEATURES:
 
     - fast:        datatransfer is UDP-only
-    -              automatic lerp-minimalization on a per-client basis
-    -              automatic load-balancing with prioritys and aging
-    - predictable: during normal operation, exactly one packet is transmitted per tick
+    -              * automatic lerp-minimalization on a per-client basis
+                   * automatic adaption to environment
+    - predictable: during normal operation, a minimum of one packet is transmitted per tick
     - stable:      automatically detects timeouts/lags via heartbeat-signals
-    -              automatic (full) resync on catastrophic packet loss / connection interrupt
+    -              * automatic (full) resync on catastrophic packet loss / connection interrupt
     - flexible:    user-commands in seperate classes/objects, (de)registerable at runtime
-    - secure:      built-in support for MAC (message authentication code)
+    - secure:      * built-in support for MAC (message authentication code)
     - reliable:    message delivery is guaranteed
     - misc:        no connection required --> no time required for setting up and connecting sockets etc
 
