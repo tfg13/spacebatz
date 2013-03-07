@@ -14,7 +14,7 @@ import de._13ducks.spacebatz.Settings;
 
 /**
  * Diese Klasse enthält stets aktuelle Statistikwerte, die für Netzwerk-Debugging verwendet werden.
- * Diese Klasse hat ihre besten Tage hinter sich und wird entweder bald gelöscht oder sie bekommt wieder mehr Aufgaben.
+ * Die meisten Werte in dieser Klasse werden vom Server gesendet und nicht selbst ermittelt.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -28,6 +28,38 @@ public final class NetStats {
      * Der Ping-Wert, wird vom Netzwerksystem ermittelt.
      */
     public static int ping;
+    /**
+     * Die durchschnittliche Anzahl von Befehlen pro Netzwerkpaket vom Server.
+     */
+    public static double avgNumberOfCmdsPerPacket;
+    /**
+     * Die durchschnittliche Anzahl von Prio-Befehlen pro Netzwerkpaket vom Server.
+     */
+    public static double avgNumberOfPrioCmdsPerPacket;
+    /**
+     * Die durchschnittliche Auslastung eines Netzwerkpakets vom Server.
+     */
+    public static double avgLoadPerPacket;
+    /**
+     * Die aktuelle Anzahl von Paketen pro Tick.
+     */
+    public static double recentNumberOfPacketsPerTick;
+    /**
+     * Die aktuelle Auslastung des Server-Outbuffers.
+     */
+    public static double recentOutBufferLoad;
+    /**
+     * Die aktuelle Größe der Server-Outqueue.
+     */
+    public static double recentOutQueueSize;
+    /**
+     * Die aktuelle Größe der Server-Prioqueue.
+     */
+    public static double recentPrioOutQueueSize;
+    /**
+     * Die aktuelle Rate an Paketen, die erneut versendet werden müssen.
+     */
+    public static double recentRetransmitNumber;
 
     /**
      * Privater Konstruktor, da Utility-Class.

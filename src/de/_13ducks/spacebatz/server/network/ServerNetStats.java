@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
+import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Sammelt Statusinformationen über die Auslastung der Netzwerkverbindung zu einem Client.
@@ -124,7 +125,7 @@ public class ServerNetStats {
     /**
      * Aufrufen, um die Anzahl und den Zustand des Systems nach dem Sender aller Pakete nach einem Tick zu erfassen.
      *
-     * @param numberOfPackets Anzahl der in diesem Tick versendeten Pakete
+     * @param numberOfPackets Anzahl der in diesem Tick versenyeten Pakete
      * @param bufferRatio Ganzzahlige Prozentzahl, wie stark der Paketpuffer ausgelastet ist
      * @param outQueueSize Anzahl Befehle in der Befehlswarteschlange
      * @param prioOutQueueSize Anzahl Befehle in der Prio-Befehlswarteschlange (ohne Ultra-Prio)
@@ -164,5 +165,23 @@ public class ServerNetStats {
         System.out.println(String.format("Per Packet: Cmds: %.3f Prio: %.3f Load: %.3f", avgNumberOfCmdsPerPacket, avgNumberOfPrioCmdsPerPacket, avgLoadPerPacket));
         System.out.println(String.format("Per Tick: #Packets: %.3f OutBuffer Load: %.3f retrans: %.3f", avgNumberOfPacketsPerTick, avgOutBufferLoad, avgNumberOfRetransmitsPerTick));
         System.out.println("Recent: Packets:" + recentNumberOfPacketsPerTick.getNiceAvg() + " OutBuffer Load: " + recentOutBufferLoad.getNiceAvg() + " OutQueueSize: " + recentOutQueueSize.getNiceAvg() + " PrioOutQueueSize: " + recentPrioOutQueueSize.getNiceAvg() + " retrans: " + recentRetransmitNumber.getNiceAvg());
+    }
+
+    /**
+     * Baut das Datensegment eines STC_NET_STATS-Befehls auf, das die gespeicherten Daten zum Client überträgt.
+     *
+     * @return Datensegement für STC_NET_STATS
+     */
+    public byte[] craftSTCData() {
+        byte[] data = new byte[8 * 4];
+        Bits.putFloat(data, 0, (float) avgNumberOfCmdsPerPacket);
+        Bits.putFloat(data, 4, (float) avgNumberOfPrioCmdsPerPacket);
+        Bits.putFloat(data, 8, (float) avgLoadPerPacket);
+        Bits.putFloat(data, 12, (float) recentNumberOfPacketsPerTick.getAvg());
+        Bits.putFloat(data, 16, (float) recentOutBufferLoad.getAvg());
+        Bits.putFloat(data, 20, (float) recentOutQueueSize.getAvg());
+        Bits.putFloat(data, 24, (float) recentPrioOutQueueSize.getAvg());
+        Bits.putFloat(data, 28, (float) recentRetransmitNumber.getAvg());
+        return data;
     }
 }

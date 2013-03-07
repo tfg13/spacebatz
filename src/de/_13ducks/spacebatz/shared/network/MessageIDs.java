@@ -79,6 +79,10 @@ public class MessageIDs {
      */
     public static final int NET_TRANSFER_CHUNK = 0x86;
     /**
+     * Netzwerkstatistik wird zum Client übertragen.
+     */
+    public static final int NET_STATS = 0x87;
+    /**
      * Normales Einheitenupdate, das Regelmäßig verschickt wird.
      */
     public static final byte NET_UDP_CMD_NORMAL_ENTITY_UPDATE = 10;

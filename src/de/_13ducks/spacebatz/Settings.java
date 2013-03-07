@@ -94,9 +94,9 @@ public final class Settings {
      */
     public static final int CHARHEALTH = 100;
     /**
-     * Default-Level des netGraphen. 0 - Aus 1 - + Netzwerkdebug 2 - + GameDebug
+     * Default-Level des netGraphen. 0 - Aus 1 - + Netzwerkdebug 2 - + GameDebug 3 - + Server-Netzdebug
      */
-    public static final int CLIENT_NETGRAPH_LEVEL = 2;
+    public static final int CLIENT_NETGRAPH_LEVEL = 3;
     /**
      * Abstand bei der double noch als "gleich" gilt.
      */
@@ -118,4 +118,8 @@ public final class Settings {
      * Für Leitungen mit geringerem Durchsatz höher einstellen.
      */
     public static final int TURRET_DIR_UPDATE_INTERVAL = 1;
+    /**
+     * Alle wieviel Ticks der Server Netzwerkstatistiken mit dem Client abgleicht.
+     */
+    public static final int SERVER_STATS_INTERVAL = 66;
 }

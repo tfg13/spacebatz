@@ -162,6 +162,7 @@ public class ClientNetwork2 {
         cmdMap[MessageIDs.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
         cmdMap[MessageIDs.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
         cmdMap[MessageIDs.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
+        cmdMap[MessageIDs.NET_STATS] = new STC_NET_STATS(); // 0x87
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());

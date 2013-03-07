@@ -234,12 +234,6 @@ public class ServerNetworkConnection {
      * @return das DatenPaket
      */
     DatagramPacket craftPacket(boolean multi) {
-        /*
-         * ACHTUNG: NICHT EINFACH SO ANPASSEN, DASS BEI BEDARF MEHRERE PAKETE GESENDET WERDEN!!!
-         * Der Clientseitige Lerp-Mechanismus hängt massiv davon ab, dass der Server genau 1 Paket pro Tick versenden.
-         * Wenn man mehr als ein neues Paket schickt, muss man ein internes Kommando dazu tun, das dem Client das mitteilt, damit der
-         * Lerp entsprechend angepasst werden kann. Das ist noch in keinster Weise eingebaut und muss alles auf einmal gemacht werden.
-         */
         byte[] buf = new byte[1460];
         short idx = getAndIncrementNextIndex();
         Bits.putShort(buf, 0, idx);

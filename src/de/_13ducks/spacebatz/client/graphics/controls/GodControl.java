@@ -527,7 +527,7 @@ public class GodControl implements Control {
             } else {
                 glColor4f(1f, 0f, 0f, 1f);
             }
-            glRectf(0, camera.getTilesY(), 10, NetStats.netGraph == 2 ? camera.getTilesY() - 2.5f : camera.getTilesY() - 1.5f);
+            glRectf(0, camera.getTilesY(), 10, NetStats.netGraph >= 2 ? (NetStats.netGraph >= 3 ? camera.getTilesY() - 5f : camera.getTilesY() - 2.5f) : camera.getTilesY() - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
@@ -536,13 +536,29 @@ public class GodControl implements Control {
                 textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1f);
                 textWriter.renderText("Net %health: " + net.getConnectionHealthPercent(), 0, camera.getTilesY() - 1.5f, net.getConnectionHealthPercent() < 95 ? 1 : 0, 0, 0, 1);
                 textWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, camera.getTilesY() - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
-                if (NetStats.netGraph == 2) {
+                if (NetStats.netGraph >= 2) {
                     // Einheitenposition:
                     textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
                     textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
                     textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) Settings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
                     textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) Settings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
+                }
+                if (NetStats.netGraph >= 3) {
+                    textWriter.renderText("----------SERVER-NET----------", 0, camera.getTilesY() - 3f);
+                    textWriter.renderText("Cmds/Prios:", 0, camera.getTilesY() - 3.5f);
+                    textWriter.renderText(String.format("%.3f", NetStats.avgNumberOfCmdsPerPacket), 4, camera.getTilesY() - 3.5f);
+                    textWriter.renderText(String.format("%.3f", NetStats.avgNumberOfPrioCmdsPerPacket), 7, camera.getTilesY() - 3.5f);
+                    textWriter.renderText("PackLoad: ", 0, camera.getTilesY() - 4f);
+                    textWriter.renderText(String.format("%.3f", NetStats.avgLoadPerPacket), 3.5f, camera.getTilesY() - 4f);
+                    textWriter.renderText("PPT:", 5.5f, camera.getTilesY() - 4f);
+                    textWriter.renderText(String.format("%.3f", NetStats.recentNumberOfPacketsPerTick), 7.5f, camera.getTilesY() - 4f);
+                    textWriter.renderText("Perc Out/Retrans:", 0, camera.getTilesY() - 4.5f);
+                    textWriter.renderText(String.format("%.0f", NetStats.recentOutBufferLoad), 6f, camera.getTilesY() - 4.5f);
+                    textWriter.renderText(String.format("%.3f", NetStats.recentRetransmitNumber), 7.5f, camera.getTilesY() - 4.5f);
+                    textWriter.renderText("Queues Cmd/Prio:", 0, camera.getTilesY() - 5f);
+                    textWriter.renderText(String.format("%.0f", NetStats.recentOutQueueSize), 6f, camera.getTilesY() - 5f);
+                    textWriter.renderText(String.format("%.0f", NetStats.recentPrioOutQueueSize), 9f, camera.getTilesY() - 5f);
                 }
             } else {
                 textWriter.renderText(" LOST CONNECTION TO SERVER", 0, camera.getTilesY() - 1.5f);

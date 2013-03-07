@@ -213,6 +213,12 @@ public class ServerNetwork2 {
     public void outTick() {
         // Berechne zu versendende Änderungen:
         Server.sync.tick();
+        // Statistiken versenden?
+        if (Server.game.getTick() % Settings.SERVER_STATS_INTERVAL == 0) {
+            for (Client c: Server.game.clients.values()) {
+                c.getNetworkConnection().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STATS, c.getNetworkConnection().stats.craftSTCData()));
+            }
+        }
 
         for (Client c : Server.game.clients.values()) {
             if (c.getNetworkConnection().getPort() != 0) {
