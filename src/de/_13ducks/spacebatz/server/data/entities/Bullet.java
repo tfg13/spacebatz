@@ -39,6 +39,10 @@ public class Bullet extends Entity {
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects;
+    /**
+     * Gibt an, ob das Bullet Gegner trifft.
+     */
+    public boolean hitEnemies = true;
 
     /**
      * Erzeugt ein neues Bullet
@@ -128,6 +132,9 @@ public class Bullet extends Entity {
 
     @Override
     public void onCollision(Entity other) {
+        if (other instanceof Enemy && !hitEnemies) {
+            return;
+        }
         super.onCollision(other);
         hitChar(other);
     }

@@ -31,7 +31,7 @@ public class FireBulletAbility extends WeaponAbility {
      * @param maxoverheat Wie oft die Waffe schiessen kann, bis sie überhitzt ist
      * @param reduceoverheat
      */
-    public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
+    public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat, boolean hitEnemies) {
         getWeaponStats().setDamage(damage);
         getWeaponStats().setDamagespread(damagespread);
         getWeaponStats().setAttackspeed(attackspeed);
@@ -42,6 +42,7 @@ public class FireBulletAbility extends WeaponAbility {
         getWeaponStats().setExplosionRadius(explosionradius);
         getWeaponStats().setMaxoverheat(maxoverheat);
         getWeaponStats().setReduceoverheat(reduceoverheat);
+        getWeaponStats().setHitEnemies(hitEnemies);
     }
 
     @Override
@@ -69,6 +70,8 @@ public class FireBulletAbility extends WeaponAbility {
         int lifetime = (int) (range / bulletspeed);
 
         Bullet bullet = new Bullet(lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+        bullet.hitEnemies = getWeaponStats().getHitEnemies();
+
 
         if (explosionradius > 0) {
             bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));

@@ -278,7 +278,7 @@ public class EnemySpawner {
                     case FIREBULLET:
                         // @TODO: Die Werte, mit denen die Firebulletability initialisiert wird in den Enemytypestats abspeichern.
                         // dann kann jeder Gegner seine eigene FireBulletAbility haben.
-                        enem.setShootAbility(new FireBulletAbility(1, 0, 0.5, 100, 1, 0.15, 0.15, 0, 10, 1));
+                        enem.setShootAbility(new FireBulletAbility(1, 0, 0.5, 100, 1, 0.15, 0.15, 0, 10, 1, false));
                         enem.getShootAbility().setCooldown(100);
                         break;
                 }

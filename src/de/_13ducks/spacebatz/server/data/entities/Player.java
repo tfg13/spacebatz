@@ -35,7 +35,7 @@ public class Player extends ItemCarrier {
      * Der, Client, dem der Player gehört
      */
     private Client client;
-    private WeaponAbility standardAttack = new FireBulletAbility(3, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
+    private WeaponAbility standardAttack = new FireBulletAbility(3, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0, true);
     /**
      * Die Fähigkeiten mit Zuordnung.
      */

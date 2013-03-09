@@ -21,7 +21,7 @@ public class ShooterBehaviour extends Behaviour {
 
     public ShooterBehaviour(Enemy enemy) {
         super(enemy);
-        shootAbility = new FireBulletAbility(5, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0);
+        shootAbility = new FireBulletAbility(5, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0,true);
     }
 
     /**

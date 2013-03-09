@@ -55,6 +55,7 @@ public class WeaponStats implements Serializable {
      * Wieviel Overheat pro Gametick abgebaut wird
      */
     private double reduceoverheat;
+    private boolean hitEnemies = true;
 
     /**
      * Addiert Attribute zu diesen hinzu.
@@ -245,5 +246,19 @@ public class WeaponStats implements Serializable {
      */
     public void setDamagespread(double damagespread) {
         this.damagespread = damagespread;
+    }
+
+    /**
+     * @return the hitEnemies
+     */
+    public boolean getHitEnemies() {
+        return hitEnemies;
+    }
+
+    /**
+     * @param hitEnemies the hitEnemies to set
+     */
+    public void setHitEnemies(boolean hitEnemies) {
+        this.hitEnemies = hitEnemies;
     }
 }
