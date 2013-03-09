@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
-import de._13ducks.spacebatz.Settings;
-import static de._13ducks.spacebatz.Settings.CLIENT_GFX_TILESIZE;
+import de._13ducks.spacebatz.shared.DefaultSettings;
+import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
@@ -459,8 +459,8 @@ public class GodControl implements Control {
                 glColor4f(0f, 0f, 0f, 1f);
                 //boolean shaderActive = false;
                 // Werte precachen:
-                float xFact = 1f / (Settings.CLIENT_GFX_RES_X / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_X;
-                float yFact = 1f / (Settings.CLIENT_GFX_RES_Y / (Settings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * Settings.CLIENT_GFX_RES_Y;
+                float xFact = 1f / (DefaultSettings.CLIENT_GFX_RES_X / (DefaultSettings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * DefaultSettings.CLIENT_GFX_RES_X;
+                float yFact = 1f / (DefaultSettings.CLIENT_GFX_RES_Y / (DefaultSettings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * DefaultSettings.CLIENT_GFX_RES_Y;
                 int pixelPerSpriteAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "pixelPerSprite");
                 int loAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLO");
                 int luAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLU");
@@ -470,7 +470,7 @@ public class GodControl implements Control {
                 int byAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "by");
                 ARBShaderObjects.glUseProgramObjectARB(shader[0]);
                 // Shader vorkonfigurieren
-                ARBShaderObjects.glUniform1fARB(pixelPerSpriteAdr, lookahead ? Settings.CLIENT_GFX_RES_Y / 20f : Settings.CLIENT_GFX_RES_Y / 34f);
+                ARBShaderObjects.glUniform1fARB(pixelPerSpriteAdr, lookahead ? DefaultSettings.CLIENT_GFX_RES_Y / 20f : DefaultSettings.CLIENT_GFX_RES_Y / 34f);
                 ARBShaderObjects.glUseProgramObjectARB(0);
                 byte[][] shadowMap = GameClient.currentLevel.shadow;
                 // Renderloop
@@ -531,7 +531,7 @@ public class GodControl implements Control {
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
-                textWriter.renderText("lerp: " + net.getLerp() + " (~" + (Settings.SERVER_TICKRATE * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
+                textWriter.renderText("lerp: " + net.getLerp() + " (~" + (DefaultSettings.SERVER_TICKRATE * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
                 //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
                 textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1f);
                 textWriter.renderText("Net %health: " + net.getConnectionHealthPercent(), 0, camera.getTilesY() - 1.5f, net.getConnectionHealthPercent() < 95 ? 1 : 0, 0, 0, 1);
@@ -541,8 +541,8 @@ public class GodControl implements Control {
                     textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
                     textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
-                    textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) Settings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
-                    textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) Settings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
+                    textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) DefaultSettings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
+                    textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) DefaultSettings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
                 }
                 if (NetStats.netGraph >= 3) {
                     textWriter.renderText("----------SERVER-NET----------", 0, camera.getTilesY() - 3f);

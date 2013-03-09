@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.client;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.shared.EnemyTypes;
@@ -76,7 +76,7 @@ public class GameClient {
     /**
      * Inventar des Clients
      */
-    private static Item[] items = new Item[Settings.INVENTORY_SIZE];
+    private static Item[] items = new Item[DefaultSettings.INVENTORY_SIZE];
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
@@ -84,7 +84,7 @@ public class GameClient {
     /**
      * Wieviel Materialien der Spieler gerade besitzt
      */
-    private static int materials[] = new int[Settings.NUMBER_OF_MATERIALS];
+    private static int materials[] = new int[DefaultSettings.NUMBER_OF_MATERIALS];
     /**
      * Das Client-Terminal.
      */
@@ -109,7 +109,7 @@ public class GameClient {
         equippedItems = new EquippedItems();
         // Immer weiter versuchen, sich zu connecten
         int triesLeft = 60;
-        while (!network2.connect(InetAddress.getByName(ip), Settings.SERVER_UDPPORT2) && triesLeft-- > 0) {
+        while (!network2.connect(InetAddress.getByName(ip), DefaultSettings.SERVER_UDPPORT2) && triesLeft-- > 0) {
             System.out.println("Connecting failed. Retrying...");
         }
     }

@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.util.geo;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 
 /**
  * Sowohl Position als auch Vektor.
@@ -131,7 +131,7 @@ public class Vector {
     public boolean equals(Object o) {
         if (o instanceof Vector) {
             Vector vec = (Vector) o;
-            return (Math.abs(this.x - vec.x) < 0.001 && Math.abs(this.y - vec.y) < Settings.DOUBLE_EQUALS_DIST);
+            return (Math.abs(this.x - vec.x) < 0.001 && Math.abs(this.y - vec.y) < DefaultSettings.DOUBLE_EQUALS_DIST);
         }
         return false;
     }

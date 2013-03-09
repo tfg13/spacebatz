@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
@@ -25,14 +25,14 @@ public class ShadowManager {
      * Zufälliger Wert zwischen 0 und Servertickrate.
      * Zur automatischen Lastverteilung, immer bei diesem (x-ten) Tick einer Sekunde werden Beleuchtungsberechnungen durchgeführt
      */
-    private final int randomTick = (int) (Math.random() * (1 / Settings.SERVER_TICKRATE));
+    private final int randomTick = (int) (Math.random() * (1 / DefaultSettings.SERVER_TICKRATE));
 
     /**
      * Muss jeden Tick aufgerufen werden, arbeitet aber nur selten wirklich.
      * Verteilt die Last selbstständig.
      */
     public void tick() {
-        if (Server.game.getTick() % Settings.SERVER_TICKRATE == randomTick) {
+        if (Server.game.getTick() % DefaultSettings.SERVER_TICKRATE == randomTick) {
             // Jetzt tatsächlich arbeiten:
             ArrayList<Vector> updatedChunks = new ArrayList<>();
             for (Client c : Server.game.clients.values()) {

@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.util.geo;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -83,7 +83,7 @@ public class Node {
         if (o instanceof Node) {
             Node n = (Node) o;
             // Bei Fließkomma-Vergleichen immer eine Toleranz zulassen, wegen den Rundungsfehlern.
-            if (Math.abs(n.x - this.x) < 0.01 && Math.abs(n.y - this.y) < Settings.DOUBLE_EQUALS_DIST) {
+            if (Math.abs(n.x - this.x) < 0.01 && Math.abs(n.y - this.y) < DefaultSettings.DOUBLE_EQUALS_DIST) {
                 return true;
             }
         }

@@ -10,9 +10,9 @@
  */
 package de._13ducks.spacebatz.server.network;
 
-import de._13ducks.spacebatz.Settings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
@@ -81,12 +81,12 @@ public class ServerNetwork2 {
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_MOVE, new CTS_REQUEST_INV_ITEM_MOVE());
 
         // RCON
-        if (Settings.SERVER_ENABLE_RCON) {
+        if (DefaultSettings.SERVER_ENABLE_RCON) {
             Thread rconThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        ServerSocket rs = new ServerSocket(Settings.SERVER_RCONPORT);
+                        ServerSocket rs = new ServerSocket(DefaultSettings.SERVER_RCONPORT);
 
                         while (true) {
                             Socket sock = rs.accept(); // blocks
@@ -123,7 +123,7 @@ public class ServerNetwork2 {
     public void start() {
         // Socket eröffnen
         try {
-            socket = new DatagramSocket(Settings.SERVER_UDPPORT2);
+            socket = new DatagramSocket(DefaultSettings.SERVER_UDPPORT2);
         } catch (SocketException ex) {
             System.out.println("ERROR: NET: Cannot create MulticastSocket, reason:");
             ex.printStackTrace();
@@ -214,7 +214,7 @@ public class ServerNetwork2 {
         // Berechne zu versendende Änderungen:
         Server.sync.tick();
         // Statistiken versenden?
-        if (Server.game.getTick() % Settings.SERVER_STATS_INTERVAL == 0) {
+        if (Server.game.getTick() % DefaultSettings.SERVER_STATS_INTERVAL == 0) {
             for (Client c: Server.game.clients.values()) {
                 c.getNetworkConnection().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STATS, c.getNetworkConnection().stats.craftSTCData()));
             }
@@ -223,7 +223,7 @@ public class ServerNetwork2 {
         for (Client c : Server.game.clients.values()) {
             if (c.getNetworkConnection().getPort() != 0) {
                 int numberOfPackets = 0;
-                for (int i = 0; i < Settings.SERVER_MAXPACKPERCLIENT; i++) {
+                for (int i = 0; i < DefaultSettings.SERVER_MAXPACKPERCLIENT; i++) {
                     DatagramPacket dPack = c.getNetworkConnection().craftPacket(i != 0);
                     schedulePacket(dPack, c, Bits.getShort(dPack.getData(), 0));
                     numberOfPackets++;
@@ -315,7 +315,7 @@ public class ServerNetwork2 {
         connectAnswer[0] |= 0x40;
         // Aktuellen Tick
         Bits.putInt(connectAnswer, 3, Server.game.getTick());
-        connectAnswer[7] = Settings.SERVER_TICKRATE;
+        connectAnswer[7] = DefaultSettings.SERVER_TICKRATE;
         // Senden
         DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
         socket.send(pack);

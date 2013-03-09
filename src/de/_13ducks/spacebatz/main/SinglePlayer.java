@@ -24,7 +24,6 @@ public class SinglePlayer {
     public static void main(String[] args) throws InterruptedException {
         // Server
         Thread server = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 Server.startServer();
@@ -32,7 +31,6 @@ public class SinglePlayer {
         });
         // Client
         Thread client = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {

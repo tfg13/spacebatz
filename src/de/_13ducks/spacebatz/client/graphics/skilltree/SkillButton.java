@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.graphics.ControlElement;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import org.lwjgl.input.Mouse;
@@ -53,7 +53,7 @@ public class SkillButton extends ControlElement {
 
     @Override
     public void onMouseButtonPressed() {
-        if (isMouseOver((float) Mouse.getX() / Settings.CLIENT_GFX_RES_X, (float) Mouse.getY() / Settings.CLIENT_GFX_RES_Y)) {
+        if (isMouseOver((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y)) {
             skilltree.startDrag(skillName, tile);
         }
     }

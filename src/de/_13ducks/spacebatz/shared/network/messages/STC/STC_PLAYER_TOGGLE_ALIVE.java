@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
@@ -38,7 +38,7 @@ public class STC_PLAYER_TOGGLE_ALIVE extends FixedSizeSTCCommand {
         if (dead) {
             p.setHealthpoints(0);
         } else {
-            p.setHealthpoints(Settings.CHARHEALTH);
+            p.setHealthpoints(DefaultSettings.CHARHEALTH);
         }
         
     }

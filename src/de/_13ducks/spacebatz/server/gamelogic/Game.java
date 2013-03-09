@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.data.Client;
@@ -238,7 +238,7 @@ public class Game {
 
     public final byte newClientID() {
         Set<Byte> ids = clients.keySet();
-        for (byte i = 0; i < Settings.SERVER_MAXPLAYERS; i++) {
+        for (byte i = 0; i < DefaultSettings.SERVER_MAXPLAYERS; i++) {
             if (!ids.contains(i)) {
                 return i;
             }

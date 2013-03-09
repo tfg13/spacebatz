@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import static de._13ducks.spacebatz.Settings.*;
+import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 

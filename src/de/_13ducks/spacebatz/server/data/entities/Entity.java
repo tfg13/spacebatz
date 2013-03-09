@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
@@ -127,7 +127,7 @@ public class Entity {
         this.posY = y;
         entityMapPos = new int[2];
         this.netID = netID;
-        size = Settings.CHARSIZE;
+        size = DefaultSettings.CHARSIZE;
     }
 
     /**
@@ -293,7 +293,7 @@ public class Entity {
             observer.movementAborted();
         }
         // Sofort da?
-        if (Math.abs(tx - getX()) < Settings.DOUBLE_EQUALS_DIST && Math.abs(ty - getY()) < Settings.DOUBLE_EQUALS_DIST) {
+        if (Math.abs(tx - getX()) < DefaultSettings.DOUBLE_EQUALS_DIST && Math.abs(ty - getY()) < DefaultSettings.DOUBLE_EQUALS_DIST) {
             // Gar nicht erst bewegen.
             obs.targetReached();
             return;
@@ -486,8 +486,8 @@ public class Entity {
                     blockMidX = x + 0.5;
                     blockMidY = y + 0.5;
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidX + (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
-                    d2 = ((blockMidX - (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d1 = ((blockMidX + (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
@@ -532,8 +532,8 @@ public class Entity {
                     blockMidY = y + 0.5;
                     // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidY + (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
-                    d2 = ((blockMidY - (Settings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d1 = ((blockMidY + (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
 

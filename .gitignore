@@ -1,3 +1,4 @@
+
 /nbproject/
 manifest.mf
 build/
@@ -6,3 +7,4 @@ dist/
 research/
 *.swp
 *.lvl
+src/de/_13ducks/spacebatz/MySettings.java

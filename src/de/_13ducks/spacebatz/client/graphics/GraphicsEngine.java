@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import static de._13ducks.spacebatz.Settings.*;
+import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.graphics.controls.HudControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;

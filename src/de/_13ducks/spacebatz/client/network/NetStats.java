@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 
 /**
  * Diese Klasse enthält stets aktuelle Statistikwerte, die für Netzwerk-Debugging verwendet werden.
@@ -23,7 +23,7 @@ public final class NetStats {
     /**
      * Ob der Net-Graph derzeit aktiv ist.
      */
-    public static int netGraph = Settings.CLIENT_NETGRAPH_LEVEL;
+    public static int netGraph = DefaultSettings.CLIENT_NETGRAPH_LEVEL;
     /**
      * Der Ping-Wert, wird vom Netzwerksystem ermittelt.
      */

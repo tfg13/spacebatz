@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
@@ -160,7 +160,7 @@ public class Player extends ItemCarrier {
         } else {
             if (Server.game.getTick() >= respawntick) {
                 // respawnen
-                properties.setHitpoints(Settings.CHARHEALTH);
+                properties.setHitpoints(DefaultSettings.CHARHEALTH);
                 dead = false;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, false);
                 attackCooldownTick = Server.game.getTick() + 30; // damit nicht sofort geschossen wird
@@ -222,7 +222,7 @@ public class Player extends ItemCarrier {
             super.decreaseHitpoints(damage);
             if (properties.getHitpoints() <= 0) {
                 dead = true;
-                respawntick = Server.game.getTick() + Settings.RESPAWNTIME;
+                respawntick = Server.game.getTick() + DefaultSettings.RESPAWNTIME;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
             }
         }
@@ -232,7 +232,7 @@ public class Player extends ItemCarrier {
     public void tick(int gametick) {
         super.tick(gametick);
         if (--ticksUntilNextSend < 0) {
-            ticksUntilNextSend = Settings.TURRET_DIR_UPDATE_INTERVAL;
+            ticksUntilNextSend = DefaultSettings.TURRET_DIR_UPDATE_INTERVAL;
             STC_PLAYER_TURRET_DIR_UPDATE.broadcastTurretDir(netID, (float) turretDir);
         }
     }

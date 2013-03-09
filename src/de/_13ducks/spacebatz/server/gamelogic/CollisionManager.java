@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
@@ -103,7 +103,7 @@ public class CollisionManager {
                         if (e2 instanceof Enemy) {
                             Enemy mob = (Enemy) e2;
                             double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
-                            if (distance < Settings.SERVER_COLLISION_DISTANCE) {
+                            if (distance < DefaultSettings.SERVER_COLLISION_DISTANCE) {
                                 mob.onCollision(mover);
                             }
                         }
@@ -153,7 +153,7 @@ public class CollisionManager {
                 double distance = Math.sqrt((s.x - c.getX()) * (s.x - c.getX()) + (s.y - c.getY()) * (s.y - c.getY()));
 
                 // Hitscan-Gerade nah genug am Gegner?
-                if (distance < Settings.CHARSIZE / 2) {
+                if (distance < DefaultSettings.CHARSIZE / 2) {
                     // Nicht hinter dem Abilityuser?
                     double dx = s.x - x;
                     double dy = s.y - y;

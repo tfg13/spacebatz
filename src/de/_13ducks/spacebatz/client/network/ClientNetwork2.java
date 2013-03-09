@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
@@ -502,7 +502,7 @@ public class ClientNetwork2 {
     public void outTick() {
         if (connected) {
             // Bis zu ein Mal pro Sekunde Ping messen:
-            if (serverTick % (1000 / Settings.SERVER_TICKRATE) == 0 && lastPingOut == 0) {
+            if (serverTick % (1000 / DefaultSettings.SERVER_TICKRATE) == 0 && lastPingOut == 0) {
                 try {
                     byte[] pingData = new byte[2];
                     pingData[0] = (byte) 0x80;

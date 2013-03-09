@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
-import static de._13ducks.spacebatz.Settings.*;
+import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;

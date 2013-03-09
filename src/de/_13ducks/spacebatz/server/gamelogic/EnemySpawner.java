@@ -10,7 +10,7 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
@@ -42,7 +42,7 @@ public class EnemySpawner {
      */
     public static void tick() {
         Random random = new Random();
-        if (Server.game.getTick() % (1000 / Settings.SERVER_TICKRATE / Settings.SERVER_SPAWNER_EXECSPERSEC) == 0 && numSpawns < MAX_ENEMYS) {
+        if (Server.game.getTick() % (1000 / DefaultSettings.SERVER_TICKRATE / DefaultSettings.SERVER_SPAWNER_EXECSPERSEC) == 0 && numSpawns < MAX_ENEMYS) {
             // Alle Spieler durchgehen
             for (Entity e : Server.game.getEntityManager().getValues()) {
                 if (e instanceof Player) {

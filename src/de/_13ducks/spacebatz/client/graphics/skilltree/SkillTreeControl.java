@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.Settings;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.Renderer;
@@ -103,7 +103,7 @@ public class SkillTreeControl implements Control {
         // Den gedraggten Skill rendern:
         if (dragging) {
             renderer.setScreenMapping(0, 1, 0, 1);
-            renderer.drawTile(dragTile, (float) Mouse.getX() / Settings.CLIENT_GFX_RES_X, (float) Mouse.getY() / Settings.CLIENT_GFX_RES_Y, 0.05f, 0.05f);
+            renderer.drawTile(dragTile, (float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y, 0.05f, 0.05f);
             renderer.restoreScreenMapping();
         }
     }
@@ -112,11 +112,11 @@ public class SkillTreeControl implements Control {
     public void input() {
         // Input für alle Controls berechnen:
         for (SkillButton button : skills.values()) {
-            button.input((float) Mouse.getX() / Settings.CLIENT_GFX_RES_X, (float) Mouse.getY() / Settings.CLIENT_GFX_RES_Y);
+            button.input((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
         }
         // Input für alle SkillSlots berechnen:
         for (SkillSlot slot : skillSlots.values()) {
-            slot.input(Mouse.getX() / Settings.CLIENT_GFX_RES_X, Mouse.getY() / Settings.CLIENT_GFX_RES_Y);
+            slot.input(Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
         }
         // Wenn kein Slot ausgewählt ist das draggen abbrechen:
         if (!Mouse.isButtonDown(0)) {
