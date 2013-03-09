@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
 import de._13ducks.spacebatz.util.geo.Vector;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -29,7 +30,7 @@ public class AStarPathfinder {
     /**
      * Warteschlange der Wegberechnungsanforderungen.
      */
-    private LinkedList<PathRequest> pathRequests;
+    private HashMap<Integer, PathRequest> pathRequests;
     /**
      * Das Request das gerade bearbeitet wird.
      */
@@ -42,9 +43,13 @@ public class AStarPathfinder {
      * Gibt an wieviele Iterationen für den aktuellen WEg schon berechnet wurden.
      */
     private int iterationsOfCurrentRequest;
+    /**
+     * Die ID des nächsten PathRequests.
+     */
+    private int requestId;
 
     public AStarPathfinder() {
-        pathRequests = new LinkedList<>();
+        pathRequests = new HashMap<>();
         aStar = new AStarImplementation();
     }
 
@@ -57,8 +62,23 @@ public class AStarPathfinder {
      * @param requester der PathRequester, der das Ergebnis der berechnung erhält.
      * @param size die Breite des Pfads in Feldern
      */
-    public void requestPath(Vector start, Vector target, PathRequester requester, double size) {
-        pathRequests.push(new PathRequest(start, target, requester, size, aStar));
+    public int requestPath(Vector start, Vector target, PathRequester requester, double size) {
+        requestId++;
+        pathRequests.put(requestId, new PathRequest(start, target, requester, size, aStar));
+        return requestId;
+    }
+
+    /**
+     * Löscht das PathRequest mit der angebenene ID.
+     * @param id 
+     */
+    public void deletePathRequest(int id) {
+        if (pathRequests.containsKey(id)) {
+            if (pathRequests.get(id).equals(currentRequest)) {
+                currentRequest = null;
+            }
+            pathRequests.remove(id);
+        }
     }
 
     /**
@@ -81,7 +101,7 @@ public class AStarPathfinder {
                     }
                 }
             } else {
-                Iterator<PathRequest> iter = pathRequests.iterator();
+                Iterator<PathRequest> iter = pathRequests.values().iterator();
                 while (iter.hasNext()) {
                     PathRequest request = iter.next();
                     if (request.getAge() < MAX_REQUEST_AGE) {

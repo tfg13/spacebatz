@@ -20,6 +20,10 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
     private int maxPathAge = 300;
     private Player target;
     /**
+     * Die ID des aktuellen PathRequests.
+     */
+    private int pathRequestId = -1;
+    /**
      * The time of creation of the path we are currently following.
      * -1 if there is no path.
      */
@@ -33,9 +37,15 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
     @Override
     public Behaviour tick(int gameTick) {
         if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
+            if (pathRequestId != -1) {
+                Server.game.pathfinder.deletePathRequest(pathRequestId);
+            }
             return targetInSight(owner, target);
         } else if ((Server.game.getTick() - pathCreationTime) > getMaxPathAge()) {
-            Server.game.pathfinder.requestPath(new Vector(owner.getX(), owner.getY()), new Vector(target.getX(), target.getY()), owner, owner.getSize());
+            if (pathRequestId != -1) {
+                Server.game.pathfinder.deletePathRequest(pathRequestId);
+            }
+            pathRequestId = Server.game.pathfinder.requestPath(new Vector(owner.getX(), owner.getY()), new Vector(target.getX(), target.getY()), owner, owner.getSize());
             return this;
         } else {
             return this;
@@ -47,6 +57,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
     @Override
     public Behaviour pathComputed(Vector[] path) {
         owner.followPath(path);
+        pathRequestId = -1;
         pathCreationTime = Server.game.getTick();
         return this;
     }
