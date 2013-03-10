@@ -61,15 +61,4 @@ public final class Server {
         // GO! GO! GO!
         mainLoop.startGameLogic();
     }
-
-    /**
-     * Entfernt einen Client aus dem Spiel. Der Client erhält darüber keinerlei Benachrichtigung.
-     *
-     * @param client der zu entfernende Client.
-     */
-    public static void disconnectClient(Client client) {
-        Player pl = client.getPlayer();
-        game.getEntityManager().removeEntity(pl.netID);
-        game.clients.remove(client.clientID);
-    }
 }

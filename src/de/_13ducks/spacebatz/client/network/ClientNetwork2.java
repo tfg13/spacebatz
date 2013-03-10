@@ -12,7 +12,6 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -323,6 +322,28 @@ public class ClientNetwork2 {
                                 STCPacket stc = new STCPacket(data);
                                 stc.preCompute();
                                 enqueuePacket(stc);
+                                break;
+                            case 1:
+                                // Connection Management
+                                int conMode = mode & 0x3F;
+                                switch (conMode) {
+                                    case 1:
+                                        // Disconnect.
+                                        connected = false;
+                                        // Grund für Logfile
+                                        if (data[1] == 0) {
+                                            System.out.println("INFO: CNET: Disconnected.");
+                                        } else if (data[1] == 1) {
+                                            System.out.println("WARNING: CNET: Disconnected due to connection issues!");
+                                        } else if (data[1] == 2) {
+                                            System.out.println("WARNING: CNET: Disconnected, got kicked!");
+                                        } else {
+                                            System.out.println("WARNING: CNET: Disconnected for unknown reason (" + data[1] + ")");
+                                        }
+                                        break;
+                                    default:
+                                        System.out.println("WARNING: CNET: Packet with unknown CON-Mode (" + conMode + ")");
+                                }
                                 break;
                             case 2:
                                 // Realtime
@@ -683,7 +704,7 @@ public class ClientNetwork2 {
     public void startSurveillance() {
         surveillance = true;
     }
-    
+
     /**
      * Liefert true, wenn derzeit Pakete zu spät ankommen und die
      * Logik-Uhr deshalb durch die Paketticks ersetzt wird.

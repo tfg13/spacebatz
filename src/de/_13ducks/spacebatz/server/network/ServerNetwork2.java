@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -183,7 +184,7 @@ public class ServerNetwork2 {
                                         break;
                                     case 1:
                                         // Regulärer Client-Disconnect
-                                        Server.disconnectClient(rtClient);
+                                        disconnectClient(rtClient, (byte) 0);
                                         break;
                                 }
                                 break;
@@ -286,7 +287,7 @@ public class ServerNetwork2 {
             // Dieser Client ist hoffnungslos
             System.out.println("ERROR: NET: Disconnection client due to outbuffer packet overflow");
             // Client entfernen
-            Server.disconnectClient(client);
+            disconnectClient(client, (byte) 1);
         }
     }
 
@@ -373,5 +374,39 @@ public class ServerNetwork2 {
 
     CTSCommand getCmdForId(int messageID) {
         return cmdMap[messageID];
+    }
+
+    /**
+     * Entfernt einen Client aus dem Spiel.
+     *
+     * @param client der zu entfernende Client.
+     * @param reason der Grund. 0 - normal, 1 - connection issues, 2 - kicked
+     */
+    public void disconnectClient(Client client, byte reason) {
+        sendDC(client, reason);
+        Player pl = client.getPlayer();
+        Server.game.getEntityManager().removeEntity(pl.netID);
+        Server.game.clients.remove(client.clientID);
+    }
+
+    /**
+     * Schickt dem Client ein DC-Paket.
+     * Das bedeutet, dass die Verbindung beendet wurde.
+     * Es gibt nur einen Versuch, dafür ist das Paket recht klein.
+     * Ansonsten wird er schon merken, dass man nicht mehr mit ihm redet.
+     * @param client der Client, der rausfliegt
+     * @param reason der Grund. 0 - normal, 1 - connection issues, 2 - kicked
+     */
+    private void sendDC(Client client, byte reason) {
+        byte[] data = new byte[2];
+        data[0] = (byte) 0x41; // Connection Management, DC
+        data[1] = (byte) reason;
+        DatagramPacket pack = new DatagramPacket(data, data.length, client.getNetworkConnection().getInetAddress(), client.getNetworkConnection().getPort());
+        try {
+            socket.send(pack);
+        } catch (IOException ex) {
+            // Egal, kriegt er es halt nicht mit.
+        }
+
     }
 }

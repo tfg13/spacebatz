@@ -96,3 +96,11 @@ CTS:
     	byte 1: NETMODE = 10 (realTime)
 		RT_MODE = 1 (dc)
 	byte 2: clientID
+STC:
+	DISCONNECT:
+		byte 1: NETMODE = 01 (Connetion Management)
+				rest = 1 (disconnect)
+		byte 2: reason:
+						0 - normal (client request)
+						1 - connection issues
+						2 - kicked
