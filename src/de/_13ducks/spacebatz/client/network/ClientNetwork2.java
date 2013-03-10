@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -123,6 +124,12 @@ public class ClientNetwork2 {
      */
     private int serverTick;
     /**
+     * Die Tickrate des Servers.
+     * Wie üblich gemessen in ms Abstand zwischen Ticks.
+     * 15 bedeutet also etwa 66 Ticks.
+     */
+    private int serverTickRate;
+    /**
      * Gibt an, bei welchem Servertick das Paket mit der packID 0 gesendet
      * wurde. Dieser Wert ist notwendig, um bei der Lerp-Berechnung herausfinden
      * zu können, bei welchem Tick ein Paket vom Server gesendet wurde. Dann
@@ -147,9 +154,21 @@ public class ClientNetwork2 {
      */
     private long lastPingOut;
     /**
+     * Der Zeitpunkt, zu dem zuletzt ein Input-Paket verarbeitet wurde.
+     */
+    private long lastInPackCompute;
+    /**
+     * Der Logiktick-Wert des zuletzt empfangenen Pakets.
+     */
+    private int lastInPackLogicTick;
+    /**
      * Die letzte gemessene Netzwerkauslastung. Ein ganzzahliger Prozentwert
      */
     private int lastLoad;
+    /**
+     * Ob die Überwachung auf Lags aktiviert ist, oder nicht.
+     */
+    private boolean surveillance = false;
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -236,8 +255,10 @@ public class ClientNetwork2 {
                     byte clientID = ansData[2];
                     GameClient.setClientID(clientID);
                     serverTick = Bits.getInt(ansData, 3);
+                    serverTickRate = ansData[7];
                     GameClient.setLogicTick(serverTick);
                     lerpTimer.scheduleAtFixedRate(new TimerTask() {
+
                         @Override
                         public void run() {
                             serverTick++;
@@ -279,6 +300,7 @@ public class ClientNetwork2 {
 
     private void initializeReceiver() {
         thread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 try {
@@ -458,7 +480,6 @@ public class ClientNetwork2 {
      */
     public synchronized void inTick() {
         if (connected) {
-            // Schauen, ob der Index des nächsten Pakets stimmt:
             while (true) {
                 // Queues tauschen?
                 if (inputQueue.isEmpty() && !inputQueue2.isEmpty() && lastInIndex == -1) {
@@ -478,6 +499,8 @@ public class ClientNetwork2 {
                 if (inputQueue.peek().getIndex() == next && packetServerTick <= serverTick - lerp) {
                     STCPacket packet = inputQueue.poll();
                     lastLoad = (int) (100.0 * packet.getDataLength() / 1460);
+                    lastInPackCompute = System.currentTimeMillis();
+                    lastInPackLogicTick = packetServerTick;
                     packet.compute();
                     lastInIndex = packet.getIndex();
                     if (lastInIndex == Constants.OVERFLOW_STC_PACK_ID - 1) {
@@ -550,11 +573,17 @@ public class ClientNetwork2 {
     /**
      * Liefert den aktuellen Logik-Tick zurück - also den geschätzten Tickwert
      * der Servers. Achtung: Hier wurde bereits Lerp reingerechnet!
-     *
+     *serverTick
+     * Bei lags wird der Wert möglicherweise kurz eingefrohren
      * @return
      */
     public int getLogicTick() {
-        return serverTick - lerp;
+        // Wenn der letzte verarbeitete Tick und die lokale Zähllogik noch halbwegs synchron sind,
+        // die lokale Zählung bevorzugen. Sonst den strengeren Pakettick verwenden.
+        if (Math.abs((serverTick - lerp) - lastInPackLogicTick) < DefaultSettings.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA) {
+            return serverTick - lerp;
+        }
+        return lastInPackLogicTick;
     }
 
     /**
@@ -636,5 +665,25 @@ public class ClientNetwork2 {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Aktiviert die Netzwerküberwachung, schält das Netzwerksystem also "scharf".
+     * Diese ist zunächst abschaltet, damit das Netzwerksystem nicht zu empfindlich
+     * auf Verzögerungen z.B. durch Ladezeiten reagiert.
+     * Sobald diese Methode aufgerufen wurde ist die Überwachung aktiv,
+     * dann kann das System beispielsweise Lags erkennen.
+     */
+    public void startSurveillance() {
+        surveillance = true;
+    }
+    
+    /**
+     * Liefert true, wenn derzeit Pakete zu spät ankommen und die
+     * Logik-Uhr deshalb durch die Paketticks ersetzt wird.
+     * @return true, wenns lagt
+     */
+    public boolean isLagging() {
+        return Math.abs((serverTick - lerp) - lastInPackLogicTick) >= DefaultSettings.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA;
     }
 }
