@@ -68,7 +68,7 @@ public class DefaultSettings {
      * Wieviele Pakete à 1500 Bytes maximal pro Tick zu einem Client verschickt werden können. Das ist eine Beschränkung des Peak-Werts für einzelne Ticks, es wird nicht erwartet, das Netzwerk über
      * längere Zeit so viele Pakete pro Tick verträgt.
      */
-    public static int SERVER_MAXPACKPERCLIENT = 5;
+    public static int SERVER_MAXPACKPERCLIENT = 10;
     /**
      * Größe des Inventar jedes Spielers
      */
