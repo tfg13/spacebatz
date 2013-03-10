@@ -83,6 +83,7 @@ public class ServerNetwork2 {
         // RCON
         if (DefaultSettings.SERVER_ENABLE_RCON) {
             Thread rconThread = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -131,6 +132,7 @@ public class ServerNetwork2 {
         }
         // Listener-Thread starten
         thread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 try {
@@ -215,7 +217,7 @@ public class ServerNetwork2 {
         Server.sync.tick();
         // Statistiken versenden?
         if (Server.game.getTick() % DefaultSettings.SERVER_STATS_INTERVAL == 0) {
-            for (Client c: Server.game.clients.values()) {
+            for (Client c : Server.game.clients.values()) {
                 c.getNetworkConnection().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STATS, c.getNetworkConnection().stats.craftSTCData()));
             }
         }
@@ -296,31 +298,47 @@ public class ServerNetwork2 {
      * @throws IOException falls das Antwort-Senden nicht klappt
      */
     private void clientRequest(byte[] packetData, InetAddress origin) throws IOException {
-        //TODO: Check maximum capacity
+        boolean accept = true;
+        byte reason = 0;
+        Client newClient = null;
+        // Spielerzahl
+        if (Server.game.clients.size() + pendingClients.size() >= DefaultSettings.SERVER_MAXPLAYERS) {
+            // Ablehnen wegen zu vielen Spielern:
+            accept = false;
+            reason = 1;
+        }
         // get port
         int port = Bits.getInt(packetData, 1);
         // Craft answer:
         byte[] connectAnswer = new byte[8];
-        // Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
-        connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
-        connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
 
-        // neue ClientID vergeben:
-        connectAnswer[2] = Server.game.newClientID();
+        if (accept) {
+            // Paketnummern starten immer bei 0. Das ist möglicherweise nicht perfekt und könnte geändert werden.
+            connectAnswer[0] = (byte) 0x40;//connectAnswer[0] = (byte) (0x40 | (nextOutIndex >> 8));
+            connectAnswer[1] = (byte) 0;//connectAnswer[1] = (byte) (nextOutIndex & 0x000000FF);
 
-        ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
-        Client newClient = new Client(clientConnection, Server.game.newClientID());
-        clientConnection.setClient(newClient);
-        Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
-        connectAnswer[0] |= 0x40;
-        // Aktuellen Tick
-        Bits.putInt(connectAnswer, 3, Server.game.getTick());
-        connectAnswer[7] = DefaultSettings.SERVER_TICKRATE;
+            // neue ClientID vergeben:
+            connectAnswer[2] = Server.game.newClientID();
+
+            ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
+            newClient = new Client(clientConnection, Server.game.newClientID());
+            clientConnection.setClient(newClient);
+            Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
+            connectAnswer[0] |= 0x40;
+            // Aktuellen Tick
+            Bits.putInt(connectAnswer, 3, Server.game.getTick());
+            connectAnswer[7] = DefaultSettings.SERVER_TICKRATE;
+        } else {
+            connectAnswer[0] = (byte) 0x80;
+            connectAnswer[0] |= reason;
+        }
         // Senden
         DatagramPacket pack = new DatagramPacket(connectAnswer, connectAnswer.length, origin, port);
         socket.send(pack);
-        pendingClients.add(newClient);
-        System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
+        if (accept) {
+            pendingClients.add(newClient);
+            System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
+        }
     }
 
     /**

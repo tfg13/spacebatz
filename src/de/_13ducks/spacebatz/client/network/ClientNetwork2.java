@@ -276,7 +276,13 @@ public class ClientNetwork2 {
                     initializeReceiver();
                     return true;
                 } else if ((ansData[0] & 0xC0) == 0x80) {
-                    System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x3F));
+                    switch (ansData[0] & 0x3F) {
+                        case 1:
+                            System.out.println("Connecting failed. Server rejected request. Reason: Server full");
+                            break;
+                        default:
+                            System.out.println("Connecting failed. Server rejected request. Reason: " + (ansData[0] & 0x3F));
+                    }
                     socket.close();
                     return false;
                 }
