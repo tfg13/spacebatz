@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.Movement;
 
 /**
@@ -45,6 +46,11 @@ public class Char {
      * Die übliche PI-Einheitskreis-Zählweise
      */
     private double dir = 0;
+    /**
+     * Die Richtung, in die dieser Char schauen soll.
+     * Er dreht sich in jedem Tick etwas in diese Richtung.
+     */
+    private double target_dir = 0;
     /**
      * Die Richtung der Bewegung.
      */
@@ -121,7 +127,7 @@ public class Char {
         this.speed = m.speed;
         // Nicht drehen beim Stehenbleiben
         if (startTick != -1) {
-            this.dir = Math.atan2(vY, vX);
+            this.target_dir = Math.atan2(vY, vX);
         }
 
     }
@@ -190,5 +196,46 @@ public class Char {
      * @param gameTick
      */
     public void tick(int gameTick) {
+        // Etwas in Richtung target_dir drehen:
+        if (Math.abs(target_dir - dir) <= DefaultSettings.CHAR_TURN_SPEED) {
+            dir =  target_dir;
+        } else {
+            // Drehlogik zweiter Versuch
+            double turnCurrent = dir;
+            double turnTarget = target_dir;
+            if (turnCurrent < 0) {
+                turnCurrent += 2 * Math.PI;
+            }
+            if (turnTarget < 0) {
+                turnTarget += 2 * Math.PI;
+            }
+            // Plus und Minus-Abstand suchen:
+            double plusTurn = turnTarget - turnCurrent;
+            if (plusTurn < 0) {
+                plusTurn += 2 * Math.PI;
+            }
+            double minusTurn = turnCurrent - turnTarget;
+            if (minusTurn < 0) {
+                minusTurn += 2 * Math.PI;
+            }
+            // Jetzt in die kürzere Richtung drehen
+            if (plusTurn <= minusTurn) {
+                turnCurrent += DefaultSettings.CHAR_TURN_SPEED;
+            } else {
+                turnCurrent -= DefaultSettings.CHAR_TURN_SPEED;
+            }
+            // Wrap-Around
+            if (turnCurrent > 2 * Math.PI) {
+                turnCurrent -= 2 * Math.PI;
+            } else if (turnCurrent < 0) {
+                turnCurrent += 2 * Math.PI;
+            }
+            // Zurück schreiben
+            if (turnCurrent <= Math.PI) {
+                dir = turnCurrent;
+            } else {
+                dir = turnCurrent - 2 * Math.PI;
+            }
+        }
     }
 }
