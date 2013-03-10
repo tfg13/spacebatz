@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
@@ -29,9 +30,14 @@ public class Camera {
      * @param resY Pixel in Y-Richtung
      */
     public Camera(int resX, int resY) {
-        // Zoom korrekt berechnen. Man sieht immer 58 * 34 Felder weit.
-        // Höhe hat Prio, bei 4:3 sieht man weniger...
-        setZoomFact(resY / 34.0f / CLIENT_GFX_TILESIZE);
+        if (!DefaultSettings.CLIENT_GFX_LOOKAHEAD) {
+            // Zoom korrekt berechnen. Man sieht immer 58 * 34 Felder weit.
+            // Höhe hat Prio, bei 4:3 sieht man weniger...
+            setZoomFact(resY / 34.0f / CLIENT_GFX_TILESIZE);
+        } else {
+            // Bei Lookahead sieht man weniger weit, weil man ja die Ansicht verschieben kann.
+            setZoomFact(resY / 20.f / CLIENT_GFX_TILESIZE);
+        }
     }
 
     /**

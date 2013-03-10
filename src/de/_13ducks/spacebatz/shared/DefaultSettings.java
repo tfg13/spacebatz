@@ -44,6 +44,31 @@ public class DefaultSettings {
      */
     public static boolean CLIENT_GFX_VSYNC = true;
     /**
+     * Die Einstellung für die Schatten. Es gibt 0 - aus (Cheat!), 1 - block, 2 - smooth, 3 - shader.
+     * Die höchste Zahl bietet die beste Qualität, kostet aber am meisten Leistung.
+     * Mindestens 2 ist empfohlen.
+     */
+    public static int CLIENT_GFX_SHADOWLEVEL = 3;
+    /**
+     * Die Einstellungen für das Zeichnen der Berge.
+     * Wenn true, werden diese am Rand abgerundet und mit einer Kontur versehen.
+     * Empfohlen.
+     */
+    public static boolean CLIENT_GFX_TOP_FANCY = true;
+    /**
+     * Die Einstellung für das Zeichen von Übergängen auf dem Boden.
+     * Wenn true, wird an Texturgrenzen übergeblendet (alpha-blending).
+     * Empfohlen.
+     */
+    public static boolean CLIENT_GFX_GROUND_SMOOTH = true;
+    /**
+     * Die Einstellung für den Lookahead-Sichtmodus.
+     * Bei diesem ist die Einheit nicht immer in der Mitte, sondern die Position ist abhängig von der Maus.
+     * Muss jeder ausprobieren, ob er das mag.
+     * Alles ist in diesem Modus stärker reingezoomt, man sieht also insbesondere bei kleinen Auflösungen mehr Details.
+     */
+    public static boolean CLIENT_GFX_LOOKAHEAD = false;
+    /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */
     public static int SERVER_RCONPORT = 13946;

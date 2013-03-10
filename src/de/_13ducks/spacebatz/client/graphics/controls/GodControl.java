@@ -80,19 +80,19 @@ public class GodControl implements Control {
      * 2 - Smooth
      * 3 - Shader (best)
      */
-    private int shadowLevel = 3;
+    private int shadowLevel = DefaultSettings.CLIENT_GFX_SHADOWLEVEL;
     /**
      * Übergänge in Top mit Konturen zeichnen?
      */
-    private boolean fancyTop = true;
+    private boolean fancyTop = DefaultSettings.CLIENT_GFX_TOP_FANCY;
     /**
      * Bestimmte Übergänge im Boden weichzeichnen?
      */
-    private boolean smoothGround = true;
+    private boolean smoothGround = DefaultSettings.CLIENT_GFX_GROUND_SMOOTH;
     /**
      * Alternativer Sichtmodus, bei dem die Einheit nicht immer in der Mitte ist, sondern stark von der Mausposition abhängt.
      */
-    private boolean lookahead = false;
+    private boolean lookahead = DefaultSettings.CLIENT_GFX_LOOKAHEAD;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
