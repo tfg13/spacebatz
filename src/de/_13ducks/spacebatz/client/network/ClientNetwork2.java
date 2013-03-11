@@ -234,10 +234,14 @@ public class ClientNetwork2 {
             byte[] ansData = new byte[8];
             DatagramPacket ansPacket = new DatagramPacket(ansData, ansData.length);
             socket.setSoTimeout(1000);
+            // Ping messen:
+            long sendTime = System.currentTimeMillis();
+            long recTime = 0;
             socket.send(packet);
             while (true) {
                 try {
                     socket.receive(ansPacket);
+                    recTime = System.currentTimeMillis();
                     socket.setSoTimeout(0);
                 } catch (SocketTimeoutException timeoutEx) {
                     // Timeout, ging nicht, Ende.
@@ -253,8 +257,11 @@ public class ClientNetwork2 {
                     int packID = Bits.getShort(ansData, 0);
                     byte clientID = ansData[2];
                     GameClient.setClientID(clientID);
-                    serverTick = Bits.getInt(ansData, 3);
                     serverTickRate = ansData[7];
+                    // Tick möglichst präzise synchonisieren. Dazu die Netzwerk-Laufzeit in Ticks beachten
+                    int runTicks = (int) ((recTime - sendTime) / 2 / serverTickRate);
+                    //System.out.println("RUNTICKS = " + runTicks);
+                    serverTick = Bits.getInt(ansData, 3) + runTicks;
                     GameClient.setLogicTick(serverTick);
                     lerpTimer.scheduleAtFixedRate(new TimerTask() {
 
