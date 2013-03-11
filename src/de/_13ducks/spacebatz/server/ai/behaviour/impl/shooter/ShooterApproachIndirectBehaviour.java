@@ -16,4 +16,9 @@ class ShooterApproachIndirectBehaviour extends GenericIndirectPursuitBehaviour {
     public Behaviour targetInSight(Enemy owner, Player target) {
         return new ShooterAproachDirectBehaviour(owner, target);
     }
+
+    @Override
+    public Behaviour targetLost() {
+       return new ShooterLurkBehaviour(owner);
+    }
 }

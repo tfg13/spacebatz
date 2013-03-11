@@ -16,4 +16,9 @@ class FollowerApproachTargetBehaviour extends GenericIndirectPursuitBehaviour {
     public Behaviour targetInSight(Enemy owner, Player target) {
         return new FollowerAproachDirectBehaviour(owner, target);
     }
+
+    @Override
+    public Behaviour targetLost() {
+        return new FollowerLurkBehaviour(owner);
+    }
 }
