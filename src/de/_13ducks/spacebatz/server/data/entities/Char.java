@@ -10,8 +10,8 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.data.effects.Effect;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public abstract class Char extends Entity {
         super(x, y, netID, entityTypeID);
         properties = new PropertyList();
 
-        properties.setHitpoints(DefaultSettings.CHARHEALTH);
+        properties.setHitpoints(CompileTimeParameters.CHARHEALTH);
         properties.setSightrange(10.0);
         effects = new ArrayList<>();
     }
@@ -61,7 +61,7 @@ public abstract class Char extends Entity {
      */
     final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
-        setSpeed(DefaultSettings.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
+        setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class Char extends Entity {
      */
     final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
-        setSpeed(DefaultSettings.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
+        setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
     }
 
     /**

@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.client;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
@@ -76,7 +77,7 @@ public class GameClient {
     /**
      * Inventar des Clients
      */
-    private static Item[] items = new Item[DefaultSettings.INVENTORY_SIZE];
+    private static Item[] items = new Item[CompileTimeParameters.INVENTORY_SIZE];
     /**
      * Hier kommen die Items rein, die gerade angelegt sind
      */
@@ -84,7 +85,7 @@ public class GameClient {
     /**
      * Wieviel Materialien der Spieler gerade besitzt
      */
-    private static int materials[] = new int[DefaultSettings.NUMBER_OF_MATERIALS];
+    private static int materials[] = new int[CompileTimeParameters.NUMBER_OF_MATERIALS];
     /**
      * Das Client-Terminal.
      */

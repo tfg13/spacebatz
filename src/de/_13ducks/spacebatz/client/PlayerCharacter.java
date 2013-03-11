@@ -10,9 +10,9 @@
  */
 package de._13ducks.spacebatz.client;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Item;
 
 /**
@@ -47,8 +47,8 @@ public class PlayerCharacter extends Char {
         super(netID, new RenderObject(new Animation(0, 4, 4, 1, 1)));
         turretRenderObject = new RenderObject(new Animation(4, 4, 4, 1, 1));
         selectedattack = 0;
-        healthpoints = DefaultSettings.CHARHEALTH;
-        healthpointsmax = DefaultSettings.CHARHEALTH;
+        healthpoints = CompileTimeParameters.CHARHEALTH;
+        healthpointsmax = CompileTimeParameters.CHARHEALTH;
     }
 
     /**
@@ -92,7 +92,7 @@ public class PlayerCharacter extends Char {
      */
     public void setDead(boolean dead) {
         this.dead = dead;
-        respawntick = GameClient.frozenGametick + DefaultSettings.RESPAWNTIME;
+        respawntick = GameClient.frozenGametick + CompileTimeParameters.RESPAWNTIME;
     }
 
     /**

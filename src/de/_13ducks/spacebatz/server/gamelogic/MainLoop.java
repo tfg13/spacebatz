@@ -10,8 +10,8 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -92,6 +92,6 @@ public class MainLoop {
      * Startet die GameLogic
      */
     public void startGameLogic() {
-        mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, DefaultSettings.SERVER_TICKRATE);
+        mainLoopTimer.scheduleAtFixedRate(mainLoop, 0, CompileTimeParameters.SERVER_TICKRATE);
     }
 }

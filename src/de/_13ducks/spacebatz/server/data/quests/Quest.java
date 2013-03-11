@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.data.quests;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import java.util.Random;
 
 /**
@@ -33,7 +33,7 @@ public abstract class Quest {
      * Zufälliger Wert zwischen 0 und Servertickrate.
      * Zur automatischen Lastverteilung, immer bei diesem (x-ten) Tick einer Sekunde wird checkState aufgerufen
      */
-    private final int randomTick = (int) (Math.random() * (1 / DefaultSettings.SERVER_TICKRATE));
+    private final int randomTick = (int) (Math.random() * (1 / CompileTimeParameters.SERVER_TICKRATE));
     /**
      * Eindeutige ID für diese Instanz.
      * Auf dem Client gleich, zur Zuordnung.
@@ -55,7 +55,7 @@ public abstract class Quest {
      * @return der Zustand des Quests
      */
     public final int check() {
-        if (Server.game.getTick() % DefaultSettings.SERVER_TICKRATE == randomTick) {
+        if (Server.game.getTick() % CompileTimeParameters.SERVER_TICKRATE == randomTick) {
             return checkState();
         }
         return -1;

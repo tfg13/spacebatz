@@ -539,7 +539,7 @@ public class GodControl implements Control {
                 if (GameClient.getNetwork2().isLagging()) {
                     textWriter.renderText("LAG", 8, camera.getTilesY() - 0.5f);
                 }
-                textWriter.renderText("lerp: " + net.getLerp() + " (~" + (DefaultSettings.SERVER_TICKRATE * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
+                textWriter.renderText("lerp: " + net.getLerp() + " (~" + (GameClient.getNetwork2().getLogicTickDelay() * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
                 //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
                 textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1f);
                 textWriter.renderText("Net %health: " + net.getConnectionHealthPercent(), 0, camera.getTilesY() - 1.5f, net.getConnectionHealthPercent() < 95 ? 1 : 0, 0, 0, 1);

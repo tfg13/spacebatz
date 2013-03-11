@@ -10,13 +10,13 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.geo.Vector;
@@ -241,8 +241,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
                     blockMidX = x + 0.5;
                     blockMidY = y + 0.5;
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidX + (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
-                    d2 = ((blockMidX - (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d1 = ((blockMidX + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
@@ -287,8 +287,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
                     blockMidY = y + 0.5;
                     // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
                     // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidY + (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
-                    d2 = ((blockMidY - (DefaultSettings.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d1 = ((blockMidY + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
 

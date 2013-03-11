@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;
@@ -70,7 +69,7 @@ public class HudControl implements Control {
             if (GameClient.frozenGametick >= GameClient.getPlayer().getRespawntick()) {
                 textWriter.renderText("Press <Fire> to respawn", 10.5f, camera.getTilesY() - 2.5f);
             } else {
-                int seconds = (int) Math.ceil((GameClient.getPlayer().getRespawntick() - GameClient.frozenGametick) * DefaultSettings.SERVER_TICKRATE / 1000.0);
+                int seconds = (int) Math.ceil((GameClient.getPlayer().getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
                 textWriter.renderText("Respawn in " + seconds + " Seconds", 10.5f, camera.getTilesY() - 2.5f);
             }
         }

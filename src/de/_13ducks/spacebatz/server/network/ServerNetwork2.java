@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -328,7 +329,7 @@ public class ServerNetwork2 {
             connectAnswer[0] |= 0x40;
             // Aktuellen Tick
             Bits.putInt(connectAnswer, 3, Server.game.getTick());
-            connectAnswer[7] = DefaultSettings.SERVER_TICKRATE;
+            connectAnswer[7] = CompileTimeParameters.SERVER_TICKRATE;
         } else {
             connectAnswer[0] = (byte) 0x80;
             connectAnswer[0] |= reason;

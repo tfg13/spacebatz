@@ -10,8 +10,8 @@
  */
 package de._13ducks.spacebatz.client.network;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -236,7 +236,7 @@ public class ClientNetwork2 {
             socket.setSoTimeout(1000);
             // Ping messen:
             long sendTime = System.currentTimeMillis();
-            long recTime = 0;
+            long recTime;
             socket.send(packet);
             while (true) {
                 try {
@@ -559,7 +559,7 @@ public class ClientNetwork2 {
     public void outTick() {
         if (connected) {
             // Bis zu ein Mal pro Sekunde Ping messen:
-            if (serverTick % (1000 / DefaultSettings.SERVER_TICKRATE) == 0 && lastPingOut == 0) {
+            if (serverTick % (1000 / serverTickRate) == 0 && lastPingOut == 0) {
                 try {
                     byte[] pingData = new byte[2];
                     pingData[0] = (byte) 0x80;
@@ -614,7 +614,7 @@ public class ClientNetwork2 {
     public int getLogicTick() {
         // Wenn der letzte verarbeitete Tick und die lokale Zähllogik noch halbwegs synchron sind,
         // die lokale Zählung bevorzugen. Sonst den strengeren Pakettick verwenden.
-        if (Math.abs((serverTick - lerp) - lastInPackLogicTick) < DefaultSettings.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA) {
+        if (Math.abs((serverTick - lerp) - lastInPackLogicTick) < CompileTimeParameters.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA) {
             return serverTick - lerp;
         }
         return lastInPackLogicTick;
@@ -718,6 +718,15 @@ public class ClientNetwork2 {
      * @return true, wenns lagt
      */
     public boolean isLagging() {
-        return Math.abs((serverTick - lerp) - lastInPackLogicTick) >= DefaultSettings.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA;
+        return Math.abs((serverTick - lerp) - lastInPackLogicTick) >= CompileTimeParameters.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA;
+    }
+
+    /**
+     * Liefert die Logik-Tickrate.
+     * Wie üblich gemessen in ms Abstand zwischen Ticks.
+     * @return Logik-Tickdelay
+     */
+    public int getLogicTickDelay() {
+        return serverTickRate;
     }
 }

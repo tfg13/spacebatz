@@ -10,9 +10,9 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
@@ -64,7 +64,7 @@ public class Bullet extends Entity {
         this.owner = owner;
         this.deletetick = Server.game.getTick() + lifetime;
         effects = new ArrayList<>();
-        this.setSize(DefaultSettings.BULLETSIZE);
+        this.setSize(CompileTimeParameters.BULLETSIZE);
     }
 
     public void hitChar(Entity hitChar) {

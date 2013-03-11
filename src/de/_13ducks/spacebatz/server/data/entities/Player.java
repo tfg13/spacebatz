@@ -18,6 +18,7 @@ import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
@@ -160,7 +161,7 @@ public class Player extends ItemCarrier {
         } else {
             if (Server.game.getTick() >= respawntick) {
                 // respawnen
-                properties.setHitpoints(DefaultSettings.CHARHEALTH);
+                properties.setHitpoints(CompileTimeParameters.CHARHEALTH);
                 dead = false;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, false);
                 attackCooldownTick = Server.game.getTick() + 30; // damit nicht sofort geschossen wird
@@ -222,7 +223,7 @@ public class Player extends ItemCarrier {
             super.decreaseHitpoints(damage);
             if (properties.getHitpoints() <= 0) {
                 dead = true;
-                respawntick = Server.game.getTick() + DefaultSettings.RESPAWNTIME;
+                respawntick = Server.game.getTick() + CompileTimeParameters.RESPAWNTIME;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
             }
         }

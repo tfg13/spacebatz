@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
@@ -38,7 +38,7 @@ public class STC_PLAYER_TOGGLE_ALIVE extends FixedSizeSTCCommand {
         if (dead) {
             p.setHealthpoints(0);
         } else {
-            p.setHealthpoints(DefaultSettings.CHARHEALTH);
+            p.setHealthpoints(CompileTimeParameters.CHARHEALTH);
         }
         
     }

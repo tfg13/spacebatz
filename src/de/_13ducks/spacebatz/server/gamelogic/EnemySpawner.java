@@ -19,6 +19,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class EnemySpawner {
      */
     public static void tick() {
         Random random = new Random();
-        if (Server.game.getTick() % (1000 / DefaultSettings.SERVER_TICKRATE / DefaultSettings.SERVER_SPAWNER_EXECSPERSEC) == 0 && numSpawns < MAX_ENEMYS) {
+        if (Server.game.getTick() % (1000 / CompileTimeParameters.SERVER_TICKRATE / DefaultSettings.SERVER_SPAWNER_EXECSPERSEC) == 0 && numSpawns < MAX_ENEMYS) {
             // Alle Spieler durchgehen
             for (Entity e : Server.game.getEntityManager().getValues()) {
                 if (e instanceof Player) {

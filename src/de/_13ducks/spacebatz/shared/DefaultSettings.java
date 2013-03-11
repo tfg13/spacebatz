@@ -11,7 +11,10 @@
 package de._13ducks.spacebatz.shared;
 
 /**
- * Spieleinstellungen, der Einfachheit halber hier statisch erreichbar. Achtung: Für Server und Client gleich!!
+ * Spieleinstellungen, der Einfachheit halber hier statisch erreichbar.
+ *
+ * Faustregel für Trennung zwischen DefaultSettings und CompileTimeParameters:
+ * Werte, die bei mehreren Clients auf dem gleichen Server unterschiedlich sein dürfen hier rein.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -77,11 +80,6 @@ public class DefaultSettings {
      */
     public static int SERVER_UDPPORT2 = 13949;
     /**
-     * Die Server-Tickrate in default-Delay zwischen Ticks. 15 entspricht also einer Tickrate von 66,66666666... Wert darf nicht negativ sein, also nicht über 127 steigen. Die minimal mögliche
-     * Server-Tickrate ist also etwa 8 Ticks/s
-     */
-    public static byte SERVER_TICKRATE = 15;
-    /**
      * Ob der Server eingehende rcon-Verbindungen akzeptiert.
      */
     public static boolean SERVER_ENABLE_RCON = true;
@@ -95,29 +93,9 @@ public class DefaultSettings {
      */
     public static int SERVER_MAXPACKPERCLIENT = 10;
     /**
-     * Größe des Inventar jedes Spielers
-     */
-    public static int INVENTORY_SIZE = 30;
-    /**
-     * Die Reichweite für Kollisionen
-     */
-    public static double SERVER_COLLISION_DISTANCE = 1.5;
-    /**
      * Wie häufig der Spawner pro Sekunde aufgerufen wird.
      */
     public static int SERVER_SPAWNER_EXECSPERSEC = 5;
-    /**
-     * Die Größe der Chars für Kollision
-     */
-    public static double CHARSIZE = 1.8;
-    /**
-     * Die Größe der Bullets für Kollision
-     */
-    public static double BULLETSIZE = 0.1;
-    /**
-     * Die HP der Chars
-     */
-    public static int CHARHEALTH = 100;
     /**
      * Animierte Drehgeschwindigkeit auf dem Client.
      */
@@ -127,22 +105,6 @@ public class DefaultSettings {
      */
     public static int CLIENT_NETGRAPH_LEVEL = 3;
     /**
-     * Abstand bei der double noch als "gleich" gilt.
-     */
-    public static double DOUBLE_EQUALS_DIST = 0.0001;
-    /**
-     * Grundgeschwindigkeit.
-     */
-    public static double BASE_MOVESPEED = 0.15;
-    /**
-     * Anzahl der Materialien im Spiel (Geld, Erze, ...)
-     */
-    public static int NUMBER_OF_MATERIALS = 3;
-    /**
-     * Zeit, bis Spieler nach seinem Tod respawnt, in Ticks
-     */
-    public static int RESPAWNTIME = 300;
-    /**
      * Alle wieviel Ticks die Turret-Drehung eines Spielers gebroadcastet wird.
      * Für Leitungen mit geringerem Durchsatz höher einstellen.
      */
@@ -151,12 +113,6 @@ public class DefaultSettings {
      * Alle wieviel Ticks der Server Netzwerkstatistiken mit dem Client abgleicht.
      */
     public static int SERVER_STATS_INTERVAL = 66;
-    /**
-     * Maximal zulässiger Unterschied zwischen Logik-Tickzählung des Clients,
-     * und Originaltick des letzten verarbeiteten Pakets.
-     * Bei größeren Werten wird der strengere Pakettick bevorzugt, bis es sich wieder normalisiert.
-     */
-    public static int CLIENT_NET_ACCEPTABLE_LOGIC_DELTA = 4;
 
     /*
      * DAS MUSS IMMER GANZ UNTEN SEIN!!!

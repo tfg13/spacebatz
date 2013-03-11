@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
@@ -16,11 +16,11 @@ public class ItemCarrier extends Char {
     /**
      * Items im Inventar
      */
-    private static Item[] inventory = new Item[DefaultSettings.INVENTORY_SIZE];
+    private static Item[] inventory = new Item[CompileTimeParameters.INVENTORY_SIZE];
     /**
      * Wieviel Materialien der Spieler hat (Geld, Erze, ...)
      */
-    private int materials[] = new int[DefaultSettings.NUMBER_OF_MATERIALS];
+    private int materials[] = new int[CompileTimeParameters.NUMBER_OF_MATERIALS];
     /**
      * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
      */
