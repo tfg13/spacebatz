@@ -85,9 +85,14 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
 
     @Override
     public Behaviour pathComputed(Vector[] path) {
-        owner.followPath(path);
-        pathRequestId = -1;
-        pathCreationTime = Server.game.getTick();
+        if (path == null) {
+            pathRequestId = Server.game.pathfinder.requestPath(new Vector(owner.getX(), owner.getY()), new Vector(target.getX(), target.getY()), owner, owner.getSize());
+        } else {
+            owner.followPath(path);
+            pathRequestId = -1;
+            pathCreationTime = Server.game.getTick();
+        }
+
         return this;
     }
 

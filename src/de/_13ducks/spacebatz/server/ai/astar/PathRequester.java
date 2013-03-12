@@ -13,7 +13,7 @@ public interface PathRequester {
     /**
      * Wird aufgerufen, wenn ein angeforderter Pfad fertig ist.
      *
-     * @param path der fertig berechnete Pfad
+     * @param path der fertig berechnete Pfad oder null, wenn die Berechnung abgebrochen wurde oder kein Pfad gefunden wurde.
      */
     public void pathComputed(Vector path[]);
 }
