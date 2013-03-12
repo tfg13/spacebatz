@@ -16,4 +16,9 @@ class SpectatorApproachTargetBehaviour extends GenericIndirectPursuitBehaviour {
         owner.stopMovement();
         return new SpectatorWatchBehaviour(owner, target);
     }
+
+    @Override
+    public Behaviour targetLost() {
+        return new SpectatorLurkBehaviour(owner);
+    }
 }

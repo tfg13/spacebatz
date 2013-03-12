@@ -120,7 +120,7 @@ class AStarImplementation {
                 closedList.add(current);
             }
         } else {
-            requester.pathComputed(new Vector[0]);
+            requester.pathComputed(null);
         }
     }
 

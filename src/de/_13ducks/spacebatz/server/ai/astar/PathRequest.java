@@ -109,7 +109,7 @@ public class PathRequest {
     public void abort() {
         computed = true;
         aStar.abort();
-        requester.pathComputed(new Vector[0]);
+        requester.pathComputed(null);
     }
 
     void computeIteration() {
@@ -119,21 +119,14 @@ public class PathRequest {
         aStar.computeIteration();
         if (aStar.isComputed()) {
             IntVector path[] = aStar.getPath();
-            Vector finalPath[];
-            if (path.length == 0) {
-                finalPath = new Vector[0];
-            } else {
+            Vector finalPath[] = null;
+            if (path.length >= 2) {
                 // Startposition vorne anhängen und den Weg zu Entitykoordinaten transformieren:
                 finalPath = new Vector[path.length];
-
-//                finalPath[0] = firstPosition;
-
                 for (int i = 0; i < path.length; i++) {
                     finalPath[i] = new Vector(path[i].x + dx, path[i].y + dy);
                 }
             }
-
-
             // Den fertigen Pfad übergeben;
             requester.pathComputed(finalPath);
             computed = true;

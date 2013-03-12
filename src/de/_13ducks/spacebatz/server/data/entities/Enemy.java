@@ -56,6 +56,10 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * The enemys AI.
      */
     private Behaviour behaviour;
+    /**
+     * Der GameTick, in dem zuletzt Sichtkontakt zum Ziel war.  
+     */
+    private int lastSightContact;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -353,5 +357,19 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      */
     public void setShootAbility(Ability shootAbility) {
         this.shootAbility = shootAbility;
+    }
+
+    /**
+     * @return the lastSightContact
+     */
+    public int getLastSightContact() {
+        return lastSightContact;
+    }
+
+    /**
+     * @param lastSightContact the lastSightContact to set
+     */
+    public void setLastSightContact(int lastSightContact) {
+        this.lastSightContact = lastSightContact;
     }
 }
