@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Movement;
@@ -29,12 +28,14 @@ import de._13ducks.spacebatz.util.Bits;
  * UND SEI DIE ÄNDERUNG AUCH NOCH SO KLEIN. ICH SETZE ALLES GNADENLOS ZURÜCK.
  * NUR ICH DARF DIESE KLASSE ÄNDERN.
  *
- * Das Bewegungssystem unterstützt 2 Laufmodi.
+ * Das Bewegungssystem unterstützt 3 Laufmodi.
  * Der erste wird mit setVector gestartet und lässt die Entity einfach in eine Richtung laufen.
  * Die Entity hält nur an, falls ein Hindernis auftaucht, oder die Bewegung mit stopMovement angehalten, bzw. mit setVector geändert wird.
  * Der zweite Modus wird mit setLinearTarget aufgerufen und startet eine lineare Bewegung bis zum Ziel. Hier meldet sich die Entity beim
  * Listener zurück, wenn das Ziel erreicht wird, oder wenn ein Hindernis den Weg blockiert.
  * Aufrufen von setVector im zweiten Modus oder setLinearTarget im ersten bricht die jeweilige Bewegung ab.
+ * Der dritte Modus ist der Zielverfolgungsmodus. In diesem Verfolgt die Einheit ein (bewegliches) Ziel, also eine andere Entity.
+ * Es wird einfach in Richtung des Ziels gelaufen, solange keine Hinternisse im Weg sind.
  *
  * Mit einer Bewegung im zweiten Modus kann, im Gegensatz zum ersten, ein bestimmter Zielpunkt exakt erreicht werden.
  * Hier werden vom Bewegungssystem alle Verschiebungen wegen Tickdelay oder Fließkomma-Ungenauigkeiten rausgerechnet.
@@ -80,6 +81,11 @@ public class Entity {
      * Das Ziel des aktuellen Streckenabschnitts in Y-Richtung.
      */
     private double targetY;
+    /**
+     * Das Ziel im Bewegungsmodus 3.
+     * null, wenn kein Verfolgungsmodus aktiv
+     */
+    private Entity targetEntity;
     /**
      * Der Observer der aktuellen target-Bewegung.
      * Muss immer gesetzt sein, wenn die Einheit in Modus 2 läuft.
@@ -162,6 +168,8 @@ public class Entity {
             remainingPathLength = -1;
             pathColBlocked = true;
         }
+        // Gegnerverfolgung abschalten
+        targetEntity = null;
         if (xCont) {
             posY = y;
             vecY = 0;
@@ -201,6 +209,7 @@ public class Entity {
             remainingPathLength = -1;
             observer.movementAborted();
         }
+        targetEntity = null;
     }
 
     /**
@@ -242,6 +251,7 @@ public class Entity {
             remainingPathLength = -1;
             observer.movementAborted();
         }
+        targetEntity = null;
     }
 
     /**
@@ -293,6 +303,7 @@ public class Entity {
         if (remainingPathLength != -1) {
             observer.movementAborted();
         }
+        targetEntity = null;
         // Sofort da?
         if (Math.abs(tx - getX()) < CompileTimeParameters.DOUBLE_EQUALS_DIST && Math.abs(ty - getY()) < CompileTimeParameters.DOUBLE_EQUALS_DIST) {
             // Gar nicht erst bewegen.
@@ -333,7 +344,13 @@ public class Entity {
 
     private Movement computeMovement() {
         if (isMoving()) {
-            return new Movement(moveStartX, moveStartY, vecX, vecY, moveStartTick, speed);
+            if (targetEntity == null) {
+                // Modus 1 + 2
+                return new Movement(moveStartX, moveStartY, vecX, vecY, moveStartTick, speed);
+            } else {
+                // Modus 3
+                return new Movement(moveStartX, moveStartY, targetEntity.netID, moveStartTick, speed);
+            }
         } else {
             return new Movement(posX, posY, 0, 0, -1, 0);
         }
@@ -412,6 +429,10 @@ public class Entity {
      */
     public void tick(int gameTick) {
         if (moving) { // Einheit bewegt sich
+            // Im Verfolgungsmodus Richtung anpassen:
+            if (targetEntity != null) {
+                normalizeAndSetVector(targetEntity.getX() - posX, targetEntity.getY() - posY);
+            }
             double oldX = posX;
             double oldY = posY;
             double predictedX = posX + speed * vecX;
@@ -605,5 +626,37 @@ public class Entity {
      */
     protected double getVecY() {
         return vecY;
+    }
+
+    /**
+     * Beantwortet, ob die übergeben Einheit gerade verfolgt wird.
+     * @param target die fragliche Einheit
+     * @return true, wenn genau diese verfolgt wird, sonst false
+     */
+    public boolean isFollowingTarget(Entity target) {
+        return (target != null && target.equals(targetEntity));
+    }
+
+    /**
+     * Lässt diese Entity die gegebene verfolgen.
+     * Versetzt die Entity dazu in Bewegungsmodus 3.
+     * @param target die Zielentity
+     */
+    public void setFollowTarget(Entity target) {
+        if (target == null) {
+            throw new IllegalArgumentException("Cannot set followTarget, is null!");
+        }
+        targetEntity = target;
+        normalizeAndSetVector(target.getX() - posX, target.getY() - posY);
+        moving = true;
+        // Das ist eine neue Client-Bewegung
+        moveStartTick = Server.game.getTick();
+        moveStartX = posX;
+        moveStartY = posY;
+        Server.sync.updateMovement(this);
+        if (remainingPathLength != -1) {
+            remainingPathLength = -1;
+            observer.movementAborted();
+        }
     }
 }

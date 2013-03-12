@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.Movement;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  *
@@ -56,6 +57,10 @@ public class Char {
      */
     private double vX, vY;
     /**
+     * Die Zieleinheit.
+     */
+    private Char target_Char;
+    /**
      * Die Geschwindigkeit der Bewegung. (0 bei Stillstand)
      */
     private double speed;
@@ -85,8 +90,13 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
-
-        return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
+        if (target_Char == null) {
+            // Normal
+            return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
+        } else {
+            // Follow
+            return x;
+        }
 
     }
 
@@ -96,8 +106,13 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
-
-        return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
+        if (target_Char == null) {
+            // Normal
+            return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
+        } else {
+            // Follow
+            return y;
+        }
 
     }
 
@@ -121,10 +136,20 @@ public class Char {
     public void applyMove(Movement m) {
         x = m.startX;
         y = m.startY;
-        this.vX = m.vecX;
-        this.vY = m.vecY;
         this.startTick = m.startTick;
         this.speed = m.speed;
+        if (Float.isNaN(m.vecX)) {
+            // Follow
+            target_Char = GameClient.netIDMap.get(m.target_netID);
+            // Nicht, normiert ist aber egal, weil sie nur für die Richtung verwendet werden.
+            this.vX = target_Char.getX() - x;
+            this.vY = target_Char.getY() - y;
+        } else {
+            // Normal
+            target_Char = null;
+            this.vX = m.vecX;
+            this.vY = m.vecY;
+        }
         // Nicht drehen beim Stehenbleiben
         if (startTick != -1) {
             this.target_dir = Math.atan2(vY, vX);
@@ -177,25 +202,20 @@ public class Char {
     }
 
     /**
-     * Normalisiert den Vektor (x, y) und setzt ihn anschließend.
-     *
-     * @param x X-Richtung
-     * @param y Y-Richtung
-     */
-    private void normalizeAndSetVector(double x, double y) {
-        // Länge berechnen (Pythagoras)
-        double length = Math.sqrt((x * x) + (y * y));
-        // Normalisieren und setzen
-        vX = x / length;
-        vY = y / length;
-    }
-
-    /**
      * Wird bei jedem gameTick aufgerufen.
      *
      * @param gameTick
      */
     public void tick(int gameTick) {
+        if (target_Char != null) {
+            // Einheit verschieben:
+            Vector stepDirection = new Vector(target_Char.getX() - x, target_Char.getY() - y).normalize().multiply(speed);
+            x += stepDirection.x;
+            y += stepDirection.y;
+            vX = stepDirection.x;
+            vY = stepDirection.y;
+            target_dir = Math.atan2(vY, vX);
+        }
         // Etwas in Richtung target_dir drehen:
         if (Math.abs(target_dir - dir) <= DefaultSettings.CHAR_TURN_SPEED) {
             dir =  target_dir;

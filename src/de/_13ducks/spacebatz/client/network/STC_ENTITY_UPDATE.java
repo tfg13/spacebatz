@@ -32,7 +32,14 @@ public class STC_ENTITY_UPDATE extends STCCommand {
                 System.out.println("WARNING: CNET: MOVESYNC: Skipping unknown Char " + netID);
                 continue;
             }
-            Movement m = new Movement(Bits.getFloat(data, i * 28 + 13), Bits.getFloat(data, i * 28 + 17), Bits.getFloat(data, i * 28 + 21), Bits.getFloat(data, i * 28 + 25), Bits.getInt(data, i * 28 + 5), Bits.getFloat(data, i * 28 + 9));
+            Movement m;
+            if (Float.isNaN(Bits.getFloat(data, i * 28 + 21))) {
+                // Follow
+                m = new Movement(Bits.getFloat(data, i * 28 + 13), Bits.getFloat(data, i * 28 + 17), Bits.getInt(data, i * 28 + 25), Bits.getInt(data, i * 28 + 5), Bits.getFloat(data, i * 28 + 9));
+            } else {
+                // Normal
+                m = new Movement(Bits.getFloat(data, i * 28 + 13), Bits.getFloat(data, i * 28 + 17), Bits.getFloat(data, i * 28 + 21), Bits.getFloat(data, i * 28 + 25), Bits.getInt(data, i * 28 + 5), Bits.getFloat(data, i * 28 + 9));
+            }
             c.applyMove(m);
         }
     }

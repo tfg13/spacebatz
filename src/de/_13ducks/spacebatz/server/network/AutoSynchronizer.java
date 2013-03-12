@@ -176,7 +176,13 @@ public class AutoSynchronizer {
             Bits.putFloat(data, i * 28 + 13, m.startX);
             Bits.putFloat(data, i * 28 + 17, m.startY);
             Bits.putFloat(data, i * 28 + 21, m.vecX);
-            Bits.putFloat(data, i * 28 + 25, m.vecY);
+            if (Float.isNaN(m.vecX)) {
+                // Follow
+                Bits.putInt(data, i * 28 + 25, m.target_netID);
+            } else {
+                // Normal
+                Bits.putFloat(data, i * 28 + 25, m.vecY);
+            }
         }
         return data;
     }
