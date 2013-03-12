@@ -59,6 +59,7 @@ public class Engine {
     public void start() {
         graphics.initialise();
         lastFPS = getTime();
+        GameClient.getNetwork2().startSurveillance();
         while (run) {
             // Gametick updaten:
             GameClient.updateGametick();

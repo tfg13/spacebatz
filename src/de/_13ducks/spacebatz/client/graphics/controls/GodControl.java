@@ -529,8 +529,16 @@ public class GodControl implements Control {
             }
             glRectf(0, camera.getTilesY(), 10, NetStats.netGraph >= 2 ? (NetStats.netGraph >= 3 ? camera.getTilesY() - 5f : camera.getTilesY() - 2.5f) : camera.getTilesY() - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
+            // Warnung bei Lag?
+            if (GameClient.getNetwork2().isLagging() && connectionAlive) {
+                glColor4f(1f, 0f, 0f, 1f);
+                glRectf(7, camera.getTilesY(), 10f, camera.getTilesY() - 0.5f);
+            }
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
+                if (GameClient.getNetwork2().isLagging()) {
+                    textWriter.renderText("LAG", 8, camera.getTilesY() - 0.5f);
+                }
                 textWriter.renderText("lerp: " + net.getLerp() + " (~" + (DefaultSettings.SERVER_TICKRATE * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
                 //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
                 textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1f);

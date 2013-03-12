@@ -151,6 +151,12 @@ public class DefaultSettings {
      * Alle wieviel Ticks der Server Netzwerkstatistiken mit dem Client abgleicht.
      */
     public static int SERVER_STATS_INTERVAL = 66;
+    /**
+     * Maximal zulässiger Unterschied zwischen Logik-Tickzählung des Clients,
+     * und Originaltick des letzten verarbeiteten Pakets.
+     * Bei größeren Werten wird der strengere Pakettick bevorzugt, bis es sich wieder normalisiert.
+     */
+    public static int CLIENT_NET_ACCEPTABLE_LOGIC_DELTA = 4;
 
     /*
      * DAS MUSS IMMER GANZ UNTEN SEIN!!!

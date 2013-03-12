@@ -74,6 +74,8 @@ Connecting to server:
 	Server answers the request by sending a special packet to the client. Specs:
 		byte 1: first 2 bits: netmode = 01 (yes) 10 (refused)
 			rest: index of next udp-packet if accepted, otherwise reason for refusal (6 bit unsigned (part1))
+			reasons:
+			 1 - server full
 		byte 2: 8 bit unsigned (concatenated with part from byte 1): next udp-pack index
 		byte 3: signed int clientID if accepted, not specified otherwise
 		byte 4-7: signed int serverTick - the current server tick, for lerp-timings
@@ -94,3 +96,11 @@ CTS:
     	byte 1: NETMODE = 10 (realTime)
 		RT_MODE = 1 (dc)
 	byte 2: clientID
+STC:
+	DISCONNECT:
+		byte 1: NETMODE = 01 (Connetion Management)
+				rest = 1 (disconnect)
+		byte 2: reason:
+						0 - normal (client request)
+						1 - connection issues
+						2 - kicked

@@ -207,6 +207,7 @@ public class DebugConsole {
             }
             try {
                 // Befehle:
+                OUTER:
                 switch (words[0]) {
                     case "entitystats":
                         outStream.println("Entities in netIDMap: " + Server.game.getEntityManager().getEntityCount());
@@ -391,11 +392,24 @@ public class DebugConsole {
                             c.getNetworkConnection().getStats().printAll();
                         }
                         break;
+                    case "kick":
+                        if (words.length == 2) {
+                            byte id = Byte.parseByte(words[1]);
+                            if (!Server.game.clients.containsKey(id)) {
+                                outStream.println("Invalid id");
+                            } else {
+                                Server.serverNetwork2.disconnectClient(Server.game.clients.get(id), (byte) 2);
+                                break OUTER;
+                            }
+                        }
+                        outStream.println("Usage: kick id");
+                        break;
                     case "help":
                         outStream.println("Available commands: (Syntax: command arg (optionalarg) - description)");
                         outStream.println("entities-at X Y R    - Prints entities within radius R around Point X Y");
                         outStream.println("entitystats          - Prints some information about the netIdMap");
                         outStream.println("help                 - prints this help");
+                        outStream.println("kick id              - kick client with given id");
                         outStream.println("list                 - Lists connected clients");
                         outStream.println("loglevel (N)         - Prints and allows to set the loglevel");
                         outStream.println("maphash              - Prints the hash of the current map");
