@@ -94,6 +94,10 @@ public class GodControl implements Control {
      */
     private boolean lookahead = DefaultSettings.CLIENT_GFX_LOOKAHEAD;
     /**
+     * Wenn true, scrollt lookahead nicht mehr mit.
+     */
+    private boolean freezeScroll = false;
+    /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
      * Gegen den Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
@@ -246,7 +250,7 @@ public class GodControl implements Control {
         if (!lookahead) {
             renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
             renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
-        } else {
+        } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(20f / Display.getHeight());
             renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
@@ -254,7 +258,9 @@ public class GodControl implements Control {
         }
 
         // Turret zeigt auf Maus
-        GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+        if (!freezeScroll) {
+            GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+        }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         // Boden und Wände zeichnen
@@ -895,5 +901,13 @@ public class GodControl implements Control {
             GameClient.getEngine().getGraphics().getCamera().setZoomFact(Display.getHeight() / 34.0f / CLIENT_GFX_TILESIZE);
         }
         this.lookahead = lookAhead;
+    }
+
+    /**
+     * Stoppt im Lookahead-Modus das Mitbewegen der Ansicht mit der Maus.
+     * Aufrufen, wenn Overlay-Menüs angezeigt werden sollen.
+     */
+    public void scrollFreeze(boolean freeze) {
+        freezeScroll = freeze;
     }
 }
