@@ -70,7 +70,7 @@ public class DefaultSettings {
      * Muss jeder ausprobieren, ob er das mag.
      * Alles ist in diesem Modus stärker reingezoomt, man sieht also insbesondere bei kleinen Auflösungen mehr Details.
      */
-    public static boolean CLIENT_GFX_LOOKAHEAD = false;
+    public static boolean CLIENT_GFX_LOOKAHEAD = true;
     /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */
