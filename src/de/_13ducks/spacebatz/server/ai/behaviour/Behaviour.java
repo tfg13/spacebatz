@@ -49,21 +49,21 @@ public class Behaviour {
     /**
      * Called when the target of a setLinearTarget() operation is reached.
      */
-    public Behaviour targetReached() {
+    public Behaviour getTargetReachedBehaviour() {
         return this;
     }
 
     /**
      * Called when the movement of a setLinearTarget() operation is blocked.
      */
-    public Behaviour movementBlocked() {
+    public Behaviour getMovementBlockedBehaviour() {
         return this;
     }
 
     /**
      * Called when a setLinearTarget() movement is aborted.
      */
-    public Behaviour movementAborted() {
+    public Behaviour getMovementAbortedBehaviour() {
         return this;
     }
 

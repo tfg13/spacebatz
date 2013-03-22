@@ -177,19 +177,19 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
                 setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
             }
         } else {
-            behaviour = behaviour.targetReached();
+            behaviour = behaviour.getTargetReachedBehaviour();
         }
 
     }
 
     @Override
     public void movementBlocked() {
-        behaviour = behaviour.movementBlocked();
+        behaviour = behaviour.getMovementBlockedBehaviour();
     }
 
     @Override
     public void movementAborted() {
-        behaviour = behaviour.movementAborted();
+        behaviour = behaviour.getMovementAbortedBehaviour();
     }
 
     @Override
