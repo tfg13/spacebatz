@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.data.Client;
@@ -18,6 +17,7 @@ import de._13ducks.spacebatz.server.data.ServerLevel;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.data.quests.Quest;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
@@ -92,6 +92,7 @@ public class Game {
         entityManager = new EntityManager();
         clients = new HashMap<>();
         loadOrReloadLevel();
+        initMapEntities();
         enemytypes = new EnemyTypes();
         pathfinder = new AStarPathfinder();
 
@@ -161,6 +162,17 @@ public class Game {
             }
         }
         level = MapGen.genMap(map);
+    }
+
+    /**
+     * Kopiert die in der Map vorgegebenen Entities
+     * bei Laden in die Spiel-Datenstrukturen, so
+     * dass diese sofort nach dem Spielstart vorhanden sind.
+     */
+    private void initMapEntities() {
+        for (Integer i : level.initNetMap.keySet()) {
+            entityManager.addEntity(i, level.initNetMap.get(i));
+        }
     }
 
     /**
