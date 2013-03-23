@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
+import de._13ducks.spacebatz.client.sound.SoundEngine;
 import org.lwjgl.Sys;
 
 /**
@@ -58,9 +59,13 @@ public class Engine {
      */
     public void start() {
         graphics.initialise();
+        boolean sound = false;
         lastFPS = getTime();
         GameClient.getNetwork2().startSurveillance();
         while (run) {
+            if (!sound) {
+                sound = GameClient.soundEngine.playSound("T!.ogg");
+            }
             // Gametick updaten:
             GameClient.updateGametick();
             // Gametick für alle Entities berechnen:

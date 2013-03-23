@@ -53,11 +53,15 @@ public class SoundEngine {
      * Liste mit Sounds die permanent sind oder gerade laufen
      */
     private ArrayList<Sound> sounds;
+    /**
+     * Gibt an, ob die Sounds schon fertig geladen sind
+     */
+    private boolean initialized = false;
 
     /**
      * Konstruktor.
      *
-     * Lädt alle WAVE-Sounds aus dem "sound"-Verzeichnis
+     * Lädt in einem neuen thread alle ogg-Sounds aus dem "sound"-Verzeichnis
      */
     public SoundEngine() {
         buffers = new HashMap<>();
@@ -68,7 +72,23 @@ public class SoundEngine {
             AL10.alListener3f(AL10.AL_POSITION, 10.0f, 1.0f, 1.0f);
             AL10.alListener3f(AL10.AL_VELOCITY, 0.0f, 0.0f, 0.0f);
             AL10.alListener3f(AL10.AL_ORIENTATION, 0.0f, 0.0f, 0.0f);
-            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Thread soundLoader = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                loadSounds();
+            }
+        });
+        soundLoader.setName("soundLoader");
+        soundLoader.start();
+    }
+
+    private void loadSounds() {
+        try {
+
             // Sounds laden:
             File soundFolder = new File("sound");
             File[] soundFiles = soundFolder.listFiles();
@@ -85,6 +105,7 @@ public class SoundEngine {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        initialized = true;
         System.out.println("SoundEngine initialised (" + buffers.size() + " sounds loaded).");
     }
 
@@ -92,8 +113,12 @@ public class SoundEngine {
      * Spielt einen Soundeffekt asynchron ab.
      *
      * @param name der Name der Sounddatei
+     * @return true bei erfolg, false wenn die sound noch nicht geladen sind
      */
-    public void playSound(String name) {
+    public boolean playSound(String name) {
+        if (!initialized) {
+            return false;
+        }
         if (buffers.containsKey(name)) {
             Sound sound = new Sound(buffers.get(name), false);
             sounds.add(sound);
@@ -101,15 +126,19 @@ public class SoundEngine {
         } else {
             throw new RuntimeException("Sound " + name + " not found.");
         }
+        return true;
     }
 
     /**
      * Gibt einen neuen Soundeffekt zurück, der dann abgespielt und wieder angehalten werden kann.
      *
      * @param name der Name der Audiodate
-     * @return ein Sound-Objekt
+     * @return ein Sound-Objekt oder null, wenn die sound noch niocht geladen wurden
      */
     public Sound createSound(String name) {
+        if (!initialized) {
+            return null;
+        }
         Sound sound;
         if (buffers.containsKey(name)) {
             sound = new Sound(buffers.get(name), true);
