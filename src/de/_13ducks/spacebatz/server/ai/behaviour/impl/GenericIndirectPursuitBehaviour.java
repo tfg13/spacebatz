@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.ai.behaviour.impl;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
+import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.Vector;
 
@@ -12,29 +13,20 @@ import de._13ducks.spacebatz.util.geo.Vector;
  *
  * @author michael
  */
-public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
+public abstract class GenericIndirectPursuitBehaviour extends Behaviour implements EntityLinearTargetObserver {
 
     /**
      * Die Zeit, nach der die Verfolgung abgebrochen wird.
      */
-    private int MAX_PURSUIT_TIME = 60 * 10;
-    /**
-     * The maximal age of the path in gameticks before it is recalculated.
-     */
-    private int maxPathAge = 300;
+    private int MAX_PURSUIT_TIME = 60 * 10000;
     /**
      * Der Spieler, der verfolgt wird.
      */
     private Player target;
     /**
-     * Die ID des aktuellen PathRequests.
+     * Die letzte bekannte Position des Ziels, zu der wir gerade laufen.
      */
-    private int pathRequestId = -1;
-    /**
-     * The time of creation of the path we are currently following.
-     * -1 if there is no path.
-     */
-    private int pathCreationTime = -1;
+    private Vector currentTarget;
 
     /**
      * Erzeugt ein neues IndirectPursuitBevahoiur.
@@ -51,23 +43,17 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
             owner.setLastSightContact(Server.game.getTick());
-            if (pathRequestId != -1) {
-                Server.game.pathfinder.deletePathRequest(pathRequestId);
-            }
             return targetInSight(owner, target);
         } else {
             if (Server.game.getTick() - owner.getLastSightContact() > MAX_PURSUIT_TIME) {
-                if (pathRequestId != -1) {
-                    Server.game.pathfinder.deletePathRequest(pathRequestId);
-                }
                 return targetLost();
             }
-            if ((Server.game.getTick() - pathCreationTime) > getMaxPathAge()) {
-                if (pathRequestId != -1) {
-                    Server.game.pathfinder.deletePathRequest(pathRequestId);
-                }
-                pathRequestId = Server.game.pathfinder.requestPath(new Vector(owner.getX(), owner.getY()), new Vector(target.getX(), target.getY()), owner, owner.getSize());
-                return this;
+            Vector target = getLatestKnownTargetPosition();
+            if (target == null) {
+                return targetLost();
+            } else if (!target.equals(currentTarget)) {
+                owner.setLinearTarget(target.x, target.y, this);
+                currentTarget = target;
             }
             return this;
         }
@@ -85,13 +71,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
 
     @Override
     public Behaviour pathComputed(Vector[] path) {
-        if (path == null) {
-            pathRequestId = Server.game.pathfinder.requestPath(new Vector(owner.getX(), owner.getY()), new Vector(target.getX(), target.getY()), owner, owner.getSize());
-        } else {
-            owner.followPath(path);
-            pathRequestId = -1;
-            pathCreationTime = Server.game.getTick();
-        }
+
 
         return this;
     }
@@ -104,16 +84,34 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour {
     public abstract Behaviour targetLost();
 
     /**
-     * @return the maxPathAge
+     * Gibt die letzte Position, an der das Ziel gesehen wurde und die vom owner aus erreichbar ist, zurück.
      */
-    public int getMaxPathAge() {
-        return maxPathAge;
+    private Vector getLatestKnownTargetPosition() {
+        Vector position = null;
+        for (int i = target.getPlayerPath().getBufferSize(); i > 0; i--) {
+            Vector targetPosition = target.getPlayerPath().get(i);
+            if (targetPosition != null && owner.lineOfSight(owner.getX(), owner.getY(), targetPosition.x, targetPosition.y)) {
+                return targetPosition;
+            }
+        }
+        return position;
     }
 
-    /**
-     * @param maxPathAge the maxPathAge to set
-     */
-    public void setMaxPathAge(int maxPathAge) {
-        this.maxPathAge = maxPathAge;
+    @Override
+    public void movementAborted() {
+    }
+
+    @Override
+    public void movementBlocked() {
+    }
+
+    @Override
+    public void targetReached() {
+        Vector target = getLatestKnownTargetPosition();
+        if (target == null) {
+        } else if (!target.equals(currentTarget)) {
+            owner.setLinearTarget(target.x, target.y, this);
+            currentTarget = target;
+        }
     }
 }

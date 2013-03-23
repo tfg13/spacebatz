@@ -113,6 +113,15 @@ public class DefaultSettings {
      * Alle wieviel Ticks der Server Netzwerkstatistiken mit dem Client abgleicht.
      */
     public static int SERVER_STATS_INTERVAL = 66;
+    /**
+     * Die Anzahl der Positionen der Spieler die gespeichert wird.
+     */
+    public static int SERVER_AI_PLAYERPOSITION_BUFFERSIZE = 500;
+    /**
+     * Die Zahl der Ticks die vergeht bis eine neue Position gespeichert wird.
+     */
+    public static int SERVER_AI_PLAYERPOSITION_UPDATERATE = 50;
+
 
     /*
      * DAS MUSS IMMER GANZ UNTEN SEIN!!!

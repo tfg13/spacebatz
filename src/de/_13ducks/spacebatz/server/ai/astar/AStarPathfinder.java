@@ -102,6 +102,9 @@ public class AStarPathfinder {
                 }
             } else {
                 Iterator<PathRequest> iter = pathRequests.values().iterator();
+                if(!iter.hasNext()){
+                    return;
+                }
                 while (iter.hasNext()) {
                     PathRequest request = iter.next();
                     if (request.getAge() < MAX_REQUEST_AGE) {
