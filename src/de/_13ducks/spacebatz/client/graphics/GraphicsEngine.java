@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.client.GameClient;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.graphics.controls.HudControl;
@@ -195,16 +196,20 @@ public class GraphicsEngine {
     public void toggleSkillTree() {
         if (activeMenu == null) {
             activeMenu = skilltree;
+            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
         } else if (activeMenu == skilltree) {
             activeMenu = null;
+            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
         }
     }
 
     public void toggleInventory() {
         if (activeMenu == null) {
             activeMenu = inventory;
+            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
         } else if (activeMenu == inventory) {
             activeMenu = null;
+            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
         }
     }
 

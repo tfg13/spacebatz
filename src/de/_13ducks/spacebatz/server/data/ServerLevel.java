@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data;
 
+import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.quests.Quest;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
@@ -45,6 +46,12 @@ public class ServerLevel extends Level {
      */
     public final List<Quest> quests;
     /**
+     * Die initiale netMap.
+     * Enthält Einheiten, die schon bei der Maperstellung angelegt wurden.
+     * Wird beim Spielstart in die echte netMap kopiert (es wird *nicht* diese Map übernommen)
+     */
+    public final HashMap<Integer, Entity> initNetMap;
+    /**
      * Parameter, um diese Map wieder zu erstellen.
      */
     private final String hash;
@@ -55,7 +62,7 @@ public class ServerLevel extends Level {
      * @param xSize die Höhe des Levels
      * @param ySize die Breite des Levels
      */
-    public ServerLevel(int xSize, int ySize, String hash, List<Quest> quests) {
+    public ServerLevel(int xSize, int ySize, String hash, List<Quest> quests, HashMap<Integer, Entity> initIDMap) {
         super(xSize, ySize);
         this.hash = hash;
         areas = new ArrayList<>();
@@ -64,6 +71,7 @@ public class ServerLevel extends Level {
         destroyableBlockTypes.put(4, new DestroyableBlockType(11, 3, 1));
        // destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, 2));
         this.quests = Collections.unmodifiableList(quests);
+        this.initNetMap = initIDMap;
     }
 
     /**

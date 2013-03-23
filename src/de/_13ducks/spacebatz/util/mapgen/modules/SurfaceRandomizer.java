@@ -43,8 +43,8 @@ public class SurfaceRandomizer extends Module {
         Random random = new Random(Long.parseLong(parameters.get("SEED")));
         for (int x = 0; x < topTex.length; x++) {
             for (int y = 0; y < topTex[0].length; y++) {
-                if (topTex[x][y] == 2) {
-                    int fact = random.nextInt(5);
+                if (topTex[x][y] == 1 || topTex[x][y] == 2) {
+                    int fact = random.nextInt(3);
                     topRandom[x][y] = (byte) (fact * 16);
                 }
             }

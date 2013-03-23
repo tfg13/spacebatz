@@ -1,6 +1,7 @@
 package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.server.data.ServerLevel;
+import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.quests.Quest;
 import de._13ducks.spacebatz.util.geo.PolyMesh;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class InternalMap {
     public byte[][] top_randomize;
     public boolean[][] collision;
     public byte[][] shadow;
+    public HashMap<Integer, Entity> startEntitys = new HashMap<>();
     public ArrayList<Quest> quests = new ArrayList<>();
     public String hash;
 
@@ -29,7 +31,7 @@ public class InternalMap {
      * Wandelt die interne Map-Darstellung in ein ServerLevel um.
      */
     public ServerLevel toServerLevel() {
-        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, hash, quests);
+        ServerLevel level = new ServerLevel(groundTex.length, groundTex[0].length, hash, quests, startEntitys);
         level.ground = groundTex;
         level.top = topTex;
         level.ground_randomize = ground_randomize;
