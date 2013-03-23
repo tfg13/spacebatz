@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.client;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
+import de._13ducks.spacebatz.client.sound.SoundEngine;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
@@ -94,6 +95,10 @@ public class GameClient {
      * Der Tick, zu dem der Client die Gamelogic berechnet hat.
      */
     private static int logicGameTick;
+    /**
+     * Audiomodul
+     */
+    public static SoundEngine soundEngine;
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
@@ -106,7 +111,7 @@ public class GameClient {
         initMainloop = new InitialMainloop();
         initMainloop.start();
         netIDMap = new HashMap<>();
-
+        soundEngine = new SoundEngine();
         equippedItems = new EquippedItems();
         // Immer weiter versuchen, sich zu connecten
         int triesLeft = 60;

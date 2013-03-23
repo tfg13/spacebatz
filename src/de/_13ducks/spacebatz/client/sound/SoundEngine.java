@@ -65,14 +65,13 @@ public class SoundEngine {
         try {
             // AL initialisieren:
             AL.create();
-            AL10.alListener3f(AL10.AL_POSITION, 1.0f, 1.0f, 1.0f);
+            AL10.alListener3f(AL10.AL_POSITION, 10.0f, 1.0f, 1.0f);
             AL10.alListener3f(AL10.AL_VELOCITY, 0.0f, 0.0f, 0.0f);
             AL10.alListener3f(AL10.AL_ORIENTATION, 0.0f, 0.0f, 0.0f);
-
+            
             // Sounds laden:
             File soundFolder = new File("sound");
             File[] soundFiles = soundFolder.listFiles();
-
             for (int i = 0; i < soundFiles.length; i++) {
                 File file = soundFiles[i];
                 if (file.getName().toLowerCase().matches(".+\\.ogg")) {

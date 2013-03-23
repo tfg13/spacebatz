@@ -90,7 +90,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
         Vector position = null;
         for (int i = target.getPlayerPath().getBufferSize(); i > 0; i--) {
             Vector targetPosition = target.getPlayerPath().get(i);
-            if (owner.lineOfSight(owner.getX(), owner.getY(), targetPosition.x, targetPosition.y)) {
+            if (targetPosition != null && owner.lineOfSight(owner.getX(), owner.getY(), targetPosition.x, targetPosition.y)) {
                 return targetPosition;
             }
         }
