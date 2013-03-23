@@ -25,7 +25,7 @@ public class RingBuffer<T> {
         if (items[startIndex] == null) {
             items[startIndex] = element;
         } else {
-            startIndex++;
+            startIndex = ++startIndex % size;
             items[startIndex] = element;
         }
     }
