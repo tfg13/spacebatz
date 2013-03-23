@@ -18,7 +18,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
     /**
      * Die Zeit, nach der die Verfolgung abgebrochen wird.
      */
-    private int MAX_PURSUIT_TIME = 60 * 10;
+    private int MAX_PURSUIT_TIME = 60 * 10000;
     /**
      * Der Spieler, der verfolgt wird.
      */
@@ -53,6 +53,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
                 return targetLost();
             } else if (!target.equals(currentTarget)) {
                 owner.setLinearTarget(target.x, target.y, this);
+                currentTarget = target;
             }
             return this;
         }
@@ -87,12 +88,30 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
      */
     private Vector getLatestKnownTargetPosition() {
         Vector position = null;
-        for (int i = target.getPlayerPath().getBufferSize(); i == 0; i--) {
+        for (int i = target.getPlayerPath().getBufferSize(); i > 0; i--) {
             Vector targetPosition = target.getPlayerPath().get(i);
             if (owner.lineOfSight(owner.getX(), owner.getY(), targetPosition.x, targetPosition.y)) {
                 return targetPosition;
             }
         }
         return position;
+    }
+
+    @Override
+    public void movementAborted() {
+    }
+
+    @Override
+    public void movementBlocked() {
+    }
+
+    @Override
+    public void targetReached() {
+        Vector target = getLatestKnownTargetPosition();
+        if (target == null) {
+        } else if (!target.equals(currentTarget)) {
+            owner.setLinearTarget(target.x, target.y, this);
+            currentTarget = target;
+        }
     }
 }
