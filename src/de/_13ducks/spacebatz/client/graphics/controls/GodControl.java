@@ -94,6 +94,10 @@ public class GodControl implements Control {
      */
     private boolean lookahead = DefaultSettings.CLIENT_GFX_LOOKAHEAD;
     /**
+     * Wenn true, scrollt lookahead nicht mehr mit.
+     */
+    private boolean freezeScroll = false;
+    /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
      * Gegen den Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
@@ -246,7 +250,7 @@ public class GodControl implements Control {
         if (!lookahead) {
             renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
             renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
-        } else {
+        } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(20f / Display.getHeight());
             renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
@@ -254,7 +258,9 @@ public class GodControl implements Control {
         }
 
         // Turret zeigt auf Maus
-        GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+        if (!freezeScroll) {
+            GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+        }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         // Boden und Wände zeichnen
@@ -309,7 +315,7 @@ public class GodControl implements Control {
                 if (((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) && baseTexAt(top, x, y) != 0) {
                     int tex = realTexAt(top, top_random, x, y);
                     int patRot = patternAt(top, x, y);
-                    if (fancyTop && (patRot >> 4) != 5) {
+                    if (fancyTop && ((patRot >> 4) != 5)) {
                         int rot = patRot & 0x0F;
                         // Bild im Stencil-Buffer erzeugen:
                         glEnable(GL_STENCIL_TEST); // Stenciling ist an
@@ -757,7 +763,11 @@ public class GodControl implements Control {
      */
     private int patternAt(int[][] tex, int x, int y) {
         int myTex = baseTexAt(tex, x, y);
-        return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
+        if (myTex >= 2) {
+            return patternRotationLookupTable[(2 <= baseTexAt(tex, x + 1, y) ? 1 : 0) | (2 <= baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (2 <= baseTexAt(tex, x, y - 1) ? 4 : 0) | (2 <= baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (2 <= baseTexAt(tex, x - 1, y) ? 16 : 0) | (2 <= baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (2 <= baseTexAt(tex, x, y + 1) ? 64 : 0) | (2 <= baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
+        } else {
+          return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
+        }
     }
 
     /**
@@ -895,5 +905,13 @@ public class GodControl implements Control {
             GameClient.getEngine().getGraphics().getCamera().setZoomFact(Display.getHeight() / 34.0f / CLIENT_GFX_TILESIZE);
         }
         this.lookahead = lookAhead;
+    }
+
+    /**
+     * Stoppt im Lookahead-Modus das Mitbewegen der Ansicht mit der Maus.
+     * Aufrufen, wenn Overlay-Menüs angezeigt werden sollen.
+     */
+    public void scrollFreeze(boolean freeze) {
+        freezeScroll = freeze;
     }
 }
