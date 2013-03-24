@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -24,10 +25,12 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
@@ -204,6 +207,8 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
         registerSTCCommand(MessageIDs.NET_SHADOW_CHANGE, new STC_SHADOW_CHANGE());
         registerSTCCommand(MessageIDs.NET_UPDATE_TURRET_DIR, new STC_PLAYER_TURRET_DIR_UPDATE());
+        registerSTCCommand(MessageIDs.NET_STC_NEW_CLIENT, new STC_NEW_CLIENT());
+        registerSTCCommand(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
     }
 
     /**
@@ -226,8 +231,12 @@ public class ClientNetwork2 {
         }
         try {
             // Initialize-Paket an den Server schicken:
-            byte[] data = new byte[5];
+            byte[] data = new byte[6 + DefaultSettings.PLAYER_NICKNAME.length() * 2];
             Bits.putInt(data, 1, socket.getLocalPort());
+            data[5] = (byte) DefaultSettings.PLAYER_NICKNAME.length();
+            for (int i = 0; i < DefaultSettings.PLAYER_NICKNAME.length(); i++) {
+                Bits.putChar(data, 6 + (i * 2), DefaultSettings.PLAYER_NICKNAME.charAt(i));
+            }
             data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
             DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
             // Antwort-Packet

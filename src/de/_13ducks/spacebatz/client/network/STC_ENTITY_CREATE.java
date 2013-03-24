@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
+import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -24,6 +25,18 @@ public class STC_ENTITY_CREATE extends STCCommand {
         switch (type) {
             case 2:
                 PlayerCharacter pl = new PlayerCharacter(netID);
+                // Client dazu suchen
+                boolean found = false;
+                for (LogicPlayer logicP : GameClient.players.values()) {
+                    if (logicP.getPlayerNetID() == netID) {
+                        logicP.setPlayer(pl);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    System.out.println("WARN: CNET: SYNC: Cannot link PlayerCharacter " + netID + " to LogicPlayer!");
+                }
                 GameClient.netIDMap.put(pl.netID, pl);
                 break;
             case 3:

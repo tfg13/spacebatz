@@ -235,7 +235,6 @@ public class MessageIDs {
      */
     public static final byte NET_QUEST_RESULT = 59;
     /**
-     *
      * Player stibt / lebt wieder
      */
     public static final byte NET_TCP_CMD_PLAYER_TOGGLE_ALIVE = 60;
@@ -247,4 +246,12 @@ public class MessageIDs {
      * Update der Drehung des Turrets.
      */
     public static final byte NET_UPDATE_TURRET_DIR = 62;
+    /**
+     * Neuer Client.
+     */
+    public static final byte NET_STC_NEW_CLIENT = 63;
+    /**
+     * Client raus.
+     */
+    public static final byte NET_STC_DEL_CLIENT = 64;
 }

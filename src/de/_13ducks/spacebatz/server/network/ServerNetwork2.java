@@ -28,6 +28,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -311,6 +312,11 @@ public class ServerNetwork2 {
         }
         // get port
         int port = Bits.getInt(packetData, 1);
+        byte nameSize = packetData[5];
+        StringBuilder nickName = new StringBuilder();
+        for (int i = 0; i < nameSize; i++) {
+            nickName.append(Bits.getChar(packetData, 6 + (i * 2)));
+        }
         // Craft answer:
         byte[] connectAnswer = new byte[8];
 
@@ -323,7 +329,7 @@ public class ServerNetwork2 {
             connectAnswer[2] = Server.game.newClientID();
 
             ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
-            newClient = new Client(clientConnection, Server.game.newClientID());
+            newClient = new Client(clientConnection, Server.game.newClientID(), nickName.toString());
             clientConnection.setClient(newClient);
             Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
             connectAnswer[0] |= 0x40;
@@ -339,7 +345,7 @@ public class ServerNetwork2 {
         socket.send(pack);
         if (accept) {
             pendingClients.add(newClient);
-            System.out.println("INFO: NET: Client " + connectAnswer[2] + " connected, address " + origin + ":" + port);
+            System.out.println("INFO: NET: Client \"" + nickName.toString() + "\" connected, id " + connectAnswer[2] + " address " + origin + ":" + port);
         }
     }
 
@@ -380,14 +386,15 @@ public class ServerNetwork2 {
     /**
      * Entfernt einen Client aus dem Spiel.
      *
-     * @param client der zu entfernende Client.
+     * @param delClient der zu entfernende Client.
      * @param reason der Grund. 0 - normal, 1 - connection issues, 2 - kicked
      */
-    public void disconnectClient(Client client, byte reason) {
-        sendDC(client, reason);
-        Player pl = client.getPlayer();
+    public void disconnectClient(Client delClient, byte reason) {
+        sendDC(delClient, reason);
+        STC_DEL_CLIENT.broadcast(delClient);
+        Player pl = delClient.getPlayer();
         Server.game.getEntityManager().removeEntity(pl.netID);
-        Server.game.clients.remove(client.clientID);
+        Server.game.clients.remove(delClient.clientID);
     }
 
     /**
@@ -401,7 +408,7 @@ public class ServerNetwork2 {
     private void sendDC(Client client, byte reason) {
         byte[] data = new byte[2];
         data[0] = (byte) 0x41; // Connection Management, DC
-        data[1] = (byte) reason;
+        data[1] = reason;
         DatagramPacket pack = new DatagramPacket(data, data.length, client.getNetworkConnection().getInetAddress(), client.getNetworkConnection().getPort());
         try {
             socket.send(pack);

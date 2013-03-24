@@ -27,10 +27,6 @@ public class PlayerCharacter extends Char {
      */
     private int selectedattack;
     /**
-     * Ob der Spieler gerade tot ist
-     */
-    private boolean dead;
-    /**
      * Ab wann der Spieler respawnwn kann
      */
     private int respawntick;
@@ -78,21 +74,6 @@ public class PlayerCharacter extends Char {
             }
         }
 
-    }
-
-    /**
-     * @return the dead
-     */
-    public boolean isDead() {
-        return dead;
-    }
-
-    /**
-     * @param dead the dead to set
-     */
-    public void setDead(boolean dead) {
-        this.dead = dead;
-        respawntick = GameClient.frozenGametick + CompileTimeParameters.RESPAWNTIME;
     }
 
     /**

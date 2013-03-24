@@ -26,6 +26,10 @@ public class DefaultSettings {
     private DefaultSettings() {
     }
     /**
+     * Der im Spiel angezeigte Nickname des Spielers.
+     */
+    public static String PLAYER_NICKNAME = "unknown player";
+    /**
      * Die X-Auflösung der Grafikausgabe.
      */
     public static int CLIENT_GFX_RES_X = 1280;

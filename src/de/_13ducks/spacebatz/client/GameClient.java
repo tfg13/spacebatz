@@ -10,11 +10,12 @@
  */
 package de._13ducks.spacebatz.client;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
+import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.client.sound.SoundEngine;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.Level;
@@ -47,7 +48,11 @@ public class GameClient {
      */
     private static Engine engine;
     /**
-     * Der Spieler.
+     * Der eigene LogicPlayer.
+     */
+    public static LogicPlayer logicPlayer;
+    /**
+     * Der eigene Spieler auf der Map.
      */
     public static PlayerCharacter player;
     /**
@@ -71,6 +76,10 @@ public class GameClient {
      * Die Zuordnung von netID zu Char.
      */
     public static HashMap<Integer, Char> netIDMap;
+    /**
+     * Die Zuordnung von clientIDs zu logischen Spielern (*nicht* Spielfiguren)
+     */
+    public static HashMap<Integer, LogicPlayer> players = new HashMap<>();
     /**
      * List für alle aktuellen Bullets.
      */
@@ -130,15 +139,6 @@ public class GameClient {
     }
 
     /**
-     * Gibt den eigenen Spieler zurück
-     *
-     * @return der eigene Spieler
-     */
-    public static PlayerCharacter getPlayer() {
-        return player;
-    }
-
-    /**
      * Gibt den MessageInterpreter zurück
      *
      * @return der MessageInterpreter
@@ -163,6 +163,8 @@ public class GameClient {
      */
     public static void setClientID(byte clientID) {
         GameClient.clientID = clientID;
+        logicPlayer = new LogicPlayer(clientID, DefaultSettings.PLAYER_NICKNAME);
+        GameClient.players.put((int) clientID, logicPlayer);
     }
 
     /**

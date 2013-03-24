@@ -29,6 +29,10 @@ public class Client {
      */
     private Player player;
     /**
+     * Der Nickname des Spielers.
+     */
+    private String nickName;
+    /**
      * Die ID, mit der der Server den Client identifiziert
      */
     public final byte clientID;
@@ -43,10 +47,10 @@ public class Client {
      *
      * @param socket der Socket, mit dem der Client verbunden ist
      */
-    public Client(ServerNetworkConnection connection, byte clientID) {
+    public Client(ServerNetworkConnection connection, byte clientID, String nickName) {
         this.connection = connection;
         this.clientID = clientID;
-
+        this.nickName = nickName;
     }
 
     /**
@@ -72,5 +76,19 @@ public class Client {
      */
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    /**
+     * @return the nickName
+     */
+    public String getNickName() {
+        return nickName;
+    }
+
+    /**
+     * @param nickName the nickName to set
+     */
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }

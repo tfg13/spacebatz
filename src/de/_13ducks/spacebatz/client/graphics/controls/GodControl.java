@@ -1,13 +1,12 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
-import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
+import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;
@@ -18,6 +17,8 @@ import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.shared.DefaultSettings;
+import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
@@ -192,17 +193,17 @@ public class GodControl implements Control {
                             GameClient.getEngine().getGraphics().toggleSkillTree();
                             break;
                         case Keyboard.KEY_1:
-                            if (GameClient.getPlayer().getSelectedattack() != 0) {
+                            if (GameClient.player.getSelectedattack() != 0) {
                                 CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
                             }
                             break;
                         case Keyboard.KEY_2:
-                            if (GameClient.getPlayer().getSelectedattack() != 1) {
+                            if (GameClient.player.getSelectedattack() != 1) {
                                 CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
                             }
                             break;
                         case Keyboard.KEY_3:
-                            if (GameClient.getPlayer().getSelectedattack() != 2) {
+                            if (GameClient.player.getSelectedattack() != 2) {
                                 CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
                             }
                             break;
@@ -248,18 +249,18 @@ public class GodControl implements Control {
 
         // Player in der Mitte
         if (!lookahead) {
-            renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
-            renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
+            renderer.getCamera().setPanX((float) -GameClient.player.getX() + camera.getTilesX() / 2.0f);
+            renderer.getCamera().setPanY((float) -GameClient.player.getY() + camera.getTilesY() / 2.0f);
         } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(20f / Display.getHeight());
-            renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
-            renderer.getCamera().setPanY((float) (-GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f + vec.y));
+            renderer.getCamera().setPanX((float) (-GameClient.player.getX() + camera.getTilesX() / 2.0f + vec.x));
+            renderer.getCamera().setPanY((float) (-GameClient.player.getY() + camera.getTilesY() / 2.0f + vec.y));
         }
 
         // Turret zeigt auf Maus
         if (!freezeScroll) {
-            GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+            GameClient.player.setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
         }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
@@ -363,13 +364,11 @@ public class GodControl implements Control {
 
         // Players zeichnen:
         playerTiles.bind();
-        for (Char c : GameClient.netIDMap.values()) {
-            if (c instanceof PlayerCharacter) {
-                PlayerCharacter player = (PlayerCharacter) c;
-                if (!player.isDead()) {
-                    renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
-                    renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
-                }
+        for (LogicPlayer p : GameClient.players.values()) {
+            PlayerCharacter player = p.getPlayer();
+            if (player != null && !p.isDead()) {
+                renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
+                renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
             }
         }
 
@@ -552,8 +551,8 @@ public class GodControl implements Control {
                 textWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, camera.getTilesY() - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
                 if (NetStats.netGraph >= 2) {
                     // Einheitenposition:
-                    textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
-                    textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
+                    textWriter.renderText("playerpos: " + GameClient.player.getX(), 0, camera.getTilesY() - 2f);
+                    textWriter.renderText(String.valueOf(GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
                     textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) DefaultSettings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
                     textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) DefaultSettings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
@@ -766,7 +765,7 @@ public class GodControl implements Control {
         if (myTex >= 2) {
             return patternRotationLookupTable[(2 <= baseTexAt(tex, x + 1, y) ? 1 : 0) | (2 <= baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (2 <= baseTexAt(tex, x, y - 1) ? 4 : 0) | (2 <= baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (2 <= baseTexAt(tex, x - 1, y) ? 16 : 0) | (2 <= baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (2 <= baseTexAt(tex, x, y + 1) ? 64 : 0) | (2 <= baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
         } else {
-          return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
+            return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
         }
     }
 

@@ -24,7 +24,7 @@ public class STC_SWITCH_WEAPON extends FixedSizeSTCCommand {
         int clientid = Bits.getInt(data, 0);
         byte wslot = data[4];
         if (clientid == GameClient.getClientID()) {
-            GameClient.getPlayer().setSelectedattack(wslot);
+            GameClient.player.setSelectedattack(wslot);
         }
     }
 

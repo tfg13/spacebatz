@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
+import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
@@ -17,13 +18,16 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_SET_PLAYER extends FixedSizeSTCCommand {
 
     public STC_SET_PLAYER() {
-        super(12);
+        super(4);
     }
 
     @Override
     public void execute(byte[] data) {
-        // Player setzen
-        GameClient.player = new PlayerCharacter(Bits.getInt(data, 0));
+        // Player setzenBits.getInt(data, 0)
+        int netID = Bits.getInt(data, 0);
+        GameClient.player = new PlayerCharacter(netID);
+        GameClient.logicPlayer.setPlayerNetID(netID);
+        GameClient.logicPlayer.setPlayer(GameClient.player);
         GameClient.netIDMap.put(GameClient.player.netID, GameClient.player);
     }
 
@@ -36,8 +40,6 @@ public class STC_SET_PLAYER extends FixedSizeSTCCommand {
     public static void sendSetPlayer(Client client, Player player) {
         byte[] b = new byte[12];
         Bits.putInt(b, 0, player.netID);
-        Bits.putFloat(b, 4, (float) player.getX());
-        Bits.putFloat(b, 8, (float) player.getY());
         //Server.serverNetwork.sendTcpData((byte) MessageIDs.NET_STC_SET_PLAYER, b, client);
         Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_SET_PLAYER, b), client);
     }
