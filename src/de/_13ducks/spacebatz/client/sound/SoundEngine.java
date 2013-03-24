@@ -25,7 +25,7 @@ import org.newdawn.slick.openal.OggData;
 import org.newdawn.slick.openal.OggDecoder;
 
 /**
- * Das OpenAL-Soundmodul. 
+ * Das OpenAL-Soundmodul.
  * Lädt alle Ogg-Dateien im "sound"-Ordner beim Starten.
  * Kann Soundeffekte und Musik abspielen, pausieren und stoppen.
  *
@@ -76,7 +76,6 @@ public class SoundEngine {
             e.printStackTrace();
         }
         Thread soundLoader = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 loadSounds();
@@ -153,13 +152,15 @@ public class SoundEngine {
     /**
      * Gibt benutzten Speicher wieder frei.
      */
-    private void shutdown() {
+    public void shutdown() {
         for (int s : buffers.values()) {
             AL10.alDeleteBuffers(s);
         }
         for (Sound s : sounds) {
+            s.dispose();
             AL10.alDeleteSources(s.getSource());
         }
+        deleteUnusedSounds();
         AL.destroy();
     }
 

@@ -115,4 +115,11 @@ public class Engine {
     public int getFps() {
         return fps;
     }
+
+    /**
+     * Beendet den Mainloop und damit die Engine.
+     */
+    public void stopEngine() {
+        run = false;
+    }
 }
