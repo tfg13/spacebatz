@@ -27,6 +27,9 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBShaderObjects;
@@ -49,6 +52,7 @@ public class GodControl implements Control {
     private Texture enemyTiles;
     private Texture bulletTiles;
     private Texture fxTiles;
+    private Texture miscTiles;
     /**
      * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche
      * andere Eingaben.
@@ -99,6 +103,10 @@ public class GodControl implements Control {
      */
     private boolean freezeScroll = false;
     /**
+     * Unsichtbarer Cursor.
+     */
+    private Cursor emptyCursor;
+    /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
      * Gegen den Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
@@ -143,6 +151,13 @@ public class GodControl implements Control {
         enemyTiles = renderer.getTextureByName("enemy00.png");
         bulletTiles = renderer.getTextureByName("bullet.png");
         fxTiles = renderer.getTextureByName("fx.png");
+        miscTiles = renderer.getTextureByName("misc.png");
+        try {
+            emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
+            Mouse.setNativeCursor(emptyCursor);
+        } catch (LWJGLException ex) {
+            ex.printStackTrace();
+        }
 
         // Shader laden
         System.out.println("INFO: GFX: Loading/compiling shaders...");
@@ -295,11 +310,11 @@ public class GodControl implements Control {
                         ARBShaderObjects.glUniform1fARB(dy1adr, (blendY - texY) * 0.0625f);
                         ARBShaderObjects.glUniform1fARB(dx2adr, (patX - texX) * 0.0625f);
                         ARBShaderObjects.glUniform1fARB(dy2adr, (patY - texY) * 0.0625f);
-                        drawUncoloredTile(tex, x, y, patRot & 0x0F);
+                        drawUncoloredTilePanned(tex, x, y, patRot & 0x0F);
                         ARBShaderObjects.glUseProgramObjectARB(0);
                     } else {
                         // Normales Bodenzeichnen
-                        drawUncoloredTile(tex, x, y, 0);
+                        drawUncoloredTilePanned(tex, x, y, 0);
                     }
                 }
             }
@@ -327,19 +342,19 @@ public class GodControl implements Control {
                         glAlphaFunc(GL_NOTEQUAL, 0f);
                         glEnable(GL_ALPHA_TEST);
                         // Pattern malen, beeinflusst Stencil-Buffer
-                        drawUncoloredTile(241 + (patRot >> 4), x, y, rot);
+                        drawUncoloredTilePanned(241 + (patRot >> 4), x, y, rot);
                         glDisable(GL_ALPHA_TEST);
                         // Jetzt ist der Stencil-Buffer ok. Jetzt Modus auf "malen, wenn stencil das sagt" stellen
                         glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
                         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                         // Jetzt Wand malen:
-                        drawUncoloredTile(tex, x, y, 0);
+                        drawUncoloredTilePanned(tex, x, y, 0);
                         // Fertig, Stencil abschalten:
                         glDisable(GL_STENCIL_TEST);
                         // Zweite Maske drüber, für schönes Aussehen
-                        drawUncoloredTile(225 + (patRot >> 4), x, y, rot);
+                        drawUncoloredTilePanned(225 + (patRot >> 4), x, y, rot);
                     } else {
-                        drawUncoloredTile(tex, x, y, 0);
+                        drawUncoloredTilePanned(tex, x, y, 0);
                     }
                 }
             }
@@ -459,6 +474,7 @@ public class GodControl implements Control {
                         glEnd();
                     }
                 }
+                glEnable(GL_TEXTURE_2D);
             } else if (shadowLevel == 3) {
                 glDisable(GL_TEXTURE_2D);
                 glColor4f(0f, 0f, 0f, 1f);
@@ -520,6 +536,27 @@ public class GodControl implements Control {
                 ARBShaderObjects.glUseProgramObjectARB(0);
                 glEnable(GL_TEXTURE_2D);
             }
+        }
+        glColor4f(1f, 1f, 1f, 1f);
+
+        // Fadenkreuz
+        if (!freezeScroll) {
+            miscTiles.bind();
+            float logicMouseX = Mouse.getX() / (Display.getHeight() / 20f) - .5f;
+            float logicMouseY = Mouse.getY() / (Display.getHeight() / 20f) - .5f;
+            final int tx = 1 % 8;
+            final int ty = 1 / 8;
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.00390625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+            glVertex3f(logicMouseX, logicMouseY + 1, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+            // Die weiteren 3 Ecken im Uhrzeigersinn:
+            glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.00390625f);
+            glVertex3f(logicMouseX + 1, logicMouseY + 1, 0);
+            glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.12109375f);
+            glVertex3f(logicMouseX + 1, logicMouseY, 0);
+            glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.12109375f);
+            glVertex3f(logicMouseX, logicMouseY, 0);
+            glEnd(); // Zeichnen des QUADs fertig
         }
 
         // Net-Graph?
@@ -703,7 +740,16 @@ public class GodControl implements Control {
         CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, (float) dir, distance);
     }
 
-    private void drawUncoloredTile(int tile, float x, float y, int numRot) {
+    /**
+     * Zeichnet ein Tile einer Tilemap an die gegebenen Position.
+     * Die Position sind dabei absolute Spielkoordinaten, das aktuelle Scrollen wird automatisch eingerechnet.
+     *
+     * @param tile Tilenummer auf der Tilemap
+     * @param x Koordinate auf der Map, die mitgescrollt wird
+     * @param y Koordinate auf der Map, die mitgescrollt wird
+     * @param numRot Rotation (0-3) in Schritten von 90° Winkel
+     */
+    private void drawUncoloredTilePanned(int tile, float x, float y, int numRot) {
         int tx = tile % 16;
         int ty = tile / 16;
         float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
@@ -728,7 +774,20 @@ public class GodControl implements Control {
         glEnd(); // Zeichnen des QUADs fertig
     }
 
-    private void drawColoredTile(int tile, float x, float y, int numRot, int colLU, int colLO, int colRU, int colRO) {
+    /**
+     * Zeichnet ein Tile einer Tilemap an die gegebenen Position und färbt es ein.
+     * Die Position sind dabei absolute Spielkoordinaten, das aktuelle Scrollen wird automatisch eingerechnet.
+     *
+     * @param tile Tilenummer auf der Tilemap
+     * @param x Koordinate auf der Map, die mitgescrollt wird
+     * @param y Koordinate auf der Map, die mitgescrollt wird
+     * @param numRot Rotation (0-3) in Schritten von 90° Winkel
+     * @param colLU Farbe der unteren, linken Ecke
+     * @param colLO Farbe der oberen, linken Ecke
+     * @param colRU Farbe der untern, rechten Ecke
+     * @param colRO Farbe der oberen, rechten Ecke
+     */
+    private void drawColoredTilePanned(int tile, float x, float y, int numRot, int colLU, int colLO, int colRU, int colRO) {
         int tx = tile % 16;
         int ty = tile / 16;
         float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
@@ -911,6 +970,18 @@ public class GodControl implements Control {
      * Aufrufen, wenn Overlay-Menüs angezeigt werden sollen.
      */
     public void scrollFreeze(boolean freeze) {
-        freezeScroll = freeze;
+        if (freezeScroll != freeze) {
+            freezeScroll = freeze;
+            try {
+                if (freezeScroll) {
+                    Mouse.setNativeCursor(null);
+                } else {
+                    Mouse.setNativeCursor(emptyCursor);
+                }
+            } catch (LWJGLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
     }
 }
