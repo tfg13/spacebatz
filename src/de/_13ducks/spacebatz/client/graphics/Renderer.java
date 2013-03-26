@@ -49,7 +49,7 @@ public class Renderer {
      */
     Renderer(Camera camera) {
         this.camera = camera;
-        textWriter = new TextWriter();
+        textWriter = new TextWriter(camera);
         imageLoader = new ImageLoader(new File("").getAbsolutePath() + "/tex");
     }
 

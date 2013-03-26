@@ -280,6 +280,7 @@ public class GodControl implements Control {
         }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
+        glColor4f(1f, 1f, 1f, 1f);
         // Boden und Wände zeichnen
         // Werte cachen
         panX = renderer.getCamera().getPanX();
@@ -374,7 +375,6 @@ public class GodControl implements Control {
                 glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
                 glColor3f(1f, 1f, 1f);
-
             }
         }
 
@@ -427,6 +427,7 @@ public class GodControl implements Control {
                 textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         // Shadow zeichnen:
         if (shadowLevel > 0) {
@@ -595,6 +596,7 @@ public class GodControl implements Control {
                 textWriter.renderText(" LOST CONNECTION TO SERVER", 0, camera.getTilesY() - 1.5f);
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         if (terminal) {
             glDisable(GL_TEXTURE_2D);
@@ -602,11 +604,12 @@ public class GodControl implements Control {
             glRectf(camera.getTilesX() / 3, camera.getTilesY() / 2, camera.getTilesX(), 0);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            textWriter.renderText(GameClient.terminal.getCurrentLine(), camera.getTilesX() / 3, 0, true);
-            int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor());
+            textWriter.renderText(GameClient.terminal.getCurrentLine(), camera.getTilesX() / 3 + 0.5f, 0, true);
+            int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor() / 2);
             for (int i = 0; i < numberoflines - 1; i++) {
-                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3, camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
+                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3 + 0.5f, camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
+            glColor4f(1f, 1f, 1f, 1f);
         }
 
     }
