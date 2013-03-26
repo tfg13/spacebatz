@@ -59,11 +59,25 @@ public class TextWriter {
      * Malt immer schwarz.
      *
      * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
+     * @param x PositionX (links)
+     * @param y PositionY (unten)
      */
     public void renderText(String text, float x, float y) {
         renderText(text, x, y, false);
+    }
+
+    /**
+     * Rendert den gegeben Text an die angegebenen Position.
+     * Vorsicht: Bindet seine eigene Textur, man muss danach selber rebinden!
+     * Setzt außerdem die aktuelle GL_COLOR.
+     * Malt immer schwarz.
+     *
+     * @param text Der zu zeichnende Text
+     * @param x PositionX (mitte)
+     * @param y PositionY (unten)
+     */
+    public void renderTextXCentered(String text, float x, float y) {
+        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * camera.getTilesX()), y, false);
     }
 
     /**
@@ -73,8 +87,8 @@ public class TextWriter {
      * Malt immer schwarz.
      *
      * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
+     * @param x PositionX (links)
+     * @param y PositionY (unten)
      * @param mono Monospace-Font und (!) klein?
      */
     public void renderText(String text, float x, float y, boolean mono) {
@@ -91,8 +105,8 @@ public class TextWriter {
      * Setzt außerdem die aktuelle GL_COLOR.
      *
      * @param text Der zu zeichnende Text
-     * @param x PositionX (unten links)
-     * @param y PositionY (unten rechts)
+     * @param x PositionX (links)
+     * @param y PositionY (unten)
      * @param red_color Textfarbe Rotanteil
      * @param blue_color Textfarbe Blauanteil
      * @param green_color Textfarbe Grünanteil

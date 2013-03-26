@@ -100,6 +100,13 @@ public class GodControl implements Control {
      */
     private boolean lookahead = DefaultSettings.CLIENT_GFX_LOOKAHEAD;
     /**
+     * Ob und wie Spielernamen angezeigt werden.
+     * 0 - Aus
+     * 1 - Hover
+     * 2 - Immer
+     */
+    private int showNickNames = DefaultSettings.CLIENT_GFX_SHOW_NICKNAMES;
+    /**
      * Wenn true, scrollt lookahead nicht mehr mit.
      */
     private boolean freezeScroll = false;
@@ -385,6 +392,10 @@ public class GodControl implements Control {
             if (player != null && !p.isDead()) {
                 renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
                 renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
+                // Namen einblenden?
+                if ((showNickNames == 1 && mouseOverChar(player, camera)) || showNickNames == 2) {
+                    textWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
+                }
             }
         }
 
@@ -889,6 +900,17 @@ public class GodControl implements Control {
     }
 
     /**
+     * Findet heraus, ob der Mauszeiger derzeit über dem gegebenen Char schwebt.
+     * @param c der zu untersuchende Char
+     * @return true, wenn drüber, sonst false
+     */
+    private boolean mouseOverChar(Char c, Camera cam) {
+        float logicMouseX = (1f * Mouse.getX() / Display.getWidth() * cam.getTilesX()) - panX;
+        float logicMouseY = (1f * Mouse.getY() / Display.getHeight() * cam.getTilesY()) - panY;
+        return (logicMouseX >= c.getX() - c.getSize() && logicMouseX <= c.getX() + c.getSize() && logicMouseY >= c.getY() - c.getSize() && logicMouseY <= c.getY() + c.getSize());
+    }
+
+    /**
      * @return the shadowLevel
      */
     public int getShadowLevel() {
@@ -967,5 +989,19 @@ public class GodControl implements Control {
             }
         }
 
+    }
+
+    /**
+     * @return the showNickNames
+     */
+    public int getShowNickNames() {
+        return showNickNames;
+    }
+
+    /**
+     * @param showNickNames the showNickNames to set
+     */
+    public void setShowNickNames(int showNickNames) {
+        this.showNickNames = showNickNames;
     }
 }

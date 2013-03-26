@@ -39,8 +39,8 @@ public class PlayerCharacter extends Char {
      */
     private double turretDir;
 
-    public PlayerCharacter(int netID) {
-        super(netID, new RenderObject(new Animation(0, 4, 4, 1, 1)));
+    public PlayerCharacter(int netID, float size) {
+        super(netID, size, new RenderObject(new Animation(0, 4, 4, 1, 1)));
         turretRenderObject = new RenderObject(new Animation(4, 4, 4, 1, 1));
         selectedattack = 0;
         healthpoints = CompileTimeParameters.CHARHEALTH;

@@ -268,6 +268,22 @@ public class ClientTerminal {
                             GameClient.getEngine().getGraphics().defactoRenderer().setSmoothGround(true);
                             GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(3);
                             break;
+                        case "nicknames":
+                            if (words.length == 2) {
+                                switch (words[1]) {
+                                    case "off":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShowNickNames(0);
+                                        break OUTER;
+                                    case "hover":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShowNickNames(1);
+                                        break OUTER;
+                                    case "on":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setShowNickNames(2);
+                                        break OUTER;
+                                }
+                            }
+                            outln("usage: nicknames off|hover|on");
+                            break;
                         case "about":
                             outln("spacebatz aurora");
                             outln("13ducks PROPRIETARY/CONFIDENTIAL");
@@ -287,6 +303,7 @@ public class ClientTerminal {
                             outln("maxfps");
                             outln("maxfancy");
                             outln("net_graph");
+                            outln("nicknames");
                             outln("rcon");
                             outln("sendsevens");
                             outln("shadow");

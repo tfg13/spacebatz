@@ -65,6 +65,10 @@ public class Char {
      */
     private double speed;
     /**
+     * Die Größe dieses Chars.
+     */
+    private float size;
+    /**
      * Der Tick, zu dem die Bewegung begonnen hat.
      */
     private int startTick;
@@ -73,8 +77,9 @@ public class Char {
      */
     public int attackCooldownTick;
 
-    public Char(int netID, RenderObject renderObject) {
+    public Char(int netID, float size, RenderObject renderObject) {
         this.netID = netID;
+        this.size = size;
         if (renderObject != null) {
             this.renderObject = renderObject;
         } else {
@@ -257,5 +262,12 @@ public class Char {
                 dir = turnCurrent - 2 * Math.PI;
             }
         }
+    }
+
+    /**
+     * @return the size
+     */
+    public float getSize() {
+        return size;
     }
 }

@@ -363,7 +363,7 @@ public class Entity {
      * @return die größe des byte[]'s, das netPack() braucht.
      */
     public int byteArraySize() {
-        return 5;
+        return 9;
     }
 
     /**
@@ -376,6 +376,7 @@ public class Entity {
     public void netPack(byte[] b, int offset) {
         b[offset] = entityTypeID;
         Bits.putInt(b, offset + 1, netID);
+        Bits.putFloat(b, offset + 5, (float) size);
     }
 
     /**

@@ -18,14 +18,15 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_SET_PLAYER extends FixedSizeSTCCommand {
 
     public STC_SET_PLAYER() {
-        super(4);
+        super(8);
     }
 
     @Override
     public void execute(byte[] data) {
         // Player setzenBits.getInt(data, 0)
         int netID = Bits.getInt(data, 0);
-        GameClient.player = new PlayerCharacter(netID);
+        float size = Bits.getFloat(data, 4);
+        GameClient.player = new PlayerCharacter(netID, size);
         GameClient.logicPlayer.setPlayerNetID(netID);
         GameClient.logicPlayer.setPlayer(GameClient.player);
         GameClient.netIDMap.put(GameClient.player.netID, GameClient.player);
@@ -38,8 +39,9 @@ public class STC_SET_PLAYER extends FixedSizeSTCCommand {
      * @param player der neue Player
      */
     public static void sendSetPlayer(Client client, Player player) {
-        byte[] b = new byte[12];
+        byte[] b = new byte[8];
         Bits.putInt(b, 0, player.netID);
+        Bits.putFloat(b, 4, (float) player.getSize());
         //Server.serverNetwork.sendTcpData((byte) MessageIDs.NET_STC_SET_PLAYER, b, client);
         Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_SET_PLAYER, b), client);
     }

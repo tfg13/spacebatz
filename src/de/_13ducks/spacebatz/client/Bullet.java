@@ -12,7 +12,6 @@ package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
-import de._13ducks.spacebatz.shared.Item;
 
 /**
  * Ein Geschoss, dass vom Client gerendert werden muss
@@ -26,8 +25,8 @@ public class Bullet extends Char {
     public final int bulletpic;
     public final int ownerid;
 
-    public Bullet(int netID, int bulletpic, int ownerid) {
-        super(netID, new RenderObject(new Animation(bulletpic, 1, 1, 1, 1)));
+    public Bullet(int netID, float size, int bulletpic, int ownerid) {
+        super(netID, size, new RenderObject(new Animation(bulletpic, 1, 1, 1, 1)));
         this.bulletpic = bulletpic;
         this.ownerid = ownerid;
         

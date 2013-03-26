@@ -76,6 +76,13 @@ public class DefaultSettings {
      */
     public static boolean CLIENT_GFX_LOOKAHEAD = true;
     /**
+     * Die Einstellung für das Anzeigen von Spielernamen.
+     * 0 - Aus (keine Namen anzeigen)
+     * 1 - Hover (anzeigen beim drüberfahren mit der Maus)
+     * 2 - Immer (permanent einblenden)
+     */
+    public static int CLIENT_GFX_SHOW_NICKNAMES = 1;
+    /**
      * Sound (zum schnelleren Testen) komplett abschalten.
      * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.
      */
