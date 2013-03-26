@@ -76,6 +76,11 @@ public class DefaultSettings {
      */
     public static boolean CLIENT_GFX_LOOKAHEAD = true;
     /**
+     * Sound (zum schnelleren Testen) komplett abschalten.
+     * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.
+     */
+    public static boolean CLIENT_SFX_DISABLED = false;
+    /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */
     public static int SERVER_RCONPORT = 13946;
