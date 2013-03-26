@@ -25,9 +25,9 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAP
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.geo.Vector;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
@@ -35,6 +35,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -103,9 +104,9 @@ public class GodControl implements Control {
      */
     private boolean freezeScroll = false;
     /**
-     * Unsichtbarer Cursor.
+     * Fadenkreuz-Cursor.
      */
-    private Cursor emptyCursor;
+    private Cursor crossHairCursor;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -153,9 +154,9 @@ public class GodControl implements Control {
         fxTiles = renderer.getTextureByName("fx.png");
         miscTiles = renderer.getTextureByName("misc.png");
         try {
-            emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
-            Mouse.setNativeCursor(emptyCursor);
-        } catch (LWJGLException ex) {
+            crossHairCursor = CursorLoader.get().getCursor("tex/cursor00.png", 16, 16);
+            Mouse.setNativeCursor(crossHairCursor);
+        } catch (LWJGLException | IOException ex) {
             ex.printStackTrace();
         }
 
@@ -538,26 +539,6 @@ public class GodControl implements Control {
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
-
-        // Fadenkreuz
-        if (!freezeScroll) {
-            miscTiles.bind();
-            float logicMouseX = Mouse.getX() / (Display.getHeight() / 20f) - .5f;
-            float logicMouseY = Mouse.getY() / (Display.getHeight() / 20f) - .5f;
-            final int tx = 1 % 8;
-            final int ty = 1 / 8;
-            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.00390625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-            glVertex3f(logicMouseX, logicMouseY + 1, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-            // Die weiteren 3 Ecken im Uhrzeigersinn:
-            glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.00390625f);
-            glVertex3f(logicMouseX + 1, logicMouseY + 1, 0);
-            glTexCoord2f(tx * 0.125f + 0.12109375f, ty * 0.125f + 0.12109375f);
-            glVertex3f(logicMouseX + 1, logicMouseY, 0);
-            glTexCoord2f(tx * 0.125f + 0.00390625f, ty * 0.125f + 0.12109375f);
-            glVertex3f(logicMouseX, logicMouseY, 0);
-            glEnd(); // Zeichnen des QUADs fertig
-        }
 
         // Net-Graph?
         if (NetStats.netGraph > 0) {
@@ -976,7 +957,7 @@ public class GodControl implements Control {
                 if (freezeScroll) {
                     Mouse.setNativeCursor(null);
                 } else {
-                    Mouse.setNativeCursor(emptyCursor);
+                    Mouse.setNativeCursor(crossHairCursor);
                 }
             } catch (LWJGLException ex) {
                 ex.printStackTrace();
