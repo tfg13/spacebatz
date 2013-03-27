@@ -398,6 +398,7 @@ public class GodControl implements Control {
                 }
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         // Bullets zeichnen
         bulletTiles.bind();
