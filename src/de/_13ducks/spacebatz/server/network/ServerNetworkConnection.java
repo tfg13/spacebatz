@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.network;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
+import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
@@ -210,8 +211,8 @@ public class ServerNetworkConnection {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd) {
-        if (cmd.cmdID == 0x80) {
-            // ACKs in die Prioritätsschlange
+        if (cmd.cmdID == 0x80 || cmd.cmdID == MessageIDs.NET_TICK_SYNC) {
+            // ACKs und Ticksyncs in die Prioritätsschlange
             priorityCmdOutQueue.add(cmd);
         } else {
             // Alle anderen in die normale

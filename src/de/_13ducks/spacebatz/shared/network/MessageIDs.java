@@ -83,6 +83,10 @@ public class MessageIDs {
      */
     public static final int NET_STATS = 0x87;
     /**
+     * Client-Ticksynchronisierung bzw. Tickdelay-Messung.
+     */
+    public static final int NET_TICK_SYNC = 0x89;
+    /**
      * Normales Einheitenupdate, das Regelmäßig verschickt wird.
      */
     public static final byte NET_UDP_CMD_NORMAL_ENTITY_UPDATE = 10;

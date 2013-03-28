@@ -72,6 +72,7 @@ public class ServerNetwork2 {
         cmdMap[0x80] = new CTS_ACK();
         cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new CTS_FRAGMENTED_MESSAGE();
         cmdMap[MessageIDs.NET_CTS_DEBUG] = new CTS_DEBUG();
+        cmdMap[MessageIDs.NET_TICK_SYNC] = new CTS_TICK_SYNC();
         registerCTSCommand(MessageIDs.NET_CTS_MOVE, new CTS_MOVE());
         registerCTSCommand(MessageIDs.NET_CTS_SHOOT, new CTS_SHOOT());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_EQUIP, new CTS_EQUIP_ITEM());

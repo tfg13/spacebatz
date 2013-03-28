@@ -53,7 +53,6 @@ public class GodControl implements Control {
     private Texture enemyTiles;
     private Texture bulletTiles;
     private Texture fxTiles;
-    private Texture miscTiles;
     /**
      * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche
      * andere Eingaben.
@@ -159,7 +158,6 @@ public class GodControl implements Control {
         enemyTiles = renderer.getTextureByName("enemy00.png");
         bulletTiles = renderer.getTextureByName("bullet.png");
         fxTiles = renderer.getTextureByName("fx.png");
-        miscTiles = renderer.getTextureByName("misc.png");
         try {
             crossHairCursor = CursorLoader.get().getCursor("tex/cursor00.png", 16, 16);
             Mouse.setNativeCursor(crossHairCursor);
@@ -568,12 +566,24 @@ public class GodControl implements Control {
             // Warnung bei Lag?
             if (GameClient.getNetwork2().isLagging() && connectionAlive) {
                 glColor4f(1f, 0f, 0f, 1f);
-                glRectf(7, camera.getTilesY(), 10f, camera.getTilesY() - 0.5f);
+            } else {
+                glColor4f(0f, 1f, 0f, 1f);
+            }
+            glRectf(7, camera.getTilesY(), 10f, camera.getTilesY() - 0.5f);
+            // Arbeitet das Netzwerk gerade an dem Problem?
+            if (GameClient.getNetwork2().isTickSyncing() && connectionAlive) {
+                glColor4f(1f, 1f, 0f, 1f);
+                glRectf(7, camera.getTilesY() - 0.5f, 10f, camera.getTilesY() - 1f);
             }
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
                 if (GameClient.getNetwork2().isLagging()) {
                     textWriter.renderText("LAG", 8, camera.getTilesY() - 0.5f);
+                } else {
+                    textWriter.renderText("NET OK", 7.5f, camera.getTilesY() - 0.5f);
+                }
+                if (GameClient.getNetwork2().isTickSyncing()) {
+                    textWriter.renderText("tuning net", 7.1f, camera.getTilesY() - 1f);
                 }
                 textWriter.renderText("lerp: " + net.getLerp() + " (~" + (GameClient.getNetwork2().getLogicTickDelay() * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
                 //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
