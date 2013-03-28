@@ -95,14 +95,7 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
-        if (target_Char == null) {
-            // Normal
-            return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
-        } else {
-            // Follow
-            return x;
-        }
-
+        return x + ((GameClient.frozenGametick - startTick) * speed * vX);
     }
 
     /**
@@ -111,14 +104,7 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
-        if (target_Char == null) {
-            // Normal
-            return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
-        } else {
-            // Follow
-            return y;
-        }
-
+        return y + ((GameClient.frozenGametick - startTick) * speed * vY);
     }
 
     /**
@@ -220,10 +206,11 @@ public class Char {
             vX = stepDirection.x;
             vY = stepDirection.y;
             target_dir = Math.atan2(vY, vX);
+            startTick = gameTick;
         }
         // Etwas in Richtung target_dir drehen:
         if (Math.abs(target_dir - dir) <= DefaultSettings.CHAR_TURN_SPEED) {
-            dir =  target_dir;
+            dir = target_dir;
         } else {
             // Drehlogik zweiter Versuch
             double turnCurrent = dir;
