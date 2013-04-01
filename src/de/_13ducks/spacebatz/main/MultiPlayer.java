@@ -26,7 +26,9 @@ public class MultiPlayer {
             StringBuilder b = new StringBuilder();
             char c;
             while ((c = (char) System.in.read()) != '\n') {
-                b.append(c);
+            	if (c != '\r') { // geht sonst nicht in Eclipse
+            		b.append(c);
+            	}
             }
             String result = b.toString();
             if (result.equals("exit") || result.equals("quit")) {
