@@ -38,6 +38,10 @@ public class PlayerCharacter extends Char {
      * Richtung, in die das Turret gerade schaut.
      */
     private double turretDir;
+    /**
+     * Von Prediction verwendedte Bewegungsgeschwindigkeit
+     */
+    private float prediction_speed;
 
     public PlayerCharacter(int netID, float size) {
         super(netID, size, new RenderObject(new Animation(0, 4, 4, 1, 1)));
@@ -104,4 +108,12 @@ public class PlayerCharacter extends Char {
     public void setTurretDir(double dir) {
         turretDir = dir;
     }
+
+	public double getPrediction_speed() {
+		return prediction_speed;
+	}
+
+	public void setPrediction_speed(float prediction_speed) {
+		this.prediction_speed = prediction_speed;
+	}
 }
