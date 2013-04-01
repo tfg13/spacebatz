@@ -390,7 +390,13 @@ public class GodControl implements Control {
             if (player != null && !p.isDead()) {
                 renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
                 renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
-                // Namen einblenden?
+            }
+        }
+
+        // Namen einblenden?
+        for (LogicPlayer p : GameClient.players.values()) {
+            PlayerCharacter player = p.getPlayer();
+            if (player != null && !p.isDead()) {
                 if ((showNickNames == 1 && mouseOverChar(player, camera)) || showNickNames == 2) {
                     textWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
                 }
@@ -912,6 +918,7 @@ public class GodControl implements Control {
 
     /**
      * Findet heraus, ob der Mauszeiger derzeit über dem gegebenen Char schwebt.
+     *
      * @param c der zu untersuchende Char
      * @return true, wenn drüber, sonst false
      */
