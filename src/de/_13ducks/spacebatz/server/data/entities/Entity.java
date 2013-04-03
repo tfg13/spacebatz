@@ -436,6 +436,7 @@ public class Entity {
             }
             double oldX = posX;
             double oldY = posY;
+            //System.out.println("SCALC: " + speed * vecX + " " + speed * vecY + " at " + Server.game.getTick());
             double predictedX = posX + speed * vecX;
             double predictedY = posY + speed * vecY;
             // Bewegung einfach mal setzen, und dann die Kollission das prüfen lassen

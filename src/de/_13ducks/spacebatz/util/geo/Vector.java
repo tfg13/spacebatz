@@ -55,12 +55,18 @@ public class Vector {
     }
 
     /**
-     * Normiert den Vektor
-     * Gibt den Normierten zurück
+     * Normiert den Vektor.
+     * Falls dieser Vektor der Nullvektor ist, wird der Nullvektor zurückgegeben.
+     *
+     * @return den Normierten zurück
      */
     public Vector normalize() {
-        double fact = length();
-        return new Vector(this.x / fact, this.y / fact);
+        if (x != 0 || y != 0) {
+            double fact = length();
+            return new Vector(this.x / fact, this.y / fact);
+        } else {
+            return Vector.ZERO; // this
+        }
     }
 
     /**

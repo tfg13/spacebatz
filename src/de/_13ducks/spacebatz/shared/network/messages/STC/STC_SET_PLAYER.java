@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.util.Bits;
@@ -27,6 +28,7 @@ public class STC_SET_PLAYER extends FixedSizeSTCCommand {
         int netID = Bits.getInt(data, 0);
         float size = Bits.getFloat(data, 4);
         GameClient.player = new PlayerCharacter(netID, size);
+        GameClient.player.setPrediction(DefaultSettings.CLIENT_ENABLE_PREDICTION);
         GameClient.logicPlayer.setPlayerNetID(netID);
         GameClient.logicPlayer.setPlayer(GameClient.player);
         GameClient.netIDMap.put(GameClient.player.netID, GameClient.player);

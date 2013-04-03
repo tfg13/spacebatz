@@ -115,6 +115,7 @@ public class Player extends ItemCarrier {
         // Sonderfall stoppen
         if (x == 0 && y == 0) {
             if (isMoving()) {
+                //System.out.println("REC STOP at " + Server.game.getTick());
                 stopMovement();
             }
         } else {
@@ -124,9 +125,11 @@ public class Player extends ItemCarrier {
                 x /= length;
                 y /= length;
                 if (Math.abs(getVecX() - x) > .001 || Math.abs(getVecY() - y) > .001) {
+                    //System.out.println("REC MOVE at " + Server.game.getTick());
                     this.setVector(x, y);
                 }
             } else {
+                //System.out.println("REC MOVE at " + Server.game.getTick());
                 setVector(x, y);
             }
         }
