@@ -27,27 +27,6 @@ public class ItemTypes {
     public ItemTypes() {
         itemtypelist = new ArrayList<>();
 
-//        ItemAttribute money = new ItemAttribute("Money");
-//        money.setPic(0);
-//        money.setItemClass(0);
-//        money.setQuality(0); // nicht zufällig dropbar
-//        money.setAmount(1);
-//        itemtypelist.add(money);
-//
-//        ItemAttribute ore = new ItemAttribute("Iron Ore");
-//        ore.setPic(8);
-//        ore.setItemClass(0);
-//        ore.setQuality(0); // nicht zufällig dropbar
-//        ore.setAmount(1);
-//        itemtypelist.add(ore);
-//
-//        ItemAttribute ore2 = new ItemAttribute("Gold Ore");
-//        ore2.setPic(9);
-//        ore2.setItemClass(0);
-//        ore2.setQuality(0); // nicht zufällig dropbar
-//        ore2.setAmount(1);
-//        itemtypelist.add(ore2);
-
         ItemAttribute hat = new ItemAttribute("Hat");
         hat.setPic(1);
         hat.setItemClass(2);
@@ -67,31 +46,31 @@ public class ItemTypes {
         pistol.setItemClass(1);
         pistol.setQuality(1);
         pistol.setAmount(0);
-        pistol.setWeaponAbility(new FireBulletAbility(7, 6, 0.067, 12.0, 1, 0.35, 0.05, 0.0, 0, 0,true));
+        pistol.setWeaponAbility(new FireBulletAbility(7, 6, 0.067, 15.0, 1, 0.45, 0.05, 0.0, 0, 0, true));
         itemtypelist.add(pistol);
 
-        ItemAttribute bla = new ItemAttribute("Bla");
-        bla.setPic(20);
-        bla.setItemClass(1);
-        bla.setQuality(1);
-        bla.setAmount(0);
-        bla.setWeaponAbility(new FireMultipleBulletAbility(7, 2, 0.045, 11.0, 3, 0.35, 5, 0.1, 0.0, 8, 0.045));
-        itemtypelist.add(bla);
+        ItemAttribute shotgun = new ItemAttribute("Shotgun");
+        shotgun.setPic(20);
+        shotgun.setItemClass(1);
+        shotgun.setQuality(1);
+        shotgun.setAmount(0);
+        shotgun.setWeaponAbility(new FireMultipleBulletAbility(7, 2, 0.04, 11.0, 3, 0.45, 5, 0.1, 0.0, 8, 0.02));
+        itemtypelist.add(shotgun);
 
-        ItemAttribute bla2 = new ItemAttribute("Bla 2");
-        bla2.setPic(21);
-        bla2.setItemClass(1);
-        bla2.setQuality(1);
-        bla2.setAmount(0);
-        bla2.setWeaponAbility(new FireMultipleBulletAbility(13, 4, 0.022, 14.0, 3, 0.45, 3, 0.1, 0.0, 6, 0.022));
-        itemtypelist.add(bla2);
+        ItemAttribute shotgun2 = new ItemAttribute("Shotgun 2");
+        shotgun2.setPic(21);
+        shotgun2.setItemClass(1);
+        shotgun2.setQuality(1);
+        shotgun2.setAmount(0);
+        shotgun2.setWeaponAbility(new FireMultipleBulletAbility(13, 4, 0.025, 16.0, 3, 0.5, 3, 0.1, 0.0, 6, 0.03));
+        itemtypelist.add(shotgun2);
 
         ItemAttribute laser = new ItemAttribute("Laser");
         laser.setPic(2);
         laser.setItemClass(1);
         laser.setQuality(1);
         laser.setAmount(0);
-        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.167, 11.0, 3, 0.35, 0.1, 0.0, 30, 0.05,true));
+        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.16, 15.0, 3, 0.45, 0.07, 0.0, 32, 0.1, true));
         itemtypelist.add(laser);
 
         ItemAttribute superlaser = new ItemAttribute("Super Laser");
@@ -99,7 +78,7 @@ public class ItemTypes {
         superlaser.setItemClass(1);
         superlaser.setQuality(1);
         superlaser.setAmount(0);
-        superlaser.setWeaponAbility(new FireBulletAbility(25, 20, 0.04, 15.0, 2, 0.5, 0.02, 0.0, 5, 0.01,true));
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 20, 0.04, 20.0, 2, 0.65, 0.02, 0.0, 5, 0.01, true));
         itemtypelist.add(superlaser);
 
         ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
@@ -107,7 +86,7 @@ public class ItemTypes {
         rocketlauncher.setItemClass(1);
         rocketlauncher.setQuality(1);
         rocketlauncher.setAmount(0);
-        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0, 0.025, 17.0, 4, 0.25, 0.0, 6.0, 4, 0.01,true));
+        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0, 0.025, 20.0, 4, 0.35, 0.0, 6.0, 4, 0.01, true));
         itemtypelist.add(rocketlauncher);
 
         ItemAttribute drill = new ItemAttribute("Drill");
@@ -115,7 +94,7 @@ public class ItemTypes {
         drill.setItemClass(1);
         drill.setQuality(1);
         drill.setAmount(0);
-        drill.setWeaponAbility(new HitscanAbility(50, 5, 0.0167, 4.0, 0, 0));
+        drill.setWeaponAbility(new HitscanAbility(50, 5, 0.02, 4.0, 0, 0));
         itemtypelist.add(drill);
 
         ItemAttribute saw = new ItemAttribute("Saw");
@@ -123,7 +102,7 @@ public class ItemTypes {
         saw.setItemClass(1);
         saw.setQuality(1);
         saw.setAmount(0);
-        saw.setWeaponAbility(new HitscanAbility(15, 3, 0.083, 4.0, 10, 0.04));
+        saw.setWeaponAbility(new HitscanAbility(15, 3, 0.08, 4.0, 10, 0.04));
         itemtypelist.add(saw);
 
         ItemAttribute superrocketlauncher = new ItemAttribute("Super Rocket Launcher");
@@ -131,7 +110,7 @@ public class ItemTypes {
         superrocketlauncher.setItemClass(1);
         superrocketlauncher.setQuality(3);
         superrocketlauncher.setAmount(0);
-        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 17.0, 4, 0.35, 0.0, 4.0, 12, 0.025,true));
+        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 20.0, 4, 0.45, 0.0, 4.0, 12, 0.025, true));
         itemtypelist.add(superrocketlauncher);
 
         ItemAttribute superpistol = new ItemAttribute("Super Pistol");
@@ -139,7 +118,7 @@ public class ItemTypes {
         superpistol.setItemClass(1);
         superpistol.setQuality(3);
         superpistol.setAmount(0);
-        superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 14.0, 1, 0.35, 0.02, 0.0, 0, 0,true));
+        superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 16.0, 1, 0.45, 0.02, 0.0, 0, 0, true));
         itemtypelist.add(superpistol);
 
         ItemAttribute superdrill = new ItemAttribute("Super Drill");

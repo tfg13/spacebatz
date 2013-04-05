@@ -105,6 +105,7 @@ public class PlayerCharacter extends Char {
     @Override
     public void tick(int gameTick) {
         super.tick(gameTick);
+        if (this.netID == GameClient.logicPlayer.getPlayer().netID)
         for (int i = 0; i <= 2; i++) {
             Item weapon = GameClient.getEquippedItems().getEquipslots()[1][i];
 
