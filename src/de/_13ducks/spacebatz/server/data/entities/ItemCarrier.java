@@ -16,7 +16,7 @@ public class ItemCarrier extends Char {
     /**
      * Items im Inventar
      */
-    private static Item[] inventory = new Item[CompileTimeParameters.INVENTORY_SIZE];
+    private Item[] inventory = new Item[CompileTimeParameters.INVENTORY_SIZE];
     /**
      * Wieviel Materialien der Spieler hat (Geld, Erze, ...)
      */
