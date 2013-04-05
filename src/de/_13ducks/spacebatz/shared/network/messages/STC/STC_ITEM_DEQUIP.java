@@ -16,7 +16,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
 
     public STC_ITEM_DEQUIP() {
-        super(10);
+        super(9);
     }
 
     @Override
