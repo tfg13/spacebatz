@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client.network;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.Constants;
 import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -24,10 +25,12 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
@@ -168,6 +171,22 @@ public class ClientNetwork2 {
      * Ob die Überwachung auf Lags aktiviert ist, oder nicht.
      */
     private boolean surveillance = false;
+    /**
+     * Der Zeitpunkt, bei dem die nächste Tick-Synchronisations-/Messungs-Anfrage gesendet werden soll.
+     */
+    private long nextTickSync;
+    /**
+     * True, solange die tick-Synchronisierung die Ticks korrigiert.
+     */
+    private boolean tickSyncing;
+    /**
+     * True, solange Pakete zu spät ankommen.
+     */
+    private boolean packetsDelayed = false;
+    /**
+     * True, solange Server- und Client-Tickuhr asynchron sind.
+     */
+    private boolean tickAsynchronous = false;
 
     /**
      * Erzeugt ein neues Netzwerkmodul.
@@ -181,6 +200,7 @@ public class ClientNetwork2 {
         cmdMap[MessageIDs.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
         cmdMap[MessageIDs.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
         cmdMap[MessageIDs.NET_STATS] = new STC_NET_STATS(); // 0x87
+        cmdMap[MessageIDs.NET_TICK_SYNC] = new STC_TICK_SYNC(); // 0x89
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
@@ -204,6 +224,8 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
         registerSTCCommand(MessageIDs.NET_SHADOW_CHANGE, new STC_SHADOW_CHANGE());
         registerSTCCommand(MessageIDs.NET_UPDATE_TURRET_DIR, new STC_PLAYER_TURRET_DIR_UPDATE());
+        registerSTCCommand(MessageIDs.NET_STC_NEW_CLIENT, new STC_NEW_CLIENT());
+        registerSTCCommand(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
     }
 
     /**
@@ -226,8 +248,12 @@ public class ClientNetwork2 {
         }
         try {
             // Initialize-Paket an den Server schicken:
-            byte[] data = new byte[5];
+            byte[] data = new byte[6 + DefaultSettings.PLAYER_NICKNAME.length() * 2];
             Bits.putInt(data, 1, socket.getLocalPort());
+            data[5] = (byte) DefaultSettings.PLAYER_NICKNAME.length();
+            for (int i = 0; i < DefaultSettings.PLAYER_NICKNAME.length(); i++) {
+                Bits.putChar(data, 6 + (i * 2), DefaultSettings.PLAYER_NICKNAME.charAt(i));
+            }
             data[0] = (byte) (1 << 6); // NETMODE auf noClient, connect
             DatagramPacket packet = new DatagramPacket(data, data.length, targetAddress, port);
             // Antwort-Packet
@@ -264,7 +290,6 @@ public class ClientNetwork2 {
                     serverTick = Bits.getInt(ansData, 3) + runTicks;
                     GameClient.setLogicTick(serverTick);
                     lerpTimer.scheduleAtFixedRate(new TimerTask() {
-
                         @Override
                         public void run() {
                             serverTick++;
@@ -312,7 +337,6 @@ public class ClientNetwork2 {
 
     private void initializeReceiver() {
         thread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -558,19 +582,7 @@ public class ClientNetwork2 {
      */
     public void outTick() {
         if (connected) {
-            // Bis zu ein Mal pro Sekunde Ping messen:
-            if (serverTick % (1000 / serverTickRate) == 0 && lastPingOut == 0) {
-                try {
-                    byte[] pingData = new byte[2];
-                    pingData[0] = (byte) 0x80;
-                    pingData[1] = GameClient.getClientID();
-                    DatagramPacket pingPacket = new DatagramPacket(pingData, pingData.length, serverAdr, serverPort);
-                    lastPingOut = System.currentTimeMillis();
-                    socket.send(pingPacket);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            manage();
             try {
                 DatagramPacket dPack = craftPacket();
                 schedulePacket(dPack, Bits.getShort(dPack.getData(), 1));
@@ -583,6 +595,32 @@ public class ClientNetwork2 {
             }
         } else {
             //System.out.println("ERROR: Cannot send data, not connected!");
+        }
+    }
+
+    /**
+     * Wird jeden Tick im Rahmen von outTick() aufgerufen, hier wird die Verbindung an sich verwaltet.
+     * Z.B. werden hier Ping-Messungen vorgenommen und die Tick-Synchronisierung überwacht.
+     */
+    private void manage() {
+        // Bis zu ein Mal pro Sekunde Ping messen:
+        if (serverTick % (1000 / serverTickRate) == 0 && (lastPingOut == 0 || (System.currentTimeMillis() - lastPingOut > 30000))) {
+            try {
+                byte[] pingData = new byte[2];
+                pingData[0] = (byte) 0x80;
+                pingData[1] = GameClient.getClientID();
+                DatagramPacket pingPacket = new DatagramPacket(pingData, pingData.length, serverAdr, serverPort);
+                lastPingOut = System.currentTimeMillis();
+                socket.send(pingPacket);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        // Tick-Synchronisierung prüfen:
+        if (surveillance && System.currentTimeMillis() > nextTickSync) {
+            tickSyncing = true;
+            nextTickSync = System.currentTimeMillis() + 1000; // Wird eh nochmal geändert.
+            queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TICK_SYNC, new byte[]{}));
         }
     }
 
@@ -607,16 +645,19 @@ public class ClientNetwork2 {
     /**
      * Liefert den aktuellen Logik-Tick zurück - also den geschätzten Tickwert
      * der Servers. Achtung: Hier wurde bereits Lerp reingerechnet!
-     *serverTick
+     * serverTick
      * Bei lags wird der Wert möglicherweise kurz eingefrohren
+     *
      * @return
      */
     public int getLogicTick() {
         // Wenn der letzte verarbeitete Tick und die lokale Zähllogik noch halbwegs synchron sind,
         // die lokale Zählung bevorzugen. Sonst den strengeren Pakettick verwenden.
         if (Math.abs((serverTick - lerp) - lastInPackLogicTick) < CompileTimeParameters.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA) {
+            packetsDelayed = false;
             return serverTick - lerp;
         }
+        packetsDelayed = true;
         return lastInPackLogicTick;
     }
 
@@ -715,18 +756,48 @@ public class ClientNetwork2 {
     /**
      * Liefert true, wenn derzeit Pakete zu spät ankommen und die
      * Logik-Uhr deshalb durch die Paketticks ersetzt wird.
+     *
      * @return true, wenns lagt
      */
     public boolean isLagging() {
-        return Math.abs((serverTick - lerp) - lastInPackLogicTick) >= CompileTimeParameters.CLIENT_NET_ACCEPTABLE_LOGIC_DELTA;
+        return packetsDelayed || tickAsynchronous;
     }
 
     /**
      * Liefert die Logik-Tickrate.
      * Wie üblich gemessen in ms Abstand zwischen Ticks.
+     *
      * @return Logik-Tickdelay
      */
     public int getLogicTickDelay() {
         return serverTickRate;
+    }
+
+    /**
+     * Wird aufgerufen, wenn die Antwort auf die Tick-Messung angekommen ist.
+     */
+    void tickSyncReceived(int realServerTick) {
+        // Delta zwischen ungefähren und echtem Servertick, lerp eingerechnet:
+        int delta = serverTick - realServerTick - lerp;
+        if (delta < 0 || delta > 2) {
+            System.out.println("INFO: NET: Correcting asynchronous tick-clock...");
+            serverTick -= delta;
+            packZeroServerTick -= delta;
+            nextTickSync = System.currentTimeMillis() + 500;
+            tickAsynchronous = true;
+        } else {
+            tickSyncing = false;
+            nextTickSync = System.currentTimeMillis() + 5000;
+            tickAsynchronous = false;
+        }
+    }
+
+    /**
+     * True, solange das Netzwerk den Tick synchonisiert.
+     *
+     * @return the tickSyncing
+     */
+    public boolean isTickSyncing() {
+        return tickSyncing;
     }
 }

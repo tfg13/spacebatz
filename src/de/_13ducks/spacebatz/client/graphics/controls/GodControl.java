@@ -1,13 +1,12 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
-import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
+import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;
@@ -18,19 +17,25 @@ import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
+import de._13ducks.spacebatz.shared.DefaultSettings;
+import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.geo.Vector;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -94,9 +99,20 @@ public class GodControl implements Control {
      */
     private boolean lookahead = DefaultSettings.CLIENT_GFX_LOOKAHEAD;
     /**
+     * Ob und wie Spielernamen angezeigt werden.
+     * 0 - Aus
+     * 1 - Hover
+     * 2 - Immer
+     */
+    private int showNickNames = DefaultSettings.CLIENT_GFX_SHOW_NICKNAMES;
+    /**
      * Wenn true, scrollt lookahead nicht mehr mit.
      */
     private boolean freezeScroll = false;
+    /**
+     * Fadenkreuz-Cursor.
+     */
+    private Cursor crossHairCursor;
     /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
@@ -142,6 +158,12 @@ public class GodControl implements Control {
         enemyTiles = renderer.getTextureByName("enemy00.png");
         bulletTiles = renderer.getTextureByName("bullet.png");
         fxTiles = renderer.getTextureByName("fx.png");
+        try {
+            crossHairCursor = CursorLoader.get().getCursor("tex/cursor00.png", 16, 16);
+            Mouse.setNativeCursor(crossHairCursor);
+        } catch (LWJGLException | IOException ex) {
+            ex.printStackTrace();
+        }
 
         // Shader laden
         System.out.println("INFO: GFX: Loading/compiling shaders...");
@@ -192,17 +214,17 @@ public class GodControl implements Control {
                             GameClient.getEngine().getGraphics().toggleSkillTree();
                             break;
                         case Keyboard.KEY_1:
-                            if (GameClient.getPlayer().getSelectedattack() != 0) {
+                            if (GameClient.player.getSelectedattack() != 0) {
                                 CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
                             }
                             break;
                         case Keyboard.KEY_2:
-                            if (GameClient.getPlayer().getSelectedattack() != 1) {
+                            if (GameClient.player.getSelectedattack() != 1) {
                                 CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
                             }
                             break;
                         case Keyboard.KEY_3:
-                            if (GameClient.getPlayer().getSelectedattack() != 2) {
+                            if (GameClient.player.getSelectedattack() != 2) {
                                 CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
                             }
                             break;
@@ -235,6 +257,7 @@ public class GodControl implements Control {
             }
         }
         CTS_MOVE.sendMove(move, (float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+        GameClient.player.predictMovement(move);
     }
 
     /**
@@ -248,21 +271,22 @@ public class GodControl implements Control {
 
         // Player in der Mitte
         if (!lookahead) {
-            renderer.getCamera().setPanX((float) -GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f);
-            renderer.getCamera().setPanY((float) -GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f);
+            renderer.getCamera().setPanX((float) -GameClient.player.getX() + camera.getTilesX() / 2.0f);
+            renderer.getCamera().setPanY((float) -GameClient.player.getY() + camera.getTilesY() / 2.0f);
         } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(20f / Display.getHeight());
-            renderer.getCamera().setPanX((float) (-GameClient.getPlayer().getX() + camera.getTilesX() / 2.0f + vec.x));
-            renderer.getCamera().setPanY((float) (-GameClient.getPlayer().getY() + camera.getTilesY() / 2.0f + vec.y));
+            renderer.getCamera().setPanX((float) (-GameClient.player.getX() + camera.getTilesX() / 2.0f + vec.x));
+            renderer.getCamera().setPanY((float) (-GameClient.player.getY() + camera.getTilesY() / 2.0f + vec.y));
         }
 
         // Turret zeigt auf Maus
         if (!freezeScroll) {
-            GameClient.getPlayer().setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+            GameClient.player.setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
         }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
+        glColor4f(1f, 1f, 1f, 1f);
         // Boden und Wände zeichnen
         // Werte cachen
         panX = renderer.getCamera().getPanX();
@@ -294,11 +318,11 @@ public class GodControl implements Control {
                         ARBShaderObjects.glUniform1fARB(dy1adr, (blendY - texY) * 0.0625f);
                         ARBShaderObjects.glUniform1fARB(dx2adr, (patX - texX) * 0.0625f);
                         ARBShaderObjects.glUniform1fARB(dy2adr, (patY - texY) * 0.0625f);
-                        drawUncoloredTile(tex, x, y, patRot & 0x0F);
+                        drawUncoloredTilePanned(tex, x, y, patRot & 0x0F);
                         ARBShaderObjects.glUseProgramObjectARB(0);
                     } else {
                         // Normales Bodenzeichnen
-                        drawUncoloredTile(tex, x, y, 0);
+                        drawUncoloredTilePanned(tex, x, y, 0);
                     }
                 }
             }
@@ -326,19 +350,19 @@ public class GodControl implements Control {
                         glAlphaFunc(GL_NOTEQUAL, 0f);
                         glEnable(GL_ALPHA_TEST);
                         // Pattern malen, beeinflusst Stencil-Buffer
-                        drawUncoloredTile(241 + (patRot >> 4), x, y, rot);
+                        drawUncoloredTilePanned(241 + (patRot >> 4), x, y, rot);
                         glDisable(GL_ALPHA_TEST);
                         // Jetzt ist der Stencil-Buffer ok. Jetzt Modus auf "malen, wenn stencil das sagt" stellen
                         glStencilFunc(GL_NOTEQUAL, 0x0, 0x1);
                         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                         // Jetzt Wand malen:
-                        drawUncoloredTile(tex, x, y, 0);
+                        drawUncoloredTilePanned(tex, x, y, 0);
                         // Fertig, Stencil abschalten:
                         glDisable(GL_STENCIL_TEST);
                         // Zweite Maske drüber, für schönes Aussehen
-                        drawUncoloredTile(225 + (patRot >> 4), x, y, rot);
+                        drawUncoloredTilePanned(225 + (patRot >> 4), x, y, rot);
                     } else {
-                        drawUncoloredTile(tex, x, y, 0);
+                        drawUncoloredTilePanned(tex, x, y, 0);
                     }
                 }
             }
@@ -357,21 +381,29 @@ public class GodControl implements Control {
                 glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
                 glColor3f(1f, 1f, 1f);
-
             }
         }
 
         // Players zeichnen:
         playerTiles.bind();
-        for (Char c : GameClient.netIDMap.values()) {
-            if (c instanceof PlayerCharacter) {
-                PlayerCharacter player = (PlayerCharacter) c;
-                if (!player.isDead()) {
-                    renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
-                    renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
+        for (LogicPlayer p : GameClient.players.values()) {
+            PlayerCharacter player = p.getPlayer();
+            if (player != null && !p.isDead()) {
+                renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
+                renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
+            }
+        }
+
+        // Namen einblenden?
+        for (LogicPlayer p : GameClient.players.values()) {
+            PlayerCharacter player = p.getPlayer();
+            if (player != null && !p.isDead()) {
+                if ((showNickNames == 1 && mouseOverChar(player, camera)) || showNickNames == 2) {
+                    textWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
                 }
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         // Bullets zeichnen
         bulletTiles.bind();
@@ -412,6 +444,7 @@ public class GodControl implements Control {
                 textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         // Shadow zeichnen:
         if (shadowLevel > 0) {
@@ -460,6 +493,7 @@ public class GodControl implements Control {
                         glEnd();
                     }
                 }
+                glEnable(GL_TEXTURE_2D);
             } else if (shadowLevel == 3) {
                 glDisable(GL_TEXTURE_2D);
                 glColor4f(0f, 0f, 0f, 1f);
@@ -522,6 +556,7 @@ public class GodControl implements Control {
                 glEnable(GL_TEXTURE_2D);
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         // Net-Graph?
         if (NetStats.netGraph > 0) {
@@ -538,12 +573,24 @@ public class GodControl implements Control {
             // Warnung bei Lag?
             if (GameClient.getNetwork2().isLagging() && connectionAlive) {
                 glColor4f(1f, 0f, 0f, 1f);
-                glRectf(7, camera.getTilesY(), 10f, camera.getTilesY() - 0.5f);
+            } else {
+                glColor4f(0f, 1f, 0f, 1f);
+            }
+            glRectf(7, camera.getTilesY(), 10f, camera.getTilesY() - 0.5f);
+            // Arbeitet das Netzwerk gerade an dem Problem?
+            if (GameClient.getNetwork2().isTickSyncing() && connectionAlive) {
+                glColor4f(1f, 1f, 0f, 1f);
+                glRectf(7, camera.getTilesY() - 0.5f, 10f, camera.getTilesY() - 1f);
             }
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
                 if (GameClient.getNetwork2().isLagging()) {
                     textWriter.renderText("LAG", 8, camera.getTilesY() - 0.5f);
+                } else {
+                    textWriter.renderText("NET OK", 7.5f, camera.getTilesY() - 0.5f);
+                }
+                if (GameClient.getNetwork2().isTickSyncing()) {
+                    textWriter.renderText("tuning net", 7.1f, camera.getTilesY() - 1f);
                 }
                 textWriter.renderText("lerp: " + net.getLerp() + " (~" + (GameClient.getNetwork2().getLogicTickDelay() * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
                 //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
@@ -552,8 +599,8 @@ public class GodControl implements Control {
                 textWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, camera.getTilesY() - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
                 if (NetStats.netGraph >= 2) {
                     // Einheitenposition:
-                    textWriter.renderText("playerpos: " + GameClient.getPlayer().getX(), 0, camera.getTilesY() - 2f);
-                    textWriter.renderText(String.valueOf(GameClient.getPlayer().getY()), 6.5f, camera.getTilesY() - 2f);
+                    textWriter.renderText("playerpos: " + GameClient.player.getX(), 0, camera.getTilesY() - 2f);
+                    textWriter.renderText(String.valueOf(GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
                     textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) DefaultSettings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
                     textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) DefaultSettings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
@@ -578,6 +625,7 @@ public class GodControl implements Control {
                 textWriter.renderText(" LOST CONNECTION TO SERVER", 0, camera.getTilesY() - 1.5f);
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
 
         if (terminal) {
             glDisable(GL_TEXTURE_2D);
@@ -585,11 +633,12 @@ public class GodControl implements Control {
             glRectf(camera.getTilesX() / 3, camera.getTilesY() / 2, camera.getTilesX(), 0);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            textWriter.renderText(GameClient.terminal.getCurrentLine(), camera.getTilesX() / 3, 0, true);
-            int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor());
+            textWriter.renderText(GameClient.terminal.getCurrentLine(), camera.getTilesX() / 3 + 0.5f, 0, true);
+            int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor() / 2);
             for (int i = 0; i < numberoflines - 1; i++) {
-                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3, camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
+                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3 + 0.5f, camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
+            glColor4f(1f, 1f, 1f, 1f);
         }
 
     }
@@ -704,7 +753,16 @@ public class GodControl implements Control {
         CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, (float) dir, distance);
     }
 
-    private void drawUncoloredTile(int tile, float x, float y, int numRot) {
+    /**
+     * Zeichnet ein Tile einer Tilemap an die gegebenen Position.
+     * Die Position sind dabei absolute Spielkoordinaten, das aktuelle Scrollen wird automatisch eingerechnet.
+     *
+     * @param tile Tilenummer auf der Tilemap
+     * @param x Koordinate auf der Map, die mitgescrollt wird
+     * @param y Koordinate auf der Map, die mitgescrollt wird
+     * @param numRot Rotation (0-3) in Schritten von 90° Winkel
+     */
+    private void drawUncoloredTilePanned(int tile, float x, float y, int numRot) {
         int tx = tile % 16;
         int ty = tile / 16;
         float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
@@ -729,7 +787,20 @@ public class GodControl implements Control {
         glEnd(); // Zeichnen des QUADs fertig
     }
 
-    private void drawColoredTile(int tile, float x, float y, int numRot, int colLU, int colLO, int colRU, int colRO) {
+    /**
+     * Zeichnet ein Tile einer Tilemap an die gegebenen Position und färbt es ein.
+     * Die Position sind dabei absolute Spielkoordinaten, das aktuelle Scrollen wird automatisch eingerechnet.
+     *
+     * @param tile Tilenummer auf der Tilemap
+     * @param x Koordinate auf der Map, die mitgescrollt wird
+     * @param y Koordinate auf der Map, die mitgescrollt wird
+     * @param numRot Rotation (0-3) in Schritten von 90° Winkel
+     * @param colLU Farbe der unteren, linken Ecke
+     * @param colLO Farbe der oberen, linken Ecke
+     * @param colRU Farbe der untern, rechten Ecke
+     * @param colRO Farbe der oberen, rechten Ecke
+     */
+    private void drawColoredTilePanned(int tile, float x, float y, int numRot, int colLU, int colLO, int colRU, int colRO) {
         int tx = tile % 16;
         int ty = tile / 16;
         float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
@@ -766,7 +837,7 @@ public class GodControl implements Control {
         if (myTex >= 2) {
             return patternRotationLookupTable[(2 <= baseTexAt(tex, x + 1, y) ? 1 : 0) | (2 <= baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (2 <= baseTexAt(tex, x, y - 1) ? 4 : 0) | (2 <= baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (2 <= baseTexAt(tex, x - 1, y) ? 16 : 0) | (2 <= baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (2 <= baseTexAt(tex, x, y + 1) ? 64 : 0) | (2 <= baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
         } else {
-          return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
+            return patternRotationLookupTable[(myTex == baseTexAt(tex, x + 1, y) ? 1 : 0) | (myTex == baseTexAt(tex, x + 1, y - 1) ? 2 : 0) | (myTex == baseTexAt(tex, x, y - 1) ? 4 : 0) | (myTex == baseTexAt(tex, x - 1, y - 1) ? 8 : 0) | (myTex == baseTexAt(tex, x - 1, y) ? 16 : 0) | (myTex == baseTexAt(tex, x - 1, y + 1) ? 32 : 0) | (myTex == baseTexAt(tex, x, y + 1) ? 64 : 0) | (myTex == baseTexAt(tex, x + 1, y + 1) ? 128 : 0)];
         }
     }
 
@@ -847,6 +918,18 @@ public class GodControl implements Control {
     }
 
     /**
+     * Findet heraus, ob der Mauszeiger derzeit über dem gegebenen Char schwebt.
+     *
+     * @param c der zu untersuchende Char
+     * @return true, wenn drüber, sonst false
+     */
+    private boolean mouseOverChar(Char c, Camera cam) {
+        float logicMouseX = (1f * Mouse.getX() / Display.getWidth() * cam.getTilesX()) - panX;
+        float logicMouseY = (1f * Mouse.getY() / Display.getHeight() * cam.getTilesY()) - panY;
+        return (logicMouseX >= c.getX() - c.getSize() && logicMouseX <= c.getX() + c.getSize() && logicMouseY >= c.getY() - c.getSize() && logicMouseY <= c.getY() + c.getSize());
+    }
+
+    /**
      * @return the shadowLevel
      */
     public int getShadowLevel() {
@@ -912,6 +995,32 @@ public class GodControl implements Control {
      * Aufrufen, wenn Overlay-Menüs angezeigt werden sollen.
      */
     public void scrollFreeze(boolean freeze) {
-        freezeScroll = freeze;
+        if (freezeScroll != freeze) {
+            freezeScroll = freeze;
+            try {
+                if (freezeScroll) {
+                    Mouse.setNativeCursor(null);
+                } else {
+                    Mouse.setNativeCursor(crossHairCursor);
+                }
+            } catch (LWJGLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * @return the showNickNames
+     */
+    public int getShowNickNames() {
+        return showNickNames;
+    }
+
+    /**
+     * @param showNickNames the showNickNames to set
+     */
+    public void setShowNickNames(int showNickNames) {
+        this.showNickNames = showNickNames;
     }
 }

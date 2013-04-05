@@ -65,6 +65,10 @@ public class Char {
      */
     private double speed;
     /**
+     * Die Größe dieses Chars.
+     */
+    private float size;
+    /**
      * Der Tick, zu dem die Bewegung begonnen hat.
      */
     private int startTick;
@@ -73,8 +77,9 @@ public class Char {
      */
     public int attackCooldownTick;
 
-    public Char(int netID, RenderObject renderObject) {
+    public Char(int netID, float size, RenderObject renderObject) {
         this.netID = netID;
+        this.size = size;
         if (renderObject != null) {
             this.renderObject = renderObject;
         } else {
@@ -90,14 +95,7 @@ public class Char {
      * @return die aktuelle X-Position
      */
     public double getX() {
-        if (target_Char == null) {
-            // Normal
-            return ((int) (16f * (x + ((GameClient.frozenGametick - startTick) * speed * vX)))) / 16f;
-        } else {
-            // Follow
-            return x;
-        }
-
+        return internalGetX();
     }
 
     /**
@@ -106,14 +104,27 @@ public class Char {
      * @return die aktuelle Y-Position
      */
     public double getY() {
-        if (target_Char == null) {
-            // Normal
-            return ((int) (16f * (y + ((GameClient.frozenGametick - startTick) * speed * vY)))) / 16f;
-        } else {
-            // Follow
-            return y;
-        }
+        return internalGetY();
+    }
 
+    /**
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann,
+     * und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     *
+     * @return die aktuelle X-Position, Bewegungen eingerechnet
+     */
+    private double internalGetX() {
+        return x + ((GameClient.frozenGametick - startTick) * speed * vX);
+    }
+
+    /**
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann,
+     * und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     *
+     * @return die aktuelle Y-Position, Bewegungen eingerechnet
+     */
+    private double internalGetY() {
+        return y + ((GameClient.frozenGametick - startTick) * speed * vY);
     }
 
     /**
@@ -121,6 +132,15 @@ public class Char {
      */
     public double getDir() {
         return dir;
+    }
+
+    /**
+     * Liefert true, wenn die Einheit sich gerade bewegt.
+     *
+     * @return true, wenn die Einheit sich gerade bewegt
+     */
+    public boolean isMoving() {
+        return startTick != -1;
     }
 
     /**
@@ -142,8 +162,8 @@ public class Char {
             // Follow
             target_Char = GameClient.netIDMap.get(m.target_netID);
             // Nicht, normiert ist aber egal, weil sie nur für die Richtung verwendet werden.
-            this.vX = target_Char.getX() - x;
-            this.vY = target_Char.getY() - y;
+            this.vX = target_Char.internalGetX() - x;
+            this.vY = target_Char.internalGetY() - y;
         } else {
             // Normal
             target_Char = null;
@@ -209,16 +229,17 @@ public class Char {
     public void tick(int gameTick) {
         if (target_Char != null) {
             // Einheit verschieben:
-            Vector stepDirection = new Vector(target_Char.getX() - x, target_Char.getY() - y).normalize().multiply(speed);
+            Vector stepDirection = new Vector(target_Char.internalGetX() - x, target_Char.internalGetY() - y).normalize().multiply(speed);
             x += stepDirection.x;
             y += stepDirection.y;
             vX = stepDirection.x;
             vY = stepDirection.y;
             target_dir = Math.atan2(vY, vX);
+            startTick = gameTick;
         }
         // Etwas in Richtung target_dir drehen:
         if (Math.abs(target_dir - dir) <= DefaultSettings.CHAR_TURN_SPEED) {
-            dir =  target_dir;
+            dir = target_dir;
         } else {
             // Drehlogik zweiter Versuch
             double turnCurrent = dir;
@@ -257,5 +278,12 @@ public class Char {
                 dir = turnCurrent - 2 * Math.PI;
             }
         }
+    }
+
+    /**
+     * @return the size
+     */
+    public float getSize() {
+        return size;
     }
 }

@@ -153,7 +153,9 @@ public class GraphicsEngine {
 
         // Beenden, wenn auf das X geklickt wurde.
         if (Display.isCloseRequested()) {
-            System.exit(0);
+            GameClient.getNetwork2().disconnect();
+            GameClient.getEngine().stopEngine();
+            GameClient.soundEngine.shutdown();
         }
     }
 

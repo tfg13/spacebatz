@@ -68,12 +68,12 @@ public class Engine {
             }
             // Gametick updaten:
             GameClient.updateGametick();
-            // Gametick für alle Entities berechnen:
-            GameClient.gameTick();
             // Input neues Netzwerksystem verarbeiten
             GameClient.getNetwork2().inTick();
             // Render-Code
             graphics.tick();
+            // Gametick für alle Entities berechnen:
+            GameClient.gameTick();
             // Output neues Netzwerksystem:
             GameClient.getNetwork2().outTick();
             if (getTime() - lastFPS > 1000) {
@@ -114,5 +114,12 @@ public class Engine {
      */
     public int getFps() {
         return fps;
+    }
+
+    /**
+     * Beendet den Mainloop und damit die Engine.
+     */
+    public void stopEngine() {
+        run = false;
     }
 }

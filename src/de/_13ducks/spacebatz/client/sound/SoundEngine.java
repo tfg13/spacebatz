@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.client.sound;
 
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ import org.newdawn.slick.openal.OggData;
 import org.newdawn.slick.openal.OggDecoder;
 
 /**
- * Das OpenAL-Soundmodul. 
+ * Das OpenAL-Soundmodul.
  * Lädt alle Ogg-Dateien im "sound"-Ordner beim Starten.
  * Kann Soundeffekte und Musik abspielen, pausieren und stoppen.
  *
@@ -66,24 +67,25 @@ public class SoundEngine {
     public SoundEngine() {
         buffers = new HashMap<>();
         sounds = new ArrayList<>();
-        try {
-            // AL initialisieren:
-            AL.create();
-            AL10.alListener3f(AL10.AL_POSITION, 10.0f, 1.0f, 1.0f);
-            AL10.alListener3f(AL10.AL_VELOCITY, 0.0f, 0.0f, 0.0f);
-            AL10.alListener3f(AL10.AL_ORIENTATION, 0.0f, 0.0f, 0.0f);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Thread soundLoader = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                loadSounds();
+        if (!DefaultSettings.CLIENT_SFX_DISABLED) {
+            try {
+                // AL initialisieren:
+                AL.create();
+                AL10.alListener3f(AL10.AL_POSITION, 10.0f, 1.0f, 1.0f);
+                AL10.alListener3f(AL10.AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+                AL10.alListener3f(AL10.AL_ORIENTATION, 0.0f, 0.0f, 0.0f);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
-        soundLoader.setName("soundLoader");
-        soundLoader.start();
+            Thread soundLoader = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    loadSounds();
+                }
+            });
+            soundLoader.setName("soundLoader");
+            soundLoader.start();
+        }
     }
 
     private void loadSounds() {
@@ -116,6 +118,9 @@ public class SoundEngine {
      * @return true bei erfolg, false wenn die sound noch nicht geladen sind
      */
     public boolean playSound(String name) {
+        if (DefaultSettings.CLIENT_SFX_DISABLED) {
+            return false;
+        }
         if (!initialized) {
             return false;
         }
@@ -136,6 +141,9 @@ public class SoundEngine {
      * @return ein Sound-Objekt oder null, wenn die sound noch niocht geladen wurden
      */
     public Sound createSound(String name) {
+        if (DefaultSettings.CLIENT_SFX_DISABLED) {
+            return null;
+        }
         if (!initialized) {
             return null;
         }
@@ -153,25 +161,31 @@ public class SoundEngine {
     /**
      * Gibt benutzten Speicher wieder frei.
      */
-    private void shutdown() {
-        for (int s : buffers.values()) {
-            AL10.alDeleteBuffers(s);
+    public void shutdown() {
+        if (!DefaultSettings.CLIENT_SFX_DISABLED) {
+            for (int s : buffers.values()) {
+                AL10.alDeleteBuffers(s);
+            }
+            for (Sound s : sounds) {
+                s.dispose();
+                AL10.alDeleteSources(s.getSource());
+            }
+            deleteUnusedSounds();
+            AL.destroy();
         }
-        for (Sound s : sounds) {
-            AL10.alDeleteSources(s.getSource());
-        }
-        AL.destroy();
     }
 
     /**
      * Löscht bereits abgespielte Sounds.
      */
     public void deleteUnusedSounds() {
-        Iterator<Sound> iter = sounds.iterator();
-        while (iter.hasNext()) {
-            Sound s = iter.next();
-            if (s.deleteMe()) {
-                iter.remove();
+        if (!DefaultSettings.CLIENT_SFX_DISABLED) {
+            Iterator<Sound> iter = sounds.iterator();
+            while (iter.hasNext()) {
+                Sound s = iter.next();
+                if (s.deleteMe()) {
+                    iter.remove();
+                }
             }
         }
     }

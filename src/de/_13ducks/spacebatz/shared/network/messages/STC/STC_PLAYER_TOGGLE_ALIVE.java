@@ -23,35 +23,36 @@ public class STC_PLAYER_TOGGLE_ALIVE extends FixedSizeSTCCommand {
 
     @Override
     public void execute(byte[] data) {
-        int playerNetId = Bits.getInt(data, 0);
+        int clientID = Bits.getInt(data, 0);
         boolean dead = false;
         if (data[4] == 1) {
             dead = true;
         }
-        
-        if (playerNetId == GameClient.player.netID) {
+
+        if (clientID == GameClient.logicPlayer.clientID) {
             // Hier Spieler beschimpfen 
         }
-        
-        PlayerCharacter p = (PlayerCharacter) GameClient.netIDMap.get(playerNetId);
-        p.setDead(dead);
-        if (dead) {
-            p.setHealthpoints(0);
-        } else {
-            p.setHealthpoints(CompileTimeParameters.CHARHEALTH);
-        }
-        
-    }
-    
-    public static void sendPlayerToggleAlive(int playerNetId, boolean dead) {
-        for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[5];
-            Bits.putInt(b, 0, playerNetId);
-            b[4] = 0;
-            if (dead) {
-               b[4] = 1; 
-            }
 
+        GameClient.players.get(clientID).setDead(dead);
+        PlayerCharacter p = GameClient.players.get(clientID).getPlayer();
+        if (p != null) {
+            if (dead) {
+                p.setHealthpoints(0);
+            } else {
+                p.setHealthpoints(CompileTimeParameters.CHARHEALTH);
+            }
+        }
+    }
+
+    public static void sendPlayerToggleAlive(int clientID, boolean dead) {
+        byte[] b = new byte[5];
+        Bits.putInt(b, 0, clientID);
+        b[4] = 0;
+        if (dead) {
+            b[4] = 1;
+        }
+
+        for (Client c : Server.game.clients.values()) {
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, b), c);
         }
     }

@@ -34,7 +34,7 @@ public class STC_CHAR_HIT extends FixedSizeSTCCommand {
 
             // Schadenszahl rendern:
             GameClient.getEngine().getGraphics().createDamageNumber(damage, p.getX(), p.getY());
-            if (p == GameClient.getPlayer()) {
+            if (p.equals(GameClient.player)) {
                 // HP abziehen, wenn eigener Spieler
                 p.setHealthpoints(p.getHealthpoints() - damage);
             }

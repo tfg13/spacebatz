@@ -71,6 +71,10 @@ Connecting to server:
 			NOCLIENT_CMD = 0 (connect)
 		byte 2-4:
 			unsigned int port. (the port the clients listens for an answer)
+		byte 5:
+			length of name-string
+		byte 6-x:
+			nickname, 16-bit chars
 	Server answers the request by sending a special packet to the client. Specs:
 		byte 1: first 2 bits: netmode = 01 (yes) 10 (refused)
 			rest: index of next udp-packet if accepted, otherwise reason for refusal (6 bit unsigned (part1))

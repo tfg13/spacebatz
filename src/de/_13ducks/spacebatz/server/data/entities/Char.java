@@ -61,7 +61,7 @@ public abstract class Char extends Entity {
      */
     final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
-        setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
+        setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class Char extends Entity {
      */
     final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
-        setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Spped muss manuel gesetzt werden
+        setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
     }
 
     /**

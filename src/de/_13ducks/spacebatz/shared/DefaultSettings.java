@@ -26,6 +26,10 @@ public class DefaultSettings {
     private DefaultSettings() {
     }
     /**
+     * Der im Spiel angezeigte Nickname des Spielers.
+     */
+    public static String PLAYER_NICKNAME = "unknown player";
+    /**
      * Die X-Auflösung der Grafikausgabe.
      */
     public static int CLIENT_GFX_RES_X = 1280;
@@ -71,6 +75,23 @@ public class DefaultSettings {
      * Alles ist in diesem Modus stärker reingezoomt, man sieht also insbesondere bei kleinen Auflösungen mehr Details.
      */
     public static boolean CLIENT_GFX_LOOKAHEAD = true;
+    /**
+     * Die Einstellung für das Anzeigen von Spielernamen.
+     * 0 - Aus (keine Namen anzeigen)
+     * 1 - Hover (anzeigen beim drüberfahren mit der Maus)
+     * 2 - Immer (permanent einblenden)
+     */
+    public static int CLIENT_GFX_SHOW_NICKNAMES = 1;
+    /**
+     * Sound (zum schnelleren Testen) komplett abschalten.
+     * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.
+     */
+    public static boolean CLIENT_SFX_DISABLED = false;
+    /**
+     * Die Einstellung, ob die Prediction aktiviert sein soll.
+     * Dringend empfohlen, sollte nur zu Debug-Zwecken abgeschaltet werden.
+     */
+    public static boolean CLIENT_ENABLE_PREDICTION = false;
     /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */

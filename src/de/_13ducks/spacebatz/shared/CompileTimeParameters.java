@@ -76,5 +76,11 @@ public final class CompileTimeParameters {
      * Bei größeren Werten wird der strengere Pakettick bevorzugt, bis es sich wieder normalisiert.
      */
     public static final int CLIENT_NET_ACCEPTABLE_LOGIC_DELTA = 4;
+    /**
+     * Maximal zulässige Abweichung der vorhergesagten Spielerposition mit der vom Server empfangenen.
+     * Angabe in Feldern pro Tick eingestelltem Lerp.
+     * Bei einem Wert von 0.5 und Lerp 10 darf die Position also bis zu 5 Felder abweichen.
+     */
+    public static final double CLIENT_PREDICT_MAX_DELTA_PER_LERP = 0.2;
     
 }

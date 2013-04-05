@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
@@ -19,6 +18,7 @@ import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
@@ -115,6 +115,7 @@ public class Player extends ItemCarrier {
         // Sonderfall stoppen
         if (x == 0 && y == 0) {
             if (isMoving()) {
+                //System.out.println("REC STOP at " + Server.game.getTick());
                 stopMovement();
             }
         } else {
@@ -124,9 +125,11 @@ public class Player extends ItemCarrier {
                 x /= length;
                 y /= length;
                 if (Math.abs(getVecX() - x) > .001 || Math.abs(getVecY() - y) > .001) {
+                    //System.out.println("REC MOVE at " + Server.game.getTick());
                     this.setVector(x, y);
                 }
             } else {
+                //System.out.println("REC MOVE at " + Server.game.getTick());
                 setVector(x, y);
             }
         }
@@ -171,7 +174,7 @@ public class Player extends ItemCarrier {
                 // respawnen
                 properties.setHitpoints(CompileTimeParameters.CHARHEALTH);
                 dead = false;
-                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, false);
+                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(client.clientID, false);
                 attackCooldownTick = Server.game.getTick() + 30; // damit nicht sofort geschossen wird
             }
         }
@@ -232,7 +235,7 @@ public class Player extends ItemCarrier {
             if (properties.getHitpoints() <= 0) {
                 dead = true;
                 respawntick = Server.game.getTick() + CompileTimeParameters.RESPAWNTIME;
-                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(netID, true);
+                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(client.clientID, true);
             }
         }
     }

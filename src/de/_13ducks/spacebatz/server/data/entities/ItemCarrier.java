@@ -16,7 +16,7 @@ public class ItemCarrier extends Char {
     /**
      * Items im Inventar
      */
-    private static Item[] inventory = new Item[CompileTimeParameters.INVENTORY_SIZE];
+    private Item[] inventory = new Item[CompileTimeParameters.INVENTORY_SIZE];
     /**
      * Wieviel Materialien der Spieler hat (Geld, Erze, ...)
      */
@@ -124,7 +124,7 @@ public class ItemCarrier extends Char {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID);
+            STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID, (float) getSpeed());
         }
     }
 

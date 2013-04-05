@@ -126,6 +126,7 @@ public class Inventory implements Control {
         textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * camera.getTilesX(), 0.64f * camera.getTilesY());
         textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * camera.getTilesX(), 0.59f * camera.getTilesY());
         textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * camera.getTilesX(), 0.54f * camera.getTilesY());
+        glColor4f(1f, 1f, 1f, 1f);
 
         itemTiles.bind();
         for (int i = 0; i < 30; i++) {
@@ -319,6 +320,7 @@ public class Inventory implements Control {
                 yadd += 0.05f;
             }
         }
+        glColor4f(1f, 1f, 1f, 1f);
     }
 
     @Override

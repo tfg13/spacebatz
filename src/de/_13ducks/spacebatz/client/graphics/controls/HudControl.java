@@ -4,10 +4,10 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.Camera;
 import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.shared.Item;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
-import de._13ducks.spacebatz.client.graphics.TextWriter;
 
 /**
  *
@@ -65,18 +65,18 @@ public class HudControl implements Control {
         glEnd(); // Zeichnen des QUADs fertig } }
 
 
-        if (GameClient.getPlayer().isDead()) {
-            if (GameClient.frozenGametick >= GameClient.getPlayer().getRespawntick()) {
+        if (GameClient.logicPlayer.isDead()) {
+            if (GameClient.frozenGametick >= GameClient.player.getRespawntick()) {
                 textWriter.renderText("Press <Fire> to respawn", 10.5f, camera.getTilesY() - 2.5f);
             } else {
-                int seconds = (int) Math.ceil((GameClient.getPlayer().getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
+                int seconds = (int) Math.ceil((GameClient.player.getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
                 textWriter.renderText("Respawn in " + seconds + " Seconds", 10.5f, camera.getTilesY() - 2.5f);
             }
         }
 
         // Lebensenergie-Balken im HUD zeichnen
-        int maxhp = Math.max(1, GameClient.getPlayer().getHealthpointsmax());
-        int hp = Math.min(GameClient.getPlayer().getHealthpoints(), maxhp);
+        int maxhp = Math.max(1, GameClient.player.getHealthpointsmax());
+        int hp = Math.min(GameClient.player.getHealthpoints(), maxhp);
         hp = Math.max(hp, 0);
 
         glDisable(GL_TEXTURE_2D);

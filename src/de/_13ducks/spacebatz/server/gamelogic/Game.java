@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.server.data.quests.Quest;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
@@ -178,20 +179,26 @@ public class Game {
     /**
      * Wird gerufen, wenn ein neuer Client verbunden wurde
      *
-     * @param client der neue Client
+     * @param newClient der neue Client
      */
-    public void clientJoined(Client client) {
-        if (client.clientID != -1) {
-            STC_CHANGE_LEVEL.sendLevel(client);
-            STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(client);
-            Player player = new Player(level.respawnX, level.respawnY, newNetID(), client);
-            STC_SET_PLAYER.sendSetPlayer(client, player);
+    public void clientJoined(Client newClient) {
+        if (newClient.clientID != -1) {
+            STC_CHANGE_LEVEL.sendLevel(newClient);
+            STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(newClient);
+            Player player = new Player(level.respawnX, level.respawnY, newNetID(), newClient);
+            STC_SET_PLAYER.sendSetPlayer(newClient, player);
             getEntityManager().addEntity(player.netID, player);
+            // Neuen Player allen anderen bekannt machen:
+            STC_NEW_CLIENT.broadcast(newClient);
+            // Dem neuen Spieler alle alten schicken
+            for (Client oldClient : clients.values()) {
+                STC_NEW_CLIENT.send(oldClient, newClient);
+            }
             // Einfügen und den Client das Spiel starten lassen
-            clients.put(new Byte(client.clientID), client);
-            STC_START_ENGINE.sendStartGame(client);
+            clients.put(new Byte(newClient.clientID), newClient);
+            STC_START_ENGINE.sendStartGame(newClient);
             // Dem Client alle aktiven Quests schicken
-            Server.game.questManager.newClient(client);
+            Server.game.questManager.newClient(newClient);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }

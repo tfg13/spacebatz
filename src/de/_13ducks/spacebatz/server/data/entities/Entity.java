@@ -363,7 +363,7 @@ public class Entity {
      * @return die größe des byte[]'s, das netPack() braucht.
      */
     public int byteArraySize() {
-        return 5;
+        return 9;
     }
 
     /**
@@ -376,6 +376,7 @@ public class Entity {
     public void netPack(byte[] b, int offset) {
         b[offset] = entityTypeID;
         Bits.putInt(b, offset + 1, netID);
+        Bits.putFloat(b, offset + 5, (float) size);
     }
 
     /**
@@ -435,6 +436,7 @@ public class Entity {
             }
             double oldX = posX;
             double oldY = posY;
+            //System.out.println("SCALC: " + speed * vecX + " " + speed * vecY + " at " + Server.game.getTick());
             double predictedX = posX + speed * vecX;
             double predictedY = posY + speed * vecY;
             // Bewegung einfach mal setzen, und dann die Kollission das prüfen lassen
