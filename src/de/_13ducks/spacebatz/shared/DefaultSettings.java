@@ -88,6 +88,11 @@ public class DefaultSettings {
      */
     public static boolean CLIENT_SFX_DISABLED = false;
     /**
+     * Die Einstellung, ob die Prediction aktiviert sein soll.
+     * Dringend empfohlen, sollte nur zu Debug-Zwecken abgeschaltet werden.
+     */
+    public static boolean CLIENT_ENABLE_PREDICTION = false;
+    /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */
     public static int SERVER_RCONPORT = 13946;

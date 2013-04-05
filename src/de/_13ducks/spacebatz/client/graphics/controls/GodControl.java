@@ -257,6 +257,7 @@ public class GodControl implements Control {
             }
         }
         CTS_MOVE.sendMove(move, (float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+        GameClient.player.predictMovement(move);
     }
 
     /**
