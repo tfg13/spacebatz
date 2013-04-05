@@ -5,7 +5,10 @@ import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.PathNode;
 import de._13ducks.spacebatz.util.geo.Vector;
+import org.omg.CORBA.SetOverrideType;
 
 /**
  * Calculates a path and follows that path untill the target is in direct sightline.
@@ -26,7 +29,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
     /**
      * Die letzte bekannte Position des Ziels, zu der wir gerade laufen.
      */
-    private Vector currentTarget;
+    private PathNode currentTarget;
 
     /**
      * Erzeugt ein neues IndirectPursuitBevahoiur.
@@ -38,7 +41,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
         super(enemy);
         this.target = target;
     }
-
+    
     @Override
     public Behaviour tick(int gameTick) {
         if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
@@ -48,16 +51,24 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
             if (Server.game.getTick() - owner.getLastSightContact() > MAX_PURSUIT_TIME) {
                 return targetLost();
             }
-            Vector target = getLatestKnownTargetPosition();
+            PathNode target = getLatestKnownTargetPosition();
             if (target == null) {
-                return targetLost();
+//                if (currentTarget != null && (currentTarget.vecX != 0 || currentTarget.vecY != 0)) {
+//                    owner.setVector(currentTarget.vecX, currentTarget.vecY);
+//                } else {
+                    System.out.println("DDAAD");
+                    owner.stopMovement();
+                    
+                    return targetLost();
+//                }
+                
             } else if (!target.equals(currentTarget)) {
                 owner.setLinearTarget(target.x, target.y, this);
                 currentTarget = target;
             }
             return this;
         }
-
+        
     }
 
     /**
@@ -68,11 +79,11 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
      * @return Das Verhalten, zu dem gewechselt werden soll
      */
     public abstract Behaviour targetInSight(Enemy owner, Player target);
-
+    
     @Override
     public Behaviour pathComputed(Vector[] path) {
-
-
+        
+        
         return this;
     }
 
@@ -86,32 +97,38 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
     /**
      * Gibt die letzte Position, an der das Ziel gesehen wurde und die vom owner aus erreichbar ist, zurück.
      */
-    private Vector getLatestKnownTargetPosition() {
-        Vector position = null;
-        for (int i = target.getPlayerPath().getBufferSize(); i > 0; i--) {
-            Vector targetPosition = target.getPlayerPath().get(i);
+    private PathNode getLatestKnownTargetPosition() {
+        
+        PathNode position = null;
+        for (int i = 0; i < target.getPlayerPath().getBufferSize(); i++) {
+            PathNode targetPosition = target.getPlayerPath().get(i);            
+            if (targetPosition == null) {
+                return null;
+            }
+//            if (currentTarget != null) {
+//                double dx = Math.abs(currentTarget.x - targetPosition.x);
+//                double dy = Math.abs(currentTarget.y - targetPosition.y);
+//                if (dx < CompileTimeParameters.DOUBLE_EQUALS_DIST && dy < CompileTimeParameters.DOUBLE_EQUALS_DIST) {
+//                    return null;
+//                }
+//            }
             if (targetPosition != null && owner.lineOfSight(owner.getX(), owner.getY(), targetPosition.x, targetPosition.y)) {
                 return targetPosition;
             }
         }
         return position;
     }
-
+    
     @Override
     public void movementAborted() {
     }
-
+    
     @Override
     public void movementBlocked() {
     }
-
+    
     @Override
     public void targetReached() {
-        Vector target = getLatestKnownTargetPosition();
-        if (target == null) {
-        } else if (!target.equals(currentTarget)) {
-            owner.setLinearTarget(target.x, target.y, this);
-            currentTarget = target;
-        }
+        tick(Server.game.getTick());
     }
 }
