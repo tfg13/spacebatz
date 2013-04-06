@@ -66,11 +66,15 @@ public class HudControl implements Control {
 
 
         if (GameClient.logicPlayer.isDead()) {
+            glDisable(GL_TEXTURE_2D);
+            glColor4f(1.0f, 0.1f, 0.0f, 0.5f);
+            glRectf(0.0f * camera.getTilesX(), 0.0f * camera.getTilesY(), 1.0f * camera.getTilesX(), 1.0f * camera.getTilesY());
+            glEnable(GL_TEXTURE_2D);
             if (GameClient.frozenGametick >= GameClient.player.getRespawntick()) {
-                textWriter.renderText("Press <Fire> to respawn", 10.5f, camera.getTilesY() - 2.5f);
+                textWriter.renderText("Press <Fire> to respawn", 0.5f * camera.getTilesX(), 0.5f * camera.getTilesY());
             } else {
                 int seconds = (int) Math.ceil((GameClient.player.getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
-                textWriter.renderText("Respawn in " + seconds + " Seconds", 10.5f, camera.getTilesY() - 2.5f);
+                textWriter.renderText("Respawn in " + seconds + " Seconds", 0.5f * camera.getTilesX(), 0.5f * camera.getTilesY());
             }
         }
 
