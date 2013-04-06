@@ -399,10 +399,8 @@ public class Inventory implements Control {
                     //Müll-Slot
                     if (x > 0.815125f && x < 0.895125f) {
                         if (y > 0.53 && y < 0.63) {
-                            if (selecteditemslot != -1) {
-                            	CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
-                            	selecteditemslot = -1;
-                            }
+                            CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
+                            selecteditemslot = -1;
                         }
                     }
 

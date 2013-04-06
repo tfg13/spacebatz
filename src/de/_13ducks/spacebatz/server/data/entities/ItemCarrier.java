@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
+import java.util.Arrays;
+
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Item;
@@ -135,9 +137,13 @@ public class ItemCarrier extends Char {
      * @param inventoryslot ausgewählter Slot
      */
     public void deleteItem(int inventoryslot) {
-    	if (inventory[inventoryslot] != null) {
+    	if (inventoryslot == -1) {
+    		// gesamtes Inventar löschen
+    		Arrays.fill(inventory, null);
+    		STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
+    	} else if (inventory[inventoryslot] != null) {
+    		// einzelnes Item löschen
     		inventory[inventoryslot] = null;
-    		// senden
     		STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
     	}
     }

@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
+import java.util.Arrays;
+
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
@@ -20,10 +22,14 @@ public class STC_DELETE_ITEM extends FixedSizeSTCCommand {
         int clientID = Bits.getInt(data, 4); // clientID des Spielers
 
         if (clientID == GameClient.getClientID()) {
-            GameClient.getItems()[inventoryslot] = null;
-
+        	if (inventoryslot == -1) {
+        		// gesamtes Inventar löschen
+        		Arrays.fill(GameClient.getItems(), null);
+        	} else {
+        		// einzelnes Item löschen
+        		GameClient.getItems()[inventoryslot] = null;
+        	}
         }
-		
 	}
 	
 	/**
