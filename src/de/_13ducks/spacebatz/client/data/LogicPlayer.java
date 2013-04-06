@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.client.data;
 
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 
 /**
  * Logische Repräsentation eines (Mit-)Spielers.
@@ -76,6 +78,7 @@ public class LogicPlayer {
      */
     public void setDead(boolean dead) {
         this.dead = dead;
+        getPlayer().setRespawntick(GameClient.frozenGametick + CompileTimeParameters.RESPAWNTIME);
     }
 
     /**

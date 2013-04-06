@@ -118,11 +118,13 @@ public class PlayerCharacter extends Char {
         computePrediction(gameTick);
     }
 
-    /**
-     * @return the respawntick
-     */
     public int getRespawntick() {
         return respawntick;
+    }
+    
+
+    public void setRespawntick(int respawntick) {
+        this.respawntick = respawntick;
     }
 
     /**
