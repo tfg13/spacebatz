@@ -19,6 +19,7 @@ import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
+import de._13ducks.spacebatz.shared.PathNode;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
@@ -67,7 +68,7 @@ public class Player extends ItemCarrier {
      * Puffer der Positionen, auf denen der Spieler war.
      * Für AI benötigt.
      */
-    private RingBuffer<Vector> playerPath;
+    private RingBuffer<PathNode> playerPath;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -248,14 +249,28 @@ public class Player extends ItemCarrier {
             STC_PLAYER_TURRET_DIR_UPDATE.broadcastTurretDir(netID, (float) turretDir);
         }
         if (gametick % DefaultSettings.SERVER_AI_PLAYERPOSITION_UPDATERATE == 0) {
-            playerPath.insert(new Vector(getX(), getY()));
+            if (playerPath.get(0) != null) {
+                double dx = Math.abs(getX() - playerPath.get(0).x);
+                double dy = Math.abs(getY() - playerPath.get(0).y);
+                if (dx != 0 || dy != 0) {
+                    playerPath.insert(new PathNode(getX(), getY(), getVecX(), getVecY()));
+                }
+            } else {
+                playerPath.insert(new PathNode(getX(), getY(), getVecX(), getVecY()));
+            }
+
         }
+    }
+
+    @Override
+    protected void directionChanged(double newVecX, double newVecY) {
+        playerPath.insert(new PathNode(getX(), getY(), getVecX(), getVecY()));
     }
 
     /**
      * Gibt den Ringbuffer, der die Spielerpositionen speichert, zurück.
      */
-    public RingBuffer<Vector> getPlayerPath() {
+    public RingBuffer<PathNode> getPlayerPath() {
         return playerPath;
     }
 }
