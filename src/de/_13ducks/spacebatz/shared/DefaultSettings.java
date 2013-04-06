@@ -137,7 +137,7 @@ public class DefaultSettings {
     /**
      * Die Anzahl der Positionen der Spieler die gespeichert wird.
      */
-    public static int SERVER_AI_PLAYERPOSITION_BUFFERSIZE = 100;
+    public static int SERVER_AI_PLAYERPOSITION_BUFFERSIZE = 400;
     /**
      * Die Zahl der Ticks die vergeht bis eine neue Position gespeichert wird.
      */
