@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.Renderer;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_INV_ITEM_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
@@ -243,26 +244,29 @@ public class Inventory implements Control {
 
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
-            itemTiles.bind();
             Item item2 = GameClient.getItems()[selecteditemslot];
-            float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
-            float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
+            if (item2 != null) {
+            	itemTiles.bind();
 
-            float size = 0.08f;
+            	float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
+            	float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
 
-            float v = 0.0625f * (int) item2.getPic();
-            float w = 0.0625f * ((int) item2.getPic() / 16);
+            	float size = 0.08f;
 
-            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(v, w + 0.0625f);
-            glVertex3f(x - camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
-            glTexCoord2f(v + 0.0625f, w + 0.0625f);
-            glVertex3f(x + camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
-            glTexCoord2f(v + 0.0625f, w);
-            glVertex3f(x + camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
-            glTexCoord2f(v, w);
-            glVertex3f(x - camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
-            glEnd(); // Zeichnen des QUADs fertig } }
+            	float v = 0.0625f * (int) item2.getPic();
+            	float w = 0.0625f * ((int) item2.getPic() / 16);
+
+            	glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            	glTexCoord2f(v, w + 0.0625f);
+            	glVertex3f(x - camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
+            	glTexCoord2f(v + 0.0625f, w + 0.0625f);
+            	glVertex3f(x + camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
+            	glTexCoord2f(v + 0.0625f, w);
+            	glVertex3f(x + camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
+            	glTexCoord2f(v, w);
+            	glVertex3f(x - camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
+            	glEnd(); // Zeichnen des QUADs fertig } }
+            }
         }
 
         // Mousehover über Item zeichnen
@@ -396,11 +400,8 @@ public class Inventory implements Control {
                     if (x > 0.815125f && x < 0.895125f) {
                         if (y > 0.53 && y < 0.63) {
                             if (selecteditemslot != -1) {
-                                Item selecteditem = GameClient.getItems()[selecteditemslot];
-                                //löschen
-                                
-                                System.out.println("delete");
-                                GameClient.getItems()[selecteditemslot] = null;
+                            	CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
+                            	selecteditemslot = -1;
                             }
                         }
                     }

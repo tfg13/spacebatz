@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.entities;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
 
@@ -126,6 +127,19 @@ public class ItemCarrier extends Char {
             // Item-Anleg-Befehl zum Client senden
             STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID, (float) getSpeed());
         }
+    }
+    
+    /**
+     * Item aus Inventar löschen
+     *
+     * @param inventoryslot ausgewählter Slot
+     */
+    public void deleteItem(int inventoryslot) {
+    	if (inventory[inventoryslot] != null) {
+    		inventory[inventoryslot] = null;
+    		// senden
+    		STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
+    	}
     }
 
     /**

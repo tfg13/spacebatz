@@ -258,4 +258,12 @@ public class MessageIDs {
      * Client raus.
      */
     public static final byte NET_STC_DEL_CLIENT = 64;
+    /**
+     * Client will Item im Inventar löschen, C->S
+     */
+    public static final byte NET_TCP_CMD_REQUEST_INV_ITEM_DELETE = 65;
+    /**
+     * Client will Item im Inventar löschen, S->C
+     */
+    public static final byte NET_TCP_CMD_INV_ITEM_DELETE = 66;
 }

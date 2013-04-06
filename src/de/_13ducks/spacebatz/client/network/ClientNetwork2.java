@@ -25,6 +25,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
@@ -226,6 +227,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_UPDATE_TURRET_DIR, new STC_PLAYER_TURRET_DIR_UPDATE());
         registerSTCCommand(MessageIDs.NET_STC_NEW_CLIENT, new STC_NEW_CLIENT());
         registerSTCCommand(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
+        registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_DELETE, new STC_DELETE_ITEM());
     }
 
     /**

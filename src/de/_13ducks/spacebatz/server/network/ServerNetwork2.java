@@ -19,6 +19,7 @@ import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
@@ -83,6 +84,7 @@ public class ServerNetwork2 {
         registerCTSCommand(MessageIDs.NET_CTS_MAP_ABILITY, new CTS_REQUEST_MAP_ABILITY());
         registerCTSCommand(MessageIDs.NET_CTS_INVEST_SKILLPOINT, new CTS_INVEST_SKILLPOINT());
         registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_MOVE, new CTS_REQUEST_INV_ITEM_MOVE());
+        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_DELETE, new CTS_DELETE_ITEM());
 
         // RCON
         if (DefaultSettings.SERVER_ENABLE_RCON) {
