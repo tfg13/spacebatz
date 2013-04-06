@@ -85,7 +85,6 @@ public class HudControl implements Control {
         glRectf(0.0295f * camera.getTilesX(), 0.028f * camera.getTilesY(), (0.0295f + 0.1655f * ((float) hp / maxhp)) * camera.getTilesX(), 0.04f * camera.getTilesY());
         glEnable(GL_TEXTURE_2D);
 
-
         // angelegte Waffen in Hud zeichnen
         for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
 
