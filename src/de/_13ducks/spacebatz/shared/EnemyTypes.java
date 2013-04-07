@@ -32,7 +32,7 @@ public class EnemyTypes implements java.io.Serializable {
         smallShooter.setHealthpoints(12);
         smallShooter.setDamage(1);
         smallShooter.setPicture(0);
-        smallShooter.setSpeed(0.15f);
+        smallShooter.setSpeed(0.1f);
         smallShooter.setSightrange(5);
         smallShooter.setEnemylevel(2);
 
@@ -53,7 +53,7 @@ public class EnemyTypes implements java.io.Serializable {
         spectator.setShootAbility(EnemyTypeStats.AbilityType.NONE);
         spectator.setHealthpoints(10);
         spectator.setPicture(16);
-        spectator.setSpeed(0.3f);
+        spectator.setSpeed(0.1f);
         spectator.setSightrange(5);
         spectator.setEnemylevel(1);
         
@@ -64,7 +64,7 @@ public class EnemyTypes implements java.io.Serializable {
         crab.setHealthpoints(12);
         crab.setDamage(1);
         crab.setPicture(40);
-        crab.setSpeed(0.15f);
+        crab.setSpeed(0.1f);
         crab.setSightrange(5);
         crab.setEnemylevel(2);
 

@@ -114,7 +114,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
             for (int x = (int) (path[i].x - (getSize() / 2)); x <= (int) (path[i].x + (getSize() / 2)); x++) {
                 for (int y = (int) (path[i].y - (getSize() / 2)); y <= (int) (path[i].y + (getSize() / 2)); y++) {
                     if (Server.game.getLevel().getCollisionMap()[x][y]) {
-                        throw new IllegalArgumentException("Illegal Path position at " + x + " " + y);
+                        System.out.println("Illegal Path position at " + x + " " + y);
                     }
                 }
             }

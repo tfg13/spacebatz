@@ -21,13 +21,17 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
      */
     private int MAX_PURSUIT_TIME = 60 * 10000;
     /**
+     * Das Intervall in Ticks das vergeht bis ein neuer Weg berechnet wird.
+     */
+    private final int RECALC_WAY_INTERVALL = 20;
+    /**
      * Der Spieler, der verfolgt wird.
      */
     private Player target;
     /**
-     * Die letzte bekannte Position des Ziels, zu der wir gerade laufen.
+     * Der Tick, in dem dieses Behaviour berechnet wird zwecks loadbalancing.
      */
-    private PathNode currentTarget;
+    private int myTick;
 
     /**
      * Erzeugt ein neues IndirectPursuitBevahoiur.
@@ -38,6 +42,7 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
     public GenericIndirectPursuitBehaviour(Enemy enemy, Player target) {
         super(enemy);
         this.target = target;
+        myTick = (int) Math.random() * RECALC_WAY_INTERVALL;
     }
 
     @Override
@@ -49,14 +54,10 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
             if (Server.game.getTick() - owner.getLastSightContact() > MAX_PURSUIT_TIME) {
                 return targetLost();
             }
-            PathNode target = getLatestKnownTargetPosition();
-            if (target == null) {
-                owner.stopMovement();
-                return targetLost();
-
-            } else if (!target.equals(currentTarget)) {
-                owner.setLinearTarget(target.x, target.y, this);
-                currentTarget = target;
+            if (gameTick % RECALC_WAY_INTERVALL == myTick) {
+                Vector start = new Vector(owner.getX(), owner.getY());
+                Vector goal = new Vector(target.getX(), target.getY());
+                Server.game.pathfinder.requestPath(start, goal, owner, owner.getSize());
             }
             return this;
         }
@@ -74,8 +75,9 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
 
     @Override
     public Behaviour pathComputed(Vector[] path) {
-
-
+        if (path != null && path.length > 1) {
+            owner.followPath(path);
+        }
         return this;
     }
 

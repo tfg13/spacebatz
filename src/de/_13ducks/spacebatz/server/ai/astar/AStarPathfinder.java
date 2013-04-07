@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.server.ai.astar;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * Eine Implementierung des AStar Wegfindungsalgorithmus.
@@ -17,16 +16,16 @@ public class AStarPathfinder {
     /**
      * Die maximalen Iterationen die für ein Request berechnet werden.
      */
-    private static final int MAX_ITERATIONS_PER_REQUEST = 10 * 60 * 30;
+    private static final int MAX_ITERATIONS_PER_REQUEST = 10000;
     /**
      * Das maximale Alter von Reqeusts in gameTicks, bevor sie verworfen werden.
      */
-    private static final int MAX_REQUEST_AGE = 2000;
+    private static final int MAX_REQUEST_AGE = 1000;
     /**
      * Gibt an wieviele Iterationen pro Aufruf berechnet werden.
      * Bestimmt, wi viel der Pathfinder pro gameTick rechnet,
      */
-    private static final int MAX_ITERATIONS_PER_CYCLE = 30;
+    private static final int MAX_ITERATIONS_PER_CYCLE = Integer.MAX_VALUE;
     /**
      * Warteschlange der Wegberechnungsanforderungen.
      */
@@ -70,7 +69,8 @@ public class AStarPathfinder {
 
     /**
      * Löscht das PathRequest mit der angebenene ID.
-     * @param id 
+     *
+     * @param id
      */
     public void deletePathRequest(int id) {
         if (pathRequests.containsKey(id)) {
@@ -102,7 +102,7 @@ public class AStarPathfinder {
                 }
             } else {
                 Iterator<PathRequest> iter = pathRequests.values().iterator();
-                if(!iter.hasNext()){
+                if (!iter.hasNext()) {
                     return;
                 }
                 while (iter.hasNext()) {
