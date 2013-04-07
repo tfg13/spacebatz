@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.util;
 /**
  * Ein generischer(!) Ringpuffer, der <size> Elemente eines Typs speichert.
  * Wenn ein Element eingefügt wird das älteste überschrieben.
- * 
+ *
  * @author michael
  */
 public class RingBuffer<T> {
@@ -19,7 +19,8 @@ public class RingBuffer<T> {
 
     /**
      * Fügt ein neues Element ein, überschreibt das älteste Element.
-     * @param element 
+     *
+     * @param element
      */
     public void insert(T element) {
         if (items[startIndex] == null) {
@@ -32,7 +33,8 @@ public class RingBuffer<T> {
 
     /**
      * Gibt die Puffergröße zurück.
-     * @return 
+     *
+     * @return
      */
     public int getBufferSize() {
         return size;
@@ -41,10 +43,16 @@ public class RingBuffer<T> {
     /**
      * Gibt das index-te element zurück.
      * 0 ist das aktuellste Element.
+     *
      * @param index
-     * @return 
+     * @return
      */
     public T get(int index) {
-        return (T) items[(index + startIndex) % size];
+        int offset = index - startIndex;
+        if (offset >= 0) {
+            return (T) items[offset];
+        } else {
+            return (T) items[-offset];
+        }
     }
 }

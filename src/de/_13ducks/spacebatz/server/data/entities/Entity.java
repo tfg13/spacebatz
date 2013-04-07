@@ -231,6 +231,12 @@ public class Entity {
     }
 
     /**
+     * Wird aufgerufen, wenn die Bewegungsrichtuing der Entity sich ändert.
+     */
+    protected void directionChanged(double newVecX, double newVecY) {
+    }
+
+    /**
      * Setzt den Bewegungsvektor dieses Chars neu.
      * Die Einheit bewegt sich nach dem Aufruf in diese Richtung im Modus 1.
      * Der Vektor wird normalisiert, kann also die Geschwindigkeit nicht beeinflussen.
@@ -246,6 +252,7 @@ public class Entity {
         moveStartTick = Server.game.getTick();
         moveStartX = posX;
         moveStartY = posY;
+        directionChanged(vecX, vecY);
         Server.sync.updateMovement(this);
         if (remainingPathLength != -1) {
             remainingPathLength = -1;
@@ -336,12 +343,13 @@ public class Entity {
         // Normalisieren und setzen
         vecX = x / length;
         vecY = y / length;
+        directionChanged(vecX, vecY);
     }
-
+    
     public Movement getMovement() {
         return computeMovement();
     }
-
+    
     private Movement computeMovement() {
         if (isMoving()) {
             if (targetEntity == null) {
@@ -515,14 +523,14 @@ public class Entity {
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
-
+                    
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
 
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
-
+                    
                     if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -560,13 +568,13 @@ public class Entity {
                     d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
-
+                    
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
-
+                    
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-
+                    
                     if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -594,7 +602,7 @@ public class Entity {
         if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
             setStopXY(sx, sy);
         }
-
+        
         return collisionBlock;
     }
 
