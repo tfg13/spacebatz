@@ -49,6 +49,8 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
             f.setOwner(GameClient.netIDMap.get(charid));
             GameClient.getEngine().getGraphics().addFx(f);
         }
+        
+        GameClient.soundEngine.playSound("test.ogg");
     }
 
     public static void sendCharAttack(int charid, float direction, boolean anim) {

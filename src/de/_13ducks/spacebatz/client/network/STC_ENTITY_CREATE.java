@@ -47,7 +47,6 @@ public class STC_ENTITY_CREATE extends STCCommand {
             case 4:
                 Bullet bu = new Bullet(netID, size, Bits.getInt(data, 10), Bits.getInt(data, 14));
                 GameClient.netIDMap.put(bu.netID, bu);
-                GameClient.soundEngine.playSound("test.ogg");
                 break;
             default:
                 System.out.println("WARN: CNET: SYNC: Unknown charTypeID (was " + type + ")");

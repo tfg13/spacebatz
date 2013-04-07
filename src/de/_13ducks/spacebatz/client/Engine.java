@@ -12,6 +12,8 @@ package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.sound.SoundEngine;
+import de._13ducks.spacebatz.shared.DefaultSettings;
+
 import org.lwjgl.Sys;
 
 /**
@@ -63,7 +65,7 @@ public class Engine {
         lastFPS = getTime();
         GameClient.getNetwork2().startSurveillance();
         while (run) {
-            if (!sound) {
+            if (!sound && !DefaultSettings.CLIENT_SFX_DISABLE_MUSIC) {
                 sound = GameClient.soundEngine.playSound("T!.ogg");
             }
             // Gametick updaten:
