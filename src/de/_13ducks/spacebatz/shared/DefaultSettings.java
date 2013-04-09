@@ -88,6 +88,11 @@ public class DefaultSettings {
      */
     public static boolean CLIENT_SFX_DISABLED = false;
     /**
+     * Musik abschalten.
+     * Andere Sounds werden abgespielt.
+     */
+    public static boolean CLIENT_SFX_DISABLE_MUSIC = false;
+    /**
      * Die Einstellung, ob die Prediction aktiviert sein soll.
      * Dringend empfohlen, sollte nur zu Debug-Zwecken abgeschaltet werden.
      */
