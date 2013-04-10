@@ -332,7 +332,7 @@ public class ServerNetwork2 {
             connectAnswer[2] = Server.game.newClientID();
 
             ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
-            newClient = new Client(clientConnection, Server.game.newClientID(), nickName.toString());
+            newClient = new Client(clientConnection, connectAnswer[2], nickName.toString());
             clientConnection.setClient(newClient);
             Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
             connectAnswer[0] |= 0x40;
