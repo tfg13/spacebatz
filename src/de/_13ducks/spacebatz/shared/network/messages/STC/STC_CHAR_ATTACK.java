@@ -50,7 +50,7 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
             GameClient.getEngine().getGraphics().addFx(f);
         }
         
-        GameClient.soundEngine.playSound("test.ogg");
+        GameClient.soundEngine.soundEffect("test.ogg");
     }
 
     public static void sendCharAttack(int charid, float direction, boolean anim) {

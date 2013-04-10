@@ -61,12 +61,11 @@ public class Engine {
      */
     public void start() {
         graphics.initialise();
-        boolean sound = false;
         lastFPS = getTime();
         GameClient.getNetwork2().startSurveillance();
         while (run) {
-            if (!sound && !DefaultSettings.CLIENT_SFX_DISABLE_MUSIC) {
-                sound = GameClient.soundEngine.playSound("T!.ogg");
+            if ( !DefaultSettings.CLIENT_SFX_DISABLE_MUSIC) {
+                GameClient.soundEngine.backgroundMusic("sound/music/T!.ogg", true);
             }
             // Gametick updaten:
             GameClient.updateGametick();

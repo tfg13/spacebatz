@@ -10,20 +10,20 @@
  */
 package de._13ducks.spacebatz.client.sound;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL10;
-import org.newdawn.slick.openal.OggData;
-import org.newdawn.slick.openal.OggDecoder;
+import paulscode.sound.Library;
+import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
+import paulscode.sound.codecs.CodecJOgg;
+import paulscode.sound.codecs.CodecJOrbis;
+import paulscode.sound.libraries.LibraryJavaSound;
+import paulscode.sound.libraries.LibraryLWJGLOpenAL;
 
 /**
  * Das OpenAL-Soundmodul.
@@ -46,18 +46,8 @@ public class SoundEngine {
             ex.printStackTrace();
         }
     }
-    /**
-     * Die Puffer für geladene Audiodateien
-     */
-    private HashMap<String, Integer> buffers;
-    /**
-     * Liste mit Sounds die permanent sind oder gerade laufen
-     */
-    private ArrayList<Sound> sounds;
-    /**
-     * Gibt an, ob die Sounds schon fertig geladen sind
-     */
-    private boolean initialized = false;
+    private SoundSystem soundSystem;
+    private boolean loading = true;
 
     /**
      * Konstruktor.
@@ -65,128 +55,95 @@ public class SoundEngine {
      * Lädt in einem neuen thread alle ogg-Sounds aus dem "sound"-Verzeichnis
      */
     public SoundEngine() {
-        buffers = new HashMap<>();
-        sounds = new ArrayList<>();
-        if (!DefaultSettings.CLIENT_SFX_DISABLED) {
-            try {
-                // AL initialisieren:
-                AL.create();
-                AL10.alListener3f(AL10.AL_POSITION, 10.0f, 1.0f, 1.0f);
-                AL10.alListener3f(AL10.AL_VELOCITY, 0.0f, 0.0f, 0.0f);
-                AL10.alListener3f(AL10.AL_ORIENTATION, 0.0f, 0.0f, 0.0f);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Thread soundLoader = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    loadSounds();
-                }
-            });
-            soundLoader.setName("soundLoader");
-            soundLoader.start();
-        }
+        soundSystem = initSoundSystem();
+        loadSounds();
     }
 
     private void loadSounds() {
-        try {
+        Thread soundLoader = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File soundFolder = new File("sound/effects/");
+                for (int i = 0; i < soundFolder.listFiles().length; i++) {
+                    File sound = soundFolder.listFiles()[i];
+                    if (sound.getName().contains(".ogg")) {
+                        try {
+                            soundSystem.loadSound(sound.toURL(), sound.getName());
 
-            // Sounds laden:
-            File soundFolder = new File("sound");
-            File[] soundFiles = soundFolder.listFiles();
-            for (int i = 0; i < soundFiles.length; i++) {
-                File file = soundFiles[i];
-                if (file.getName().toLowerCase().matches(".+\\.ogg")) {
-                    OggData data = new OggDecoder().getData(new BufferedInputStream(new FileInputStream(file.getAbsolutePath())));
-                    int format = data.channels > 1 ? AL10.AL_FORMAT_STEREO16 : AL10.AL_FORMAT_MONO16;
-                    int buffer = AL10.alGenBuffers();
-                    AL10.alBufferData(buffer, format, data.data, data.rate);
-                    buffers.put(file.getName(), buffer);
+                        } catch (MalformedURLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
+                loading = false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        initialized = true;
-        System.out.println("SoundEngine initialised (" + buffers.size() + " sounds loaded).");
+        });
+        soundLoader.setName("soundLoader");
+        soundLoader.start();
+
     }
 
     /**
-     * Spielt einen Soundeffekt asynchron ab.
+     * Spielt einen Soundeffekt einmal ab.
      *
-     * @param name der Name der Sounddatei
-     * @return true bei erfolg, false wenn die sound noch nicht geladen sind
+     * @param filename
      */
-    public boolean playSound(String name) {
-        if (DefaultSettings.CLIENT_SFX_DISABLED) {
-            return false;
+    public void soundEffect(String filename) {
+        if (!loading) {
+            soundSystem.quickPlay(false, filename, false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
         }
-        if (!initialized) {
-            return false;
-        }
-        if (buffers.containsKey(name)) {
-            Sound sound = new Sound(buffers.get(name), false);
-            sounds.add(sound);
-            sound.play();
-        } else {
-            throw new RuntimeException("Sound " + name + " not found.");
-        }
-        return true;
     }
 
     /**
-     * Gibt einen neuen Soundeffekt zurück, der dann abgespielt und wieder angehalten werden kann.
+     * Spielt Hintergrundmusik ab.
      *
-     * @param name der Name der Audiodate
-     * @return ein Sound-Objekt oder null, wenn die sound noch niocht geladen wurden
+     * @param identifier
+     * @param filename
      */
-    public Sound createSound(String name) {
-        if (DefaultSettings.CLIENT_SFX_DISABLED) {
-            return null;
+    public void backgroundMusic(String filename, Boolean loop) {
+        File sound = new File(filename);
+        URL url = null;
+        try {
+            url = sound.toURL();
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
         }
-        if (!initialized) {
-            return null;
-        }
-        Sound sound;
-        if (buffers.containsKey(name)) {
-            sound = new Sound(buffers.get(name), true);
-            sounds.add(sound);
+        soundSystem.newStreamingSource(true, sound.getName(), url, sound.getName(), loop, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 1);
+        soundSystem.play(sound.getName());
+    }
 
-        } else {
-            throw new RuntimeException("Sound " + name + " not found.");
+    /**
+     * Initialisiert das Soundsystem.
+     *
+     * @return
+     */
+    private SoundSystem initSoundSystem() {
+        try {
+            boolean openALCompatible = SoundSystem.libraryCompatible(LibraryLWJGLOpenAL.class);
+            boolean javaSoundCompatible = SoundSystem.libraryCompatible(LibraryJavaSound.class);
+
+            Class libraryType;
+            if (openALCompatible) {
+                libraryType = LibraryLWJGLOpenAL.class; // OpenAL
+            } else if (javaSoundCompatible) {
+                libraryType = LibraryJavaSound.class; // Java Sound
+            } else {
+                libraryType = Library.class; // "No Sound, Silent Mode"
+            }
+
+            SoundSystemConfig.setCodec("ogg", CodecJOrbis.class); // Ogg-Codec laden
+            SoundSystem mySoundSystem = new SoundSystem(libraryType); // Soundsystem initialisieren
+            return mySoundSystem;
+        } catch (Exception sse) {
+            sse.printStackTrace();
+            return null;
         }
-        return sound;
     }
 
     /**
      * Gibt benutzten Speicher wieder frei.
      */
     public void shutdown() {
-        if (!DefaultSettings.CLIENT_SFX_DISABLED) {
-            for (int s : buffers.values()) {
-                AL10.alDeleteBuffers(s);
-            }
-            for (Sound s : sounds) {
-                s.dispose();
-                AL10.alDeleteSources(s.getSource());
-            }
-            deleteUnusedSounds();
-            AL.destroy();
-        }
-    }
-
-    /**
-     * Löscht bereits abgespielte Sounds.
-     */
-    public void deleteUnusedSounds() {
-        if (!DefaultSettings.CLIENT_SFX_DISABLED) {
-            Iterator<Sound> iter = sounds.iterator();
-            while (iter.hasNext()) {
-                Sound s = iter.next();
-                if (s.deleteMe()) {
-                    iter.remove();
-                }
-            }
-        }
+        soundSystem.cleanup();
     }
 }
