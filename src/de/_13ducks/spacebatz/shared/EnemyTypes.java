@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Enthält eine Liste mit Werten der verschiedenen Gegnersorten
+ *
  * @author ojoj
  */
 public class EnemyTypes implements java.io.Serializable {
@@ -24,7 +25,7 @@ public class EnemyTypes implements java.io.Serializable {
     public EnemyTypes() {
         enemytypelist = new ArrayList<>();
         //int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel, (Farbe in floats)
-        
+
         EnemyTypeStats smallShooter = new EnemyTypeStats();
         enemytypelist.add(smallShooter);
         smallShooter.setBehaviour(EnemyTypeStats.BehaviourType.SHOOTER);
@@ -46,7 +47,7 @@ public class EnemyTypes implements java.io.Serializable {
         bigShooter.setSpeed(0.1f);
         bigShooter.setSightrange(5);
         bigShooter.setEnemylevel(3);
-        
+
         EnemyTypeStats spectator = new EnemyTypeStats();
         enemytypelist.add(spectator);
         spectator.setBehaviour(EnemyTypeStats.BehaviourType.SPECTATOR);
@@ -56,7 +57,7 @@ public class EnemyTypes implements java.io.Serializable {
         spectator.setSpeed(0.1f);
         spectator.setSightrange(5);
         spectator.setEnemylevel(1);
-        
+
         EnemyTypeStats crab = new EnemyTypeStats();
         enemytypelist.add(crab);
         crab.setBehaviour(EnemyTypeStats.BehaviourType.SHOOTER);
@@ -67,6 +68,17 @@ public class EnemyTypes implements java.io.Serializable {
         crab.setSpeed(0.1f);
         crab.setSightrange(5);
         crab.setEnemylevel(2);
+
+        EnemyTypeStats kamikaze = new EnemyTypeStats();
+        enemytypelist.add(kamikaze);
+        kamikaze.setBehaviour(EnemyTypeStats.BehaviourType.KAMIKAZE);
+        kamikaze.setShootAbility(EnemyTypeStats.AbilityType.KAMIKAZE);
+        kamikaze.setHealthpoints(12);
+        kamikaze.setDamage(1);
+        kamikaze.setPicture(48);
+        kamikaze.setSpeed(0.1f);
+        kamikaze.setSightrange(5);
+        kamikaze.setEnemylevel(2);
 
 
 

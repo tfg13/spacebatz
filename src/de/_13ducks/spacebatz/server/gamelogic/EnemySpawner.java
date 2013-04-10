@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.gamelogic;
 
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.kamikaze.KamikazeLurkBehaviour;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
@@ -19,6 +20,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.server.data.abilities.KamikazeAbility;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import java.util.*;
@@ -273,6 +275,9 @@ public class EnemySpawner {
                     case SPECTATOR:
                         enem.setBehaviour(new SpectatorLurkBehaviour(enem));
                         break;
+                    case KAMIKAZE:
+                        enem.setBehaviour(new KamikazeLurkBehaviour(enem));
+                        break;
                 }
                 // GGF Ability setzen:
                 switch (stats.getShootAbility()) {
@@ -281,6 +286,9 @@ public class EnemySpawner {
                         // dann kann jeder Gegner seine eigene FireBulletAbility haben.
                         enem.setShootAbility(new FireBulletAbility(1, 0, 0.5, 100, 1, 0.15, 0.15, 0, 10, 1, false));
                         enem.getShootAbility().setCooldown(100);
+                        break;
+                    case KAMIKAZE:
+                        enem.setShootAbility(new KamikazeAbility(5, 100));
                         break;
                 }
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
