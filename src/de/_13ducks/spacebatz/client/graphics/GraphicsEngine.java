@@ -227,4 +227,13 @@ public class GraphicsEngine {
     public ShadowAnimator getShadowAnimator() {
         return shadowAnimator;
     }
+
+    /**
+     * True, wenn derzeit ein Menu eingeblendet wird, also der Input dahin soll.
+     *
+     * @return true bei eingeblendetem menu
+     */
+    public boolean isMenuActive() {
+        return activeMenu != null;
+    }
 }

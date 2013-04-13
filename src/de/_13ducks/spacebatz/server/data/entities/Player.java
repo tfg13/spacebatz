@@ -94,8 +94,10 @@ public class Player extends ItemCarrier {
      * @param a A-Button gedrückt.
      * @param s S-Button gedrückt.
      * @param d D-Button gedrückt.
+     * @param turretDir die Richtung des Turrets.
+     * @param moveDuration seit wie vielen Ticks diese Bewegung schon läuft.
      */
-    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir) {
+    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir, short moveDuration) {
         this.turretDir = turretDir;
         double x = 0, y = 0;
 

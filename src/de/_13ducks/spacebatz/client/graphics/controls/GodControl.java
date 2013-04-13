@@ -20,7 +20,6 @@ import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
@@ -171,24 +170,12 @@ public class GodControl implements Control {
     }
 
     /**
-     * Verarbeitet den Input, der UDP-Relevant ist.
+     * Verarbeitet den Input, der mit dem frames Synchron sein soll.
      */
     @Override
     public void input() {
         byte move = 0;
         if (!terminal) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-                move |= 0x20;
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-                move |= 0x80;
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-                move |= 0x40;
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-                move |= 0x10;
-            }
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
                 sendAbilityRequest((byte) 1);
             }
@@ -256,8 +243,6 @@ public class GodControl implements Control {
                 }
             }
         }
-        CTS_MOVE.sendMove(move, (float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
-        GameClient.player.predictMovement(move);
     }
 
     /**
@@ -1022,5 +1007,12 @@ public class GodControl implements Control {
      */
     public void setShowNickNames(int showNickNames) {
         this.showNickNames = showNickNames;
+    }
+
+    /**
+     * @return true, wenn terminal offen ist
+     */
+    public boolean isTerminal() {
+        return terminal;
     }
 }
