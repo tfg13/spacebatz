@@ -75,7 +75,7 @@ public class Player extends ItemCarrier {
     /**
      * Leerer Observer für die Linearbewegungen.
      */
-    private EntityLinearTargetObserver dummyObserver = new EntityLinearTargetObserver() {
+    private EntityLinearTargetObserver observer = new EntityLinearTargetObserver() {
         @Override
         public void targetReached() {
             moveDurationDelta = lastDuration;
@@ -169,7 +169,7 @@ public class Player extends ItemCarrier {
             if (!isMoving() && !dead) {
                 // In jedem Fall eine neue Bewegung, falls länger als 1 Tick
                 if (moveDuration > 1) {
-                    setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), dummyObserver);
+                    setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), observer);
                 } else {
                     // Speichern, damit wir das nicht vergessen
                     predictionWaitDirection = direction;
@@ -184,22 +184,22 @@ public class Player extends ItemCarrier {
                     // Laufen wir da schon hin?
                     if (Math.abs(getVecX() - direction.x) < .001 && Math.abs(getVecY() - direction.y) < .001) {
                         // Bewegung weiter erlauben:
-                        setLinearTarget(getMoveStartX() + (direction.x * getSpeed() * moveDuration), getMoveStartY() + (direction.y * getSpeed() * moveDuration), dummyObserver);
+                        setLinearTarget(getMoveStartX() + (direction.x * getSpeed() * moveDuration), getMoveStartY() + (direction.y * getSpeed() * moveDuration), observer);
                     } else {
-                        // Richtung hat sich geändert, eine frühzeitige Zwangsberechnung durchführen, damit die Einheit noch bis zum target kommt.
-                        super.tick(Server.game.getTick());
-                        if (isMoving()) {
-                            // Wir konnten nicht so weit fahren, wie der Client das gerne hätte.
-                            System.out.println("WARNING: SPRED: Cannot guarantee smooth prediction!");
-                        }
-                        stopMovement();
-                        moveDurationDelta = 0;
-                        // Jetzt neue Bewegung starten, falls die Bewegung länger als 1 Tick ist:
-                        if (moveDuration > 1) {
-                            setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), dummyObserver);
-                        } else {
-                            // Speichern, damit wir das nicht vergessen
+                        // Neue Bewegung noch auf 1?
+                        if (moveDuration == 1) {
                             predictionWaitDirection = direction;
+                        } else {
+                            // Richtung hat sich geändert, eine frühzeitige Zwangsberechnung durchführen, damit die Einheit noch bis zum target kommt.
+                            super.tick(Server.game.getTick());
+                            if (isMoving()) {
+                                // Wir konnten nicht so weit fahren, wie der Client das gerne hätte.
+                                System.out.println("WARNING: SPRED: Cannot guarantee smooth prediction!");
+                                stopMovement();
+                            }
+                            moveDurationDelta = 0;
+                            // Jetzt neue Bewegung starten
+                            setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), observer);
                         }
                     }
                 }
