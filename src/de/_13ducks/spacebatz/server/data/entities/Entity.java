@@ -676,4 +676,18 @@ public class Entity {
             observer.movementAborted();
         }
     }
+
+    /**
+     * @return the moveStartX
+     */
+    protected double getMoveStartX() {
+        return moveStartX;
+    }
+
+    /**
+     * @return the moveStartY
+     */
+    protected double getMoveStartY() {
+        return moveStartY;
+    }
 }
