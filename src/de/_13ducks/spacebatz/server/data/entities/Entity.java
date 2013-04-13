@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Oberklasse für alle Objekte im Spiel Dazu gehören Chars, Mobs, Pflanzen, ... Enthält Position und Bewegungsinformationen
@@ -310,7 +311,6 @@ public class Entity {
         if (remainingPathLength != -1) {
             observer.movementAborted();
         }
-        targetEntity = null;
         // Sofort da?
         if (Math.abs(tx - getX()) < CompileTimeParameters.DOUBLE_EQUALS_DIST && Math.abs(ty - getY()) < CompileTimeParameters.DOUBLE_EQUALS_DIST) {
             // Gar nicht erst bewegen.
@@ -318,17 +318,22 @@ public class Entity {
             return;
         }
         observer = obs;
+        // Vektor neu?
+        Vector oldVector = new Vector(vecX, vecY);
         // Vektor zum Ziel und Länge berechnen:
         normalizeAndSetVector(tx - posX, ty - posY);
         remainingPathLength = Math.sqrt((tx - posX) * (tx - posX) + (ty - posY) * (ty - posY));
         targetX = tx;
         targetY = ty;
-        moving = true;
-        // Das ist eine neue Client-Bewegung
-        moveStartTick = Server.game.getTick();
-        moveStartX = posX;
-        moveStartY = posY;
-        Server.sync.updateMovement(this);
+        if (!oldVector.equals(new Vector(vecX, vecY)) || targetEntity != null || moving == false) {
+            // Das ist eine neue Client-Bewegung
+            moving = true;
+            targetEntity = null;
+            moveStartTick = Server.game.getTick();
+            moveStartX = posX;
+            moveStartY = posY;
+            Server.sync.updateMovement(this);
+        }
     }
 
     /**
@@ -345,11 +350,11 @@ public class Entity {
         vecY = y / length;
         directionChanged(vecX, vecY);
     }
-    
+
     public Movement getMovement() {
         return computeMovement();
     }
-    
+
     private Movement computeMovement() {
         if (isMoving()) {
             if (targetEntity == null) {
@@ -523,14 +528,14 @@ public class Entity {
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
-                    
+
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
 
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
-                    
+
                     if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -568,13 +573,13 @@ public class Entity {
                     d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
-                    
+
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
-                    
+
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-                    
+
                     if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -602,7 +607,7 @@ public class Entity {
         if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
             setStopXY(sx, sy);
         }
-        
+
         return collisionBlock;
     }
 
@@ -640,6 +645,7 @@ public class Entity {
 
     /**
      * Beantwortet, ob die übergeben Einheit gerade verfolgt wird.
+     *
      * @param target die fragliche Einheit
      * @return true, wenn genau diese verfolgt wird, sonst false
      */
@@ -650,6 +656,7 @@ public class Entity {
     /**
      * Lässt diese Entity die gegebene verfolgen.
      * Versetzt die Entity dazu in Bewegungsmodus 3.
+     *
      * @param target die Zielentity
      */
     public void setFollowTarget(Entity target) {
