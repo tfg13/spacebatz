@@ -358,14 +358,16 @@ public class GodControl implements Control {
         // Enemies zeichnen:
         enemyTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
-            if (c instanceof Enemy) {
-                Enemy enemy = (Enemy) c;
+            if (!c.isInvisible()) {
+                if (c instanceof Enemy) {
+                    Enemy enemy = (Enemy) c;
 
-                // Werte fürs Einfärben nehmen und rendern
-                EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
-                glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
-                glColor3f(1f, 1f, 1f);
+                    // Werte fürs Einfärben nehmen und rendern
+                    EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
+                    glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                    glColor3f(1f, 1f, 1f);
+                }
             }
         }
 
@@ -584,8 +586,8 @@ public class GodControl implements Control {
                 textWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, camera.getTilesY() - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
                 if (NetStats.netGraph >= 2) {
                     // Einheitenposition:
-                    textWriter.renderText("playerpos: " + String.format("%.3f",GameClient.player.getX()), 0, camera.getTilesY() - 2f);
-                    textWriter.renderText(String.format("%.3f",GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
+                    textWriter.renderText("playerpos: " + String.format("%.3f", GameClient.player.getX()), 0, camera.getTilesY() - 2f);
+                    textWriter.renderText(String.format("%.3f", GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
                     textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) DefaultSettings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
                     textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) DefaultSettings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
