@@ -15,6 +15,7 @@ import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
+import de._13ducks.spacebatz.server.data.entities.move.DiscreteMover;
 import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
@@ -31,13 +32,17 @@ import de._13ducks.spacebatz.util.geo.Vector;
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
  *
- * Achtung! Schreibrechte auf einige der Variablen und Methoden dieser Klasse unterliegen
- * möglicherweise den selben Einschränkungen wie die gesamte Klasse Entity.
+ * Wird vom Spieler direkt gesteuert und verwendet daher ein anderes Bewegungssystem wie der Rest.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Player extends ItemCarrier {
 
+    /**
+     * Bewegungssystem des Spielers.
+     * Immer DiscreteMover, denn der Client muss die genaue Position vorhersagen können.
+     */
+    public final DiscreteMover move;
     /**
      * Der, Client, dem der Player gehört
      */
@@ -113,7 +118,9 @@ public class Player extends ItemCarrier {
      * @param client der Client, dem dieser Player gehören soll.
      */
     public Player(double x, double y, int id, Client client) {
-        super(x, y, id, (byte) 2);
+        super(id, (byte) 2, new DiscreteMover(x, y));
+        this.move = (DiscreteMover) super.move;
+        move.setEntity(this);
         client.setPlayer(this);
         this.client = client;
         skillTree = new MarsroverSkilltree();

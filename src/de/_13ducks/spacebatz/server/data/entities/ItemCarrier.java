@@ -1,13 +1,13 @@
 package de._13ducks.spacebatz.server.data.entities;
 
-import java.util.Arrays;
-
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.entities.move.Mover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
+import java.util.Arrays;
 
 /**
  * Ein Itemträger, kann Items tragen und ausrüsten. Kann im moment beliebig viele Items aufnehmen und ausrüsten.
@@ -45,8 +45,8 @@ public class ItemCarrier extends Char {
      * @param netId die netId des Carriers
      * @param typeId die typeId des Carriers
      */
-    public ItemCarrier(double posX, double posY, int netId, byte typeId) {
-        super(posX, posY, netId, typeId);
+    public ItemCarrier(int netId, byte typeId, Mover mover) {
+        super(netId, typeId, mover);
         Item[] wslot = new Item[3];
         Item[] aslot = new Item[1];
 
@@ -109,7 +109,7 @@ public class ItemCarrier extends Char {
         Item item = inventory[inventoryslot];
 
         // richtiger Itemtyp für diesen Slot?
-        int slottype = (int) item.getItemClass();
+        int slottype = item.getItemClass();
 
         if (getEquipslots()[slottype] != null && getEquipslots()[slottype][equipslot] == null && item != null) {
             // Jetzt neues Item anlegen
@@ -130,22 +130,22 @@ public class ItemCarrier extends Char {
             STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID, (float) getSpeed());
         }
     }
-    
+
     /**
      * Item aus Inventar löschen
      *
      * @param inventoryslot ausgewählter Slot
      */
     public void deleteItem(int inventoryslot) {
-    	if (inventoryslot == -1) {
-    		// gesamtes Inventar löschen
-    		Arrays.fill(inventory, null);
-    		STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
-    	} else if (inventory[inventoryslot] != null) {
-    		// einzelnes Item löschen
-    		inventory[inventoryslot] = null;
-    		STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
-    	}
+        if (inventoryslot == -1) {
+            // gesamtes Inventar löschen
+            Arrays.fill(inventory, null);
+            STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
+        } else if (inventory[inventoryslot] != null) {
+            // einzelnes Item löschen
+            inventory[inventoryslot] = null;
+            STC_DELETE_ITEM.sendItemDelete(inventoryslot, ((Player) this).getClient().clientID);
+        }
     }
 
     /**

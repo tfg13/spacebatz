@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
+import de._13ducks.spacebatz.server.data.entities.move.InterpolatedMover;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
@@ -28,6 +29,12 @@ import de._13ducks.spacebatz.util.geo.Vector;
  */
 public class Enemy extends Char implements EntityLinearTargetObserver, PathRequester {
 
+    /**
+     * Das Bewegungssystem dieses Gegeners.
+     * Gegner werden immer vom Server gesteuert, verwenden deshalb InterpolatedMover
+     */
+    public final InterpolatedMover move;
+    ;
     /**
      * ID des Gegnertyps.
      */
@@ -57,7 +64,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      */
     private Behaviour behaviour;
     /**
-     * Der GameTick, in dem zuletzt Sichtkontakt zum Ziel war.  
+     * Der GameTick, in dem zuletzt Sichtkontakt zum Ziel war.
      */
     private int lastSightContact;
 
@@ -70,7 +77,9 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * @param typeid typeID gibt Gegnertyp an
      */
     public Enemy(double x, double y, int netid, int enemytypeID) {
-        super(x, y, netid, (byte) 3);
+        super(netid, (byte) 3, new InterpolatedMover(x, y));
+        this.move = (InterpolatedMover) super.move;
+        move.setEntity(this);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
         getProperties().setHitpoints(estats.getHealthpoints());
@@ -132,7 +141,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         }
         followingPath = true;
         this.path = path;
-        setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
+        move.setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
 
     }
 
@@ -142,7 +151,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void stopFollowingPath() {
         if (followingPath) {
             followingPath = false;
-            stopMovement();
+            move.stopMovement();
             path = null;
             currentPathTarget = -1;
         } else {
@@ -174,7 +183,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         if (followingPath) {
             if (currentPathTarget + 1 < path.length) {
                 currentPathTarget++;
-                setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
+                move.setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
             }
         } else {
             behaviour = behaviour.getTargetReachedBehaviour();

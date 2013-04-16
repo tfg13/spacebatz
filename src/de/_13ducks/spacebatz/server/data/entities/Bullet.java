@@ -12,17 +12,23 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
+import de._13ducks.spacebatz.server.data.entities.move.InterpolatedMover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 
 /**
- * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre lifetime abgelaufen ist
+ * Ein Geschoss. Geschosse sind Entities, die sich in eine Richtung bewegen bis sie mit etwas kollidieren oder ihre lifetime abgelaufen ist.
  *
  * @author J.K.
  */
 public class Bullet extends Entity {
 
+    /**
+     * Das Bewegungssystem dieses Geschosses.
+     * Geschosse verwenden immer InterpolatedMover.
+     */
+    public final InterpolatedMover move;
     /**
      * Der Besitzer des Bullets, i.d.R. der Char der es erzeugt hat.
      */
@@ -57,9 +63,11 @@ public class Bullet extends Entity {
      * @param owner der Besitzer, i.d.R. der Char der das Bullet erzeugt hat
      */
     public Bullet(int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
-        super(spawnposx, spawnposy, netID, (byte) 4);
+        super(netID, (byte) 4, new InterpolatedMover(spawnposx, spawnposy));
+        this.move = (InterpolatedMover) super.move;
+        move.setEntity(this);
         this.bulletpic = pictureID;
-        setVector(Math.cos(angle), Math.sin(angle));
+        move.setVector(Math.cos(angle), Math.sin(angle));
         setSpeed(speed);
         this.owner = owner;
         this.deletetick = Server.game.getTick() + lifetime;
