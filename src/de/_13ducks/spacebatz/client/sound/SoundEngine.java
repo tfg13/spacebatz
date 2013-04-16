@@ -91,6 +91,7 @@ public class SoundEngine {
     public void soundEffect(String filename) {
         if (!loading) {
             soundSystem.quickPlay(false, filename, false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
+            soundSystem.removeTemporarySources();
         }
     }
 
@@ -145,5 +146,9 @@ public class SoundEngine {
      */
     public void shutdown() {
         soundSystem.cleanup();
+    }
+
+    public boolean isReady() {
+        return !loading;
     }
 }
