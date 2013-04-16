@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -36,6 +37,10 @@ public abstract class Char extends Entity {
      * Liste aller Effekte, die der EffectCarrier gerade hat
      */
     private ArrayList<Effect> effects;
+    /**
+     * Ist dieser Char gerade unsichtbar?
+     */
+    private boolean invisible;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -116,5 +121,22 @@ public abstract class Char extends Entity {
     public void decreaseHitpoints(int damage) {
         properties.setHitpoints(properties.getHitpoints() - damage);
         STC_CHAR_HIT.sendCharHit(netID, damage);
+    }
+
+    /**
+     * @return the invisible
+     */
+    public boolean isInvisible() {
+        return invisible;
+    }
+
+    /**
+     * @param invisible the invisible to set
+     */
+    public void setInvisible(boolean invisible) {
+        if (this.invisible != invisible) {
+            this.invisible = invisible;
+            STC_SET_CHAR_INVISIBILITY.broadcast(this);
+        }
     }
 }

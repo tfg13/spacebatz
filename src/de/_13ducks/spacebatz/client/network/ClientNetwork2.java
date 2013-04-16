@@ -36,6 +36,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
@@ -228,6 +229,7 @@ public class ClientNetwork2 {
         registerSTCCommand(MessageIDs.NET_STC_NEW_CLIENT, new STC_NEW_CLIENT());
         registerSTCCommand(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_DELETE, new STC_DELETE_ITEM());
+        registerSTCCommand(MessageIDs.NET_STC_SET_CHAR_INVISIBILITY, new STC_SET_CHAR_INVISIBILITY());
     }
 
     /**

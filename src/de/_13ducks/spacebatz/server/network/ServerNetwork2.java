@@ -290,7 +290,7 @@ public class ServerNetwork2 {
     private void schedulePacket(DatagramPacket dPack, Client client, int packID) {
         if (!client.getNetworkConnection().getOutBuffer().registerPacket(dPack, packID)) {
             // Dieser Client ist hoffnungslos
-            System.out.println("ERROR: NET: Disconnection client due to outbuffer packet overflow");
+            System.out.println("ERROR: NET: Disconnecting client " + client.clientID + " due to outbuffer packet overflow");
             // Client entfernen
             disconnectClient(client, (byte) 1);
         }
@@ -332,7 +332,7 @@ public class ServerNetwork2 {
             connectAnswer[2] = Server.game.newClientID();
 
             ServerNetworkConnection clientConnection = new ServerNetworkConnection(origin, port);
-            newClient = new Client(clientConnection, Server.game.newClientID(), nickName.toString());
+            newClient = new Client(clientConnection, connectAnswer[2], nickName.toString());
             clientConnection.setClient(newClient);
             Bits.putShort(connectAnswer, 0, (short) clientConnection.nextOutIndex);
             connectAnswer[0] |= 0x40;
@@ -397,7 +397,7 @@ public class ServerNetwork2 {
         STC_DEL_CLIENT.broadcast(delClient);
         Player pl = delClient.getPlayer();
         Server.game.getEntityManager().removeEntity(pl.netID);
-        Server.game.clients.remove(delClient.clientID);
+        Server.game.scheduleForRemoval(delClient);
     }
 
     /**

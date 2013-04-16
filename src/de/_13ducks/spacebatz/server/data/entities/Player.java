@@ -31,6 +31,9 @@ import de._13ducks.spacebatz.util.geo.Vector;
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
  *
+ * Achtung! Schreibrechte auf einige der Variablen und Methoden dieser Klasse unterliegen
+ * möglicherweise den selben Einschränkungen wie die gesamte Klasse Entity.
+ *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Player extends ItemCarrier {
@@ -69,6 +72,37 @@ public class Player extends ItemCarrier {
      * Für AI benötigt.
      */
     private RingBuffer<PathNode> playerPath;
+    /**
+     * Leerer Observer für die Linearbewegungen.
+     */
+    private EntityLinearTargetObserver observer = new EntityLinearTargetObserver() {
+        @Override
+        public void targetReached() {
+            moveDurationDelta = lastDuration;
+        }
+
+        @Override
+        public void movementBlocked() {
+        }
+
+        @Override
+        public void movementAborted() {
+        }
+    };
+    /**
+     * Speichert die Richtung einer gestarteten Client-Bewegung, die aber auf dem Server noch nicht gestartet wurde.
+     */
+    private Vector predictionWaitDirection;
+    /**
+     * Die letzte vom Client empfangene Bewegungsdauer.
+     */
+    private short lastDuration;
+    /**
+     * Dieses Delta wird immer in die Bewegungsdauer des Clients eingerechnet.
+     * Der Wert von lastDuration wird hier eingefrohren, sollte die Entity auf dem Server wegen unterschiedlich langer
+     * Signallaufzeiten kurz anhalten.
+     */
+    private short moveDurationDelta;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -88,17 +122,25 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Ein move-Request vom Client ist eingegangen. Teil der Netz-Infrastruktur, muss schnell verarbeitet werden
+     * Ein move-Request vom Client ist eingegangen.
+     *
+     * Teil der Bewegungs- und Predictionlogik.
+     * Diese Methoden und alle dazugehörigen Submethoden und Variablen unterliegen deshalb
+     * den gleichen Einschränkungen der Schreibrechte wie die gesamte Klasse Entity
      *
      * @param w W-Button gedrückt.
      * @param a A-Button gedrückt.
      * @param s S-Button gedrückt.
      * @param d D-Button gedrückt.
+     * @param turretDir die Richtung des Turrets.
+     * @param moveDuration seit wie vielen Ticks diese Bewegung schon läuft.
      */
-    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir) {
+    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir, short moveDuration) {
         this.turretDir = turretDir;
+        lastDuration = moveDuration;
+        moveDuration -= moveDurationDelta;
+        // Bewegungsvektor:
         double x = 0, y = 0;
-
         if (!dead) { // Tote bewegen sich nicht
             if (w) {
                 y += 1;
@@ -113,26 +155,57 @@ public class Player extends ItemCarrier {
                 x += 1;
             }
         }
-        // Sonderfall stoppen
-        if (x == 0 && y == 0) {
-            if (isMoving()) {
-                //System.out.println("REC STOP at " + Server.game.getTick());
-                stopMovement();
-            }
-        } else {
-            // Bewegen wir uns zur Zeit schon (in diese Richtung)
-            if (isMoving()) {
-                double length = Math.sqrt((x * x) + (y * y));
-                x /= length;
-                y /= length;
-                if (Math.abs(getVecX() - x) > .001 || Math.abs(getVecY() - y) > .001) {
-                    //System.out.println("REC MOVE at " + Server.game.getTick());
-                    this.setVector(x, y);
+        Vector direction = new Vector(x, y).normalize();
+        // Gespeicherte, aber noch nicht gefahrene Bewegung darf nicht vergessen werden! (Das gilt sogar für tote Einheiten!)
+        if (predictionWaitDirection != null && !predictionWaitDirection.equals(direction)) {
+            // Manuell nachziehen:
+            System.out.println("INFO: SPRED: Manual resttick");
+            super.tick(Server.game.getTick());
+        }
+        // Jetzt ist die eins auf jeden Fall entweder ausgeglichen oder wir fahren länger, dann wird sie ohnehin ja erfasst.
+        predictionWaitDirection = null;
+        // Stoppen ist jetzt implizit, also nurnoch laufen berechnen
+        if (!direction.equals(Vector.ZERO)) {
+            if (!isMoving() && !dead) {
+                // In jedem Fall eine neue Bewegung, falls länger als 1 Tick
+                if (moveDuration > 1) {
+                    setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), observer);
+                } else {
+                    // Speichern, damit wir das nicht vergessen
+                    predictionWaitDirection = direction;
                 }
             } else {
-                //System.out.println("REC MOVE at " + Server.game.getTick());
-                setVector(x, y);
+                // Sonderfall stoppen, weil gestorben
+                if (dead) {
+                    stopMovement();
+                    moveDurationDelta = 0;
+                } else {
+                    // Jetzt mit Prediction
+                    // Laufen wir da schon hin?
+                    if (Math.abs(getVecX() - direction.x) < .001 && Math.abs(getVecY() - direction.y) < .001) {
+                        // Bewegung weiter erlauben:
+                        setLinearTarget(getMoveStartX() + (direction.x * getSpeed() * moveDuration), getMoveStartY() + (direction.y * getSpeed() * moveDuration), observer);
+                    } else {
+                        // Neue Bewegung noch auf 1?
+                        if (moveDuration == 1) {
+                            predictionWaitDirection = direction;
+                        } else {
+                            // Richtung hat sich geändert, eine frühzeitige Zwangsberechnung durchführen, damit die Einheit noch bis zum target kommt.
+                            super.tick(Server.game.getTick());
+                            if (isMoving()) {
+                                // Wir konnten nicht so weit fahren, wie der Client das gerne hätte.
+                                System.out.println("WARNING: SPRED: Cannot guarantee smooth prediction!");
+                                stopMovement();
+                            }
+                            moveDurationDelta = 0;
+                            // Jetzt neue Bewegung starten
+                            setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), observer);
+                        }
+                    }
+                }
             }
+        } else {
+            moveDurationDelta = 0;
         }
     }
 

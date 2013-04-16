@@ -20,7 +20,6 @@ import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
@@ -171,24 +170,12 @@ public class GodControl implements Control {
     }
 
     /**
-     * Verarbeitet den Input, der UDP-Relevant ist.
+     * Verarbeitet den Input, der mit dem frames Synchron sein soll.
      */
     @Override
     public void input() {
         byte move = 0;
         if (!terminal) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-                move |= 0x20;
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-                move |= 0x80;
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-                move |= 0x40;
-            }
-            if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-                move |= 0x10;
-            }
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
                 sendAbilityRequest((byte) 1);
             }
@@ -256,8 +243,6 @@ public class GodControl implements Control {
                 }
             }
         }
-        CTS_MOVE.sendMove(move, (float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
-        GameClient.player.predictMovement(move);
     }
 
     /**
@@ -373,14 +358,16 @@ public class GodControl implements Control {
         // Enemies zeichnen:
         enemyTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
-            if (c instanceof Enemy) {
-                Enemy enemy = (Enemy) c;
+            if (!c.isInvisible()) {
+                if (c instanceof Enemy) {
+                    Enemy enemy = (Enemy) c;
 
-                // Werte fürs Einfärben nehmen und rendern
-                EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
-                glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
-                glColor3f(1f, 1f, 1f);
+                    // Werte fürs Einfärben nehmen und rendern
+                    EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
+                    glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                    glColor3f(1f, 1f, 1f);
+                }
             }
         }
 
@@ -599,8 +586,8 @@ public class GodControl implements Control {
                 textWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, camera.getTilesY() - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
                 if (NetStats.netGraph >= 2) {
                     // Einheitenposition:
-                    textWriter.renderText("playerpos: " + GameClient.player.getX(), 0, camera.getTilesY() - 2f);
-                    textWriter.renderText(String.valueOf(GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
+                    textWriter.renderText("playerpos: " + String.format("%.3f", GameClient.player.getX()), 0, camera.getTilesY() - 2f);
+                    textWriter.renderText(String.format("%.3f", GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
                     textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) DefaultSettings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
                     textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) DefaultSettings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
@@ -1022,5 +1009,12 @@ public class GodControl implements Control {
      */
     public void setShowNickNames(int showNickNames) {
         this.showNickNames = showNickNames;
+    }
+
+    /**
+     * @return true, wenn terminal offen ist
+     */
+    public boolean isTerminal() {
+        return terminal;
     }
 }

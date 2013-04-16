@@ -188,16 +188,11 @@ public class PlayerCharacter extends Char {
                 // Richtung ändern?
                 if (!predictedVector.equals(newDir)) {
                     // Stoppen
-                    if (predictionAccurate) {
-                        System.out.println("STOP CGOTO " + (GameClient.frozenGametick - predictedstartTick) * prediction_speed * predictedVector.x + " " + (GameClient.frozenGametick - predictedstartTick) * prediction_speed * predictedVector.y);
-                        //predictedX += (GameClient.frozenGametick - predictedstartTick) * prediction_speed * predictedVector.x;
-                        //predictedY += (GameClient.frozenGametick - predictedstartTick) * prediction_speed * predictedVector.y;
-                    } else {
+                    if (!predictionAccurate) {
                         System.out.println("WARN: PREDICT: Resetting Client position due to prediction accuracy issues");
                         predictedX = super.getX();
                         predictedY = super.getY();
                     }
-                    System.out.println("SendSCTS at " + GameClient.frozenGametick);
                     lastPredictedStartTick = predictedstartTick;
                     predictedstartTick = -1;
                     predictedVector = Vector.ZERO;
@@ -208,9 +203,8 @@ public class PlayerCharacter extends Char {
 
             // Neue Bewegung starten?
             if (!newDir.equals(Vector.ZERO)) {
-                System.out.println("SendMCTS at " + GameClient.frozenGametick);
                 predictedVector = newDir;
-                predictedstartTick = GameClient.frozenGametick - 1;
+                predictedstartTick = GameClient.frozenGametick;
             }
         }
     }
@@ -222,15 +216,17 @@ public class PlayerCharacter extends Char {
     private void computePrediction(int tick) {
         if (predictMovements) {
             if (predictedstartTick != -1) {
-                System.out.println("CGOTO: " + (tick - predictedstartTick) * prediction_speed * predictedVector.x + " " + (tick - predictedstartTick) * prediction_speed * predictedVector.y + " at " + tick);
                 predictedX += (tick - predictedstartTick) * prediction_speed * predictedVector.x;
                 predictedY += (tick - predictedstartTick) * prediction_speed * predictedVector.y;
                 predictedstartTick = tick;
             } else {
                 // Wenn wir uns schon lange nicht mehr bewegt haben und auch die Serverposition sich nicht bewegt,
                 // dann diese einfach still übernehmen, damit sich Fehler nicht über die Zeit aufsummieren.
-                if (!super.isMoving() && (tick - lastPredictedStartTick) > GameClient.getNetwork2().getLerp()) {
+                if (!super.isMoving() && (tick - lastPredictedStartTick) > GameClient.getNetwork2().getLerp() * 2) {
                     // Fehler ausgleichen, Position übernehmen:
+                    if (Math.abs(predictedX - super.getX()) > .001 || Math.abs(predictedY - super.getY()) > .001) {
+                        System.out.println("Correcting to last Serverpos" + " lastticks " + lastPredictedStartTick + " now is " + tick);
+                    }
                     predictedX = super.getX();
                     predictedY = super.getY();
                 }

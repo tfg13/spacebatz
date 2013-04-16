@@ -76,6 +76,10 @@ public class Char {
      * Der Tick, ab dem der Char wieder angreifen darf
      */
     public int attackCooldownTick;
+    /**
+     * Ob dieser Char gerade unsichtbar ist.
+     */
+    private boolean invisible = false;
 
     public Char(int netID, float size, RenderObject renderObject) {
         this.netID = netID;
@@ -285,5 +289,19 @@ public class Char {
      */
     public float getSize() {
         return size;
+    }
+
+    /**
+     * @return the invisible
+     */
+    public boolean isInvisible() {
+        return invisible;
+    }
+
+    /**
+     * @param invisible the invisible to set
+     */
+    public void setInvisible(boolean invisible) {
+        this.invisible = invisible;
     }
 }

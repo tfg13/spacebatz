@@ -266,4 +266,8 @@ public class MessageIDs {
      * Client will Item im Inventar löschen, S->C
      */
     public static final byte NET_TCP_CMD_INV_ITEM_DELETE = 66;
+    /**
+     * Server setzt Unsichtbarkeits-Flag.
+     */
+    public static final byte NET_STC_SET_CHAR_INVISIBILITY = 67;
 }

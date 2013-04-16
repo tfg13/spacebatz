@@ -81,6 +81,6 @@ public final class CompileTimeParameters {
      * Angabe in Feldern pro Tick eingestelltem Lerp.
      * Bei einem Wert von 0.5 und Lerp 10 darf die Position also bis zu 5 Felder abweichen.
      */
-    public static final double CLIENT_PREDICT_MAX_DELTA_PER_LERP = 0.2;
+    public static final double CLIENT_PREDICT_MAX_DELTA_PER_LERP = 0.5;
     
 }

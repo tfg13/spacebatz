@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -49,6 +49,16 @@ public class Game {
      * Liste der verbundenen Clients
      */
     public HashMap<Byte, Client> clients;
+    /**
+     * Die ClientID, die als nächstes vergeben wird.
+     * IDs dürfen zwar prinzipiell wiedervergeben werden, allerdings sollte etwas Zeit
+     * zwischen den Verwendungen liegen, sonst lassen sich Pakete eventuell nicht eindeutig zuordnen.
+     */
+    private byte nextClientID = 0;
+    /**
+     * Clients, die am Ende diese Ticks gelöscht werden sollen.
+     */
+    private ConcurrentLinkedQueue<Client> delClients = new ConcurrentLinkedQueue<>();
     /**
      * Der EntityManager
      */
@@ -221,6 +231,10 @@ public class Game {
      * Berechnet die GameLogic für einen Tick.
      */
     public void gameTick() {
+        // Clients löschen:
+        while (!delClients.isEmpty()) {
+            clients.remove(delClients.poll().clientID);
+        }
         // Quests ticken
         questManager.tick();
         // den tick für alle Entities berechnen:
@@ -255,14 +269,27 @@ public class Game {
         return nextNetID++;
     }
 
-    public final byte newClientID() {
-        Set<Byte> ids = clients.keySet();
-        for (byte i = 0; i < DefaultSettings.SERVER_MAXPLAYERS; i++) {
-            if (!ids.contains(i)) {
-                return i;
+    /**
+     * Vergibt eine neue ClientID.
+     * Liefert -1, falls keine vergeben werden kann.
+     *
+     * @return neue ClientID oder -1
+     */
+    public synchronized final byte newClientID() {
+        if (clients.size() >= DefaultSettings.SERVER_MAXPLAYERS) {
+            return -1;
+        }
+        while (true) {
+            if (nextClientID < DefaultSettings.SERVER_MAXPLAYERS - 1) {
+                if (!clients.containsKey(nextClientID)) {
+                    return nextClientID++;
+                } else {
+                    nextClientID++;
+                }
+            } else {
+                nextClientID = 0;
             }
         }
-        return -1;
     }
 
     /**
@@ -279,5 +306,15 @@ public class Game {
      */
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    /**
+     * Löscht einen Client zügig, aber threadsicher, aus dem Spiel.
+     * Der Client ist spätestens einen Tick später weg.
+     *
+     * @param client der zu löschende Client.
+     */
+    public void scheduleForRemoval(Client client) {
+        delClients.offer(client);
     }
 }
