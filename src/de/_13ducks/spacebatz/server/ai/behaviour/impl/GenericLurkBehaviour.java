@@ -9,7 +9,8 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.Distance;
 
 /**
- * Waits until shot by a player or sighting a player.
+ * Wartet bis ein Spieler in Sichtweite ist oder auf uns schießt.
+ * Die tick()-Methode *muss* aufgerufen werden, sonst findet keine Überprüfung auf Spieler in Sichtweite statt.
  *
  * @author michael
  */

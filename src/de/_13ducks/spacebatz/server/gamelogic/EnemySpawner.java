@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.server.gamelogic;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.kamikaze.KamikazeLurkBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.lurker.LurkerLurkBehaviour;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
@@ -278,6 +279,8 @@ public class EnemySpawner {
                     case KAMIKAZE:
                         enem.setBehaviour(new KamikazeLurkBehaviour(enem));
                         break;
+                    case LURKER:
+                        enem.setBehaviour(new LurkerLurkBehaviour(enem));
                 }
                 // GGF Ability setzen:
                 switch (stats.getShootAbility()) {

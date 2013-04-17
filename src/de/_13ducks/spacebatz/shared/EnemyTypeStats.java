@@ -56,7 +56,7 @@ public class EnemyTypeStats implements java.io.Serializable {
      */
     public static enum BehaviourType {
 
-        SHOOTER, SPECTATOR, KAMIKAZE
+        SHOOTER, SPECTATOR, KAMIKAZE, LURKER
     };
 
     /**

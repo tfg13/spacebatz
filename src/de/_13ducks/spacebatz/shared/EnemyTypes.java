@@ -79,6 +79,17 @@ public class EnemyTypes implements java.io.Serializable {
         kamikaze.setSpeed(0.1f);
         kamikaze.setSightrange(5);
         kamikaze.setEnemylevel(2);
+        
+        EnemyTypeStats lurker = new EnemyTypeStats();
+        enemytypelist.add(lurker);
+        lurker.setBehaviour(EnemyTypeStats.BehaviourType.LURKER);
+        lurker.setShootAbility(EnemyTypeStats.AbilityType.FIREBULLET);
+        lurker.setHealthpoints(12);
+        lurker.setDamage(1);
+        lurker.setPicture(56);
+        lurker.setSpeed(0.1f);
+        lurker.setSightrange(5);
+        lurker.setEnemylevel(2);
 
 
 
