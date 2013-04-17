@@ -48,6 +48,16 @@ class ClientContext2 {
     }
 
     /**
+     * Löscht die Entity aus den getrackten.
+     * Wenn die Entity nicht getrackt wird, passiert nichts.
+     *
+     * @param e die Entity
+     */
+    void stopTrack(Entity e) {
+        trackedEntities.remove(e);
+    }
+
+    /**
      * Findet heraus, ob der gegebene Chunk dem Client bereits gesendet wurde.
      * Liefert für ungültige Chunk-Koordinaten immer true, damit nichts übertragen wird, das nicht existiert.
      *

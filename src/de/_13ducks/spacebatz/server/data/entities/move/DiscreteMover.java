@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.util.geo.Vector;
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class DiscreteMover implements Mover {
-    
+
     /**
      * Aktuelle Position dieses Players.
      * X-Richtung
@@ -43,7 +43,6 @@ public class DiscreteMover implements Mover {
      * Aktuelle Geschwindigkeit dieses Players.
      */
     private double speed;
-
     /**
      * Die Entity, deren Position wir steuern.
      */
@@ -101,11 +100,12 @@ public class DiscreteMover implements Mover {
     public void tick(int gametick) {
         // Do nothing - for now
     }
-    
+
     /**
      * Läuft einen Schritt in die gegebenen Richtung.
      * Läuft nur, soweit es etwaige Hindernisse erlauben.
      * Läuft mit der derzeit eingestellten Geschwindigkeit.
+     *
      * @param direction die Richtung, in die sich der Client bewegt
      */
     public void step(Vector direction) {
@@ -123,7 +123,7 @@ public class DiscreteMover implements Mover {
             entity.onWallCollision(collision);
         }
     }
-    
+
     /**
      * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können. Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen an der aktuellen
      * Bewegung vor. Liefert den Block zurück, mit dem wir als nächstes kollidieren.
@@ -258,5 +258,10 @@ public class DiscreteMover implements Mover {
     @Override
     public boolean positionUpdateRequired() {
         return (Math.abs(x - lastX) > .001 || Math.abs(y - lastY) > .001);
+    }
+
+    @Override
+    public int getType() {
+        return 2;
     }
 }

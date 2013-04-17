@@ -617,4 +617,9 @@ public class InterpolatedMover implements Mover {
         // Ausreichend präzise
         return moving;
     }
+
+    @Override
+    public int getType() {
+        return 1;
+    }
 }

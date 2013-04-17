@@ -197,7 +197,7 @@ public class ClientNetwork2 {
         cmdMap[0x80] = new STC_ACK();
         cmdMap[0x88] = new STC_MULTI();
         cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
-        cmdMap[MessageIDs.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
+        cmdMap[MessageIDs.NET_ENTITY_INTERPOLATION_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
         cmdMap[MessageIDs.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
         cmdMap[MessageIDs.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
         cmdMap[MessageIDs.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86

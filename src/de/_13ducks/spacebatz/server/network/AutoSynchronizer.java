@@ -12,6 +12,8 @@ package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.entities.Bullet;
+import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
@@ -95,7 +97,9 @@ public class AutoSynchronizer {
         // Berechnung der Einheitenbewegungen für alle Clients
         for (Client c : Server.game.clients.values()) {
             ClientContext2 context = c.getNetworkConnection().context;
-            ArrayList<Entity> updateForClient = new ArrayList<>();
+            // Interpolierte Entities, die geupdated werden müssen:
+            ArrayList<Entity> updateInterpolatedForClient = new ArrayList<>();
+            ArrayList<Entity> updateDiscreteForClient = new ArrayList<>();
             // Entities, die jetzt neu in Reichweite des Clients sind:
             LinkedList<Entity> entitiesInArea = Server.entityMap.getEntitiesInArea((int) c.getPlayer().getX() - UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() - UPDATE_AREA_Y_DIST, (int) c.getPlayer().getX() + UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() + UPDATE_AREA_Y_DIST);
             for (Entity e : entitiesInArea) {
@@ -103,7 +107,11 @@ public class AutoSynchronizer {
                     context.track(e);
                     // Einheit bekannt machen:
                     Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_CREATE, craftCreateCommand(e)), c);
-                    updateForClient.add(e);
+                    if (e.getMoveType() == 1) {
+                        updateInterpolatedForClient.add(e);
+                    } else if (e.getMoveType() == 2) {
+                        updateDiscreteForClient.add(e);
+                    }
                 }
             }
             // Updates
@@ -111,17 +119,26 @@ public class AutoSynchronizer {
             while (iter.hasNext()) {
                 Entity e = iter.next();
                 if (context.tracks(e) && !removedEntities.containsKey(e)) {
-                    updateForClient.add(e);
+                    if (e.getMoveType() == 1) {
+                        updateInterpolatedForClient.add(e);
+                    } else if (e.getMoveType() == 2) {
+                        updateDiscreteForClient.add(e);
+                    }
                 }
             }
-            if (!updateForClient.isEmpty()) {
+            if (!updateInterpolatedForClient.isEmpty()) {
                 // Senden
-                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_UPDATE, craftUpdateCommand(updateForClient)), c);
+                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_INTERPOLATION_UPDATE, craftInterpolationUpdateCommand(updateInterpolatedForClient)), c);
+            }
+            if (!updateDiscreteForClient.isEmpty()) {
+                // Senden
+                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_DISCRETE_UPDATE, craftDiscreteUpdateCommand(updateDiscreteForClient)), c);
             }
             // Removals
             for (Entity e : removedEntities.keySet()) {
                 if (context.tracks(e)) {
                     Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_REMOVE, craftRemoveCommand(e)), c);
+                    context.stopTrack(e);
                 }
             }
         }
@@ -161,7 +178,7 @@ public class AutoSynchronizer {
      * @param updateList die Liste der geupdateten Einheiten
      * @return der update-Befehl
      */
-    private byte[] craftUpdateCommand(ArrayList<Entity> updateList) {
+    private byte[] craftInterpolationUpdateCommand(ArrayList<Entity> updateList) {
         // Größe in erstes byte schreiben. Egal wenn zu viel für dieses byte - denn dann ist das Paket sowieso Fragmentiert und die Größe wird ignoriert...
         byte[] data = new byte[updateList.size() * 28 + 1];
         data[0] = (byte) updateList.size();
@@ -170,7 +187,15 @@ public class AutoSynchronizer {
             // netID:
             Bits.putInt(data, i * 28 + 1, e.netID);
             // movement
-            Movement m = e.getMovement();
+            Movement m;
+            if (e instanceof Enemy) {
+                m = ((Enemy)e).move.getMovement();
+            } else if (e instanceof Bullet) {
+                m = ((Bullet)e).move.getMovement();
+            } else {
+                System.out.println("ERROR: SSYNC: Unknown interpolated Mover!");
+                continue;
+            }
             Bits.putInt(data, i * 28 + 5, m.startTick);
             Bits.putFloat(data, i * 28 + 9, m.speed);
             Bits.putFloat(data, i * 28 + 13, m.startX);
@@ -183,6 +208,26 @@ public class AutoSynchronizer {
                 // Normal
                 Bits.putFloat(data, i * 28 + 25, m.vecY);
             }
+        }
+        return data;
+    }
+
+    /**
+     * Bastelt ein Update-Command der alle gegebenen Einheiten enthält.
+     *
+     * @param updateDiscreteForClient
+     * @return
+     */
+    private byte[] craftDiscreteUpdateCommand(ArrayList<Entity> updateList) {
+        // Größe in erstes byte schreiben. Egal wenn zu viel für dieses byte - denn dann ist das Paket sowieso Fragmentiert und die Größe wird ignoriert...
+        byte[] data = new byte[updateList.size() * 12 + 1];
+        data[0] = (byte) updateList.size();
+        for (int i = 0; i < updateList.size(); i++) {
+            Entity e = updateList.get(i);
+            // netID:
+            Bits.putInt(data, i * 12 + 1, e.netID);
+            Bits.putFloat(data, i * 12 + 5, (float) e.getX());
+            Bits.putFloat(data, i * 12 + 9, (float) e.getY());
         }
         return data;
     }

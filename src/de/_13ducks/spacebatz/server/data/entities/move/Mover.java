@@ -58,4 +58,12 @@ public interface Mover {
      * @return true, wenn Position sich geändert hat
      */
     public boolean positionUpdateRequired();
+    
+    /**
+     * Liefert die Art, wie sich diese Entity bewegt.
+     * 1 - Interpoliert
+     * 2 - Diskret
+     * @return Bewegungsmodus dieser Entity
+     */
+    public int getType();
 }

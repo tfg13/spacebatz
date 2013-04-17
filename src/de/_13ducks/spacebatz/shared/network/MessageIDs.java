@@ -65,7 +65,7 @@ public class MessageIDs {
     /**
      * Update von Bewegungsdaten.
      */
-    public static final int NET_ENTITY_UPDATE = 0x83;
+    public static final int NET_ENTITY_INTERPOLATION_UPDATE = 0x83;
     /**
      * Neues Entity einfügen.
      */
@@ -86,6 +86,10 @@ public class MessageIDs {
      * Client-Ticksynchronisierung bzw. Tickdelay-Messung.
      */
     public static final int NET_TICK_SYNC = 0x89;
+    /**
+     * Update von Bewegungsdaten.
+     */
+    public static final int NET_ENTITY_DISCRETE_UPDATE = 0x8A;
     /**
      * Normales Einheitenupdate, das Regelmäßig verschickt wird.
      */

@@ -178,14 +178,26 @@ public abstract class Entity {
     public void tick(int gametick) {
         move.tick(gametick);
     }
-    
+
     /**
      * Berechnet, ob die Einheitenposition sich seit dem letzten Tick geändert hat.
      * Wenn ja, muss das FFG die Position aktualisieren.
      * Muss aber nicht 100% präzise sein, darf bei kleinen / kurzen Bewegungen auch falsche Angaben machen.
+     *
      * @return true, wenn Position sich geändert hat
      */
     public boolean positionUpdateRequired() {
         return move.positionUpdateRequired();
+    }
+
+    /**
+     * Liefert die Art, wie sich diese Entity bewegt.
+     * 1 - Interpoliert
+     * 2 - Diskret
+     *
+     * @return Bewegungsmodus dieser Entity
+     */
+    public int getMoveType() {
+        return move.getType();
     }
 }
