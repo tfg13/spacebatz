@@ -20,13 +20,11 @@ import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
-import de._13ducks.spacebatz.shared.PathNode;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
-import de._13ducks.spacebatz.util.RingBuffer;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
@@ -72,42 +70,6 @@ public class Player extends ItemCarrier {
      * In wieviel Ticks die Turret-Drehung das nächste mal versendet wird.
      */
     private int ticksUntilNextSend = 1;
-    /**
-     * Puffer der Positionen, auf denen der Spieler war.
-     * Für AI benötigt.
-     */
-    private RingBuffer<PathNode> playerPath;
-    /**
-     * Leerer Observer für die Linearbewegungen.
-     */
-    private EntityLinearTargetObserver observer = new EntityLinearTargetObserver() {
-        @Override
-        public void targetReached() {
-            moveDurationDelta = lastDuration;
-        }
-
-        @Override
-        public void movementBlocked() {
-        }
-
-        @Override
-        public void movementAborted() {
-        }
-    };
-    /**
-     * Speichert die Richtung einer gestarteten Client-Bewegung, die aber auf dem Server noch nicht gestartet wurde.
-     */
-    private Vector predictionWaitDirection;
-    /**
-     * Die letzte vom Client empfangene Bewegungsdauer.
-     */
-    private short lastDuration;
-    /**
-     * Dieses Delta wird immer in die Bewegungsdauer des Clients eingerechnet.
-     * Der Wert von lastDuration wird hier eingefrohren, sollte die Entity auf dem Server wegen unterschiedlich langer
-     * Signallaufzeiten kurz anhalten.
-     */
-    private short moveDurationDelta;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -125,7 +87,6 @@ public class Player extends ItemCarrier {
         this.client = client;
         skillTree = new MarsroverSkilltree();
         abilities = new SpellBook();
-        playerPath = new RingBuffer<>(DefaultSettings.SERVER_AI_PLAYERPOSITION_BUFFERSIZE);
     }
 
     /**
@@ -140,12 +101,9 @@ public class Player extends ItemCarrier {
      * @param s S-Button gedrückt.
      * @param d D-Button gedrückt.
      * @param turretDir die Richtung des Turrets.
-     * @param moveDuration seit wie vielen Ticks diese Bewegung schon läuft.
      */
-    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir, short moveDuration) {
+    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir) {
         this.turretDir = turretDir;
-        lastDuration = moveDuration;
-        moveDuration -= moveDurationDelta;
         // Bewegungsvektor:
         double x = 0, y = 0;
         if (!dead) { // Tote bewegen sich nicht
@@ -163,57 +121,7 @@ public class Player extends ItemCarrier {
             }
         }
         Vector direction = new Vector(x, y).normalize();
-        // Gespeicherte, aber noch nicht gefahrene Bewegung darf nicht vergessen werden! (Das gilt sogar für tote Einheiten!)
-        if (predictionWaitDirection != null && !predictionWaitDirection.equals(direction)) {
-            // Manuell nachziehen:
-            System.out.println("INFO: SPRED: Manual resttick");
-            super.tick(Server.game.getTick());
-        }
-        // Jetzt ist die eins auf jeden Fall entweder ausgeglichen oder wir fahren länger, dann wird sie ohnehin ja erfasst.
-        predictionWaitDirection = null;
-        // Stoppen ist jetzt implizit, also nurnoch laufen berechnen
-        if (!direction.equals(Vector.ZERO)) {
-            if (!isMoving() && !dead) {
-                // In jedem Fall eine neue Bewegung, falls länger als 1 Tick
-                if (moveDuration > 1) {
-                    setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), observer);
-                } else {
-                    // Speichern, damit wir das nicht vergessen
-                    predictionWaitDirection = direction;
-                }
-            } else {
-                // Sonderfall stoppen, weil gestorben
-                if (dead) {
-                    stopMovement();
-                    moveDurationDelta = 0;
-                } else {
-                    // Jetzt mit Prediction
-                    // Laufen wir da schon hin?
-                    if (Math.abs(getVecX() - direction.x) < .001 && Math.abs(getVecY() - direction.y) < .001) {
-                        // Bewegung weiter erlauben:
-                        setLinearTarget(getMoveStartX() + (direction.x * getSpeed() * moveDuration), getMoveStartY() + (direction.y * getSpeed() * moveDuration), observer);
-                    } else {
-                        // Neue Bewegung noch auf 1?
-                        if (moveDuration == 1) {
-                            predictionWaitDirection = direction;
-                        } else {
-                            // Richtung hat sich geändert, eine frühzeitige Zwangsberechnung durchführen, damit die Einheit noch bis zum target kommt.
-                            super.tick(Server.game.getTick());
-                            if (isMoving()) {
-                                // Wir konnten nicht so weit fahren, wie der Client das gerne hätte.
-                                System.out.println("WARNING: SPRED: Cannot guarantee smooth prediction!");
-                                stopMovement();
-                            }
-                            moveDurationDelta = 0;
-                            // Jetzt neue Bewegung starten
-                            setLinearTarget(getX() + (direction.x * getSpeed() * moveDuration), getY() + (direction.y * getSpeed() * moveDuration), observer);
-                        }
-                    }
-                }
-            }
-        } else {
-            moveDurationDelta = 0;
-        }
+        move.step(direction);
     }
 
     /**
@@ -328,29 +236,5 @@ public class Player extends ItemCarrier {
             ticksUntilNextSend = DefaultSettings.TURRET_DIR_UPDATE_INTERVAL;
             STC_PLAYER_TURRET_DIR_UPDATE.broadcastTurretDir(netID, (float) turretDir);
         }
-        if (gametick % DefaultSettings.SERVER_AI_PLAYERPOSITION_UPDATERATE == 0) {
-            if (playerPath.get(0) != null) {
-                double dx = Math.abs(getX() - playerPath.get(0).x);
-                double dy = Math.abs(getY() - playerPath.get(0).y);
-                if (dx != 0 || dy != 0) {
-                    playerPath.insert(new PathNode(getX(), getY(), getVecX(), getVecY()));
-                }
-            } else {
-                playerPath.insert(new PathNode(getX(), getY(), getVecX(), getVecY()));
-            }
-
-        }
-    }
-
-    @Override
-    protected void directionChanged(double newVecX, double newVecY) {
-        playerPath.insert(new PathNode(getX(), getY(), getVecX(), getVecY()));
-    }
-
-    /**
-     * Gibt den Ringbuffer, der die Spielerpositionen speichert, zurück.
-     */
-    public RingBuffer<PathNode> getPlayerPath() {
-        return playerPath;
     }
 }

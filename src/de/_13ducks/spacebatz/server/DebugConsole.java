@@ -10,17 +10,14 @@
  */
 package de._13ducks.spacebatz.server;
 
-import de._13ducks.spacebatz.server.ai.astar.PathRequest;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Zone;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.util.geo.IntVector;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.*;
 import java.util.ArrayList;
@@ -334,54 +331,6 @@ public class DebugConsole {
                                 }
                             }
                         }, size1);
-                        break;
-
-                    case "walk":
-                        double targetX2 = Double.parseDouble(words[1]);
-                        double targetY2 = Double.parseDouble(words[2]);
-                        Player player2 = Server.game.clients.values().iterator().next().getPlayer();
-                        player2.setLinearTarget(targetX2, targetY2, new EntityLinearTargetObserver() {
-                            @Override
-                            public void targetReached() {
-                                System.out.println("Target reached!");
-                            }
-
-                            @Override
-                            public void movementBlocked() {
-                                System.out.println("Movement blocked!!");
-                            }
-
-                            @Override
-                            public void movementAborted() {
-                                System.out.println("Movement aborted!!");
-                            }
-                        });
-                        break;
-
-                    case "test":
-                        Player player3 = Server.game.clients.values().iterator().next().getPlayer();
-                        System.out.println("Playerpos:: " + player3.getX() + " / " + player3.getY());
-                        IntVector p = PathRequest.getLeftBotPosition(new Vector(player3.getX(), player3.getY()), player3.getSize());
-                        System.out.println("LB-Position: " + p.toString());
-
-                        break;
-                    case "gotonania":
-                        Player player4 = Server.game.clients.values().iterator().next().getPlayer();
-                        player4.setLinearTarget(player4.getX(), player4.getY(), new EntityLinearTargetObserver() {
-                            @Override
-                            public void targetReached() {
-                            }
-
-                            @Override
-                            public void movementBlocked() {
-                            }
-
-                            @Override
-                            public void movementAborted() {
-                            }
-                        });
-
-
                         break;
                     case "maphash":
                         System.out.println(Server.game.getLevel().getHash());

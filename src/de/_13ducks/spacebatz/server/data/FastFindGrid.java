@@ -67,7 +67,7 @@ public class FastFindGrid {
 
         while (iterator.hasNext()) {
             Entity e = iterator.next();
-            if (e.isMoving()) {
+            if (e.positionUpdateRequired()) {
                 if (0 < e.getX() && e.getX() < entityMapWidth * SECTORSIZE && 0 < e.getY() && e.getY() < entityMapHeight * SECTORSIZE) {
                     if (!getSector(e.getX(), e.getY()).contains(e)) {
                         removeEntity(e);

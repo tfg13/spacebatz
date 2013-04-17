@@ -23,7 +23,7 @@ public class KamikazeAproachDirectBehaviour extends GenericDirectPursuitBehaviou
 
     @Override
     public Behaviour reachedDesiredDistance(Player target, Enemy owner) {
-        owner.stopMovement();
+        owner.move.stopMovement();
         owner.getShootAbility().tryUseOnPosition(owner, 0, 0);
         Server.game.getEntityManager().removeEntity(owner.netID);
         return new KamikazeLurkBehaviour(owner);

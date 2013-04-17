@@ -611,4 +611,10 @@ public class InterpolatedMover implements Mover {
     protected double getMoveStartY() {
         return moveStartY;
     }
+
+    @Override
+    public boolean positionUpdateRequired() {
+        // Ausreichend präzise
+        return moving;
+    }
 }

@@ -50,4 +50,12 @@ public interface Mover {
      * @param gametick der gametick
      */
     public void tick(int gametick);
+    
+    /**
+     * Berechnet, ob die Einheitenposition sich seit dem letzten Tick geändert hat.
+     * Wenn ja, muss das FFG die Position aktualisieren.
+     * Muss aber nicht 100% präzise sein, darf bei kleinen / kurzen Bewegungen auch falsche Angaben machen.
+     * @return true, wenn Position sich geändert hat
+     */
+    public boolean positionUpdateRequired();
 }

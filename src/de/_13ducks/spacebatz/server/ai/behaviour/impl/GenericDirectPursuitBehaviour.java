@@ -28,8 +28,8 @@ public abstract class GenericDirectPursuitBehaviour extends Behaviour {
         } else if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < desiredDisntance) {
             return reachedDesiredDistance(target, owner);
         } else {
-            if (!owner.isFollowingTarget(target)) {
-                owner.setFollowTarget(target);
+            if (!owner.move.isFollowingTarget(target)) {
+                owner.move.setFollowTarget(target);
             }
             // Läuft schon, machen lassen.
             return this;

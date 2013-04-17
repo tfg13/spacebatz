@@ -22,7 +22,7 @@ public class ShooterAproachDirectBehaviour extends GenericDirectPursuitBehaviour
 
     @Override
     public Behaviour reachedDesiredDistance(Player target, Enemy owner) {
-        owner.stopMovement();
+        owner.move.stopMovement();
         return new ShooterShootBehaviour(owner, target);
     }
 }

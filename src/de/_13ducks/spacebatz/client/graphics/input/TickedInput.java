@@ -13,15 +13,6 @@ import org.lwjgl.opengl.Display;
  */
 public class TickedInput {
 
-    /**
-     * Der zuletzt gesendete Bewegungsbefehl.
-     */
-    private static byte lastMove = 1;
-    /**
-     * Wie lange läuft diese Bewegung (in diese Richtung) schon?
-     */
-    private static short ticksMoving = -1;
-
     private TickedInput() {
     }
 
@@ -44,13 +35,7 @@ public class TickedInput {
                 move |= 0x10;
             }
         }
-        if (move != lastMove) {
-            ticksMoving = 1;
-            lastMove = move;
-        } else {
-            ticksMoving++;
-        }
-        CTS_MOVE.sendMove(move, (float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)), ticksMoving);
+        CTS_MOVE.sendMove(move, (float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
         GameClient.player.predictMovement(move);
     }
 }

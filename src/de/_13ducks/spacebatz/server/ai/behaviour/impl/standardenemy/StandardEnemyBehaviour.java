@@ -74,11 +74,11 @@ public class StandardEnemyBehaviour extends Behaviour {
             // wenn er eins hat schaut er ob es noch in reichweite ist:
             if (owner.getProperties().getSightrange() * 2 < Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                 myTarget = null;
-                owner.stopMovement();
+                owner.move.stopMovement();
             } else {
                 // Wenn wir schon nahe genug dran sind anhalten:
                 if (1.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
-                    owner.stopMovement();
+                    owner.move.stopMovement();
                 } else {
                     // wenn wir noch zu weit entfernt sind hinbewegen:
                     double vectorX = myTarget.getX() - owner.getX();
@@ -90,7 +90,7 @@ public class StandardEnemyBehaviour extends Behaviour {
                     if (vectorY == 0.0) {
                         vectorY = 0.1;
                     }
-                    owner.setVector(vectorX, vectorY);
+                    owner.move.setVector(vectorX, vectorY);
                 }
 
 
