@@ -42,7 +42,7 @@ public class DiscreteMover implements Mover {
     /**
      * Aktuelle Geschwindigkeit dieses Players.
      */
-    private double speed;
+    private double speed = 0.17;
     /**
      * Die Entity, deren Position wir steuern.
      */
@@ -112,7 +112,7 @@ public class DiscreteMover implements Mover {
         lastX = x;
         lastY = y;
         // Laufen:
-        direction = direction.normalize();
+        direction = direction.normalize().multiply(speed);
         x += direction.x;
         y += direction.y;
         double predictedX = x;
