@@ -305,7 +305,7 @@ public class AutoSynchronizer {
         for (int gx = 0; gx < 8; gx++) {
             byte row = 0;
             for (int gy = 0; gy < 8; gy++) {
-                if (col[x][y]) {
+                if (col[x * 8 + gx][y * 8 + gy]) {
                     row |= 1 << gy;
                 }
             }

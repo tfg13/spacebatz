@@ -61,11 +61,6 @@ public class PlayerCharacter extends Char {
      */
     private double predictedX, predictedY;
     /**
-     * True, solange die vorhergesagte Position zuverlässig ist.
-     * Das bedeutet, dass sie nicht zu stark von der offiziellen Serverposition abweicht.
-     */
-    private boolean predictionAccurate;
-    /**
      * Der Tick, bei dem zuletzt eine Prediction stattgefunden hat.
      */
     private double lastPredictionTick;
@@ -112,7 +107,6 @@ public class PlayerCharacter extends Char {
     public int getRespawntick() {
         return respawntick;
     }
-    
 
     public void setRespawntick(int respawntick) {
         this.respawntick = respawntick;
@@ -178,9 +172,12 @@ public class PlayerCharacter extends Char {
             if (!newDir.equals(Vector.ZERO)) {
                 newDir = newDir.multiply(prediction_speed);
                 // Jetzt verschieben:
+                double oldX = predictedX;
+                double oldY = predictedY;
                 predictedX += newDir.x;
                 predictedY += newDir.y;
                 lastPredictionTick = GameClient.frozenGametick;
+                computeCollision(oldX, oldY, predictedX, predictedY);
             }
         }
     }
@@ -191,10 +188,12 @@ public class PlayerCharacter extends Char {
      */
     private void computePrediction(int tick) {
         if (predictMovements) {
-            if (GameClient.frozenGametick - lastPredictionTick > GameClient.getNetwork2().getLerp() * 2) {
+            if (GameClient.frozenGametick - lastPredictionTick > GameClient.getNetwork2().getLerp() + 5) {
                 // Positionen nachkorrigieren, damit sich keine Rundungsfehler über die Zeit aufsummieren:
                 if (predictedX != super.getX() || predictedY != super.getY()) {
-                    System.out.println("Correcting predicted: X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
+                    if (Math.abs(predictedX - super.getX()) > .001 || Math.abs(predictedY - super.getY()) > .001) {
+                        System.out.println("WARNING: CPRED: Major prediction correction was required:  X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
+                    }
                     predictedX = super.getX();
                     predictedY = super.getY();
                 }
@@ -202,9 +201,9 @@ public class PlayerCharacter extends Char {
             // Schätzung noch im Rahmen?
             Vector diff = new Vector(super.getX(), super.getY()).add(new Vector(-predictedX, -predictedY));
             if (diff.length() > CompileTimeParameters.CLIENT_PREDICT_MAX_DELTA_PER_LERP * GameClient.getNetwork2().getLerp()) {
-                predictionAccurate = false;
-            } else {
-                predictionAccurate = true;
+                predictedX = super.getX();
+                predictedY = super.getY();
+                System.out.println("WARN: CPRED: Major prediction failure: X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
             }
         }
     }
@@ -212,9 +211,9 @@ public class PlayerCharacter extends Char {
     @Override
     public double getX() {
         /*
-         * Liefert vorhergesagte Werte, falls die Prediction an ist, und diese einigermaßen im Rahmen sind.
+         * Liefert vorhergesagte Werte, falls die Prediction an ist.
          */
-        if (!predictMovements || !predictionAccurate) {
+        if (!predictMovements) {
             return super.getX();
         }
 
@@ -224,12 +223,134 @@ public class PlayerCharacter extends Char {
     @Override
     public double getY() {
         /*
-         * Liefert vorhergesagte Werte, falls die Prediction an ist, und diese einigermaßen im Rahmen sind.
+         * Liefert vorhergesagte Werte, falls die Prediction an ist.
          */
-        if (!predictMovements || !predictionAccurate) {
+        if (!predictMovements) {
             return super.getY();
         }
 
         return predictedY;
+    }
+
+    /**
+     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können. Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen an der aktuellen
+     * Bewegung vor.
+     *
+     * @param fromX Startpunkt X (muss frei sein)
+     * @param fromY Startpunkt Y (muss frei sein)
+     * @param toX Zielpunkt X
+     * @param toY Zielpunkt Y
+     */
+    private void computeCollision(double fromX, double fromY, double toX, double toY) {
+        // Der Vektor der Bewegung:
+        double deltaX = toX - fromX;
+        double deltaY = toY - fromY;
+        // Anfangs- und Ziel-X des Gebiets das gescannt wird
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - getSize() / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + getSize() / 2) + 1;
+        // Anfangs- und Ziel-Y des Gebiets das gescannt wird
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - getSize() / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + getSize() / 2) + 1;
+
+
+        // Gesucht ist der Block, mit dem wir als erstes kollidieren
+        // der Faktor für die weiteste Position auf die wir ohne Kolision vorrücken können: start + d * vector
+        double d;
+        // das kleinste gefundene d
+        double smallestD = Double.MAX_VALUE;
+        // Variablen, die wir in jedem Schleifendurchlauf brauchen:
+        double blockMidX, blockMidY, d1, d2;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int searchX = moveAreaStartX; searchX < moveAreaEndX; searchX++) {
+            for (int searchY = moveAreaStartY; searchY < moveAreaEndY; searchY++) {
+                if (GameClient.currentLevel.getCollisionMap()[searchX][searchY] == true) {
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = searchX + 0.5;
+                    blockMidY = searchY + 0.5;
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidX + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+
+                    // das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
+                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
+
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                    }
+                }
+            }
+        }
+        double sx = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
+            sx = fromX + smallestD * deltaX;
+        }
+
+        // Für die Y-Berechung die Werte zurücksetzten, für die Block-Berechung aber behalten!
+        double globalsmallestD = smallestD;
+        smallestD = Double.MAX_VALUE;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int searchX = moveAreaStartX; searchX < moveAreaEndX; searchX++) {
+            for (int searchY = moveAreaStartY; searchY < moveAreaEndY; searchY++) {
+                if (GameClient.currentLevel.getCollisionMap()[searchX][searchY] == true) {
+
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = searchX + 0.5;
+                    blockMidY = searchY + 0.5;
+                    // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidY + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    // Das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
+
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                        // Näher als die von X?
+                        if (d < globalsmallestD) {
+                            globalsmallestD = d;
+                        }
+                    }
+                }
+            }
+        }
+        double sy = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann
+            sy = fromY + smallestD * deltaY;
+        }
+
+        // Bewegung koorigieren?
+        if (!Double.isNaN(sx)) {
+            predictedX = sx;
+        }
+        if (!Double.isNaN(sy)) {
+            predictedY = sy;
+        }
     }
 }
