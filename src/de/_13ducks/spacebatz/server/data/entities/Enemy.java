@@ -73,10 +73,10 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         super(x, y, netid, (byte) 3);
         this.enemytypeID = enemytypeID;
         EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
-        getProperties().setHitpoints(estats.getHealthpoints());
-        getProperties().setSightrange(estats.getSightrange());
-        setSpeed(estats.getSpeed());
-        this.enemylevel = estats.getEnemylevel();
+        getProperties().setHitpoints(estats.healthpoints);
+        getProperties().setSightrange(estats.sightrange);
+        setSpeed(estats.speed);
+        this.enemylevel = estats.enemylevel;
     }
 
     @Override

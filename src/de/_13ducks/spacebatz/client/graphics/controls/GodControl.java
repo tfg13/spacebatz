@@ -364,7 +364,7 @@ public class GodControl implements Control {
 
                     // Werte fürs Einfärben nehmen und rendern
                     EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
-                    glColor4f(ets.getColor_red(), ets.getColor_green(), ets.getColor_blue(), ets.getColor_alpha());
+                    glColor4f(ets.color_red, ets.color_green , ets.color_blue, ets.color_alpha);
                     renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
                     glColor3f(1f, 1f, 1f);
                 }

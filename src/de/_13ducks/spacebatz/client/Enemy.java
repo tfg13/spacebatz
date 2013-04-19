@@ -26,7 +26,7 @@ public class Enemy extends Char {
     private int enemytypeid = 1;
 
     public Enemy(int netID, float size, int enemytypeid) {
-        super(netID, size, new RenderObject(new Animation(GameClient.enemytypes.getEnemytypelist().get(enemytypeid).getPicture(), 2, 2, 4, 1)));
+        super(netID, size, new RenderObject(new Animation(GameClient.enemytypes.getEnemytypelist().get(enemytypeid).picture, 2, 2, 4, 1)));
         this.enemytypeid = enemytypeid;
     }
 

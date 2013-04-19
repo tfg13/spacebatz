@@ -269,7 +269,7 @@ public class EnemySpawner {
                 Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                 EnemyTypeStats stats = Server.game.enemytypes.getEnemytypelist().get(enemytype);
                 // AI-Verhalten einrichten:
-                switch (stats.getBehaviour()) {
+                switch (stats.behaviour) {
                     case SHOOTER:
                         enem.setBehaviour(new ShooterLurkBehaviour(enem));
                         break;
@@ -283,7 +283,7 @@ public class EnemySpawner {
                         enem.setBehaviour(new LurkerLurkBehaviour(enem));
                 }
                 // GGF Ability setzen:
-                switch (stats.getShootAbility()) {
+                switch (stats.shootAbility) {
                     case FIREBULLET:
                         // @TODO: Die Werte, mit denen die Firebulletability initialisiert wird in den Enemytypestats abspeichern.
                         // dann kann jeder Gegner seine eigene FireBulletAbility haben.
