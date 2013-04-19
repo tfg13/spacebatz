@@ -10,11 +10,14 @@
  */
 package de._13ducks.spacebatz.client;
 
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.input.TickedInput;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
+import de._13ducks.spacebatz.client.sound.SilentSoundEngine;
 import de._13ducks.spacebatz.client.sound.SoundEngine;
+import de._13ducks.spacebatz.client.sound.SoundProvider;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypes;
@@ -108,7 +111,7 @@ public class GameClient {
     /**
      * Audiomodul
      */
-    public static SoundEngine soundEngine;
+    public static SoundProvider soundEngine;
 
     /**
      * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
@@ -121,7 +124,11 @@ public class GameClient {
         initMainloop = new InitialMainloop();
         initMainloop.start();
         netIDMap = new HashMap<>();
-        soundEngine = new SoundEngine();
+        if (DefaultSettings.CLIENT_SFX_DISABLE_SOUND) {
+            soundEngine = new SilentSoundEngine();
+        } else {
+            soundEngine = new SoundEngine();
+        }
         equippedItems = new EquippedItems();
         // Immer weiter versuchen, sich zu connecten
         int triesLeft = 60;

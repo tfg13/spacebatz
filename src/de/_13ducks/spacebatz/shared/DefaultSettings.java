@@ -86,7 +86,7 @@ public class DefaultSettings {
      * Sound (zum schnelleren Testen) komplett abschalten.
      * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.
      */
-    public static boolean CLIENT_SFX_DISABLED = false;
+    public static boolean CLIENT_SFX_DISABLE_SOUND = false;
     /**
      * Musik abschalten.
      * Andere Sounds werden abgespielt.

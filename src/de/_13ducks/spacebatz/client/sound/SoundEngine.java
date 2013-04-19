@@ -10,17 +10,14 @@
  */
 package de._13ducks.spacebatz.client.sound;
 
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import paulscode.sound.Library;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
-import paulscode.sound.codecs.CodecJOgg;
 import paulscode.sound.codecs.CodecJOrbis;
 import paulscode.sound.libraries.LibraryJavaSound;
 import paulscode.sound.libraries.LibraryLWJGLOpenAL;
@@ -32,7 +29,7 @@ import paulscode.sound.libraries.LibraryLWJGLOpenAL;
  *
  * @author michael
  */
-public class SoundEngine {
+public class SoundEngine implements SoundProvider{
 
     static {
         // Hack, um nachträglich java.library.path zu setzen.
@@ -102,6 +99,9 @@ public class SoundEngine {
      * @param filename
      */
     public void backgroundMusic(String filename, Boolean loop) {
+        if(DefaultSettings.CLIENT_SFX_DISABLE_MUSIC){
+            return;
+        }
         File sound = new File(filename);
         URL url = null;
         try {
