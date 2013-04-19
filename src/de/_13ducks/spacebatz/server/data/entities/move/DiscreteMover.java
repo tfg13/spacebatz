@@ -42,7 +42,7 @@ public class DiscreteMover implements Mover {
     /**
      * Aktuelle Geschwindigkeit dieses Players.
      */
-    private double speed = 0.17;
+    private double speed = CompileTimeParameters.BASE_MOVESPEED;
     /**
      * Die Entity, deren Position wir steuern.
      */

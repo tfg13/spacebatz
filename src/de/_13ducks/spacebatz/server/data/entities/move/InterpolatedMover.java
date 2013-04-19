@@ -79,7 +79,7 @@ public class InterpolatedMover implements Mover {
     /**
      * Die Geschwindigkeit der Bewegung
      */
-    private double speed = .17;
+    private double speed = CompileTimeParameters.BASE_MOVESPEED;
     /**
      * Der Gametick in dem die Bewegung gestartet wurde (Muss für den Client gespeichert werden)
      */

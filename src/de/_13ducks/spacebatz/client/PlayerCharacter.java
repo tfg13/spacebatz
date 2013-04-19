@@ -54,7 +54,7 @@ public class PlayerCharacter extends Char {
     /**
      * Von Prediction verwendete Bewegungsgeschwindigkeit.
      */
-    private double prediction_speed = 0.17;
+    private double prediction_speed = CompileTimeParameters.BASE_MOVESPEED;
     /**
      * Vom Client vorhergesagte Position.
      * Kopiert die richtige Server-Position, wenn die Einheit steht oder Probleme mit der Prediction auftreten.
