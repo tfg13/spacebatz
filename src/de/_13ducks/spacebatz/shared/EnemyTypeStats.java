@@ -42,6 +42,17 @@ public class EnemyTypeStats implements java.io.Serializable {
     public float color_green;
     public float color_blue;
     public float color_alpha;
+    public double abilityDamage;
+    public double abilityDamagespread;
+    public double abilityAttackspeed;
+    public double abilityRange;
+    public int abilityBulletpic;
+    public double abilityBulletspeed;
+    public double abilitySpread;
+    public double abilityExplosionradius;
+    public double abilityMaxoverheat;
+    public double abilityReduceoverheat;
+    public boolean abilityHitEnemies;
     /**
      * Das Verhalten dieses Gegnertyps.
      */

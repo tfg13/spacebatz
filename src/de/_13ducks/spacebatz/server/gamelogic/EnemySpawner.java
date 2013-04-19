@@ -287,11 +287,11 @@ public class EnemySpawner {
                     case FIREBULLET:
                         // @TODO: Die Werte, mit denen die Firebulletability initialisiert wird in den Enemytypestats abspeichern.
                         // dann kann jeder Gegner seine eigene FireBulletAbility haben.
-                        enem.setShootAbility(new FireBulletAbility(1, 0, 0.5, 100, 1, 0.15, 0.15, 0, 10, 1, false));
+                        enem.setShootAbility(new FireBulletAbility(stats.abilityDamage, stats.abilityDamagespread, stats.abilityAttackspeed, stats.abilityRange, stats.abilityBulletpic, stats.abilityBulletspeed, stats.abilitySpread, stats.abilityExplosionradius, stats.abilityMaxoverheat, stats.abilityReduceoverheat, stats.abilityHitEnemies));
                         enem.getShootAbility().setCooldown(100);
                         break;
                     case KAMIKAZE:
-                        enem.setShootAbility(new KamikazeAbility(5, 100));
+                        enem.setShootAbility(new KamikazeAbility(stats.abilityDamage, (int) stats.abilityRange));
                         break;
                 }
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
