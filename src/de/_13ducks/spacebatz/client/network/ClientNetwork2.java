@@ -197,12 +197,13 @@ public class ClientNetwork2 {
         cmdMap[0x80] = new STC_ACK();
         cmdMap[0x88] = new STC_MULTI();
         cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
-        cmdMap[MessageIDs.NET_ENTITY_INTERPOLATION_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
+        cmdMap[MessageIDs.NET_ENTITY_INTERPOLATION_UPDATE] = new STC_ENTITY_INTERPOLATION_UPDATE(); // 0x83
         cmdMap[MessageIDs.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
         cmdMap[MessageIDs.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
         cmdMap[MessageIDs.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
         cmdMap[MessageIDs.NET_STATS] = new STC_NET_STATS(); // 0x87
         cmdMap[MessageIDs.NET_TICK_SYNC] = new STC_TICK_SYNC(); // 0x89
+        cmdMap[MessageIDs.NET_ENTITY_DISCRETE_UPDATE] = new STC_ENTITY_DISCRETE_UPDATE(); //0x8A
         registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
         registerSTCCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());

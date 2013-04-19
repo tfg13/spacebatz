@@ -67,7 +67,7 @@ public class DiscreteMover implements Mover {
      * @param entity die master-Entity
      */
     public void setEntity(Entity entity) {
-        if (entity != null) {
+        if (this.entity != null) {
             throw new IllegalStateException("Cannot set master entity, this Mover already has one! (Master: " + entity + ")");
         }
         this.entity = entity;
@@ -121,6 +121,10 @@ public class DiscreteMover implements Mover {
         if (x != predictedX || y != predictedY) {
             // Kollision!
             entity.onWallCollision(collision);
+        }
+        if (Math.abs(x - lastX) > .001 || Math.abs(y - lastY) > .001) {
+            // Irgend eine Bewegung --> SYNC
+            Server.sync.updateMovement(entity);
         }
     }
 

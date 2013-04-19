@@ -117,7 +117,7 @@ public class InterpolatedMover implements Mover {
      * @param entity die master-Entity
      */
     public void setEntity(Entity entity) {
-        if (entity != null) {
+        if (this.entity != null) {
             throw new IllegalStateException("Cannot set master entity, this Mover already has one! (Master: " + entity + ")");
         }
         this.entity = entity;

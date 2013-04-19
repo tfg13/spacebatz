@@ -20,7 +20,7 @@ import de._13ducks.spacebatz.util.Bits;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class STC_ENTITY_UPDATE extends STCCommand {
+public class STC_ENTITY_INTERPOLATION_UPDATE extends STCCommand {
 
     @Override
     public void execute(byte[] data) {
@@ -29,7 +29,7 @@ public class STC_ENTITY_UPDATE extends STCCommand {
             int netID = Bits.getInt(data, i * 28 + 1);
             Char c = GameClient.netIDMap.get(netID);
             if (c == null) {
-                System.out.println("WARNING: CNET: MOVESYNC: Skipping unknown Char " + netID);
+                System.out.println("WARNING: CNET: MOVESYNCI: Skipping unknown Char " + netID);
                 continue;
             }
             Movement m;
