@@ -61,24 +61,14 @@ public class PlayerCharacter extends Char {
      */
     private double predictedX, predictedY;
     /**
-     * Vom Client vorhergesagte Bewegungsrichtung.
-     * 0, solange sich die Einheit nicht bewegt.
-     */
-    private Vector predictedVector = Vector.ZERO;
-    /**
-     * Vom Client vorhergesagter Tick, bei dem die aktuelle Bewegung begonnen hat.
-     * -1, solange keine Bewegung vorhergesagt wird.
-     */
-    private int predictedstartTick = -1;
-    /**
-     * Der vorhergesagte Tick, bei dem die letzte Bewegung begonnen hat.
-     */
-    private int lastPredictedStartTick = -1;
-    /**
      * True, solange die vorhergesagte Position zuverlässig ist.
      * Das bedeutet, dass sie nicht zu stark von der offiziellen Serverposition abweicht.
      */
     private boolean predictionAccurate;
+    /**
+     * Der Tick, bei dem zuletzt eine Prediction stattgefunden hat.
+     */
+    private double lastPredictionTick;
 
     public PlayerCharacter(int netID, float size) {
         super(netID, size, new RenderObject(new Animation(0, 4, 4, 1, 1)));
@@ -105,13 +95,14 @@ public class PlayerCharacter extends Char {
     @Override
     public void tick(int gameTick) {
         super.tick(gameTick);
-        if (this.netID == GameClient.logicPlayer.getPlayer().netID)
-        for (int i = 0; i <= 2; i++) {
-            Item weapon = GameClient.getEquippedItems().getEquipslots()[1][i];
+        if (this.netID == GameClient.logicPlayer.getPlayer().netID) {
+            for (int i = 0; i <= 2; i++) {
+                Item weapon = GameClient.getEquippedItems().getEquipslots()[1][i];
 
-            if (weapon != null) {
-                if (i != selectedattack || GameClient.frozenGametick >= attackCooldownTick) {
-                    weapon.increaseOverheat(-weapon.getWeaponAbility().getWeaponStats().getReduceoverheat());
+                if (weapon != null) {
+                    if (i != selectedattack || GameClient.frozenGametick >= attackCooldownTick) {
+                        weapon.increaseOverheat(-weapon.getWeaponAbility().getWeaponStats().getReduceoverheat());
+                    }
                 }
             }
         }
@@ -183,28 +174,13 @@ public class PlayerCharacter extends Char {
         if (predictMovements) {
             // Richtung erfassen:
             Vector newDir = new Vector(((buttons & 0x40) != 0 ? -1 : 0) + ((buttons & 0x10) != 0 ? 1 : 0), ((buttons & 0x80) != 0 ? 1 : 0) + ((buttons & 0x20) != 0 ? -1 : 0)).normalize();
-            // Aktuelle Bewegung vergleichen
-            if (predictedstartTick != -1) {
-                // Richtung ändern?
-                if (!predictedVector.equals(newDir)) {
-                    // Stoppen
-                    if (!predictionAccurate) {
-                        System.out.println("WARN: PREDICT: Resetting Client position due to prediction accuracy issues");
-                        predictedX = super.getX();
-                        predictedY = super.getY();
-                    }
-                    lastPredictedStartTick = predictedstartTick;
-                    predictedstartTick = -1;
-                    predictedVector = Vector.ZERO;
-                }
-                // Richtung stimmt, do nothing
-                return;
-            }
-
-            // Neue Bewegung starten?
+            // Sollen wir uns überhaupt bewegen?
             if (!newDir.equals(Vector.ZERO)) {
-                predictedVector = newDir;
-                predictedstartTick = GameClient.frozenGametick;
+                newDir = newDir.multiply(prediction_speed);
+                // Jetzt verschieben:
+                predictedX += newDir.x;
+                predictedY += newDir.y;
+                lastPredictionTick = GameClient.frozenGametick;
             }
         }
     }
@@ -215,18 +191,10 @@ public class PlayerCharacter extends Char {
      */
     private void computePrediction(int tick) {
         if (predictMovements) {
-            if (predictedstartTick != -1) {
-                predictedX += (tick - predictedstartTick) * prediction_speed * predictedVector.x;
-                predictedY += (tick - predictedstartTick) * prediction_speed * predictedVector.y;
-                predictedstartTick = tick;
-            } else {
-                // Wenn wir uns schon lange nicht mehr bewegt haben und auch die Serverposition sich nicht bewegt,
-                // dann diese einfach still übernehmen, damit sich Fehler nicht über die Zeit aufsummieren.
-                if (!super.isMoving() && (tick - lastPredictedStartTick) > GameClient.getNetwork2().getLerp() * 2) {
-                    // Fehler ausgleichen, Position übernehmen:
-                    if (Math.abs(predictedX - super.getX()) > .001 || Math.abs(predictedY - super.getY()) > .001) {
-                        System.out.println("Correcting to last Serverpos" + " lastticks " + lastPredictedStartTick + " now is " + tick);
-                    }
+            if (GameClient.frozenGametick - lastPredictionTick > GameClient.getNetwork2().getLerp() * 2) {
+                // Positionen nachkorrigieren, damit sich keine Rundungsfehler über die Zeit aufsummieren:
+                if (predictedX != super.getX() || predictedY != super.getY()) {
+                    System.out.println("Correcting predicted: X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
                     predictedX = super.getX();
                     predictedY = super.getY();
                 }
@@ -250,7 +218,7 @@ public class PlayerCharacter extends Char {
             return super.getX();
         }
 
-        return predictedX + (GameClient.frozenGametick - predictedstartTick) * prediction_speed * predictedVector.x;
+        return predictedX;
     }
 
     @Override
@@ -262,6 +230,6 @@ public class PlayerCharacter extends Char {
             return super.getY();
         }
 
-        return predictedY + (GameClient.frozenGametick - predictedstartTick) * prediction_speed * predictedVector.y;
+        return predictedY;
     }
 }
