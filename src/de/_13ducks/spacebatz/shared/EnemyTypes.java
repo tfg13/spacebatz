@@ -136,6 +136,28 @@ public class EnemyTypes implements java.io.Serializable {
         lurker.speed = (0.1f);
         lurker.sightrange = (5);
         lurker.enemylevel = (2);
+        
+        EnemyTypeStats boss = new EnemyTypeStats();
+        enemytypelist.add(boss);
+        boss.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
+        boss.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
+        boss.abilityAttackspeed = 1;
+        boss.abilityBulletpic = 2;
+        boss.abilityBulletspeed = 0.15;
+        boss.abilityDamage = 120;
+        boss.abilityDamagespread = 0;
+        boss.abilityExplosionradius = 0;
+        boss.abilityHitEnemies = false;
+        boss.abilityMaxoverheat = 10;
+        boss.abilityReduceoverheat = 1;
+        boss.abilityRange = 20;
+        boss.abilitySpread = 0.15;
+        boss.healthpoints = (200);
+        boss.damage = (1);
+        boss.picture = (32);
+        boss.speed = (0.2f);
+        boss.sightrange = (10);
+        boss.enemylevel = (5);
 
 
 
