@@ -10,19 +10,19 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.kamikaze.KamikazeLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.lurker.LurkerLurkBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
 import de._13ducks.spacebatz.server.data.Zone;
+import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
+import de._13ducks.spacebatz.server.data.abilities.KamikazeAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
-import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
-import de._13ducks.spacebatz.server.data.abilities.KamikazeAbility;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import java.util.*;
 
@@ -155,7 +155,7 @@ public class EnemySpawner {
      * @return eine Spawnposition oder null
      */
     private static double[] calcPosition(Player p) {
-        LinkedList<double[]> positions = positionsOnCircleSegment(p.getX(), p.getY(), 15, p.getDirection(), p.isMoving() ? Math.PI / 2 : Math.PI * 2);
+        LinkedList<double[]> positions = positionsOnCircleSegment(p.getX(), p.getY(), 15, 0, Math.PI / 2);
         // Nur die freien Positionen nehmen:
         removeNonFree(positions, p.getSize());
         // Noch Position übrig?

@@ -29,7 +29,7 @@ public class STC_ENTITY_UPDATE extends STCCommand {
             int netID = Bits.getInt(data, i * 28 + 1);
             Char c = GameClient.netIDMap.get(netID);
             if (c == null) {
-                System.out.println("WARNING: CNET: MOVESYNC: Skipping unknown Char " + netID);
+                System.out.println("WARNING: CNET: MOVESYNCI: Skipping unknown Char " + netID);
                 continue;
             }
             Movement m;

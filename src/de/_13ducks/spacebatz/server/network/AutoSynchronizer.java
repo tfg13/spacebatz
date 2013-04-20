@@ -95,6 +95,7 @@ public class AutoSynchronizer {
         // Berechnung der Einheitenbewegungen für alle Clients
         for (Client c : Server.game.clients.values()) {
             ClientContext2 context = c.getNetworkConnection().context;
+            // Interpolierte Entities, die geupdated werden müssen:
             ArrayList<Entity> updateForClient = new ArrayList<>();
             // Entities, die jetzt neu in Reichweite des Clients sind:
             LinkedList<Entity> entitiesInArea = Server.entityMap.getEntitiesInArea((int) c.getPlayer().getX() - UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() - UPDATE_AREA_Y_DIST, (int) c.getPlayer().getX() + UPDATE_AREA_X_DIST, (int) c.getPlayer().getY() + UPDATE_AREA_Y_DIST);
@@ -116,12 +117,13 @@ public class AutoSynchronizer {
             }
             if (!updateForClient.isEmpty()) {
                 // Senden
-                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_UPDATE, craftUpdateCommand(updateForClient)), c);
+                Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_UPDATE, craftInterpolationUpdateCommand(updateForClient)), c);
             }
             // Removals
             for (Entity e : removedEntities.keySet()) {
                 if (context.tracks(e)) {
                     Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_ENTITY_REMOVE, craftRemoveCommand(e)), c);
+                    context.stopTrack(e);
                 }
             }
         }
@@ -161,7 +163,7 @@ public class AutoSynchronizer {
      * @param updateList die Liste der geupdateten Einheiten
      * @return der update-Befehl
      */
-    private byte[] craftUpdateCommand(ArrayList<Entity> updateList) {
+    private byte[] craftInterpolationUpdateCommand(ArrayList<Entity> updateList) {
         // Größe in erstes byte schreiben. Egal wenn zu viel für dieses byte - denn dann ist das Paket sowieso Fragmentiert und die Größe wird ignoriert...
         byte[] data = new byte[updateList.size() * 28 + 1];
         data[0] = (byte) updateList.size();
@@ -260,7 +262,7 @@ public class AutoSynchronizer {
         for (int gx = 0; gx < 8; gx++) {
             byte row = 0;
             for (int gy = 0; gy < 8; gy++) {
-                if (col[x][y]) {
+                if (col[x * 8 + gx][y * 8 + gy]) {
                     row |= 1 << gy;
                 }
             }

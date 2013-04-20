@@ -22,7 +22,7 @@ public class FollowerAproachDirectBehaviour extends GenericDirectPursuitBehaviou
 
     @Override
     public Behaviour reachedDesiredDistance(Player target, Enemy owner) {
-        owner.stopMovement();
+        owner.move.stopMovement();
         return new FollowerWatchBehaviour(owner, target);
     }
 }

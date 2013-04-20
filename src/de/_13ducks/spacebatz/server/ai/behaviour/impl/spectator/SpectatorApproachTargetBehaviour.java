@@ -13,7 +13,7 @@ class SpectatorApproachTargetBehaviour extends GenericIndirectPursuitBehaviour {
 
     @Override
     public Behaviour targetInSight(Enemy owner, Player target) {
-        owner.stopMovement();
+        owner.move.stopMovement();
         return new SpectatorWatchBehaviour(owner, target);
     }
 

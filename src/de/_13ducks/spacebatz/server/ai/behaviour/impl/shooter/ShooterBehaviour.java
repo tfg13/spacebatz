@@ -50,11 +50,11 @@ public class ShooterBehaviour extends Behaviour {
             // wenn er eins hat schaut er ob es noch in reichweite ist:
             if (owner.getProperties().getSightrange() * 2 < Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                 myTarget = null;
-                owner.stopMovement();
+                owner.move.stopMovement();
             } else {
                 // Wenn wir schon nahe genug dran sind anhalten:
                 if (3.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
-                    owner.stopMovement();
+                    owner.move.stopMovement();
                     double dx = myTarget.getX() - owner.getX();
                     double dy = myTarget.getY() - owner.getY();
                     double dir = Math.atan2(dy, dx);
@@ -77,7 +77,7 @@ public class ShooterBehaviour extends Behaviour {
                     if (vectorY == 0.0) {
                         vectorY = 0.1;
                     }
-                    owner.setVector(vectorX, vectorY);
+                    owner.move.setVector(vectorX, vectorY);
                 }
 
 

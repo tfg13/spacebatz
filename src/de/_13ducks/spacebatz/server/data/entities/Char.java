@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.data.effects.Effect;
+import de._13ducks.spacebatz.server.data.entities.move.Mover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann vin Effekten beeinflusst werden.
+ * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann von Effekten beeinflusst werden.
  *
  * @author michael
  */
@@ -50,8 +51,8 @@ public abstract class Char extends Entity {
      * @param netID die netID des Chars
      * @param entityTypeID die typeID des Chars
      */
-    public Char(double x, double y, int netID, byte entityTypeID) {
-        super(x, y, netID, entityTypeID);
+    public Char(int netID, byte entityTypeID, Mover mover) {
+        super(netID, entityTypeID, mover);
         properties = new PropertyList();
 
         properties.setHitpoints(CompileTimeParameters.CHARHEALTH);

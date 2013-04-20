@@ -5,7 +5,6 @@ import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.shared.PathNode;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
@@ -87,24 +86,6 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
      * @return Das Verhalten, zu dem gewechselt werden soll
      */
     public abstract Behaviour targetLost();
-
-    /**
-     * Gibt die letzte Position, an der das Ziel gesehen wurde und die vom owner aus erreichbar ist, zurück.
-     */
-    private PathNode getLatestKnownTargetPosition() {
-
-        PathNode position = null;
-        for (int i = 0; i < target.getPlayerPath().getBufferSize(); i++) {
-            PathNode targetPosition = target.getPlayerPath().get(i);
-            if (targetPosition == null) {
-                return null;
-            }
-            if (targetPosition != null && owner.lineOfSight(owner.getX(), owner.getY(), targetPosition.x, targetPosition.y)) {
-                return targetPosition;
-            }
-        }
-        return position;
-    }
 
     @Override
     public void movementAborted() {
