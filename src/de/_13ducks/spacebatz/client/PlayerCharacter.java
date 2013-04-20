@@ -13,6 +13,7 @@ package de._13ducks.spacebatz.client;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.geo.Vector;
 
@@ -60,6 +61,10 @@ public class PlayerCharacter extends Char {
      * Kopiert die richtige Server-Position, wenn die Einheit steht oder Probleme mit der Prediction auftreten.
      */
     private double predictedX, predictedY;
+    /**
+     * Prediction-Drehungen funktionieren genau wie die normalen.
+     */
+    private double predictedDir, predictedTargetDir;
     /**
      * Der Tick, bei dem zuletzt eine Prediction stattgefunden hat.
      */
@@ -178,6 +183,7 @@ public class PlayerCharacter extends Char {
                 predictedY += newDir.y;
                 lastPredictionTick = GameClient.frozenGametick;
                 computeCollision(oldX, oldY, predictedX, predictedY);
+                predictedTargetDir = Math.atan2(newDir.y, newDir.x);
             }
         }
     }
@@ -205,14 +211,53 @@ public class PlayerCharacter extends Char {
                 predictedY = super.getY();
                 System.out.println("WARN: CPRED: Major prediction failure: X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
             }
+            // Etwas in Richtung predictedTargetDir drehen:
+            if (Math.abs(predictedTargetDir - predictedDir) <= DefaultSettings.CHAR_TURN_SPEED) {
+                predictedDir = predictedTargetDir;
+            } else {
+                // Drehlogik zweiter Versuch
+                double turnCurrent = predictedDir;
+                double turnTarget = predictedTargetDir;
+                if (turnCurrent < 0) {
+                    turnCurrent += 2 * Math.PI;
+                }
+                if (turnTarget < 0) {
+                    turnTarget += 2 * Math.PI;
+                }
+                // Plus und Minus-Abstand suchen:
+                double plusTurn = turnTarget - turnCurrent;
+                if (plusTurn < 0) {
+                    plusTurn += 2 * Math.PI;
+                }
+                double minusTurn = turnCurrent - turnTarget;
+                if (minusTurn < 0) {
+                    minusTurn += 2 * Math.PI;
+                }
+                // Jetzt in die kürzere Richtung drehen
+                if (plusTurn <= minusTurn) {
+                    turnCurrent += DefaultSettings.CHAR_TURN_SPEED;
+                } else {
+                    turnCurrent -= DefaultSettings.CHAR_TURN_SPEED;
+                }
+                // Wrap-Around
+                if (turnCurrent > 2 * Math.PI) {
+                    turnCurrent -= 2 * Math.PI;
+                } else if (turnCurrent < 0) {
+                    turnCurrent += 2 * Math.PI;
+                }
+                // Zurück schreiben
+                if (turnCurrent <= Math.PI) {
+                    predictedDir = turnCurrent;
+                } else {
+                    predictedDir = turnCurrent - 2 * Math.PI;
+                }
+            }
         }
     }
 
     @Override
     public double getX() {
-        /*
-         * Liefert vorhergesagte Werte, falls die Prediction an ist.
-         */
+        // Liefert vorhergesagte Werte, falls die Prediction an ist.
         if (!predictMovements) {
             return super.getX();
         }
@@ -222,14 +267,20 @@ public class PlayerCharacter extends Char {
 
     @Override
     public double getY() {
-        /*
-         * Liefert vorhergesagte Werte, falls die Prediction an ist.
-         */
+        // Liefert vorhergesagte Werte, falls die Prediction an ist.
         if (!predictMovements) {
             return super.getY();
         }
 
         return predictedY;
+    }
+
+    @Override
+    public double getDir() {
+        if (!predictMovements) {
+            return super.getDir();
+        }
+        return predictedDir;
     }
 
     /**
