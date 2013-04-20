@@ -41,6 +41,10 @@ public class PlayerCharacter extends Char {
      */
     private int respawntick;
     /**
+     * Ob der Spieler sich gerade bewegen kann.
+     */
+    private boolean paralyzed = false;
+    /**
      * RenderObject für das drehbare Turret.
      */
     private RenderObject turretRenderObject;
@@ -170,7 +174,7 @@ public class PlayerCharacter extends Char {
          * Für die Prediction eine neue Bewegung in die gegebene Richtung sofort starten lassen.
          * Natürlich vorher laufende Bewegungen abbrechen.
          */
-        if (predictMovements) {
+        if (predictMovements && !paralyzed) {
             // Richtung erfassen:
             Vector newDir = new Vector(((buttons & 0x40) != 0 ? -1 : 0) + ((buttons & 0x10) != 0 ? 1 : 0), ((buttons & 0x80) != 0 ? 1 : 0) + ((buttons & 0x20) != 0 ? -1 : 0)).normalize();
             // Sollen wir uns überhaupt bewegen?
@@ -193,7 +197,7 @@ public class PlayerCharacter extends Char {
      * Verschiebt die Einheit und führt eine Kollisionsberechnung durch.
      */
     private void computePrediction(int tick) {
-        if (predictMovements) {
+        if (predictMovements && !paralyzed) {
             if (GameClient.frozenGametick - lastPredictionTick > GameClient.getNetwork2().getLerp() + 5) {
                 // Positionen nachkorrigieren, damit sich keine Rundungsfehler über die Zeit aufsummieren:
                 if (predictedX != super.getX() || predictedY != super.getY()) {
@@ -258,7 +262,7 @@ public class PlayerCharacter extends Char {
     @Override
     public double getX() {
         // Liefert vorhergesagte Werte, falls die Prediction an ist.
-        if (!predictMovements) {
+        if (!predictMovements && !paralyzed) {
             return super.getX();
         }
 
@@ -268,7 +272,7 @@ public class PlayerCharacter extends Char {
     @Override
     public double getY() {
         // Liefert vorhergesagte Werte, falls die Prediction an ist.
-        if (!predictMovements) {
+        if (!predictMovements && !paralyzed) {
             return super.getY();
         }
 
@@ -277,7 +281,7 @@ public class PlayerCharacter extends Char {
 
     @Override
     public double getDir() {
-        if (!predictMovements) {
+        if (!predictMovements && !paralyzed) {
             return super.getDir();
         }
         return predictedDir;
@@ -403,5 +407,9 @@ public class PlayerCharacter extends Char {
         if (!Double.isNaN(sy)) {
             predictedY = sy;
         }
+    }
+
+    public void setParalyzed(boolean paralyzed) {
+        this.paralyzed = paralyzed;
     }
 }

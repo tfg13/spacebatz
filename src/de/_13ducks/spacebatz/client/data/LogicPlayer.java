@@ -79,6 +79,7 @@ public class LogicPlayer {
     public void setDead(boolean dead) {
         this.dead = dead;
         getPlayer().setRespawntick(GameClient.frozenGametick + CompileTimeParameters.RESPAWNTIME);
+        getPlayer().setParalyzed(dead);
     }
 
     /**
