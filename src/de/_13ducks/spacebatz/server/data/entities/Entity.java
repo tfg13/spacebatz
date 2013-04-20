@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.data.entities.move.Mover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.Bits;
 
 /**
@@ -191,13 +192,11 @@ public abstract class Entity {
     }
 
     /**
-     * Liefert die Art, wie sich diese Entity bewegt.
-     * 1 - Interpoliert
-     * 2 - Diskret
-     *
-     * @return Bewegungsmodus dieser Entity
+     * Liefert ein Movement für die Synchronisation mit dem Client.
+     * Auch Bewegungssysteme, die sich nicht gleichförmig/interpoliert bewegen (was erlaubt ist),
+     * müssen diese Bewegungen hiermit für den Client simulieren.
      */
-    public int getMoveType() {
-        return move.getType();
+    public Movement getMovement() {
+        return move.getMovement();
     }
 }

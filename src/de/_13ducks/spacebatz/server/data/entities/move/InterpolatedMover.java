@@ -340,6 +340,7 @@ public class InterpolatedMover implements Mover {
         directionChanged(vecX, vecY);
     }
 
+    @Override
     public Movement getMovement() {
         return computeMovement();
     }
@@ -616,10 +617,5 @@ public class InterpolatedMover implements Mover {
     public boolean positionUpdateRequired() {
         // Ausreichend präzise
         return moving;
-    }
-
-    @Override
-    public int getType() {
-        return 1;
     }
 }

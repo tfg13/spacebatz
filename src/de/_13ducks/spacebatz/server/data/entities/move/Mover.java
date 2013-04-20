@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.server.data.entities.move;
 
+import de._13ducks.spacebatz.shared.Movement;
+
 /**
  * Verwaltet die Position und Bewegung einer Entity. Hat also mindestens Methoden, um X und Y zu bekommen.
  *
@@ -60,10 +62,9 @@ public interface Mover {
     public boolean positionUpdateRequired();
     
     /**
-     * Liefert die Art, wie sich diese Entity bewegt.
-     * 1 - Interpoliert
-     * 2 - Diskret
-     * @return Bewegungsmodus dieser Entity
+     * Liefert ein Movement für die Synchronisation mit dem Client.
+     * Auch Bewegungssysteme, die sich nicht gleichförmig/interpoliert bewegen (was erlaubt ist),
+     * müssen diese Bewegungen hiermit für den Client simulieren.
      */
-    public int getType();
+    public Movement getMovement();
 }

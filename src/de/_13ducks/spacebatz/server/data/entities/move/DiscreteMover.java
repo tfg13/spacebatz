@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.server.data.entities.move;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
@@ -30,15 +31,9 @@ public class DiscreteMover implements Mover {
      */
     private double y;
     /**
-     * Kopie des vorherigen Wertes von lastX.
-     * Dient an manchen Stellen dem Ersatz von isMoving()
+     * Der zuletzt gemachte Schritt.
      */
-    private double lastX;
-    /**
-     * Kopie des vorherigen Wertes von lastY.
-     * Dient an manchen Stellen dem Ersatz von isMoving()
-     */
-    private double lastY;
+    private Vector lastStep = Vector.ZERO;
     /**
      * Aktuelle Geschwindigkeit dieses Players.
      */
@@ -109,8 +104,9 @@ public class DiscreteMover implements Mover {
      * @param direction die Richtung, in die sich der Client bewegt
      */
     public void step(Vector direction) {
-        lastX = x;
-        lastY = y;
+        Vector oldLastStep = lastStep;
+        double lastX = x;
+        double lastY = y;
         // Laufen:
         direction = direction.normalize().multiply(speed);
         x += direction.x;
@@ -122,8 +118,9 @@ public class DiscreteMover implements Mover {
             // Kollision!
             entity.onWallCollision(collision);
         }
-        if (Math.abs(x - lastX) > .001 || Math.abs(y - lastY) > .001) {
-            // Irgend eine Bewegung --> SYNC
+        lastStep = new Vector(x - lastX, y - lastY);
+        if (!oldLastStep.equals(lastStep)) {
+            // Änderung der Bewegung --> SYNC
             Server.sync.updateMovement(entity);
         }
     }
@@ -261,11 +258,16 @@ public class DiscreteMover implements Mover {
 
     @Override
     public boolean positionUpdateRequired() {
-        return (Math.abs(x - lastX) > .001 || Math.abs(y - lastY) > .001);
+        return (!lastStep.equals(Vector.ZERO));
     }
 
     @Override
-    public int getType() {
-        return 2;
+    public Movement getMovement() {
+        if (lastStep.equals(Vector.ZERO)) {
+            // Steht
+            return new Movement(x, y, 0, 0, -1, speed);
+        } else {
+            return new Movement(x - lastStep.x, y - lastStep.y, lastStep.normalize().x, lastStep.normalize().y, Server.game.getTick() - 1, speed);
+        }
     }
 }

@@ -20,7 +20,7 @@ import de._13ducks.spacebatz.util.Bits;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class STC_ENTITY_INTERPOLATION_UPDATE extends STCCommand {
+public class STC_ENTITY_UPDATE extends STCCommand {
 
     @Override
     public void execute(byte[] data) {
