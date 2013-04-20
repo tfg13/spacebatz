@@ -96,7 +96,7 @@ public class DefaultSettings {
      * Die Einstellung, ob die Prediction aktiviert sein soll.
      * Dringend empfohlen, sollte nur zu Debug-Zwecken abgeschaltet werden.
      */
-    public static boolean CLIENT_ENABLE_PREDICTION = false;
+    public static boolean CLIENT_ENABLE_PREDICTION = true;
     /**
      * Der Port auf dem der Server auf RCON-Anfragen lauscht, falls überhaupt erlaubt. Clients dürfen sich dahin aber nicht einfach so verbinden.
      */
