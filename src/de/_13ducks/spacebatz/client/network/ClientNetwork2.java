@@ -375,6 +375,7 @@ public class ClientNetwork2 {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd) {
+        cmd.checkCTSSize();
         if (cmd.cmdID == 0x80) {
             // Wenn es ein ACK ist in die Prioritätsqueue packen
             priorityCmdOutQueue.add(cmd);

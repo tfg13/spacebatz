@@ -211,6 +211,7 @@ public class ServerNetworkConnection {
      * @param cmd
      */
     public void queueOutgoingCommand(OutgoingCommand cmd) {
+        cmd.checkSTCSize();
         if (cmd.cmdID == 0x80 || cmd.cmdID == MessageIDs.NET_TICK_SYNC) {
             // ACKs und Ticksyncs in die Prioritätsschlange
             priorityCmdOutQueue.add(cmd);
