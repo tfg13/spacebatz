@@ -181,7 +181,7 @@ public class MessageIDs {
     /**
      * Server sagt, dass Client Item anzieht
      */
-    public static final byte NET_TCP_CMD_EQUIP_ITEM = 38;
+    public static final byte NET_TCP_CMD_EQUIP_ITEM = 68;
     /**
      * Server sagt, dass Client Item auszieht
      */

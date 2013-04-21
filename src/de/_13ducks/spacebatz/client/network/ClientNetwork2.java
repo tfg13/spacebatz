@@ -19,32 +19,6 @@ import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutBuffer;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_TOP_CHANGE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_DELETE_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_INV_ITEM_MOVE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_CLIENT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_QUEST;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SHADOW_CHANGE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_UPDATE_SKILLTREE;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
 import java.net.*;
@@ -100,11 +74,6 @@ public class ClientNetwork2 {
      * also nicht
      */
     private PriorityBlockingQueue<STCPacket> inputQueue2 = new PriorityBlockingQueue<>();
-    /**
-     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann.
-     * Enthält sowohl interne, als auch externe Kommandos.
-     */
-    static STCCommand[] cmdMap = new STCCommand[256];
     /**
      * Puffert Befehle, die gesendet werden sollen.
      */
@@ -194,42 +163,6 @@ public class ClientNetwork2 {
      * Erzeugt ein neues Netzwerkmodul.
      */
     public ClientNetwork2() {
-        cmdMap[0x80] = new STC_ACK();
-        cmdMap[0x88] = new STC_MULTI();
-        cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new STC_FRAGMENTED_MESSAGE(); // 0x81
-        cmdMap[MessageIDs.NET_ENTITY_UPDATE] = new STC_ENTITY_UPDATE(); // 0x83
-        cmdMap[MessageIDs.NET_ENTITY_CREATE] = new STC_ENTITY_CREATE(); // 0x84
-        cmdMap[MessageIDs.NET_ENTITY_REMOVE] = new STC_ENTITY_REMOVE(); // 0x85
-        cmdMap[MessageIDs.NET_TRANSFER_CHUNK] = new STC_TRANSFER_CHUNK(); // 0x86
-        cmdMap[MessageIDs.NET_STATS] = new STC_NET_STATS(); // 0x87
-        cmdMap[MessageIDs.NET_TICK_SYNC] = new STC_TICK_SYNC(); // 0x89
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, new STC_ITEM_DEQUIP());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_TOP, new STC_BROADCAST_TOP_CHANGE());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_COLLISION, new STC_CHANGE_COLLISION());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_SWITCH_WEAPON, new STC_SWITCH_WEAPON());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_SPAWN_ITEM, new STC_ITEM_DROP());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_TRANSFER_ENEMYTYPES, new STC_TRANSFER_ENEMYTYPES());
-        registerSTCCommand(MessageIDs.NET_STC_SET_CLIENT, new STC_SET_CLIENT());
-        registerSTCCommand(MessageIDs.NET_STC_SET_PLAYER, new STC_SET_PLAYER());
-        registerSTCCommand(MessageIDs.NET_STC_START_ENGINE, new STC_START_ENGINE());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
-        registerSTCCommand(MessageIDs.NET_CHANGE_LEVEL, new STC_CHANGE_LEVEL());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());
-        registerSTCCommand(MessageIDs.NET_STC_UPDATE_SKILLTREE, new STC_UPDATE_SKILLTREE());
-        registerSTCCommand(MessageIDs.NET_STC_SET_SKILL_MAPPING, new STC_SET_SKILL_MAPPING());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_MOVE, new STC_INV_ITEM_MOVE());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_CHAR_ATTACK, new STC_CHAR_ATTACK());
-        registerSTCCommand(MessageIDs.NET_NEW_QUEST, new STC_NEW_QUEST());
-        registerSTCCommand(MessageIDs.NET_QUEST_RESULT, new STC_QUEST_RESULT());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_PLAYER_TOGGLE_ALIVE, new STC_PLAYER_TOGGLE_ALIVE());
-        registerSTCCommand(MessageIDs.NET_SHADOW_CHANGE, new STC_SHADOW_CHANGE());
-        registerSTCCommand(MessageIDs.NET_UPDATE_TURRET_DIR, new STC_PLAYER_TURRET_DIR_UPDATE());
-        registerSTCCommand(MessageIDs.NET_STC_NEW_CLIENT, new STC_NEW_CLIENT());
-        registerSTCCommand(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
-        registerSTCCommand(MessageIDs.NET_TCP_CMD_INV_ITEM_DELETE, new STC_DELETE_ITEM());
-        registerSTCCommand(MessageIDs.NET_STC_SET_CHAR_INVISIBILITY, new STC_SET_CHAR_INVISIBILITY());
     }
 
     /**
@@ -327,16 +260,6 @@ public class ClientNetwork2 {
             socket.close();
             return false;
         }
-    }
-
-    /**
-     * Gibt das Kommando für diese ID zurück
-     *
-     * @param id
-     * @return
-     */
-    STCCommand getCmdForId(int id) {
-        return cmdMap[id];
     }
 
     private void initializeReceiver() {
@@ -510,30 +433,6 @@ public class ClientNetwork2 {
             nextOutIndex = 0;
         }
         return ret;
-    }
-
-    /**
-     * Registriert einen neuen Befehl beim Netzwerksystem. Zukünfig werden
-     * empfangene Kommandos, die die angegebene ID haben von dem gegebenen
-     * Kommando bearbeitet. Die gewählte ID muss im erlaubten Bereich für
-     * externe Befehle liegen (siehe Netzwerk-Dokumentation)
-     *
-     * @param cmdID die BefehlsID
-     * @param cmd der Befehl selber
-     */
-    public final void registerSTCCommand(byte cmdID, STCCommand cmd) {
-        if (cmd == null) {
-            throw new IllegalArgumentException("STCCommand must not be null!");
-        }
-        // cmdID: Range prüfen:
-        if (cmdID <= 0 || cmdID > 127) {
-            throw new IllegalArgumentException("Illegal cmdID!");
-        }
-        // Override?
-        if (cmdMap[cmdID] != null) {
-            System.out.println("INFO: CNET: Overriding cmd " + cmdID);
-        }
-        cmdMap[cmdID] = cmd;
     }
 
     /**

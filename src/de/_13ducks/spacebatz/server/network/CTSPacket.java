@@ -11,6 +11,7 @@
 package de._13ducks.spacebatz.server.network;
 
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.shared.network.MessageRegister;
 import de._13ducks.spacebatz.shared.network.NetCommand;
 import de._13ducks.spacebatz.shared.network.NetPacket;
 import de._13ducks.spacebatz.util.Bits;
@@ -53,7 +54,7 @@ class CTSPacket extends NetPacket implements Comparable<CTSPacket> {
     
     @Override
     protected NetCommand getCommand(int id) {
-	return ServerNetwork2.cmdMap[id];
+	return MessageRegister.getCTS(id);
     }
     
     @Override

@@ -19,16 +19,6 @@ import de._13ducks.spacebatz.shared.network.MessageFragmenter;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 import de._13ducks.spacebatz.shared.network.Utilities;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DELETE_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_INV_ITEM_MOVE;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
 import de._13ducks.spacebatz.util.Bits;
 import java.io.IOException;
@@ -58,10 +48,6 @@ public class ServerNetwork2 {
      */
     private Thread thread;
     /**
-     * Enthält alle bekannten Netzkommandos, die der Server ausführen kann. Enthält sowohl interne, als auch externe Kommandos.
-     */
-    static CTSCommand[] cmdMap = new CTSCommand[256];
-    /**
      * Liste mit Clients, die verbunden sind darauf warten, von der GameLogic initialisiert zu werden.
      */
     private ConcurrentLinkedQueue<Client> pendingClients = new ConcurrentLinkedQueue<>();
@@ -70,22 +56,6 @@ public class ServerNetwork2 {
      * Erstellt ein neues Server-Netzwerksystem
      */
     public ServerNetwork2() {
-        cmdMap[0x80] = new CTS_ACK();
-        cmdMap[MessageIDs.NET_FRAGMENTED_MESSAGE] = new CTS_FRAGMENTED_MESSAGE();
-        cmdMap[MessageIDs.NET_CTS_DEBUG] = new CTS_DEBUG();
-        cmdMap[MessageIDs.NET_TICK_SYNC] = new CTS_TICK_SYNC();
-        registerCTSCommand(MessageIDs.NET_CTS_MOVE, new CTS_MOVE());
-        registerCTSCommand(MessageIDs.NET_CTS_SHOOT, new CTS_SHOOT());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_EQUIP, new CTS_EQUIP_ITEM());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, new CTS_REQUEST_ITEM_DEQUIP());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
-        registerCTSCommand(MessageIDs.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
-        registerCTSCommand(MessageIDs.NET_CTS_MAP_ABILITY, new CTS_REQUEST_MAP_ABILITY());
-        registerCTSCommand(MessageIDs.NET_CTS_INVEST_SKILLPOINT, new CTS_INVEST_SKILLPOINT());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_MOVE, new CTS_REQUEST_INV_ITEM_MOVE());
-        registerCTSCommand(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_DELETE, new CTS_DELETE_ITEM());
-
         // RCON
         if (DefaultSettings.SERVER_ENABLE_RCON) {
             Thread rconThread = new Thread(new Runnable() {
@@ -258,28 +228,6 @@ public class ServerNetwork2 {
     }
 
     /**
-     * Registriert einen neuen Befehl beim Netzwerksystem. Zukünfig werden empfangene Kommandos, die die angegebene ID haben von dem gegebenen Kommando bearbeitet. Die gewählte ID muss im erlaubten
-     * Bereich für externe Befehle liegen (siehe Netzwerk-Dokumentation)
-     *
-     * @param cmdID die BefehlsID
-     * @param cmd der Befehl selber
-     */
-    public final void registerCTSCommand(byte cmdID, CTSCommand cmd) {
-        if (cmd == null) {
-            throw new IllegalArgumentException("CTSCommand must not be null!");
-        }
-        // cmdID: Range prüfen:
-        if (cmdID <= 0 || cmdID > 127) {
-            throw new IllegalArgumentException("Illegal cmdID!");
-        }
-        // Override?
-        if (cmdMap[cmdID] != null) {
-            System.out.println("INFO: NET: Overriding cmd " + cmdID);
-        }
-        cmdMap[cmdID] = cmd;
-    }
-
-    /**
      * Registriert dieses Paket. Das bedeutet, dass der Client dieses Paket erhalten soll. Das Netzwerksystem wird dieses Paket so lange zwischenspeichern und ggf. neu senden, bis der Client den
      * Empfang bestätigt hat.
      *
@@ -380,10 +328,6 @@ public class ServerNetwork2 {
         }
 
 
-    }
-
-    CTSCommand getCmdForId(int messageID) {
-        return cmdMap[messageID];
     }
 
     /**

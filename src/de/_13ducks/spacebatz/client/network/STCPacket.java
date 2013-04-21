@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.client.network;
 
+import de._13ducks.spacebatz.shared.network.MessageRegister;
 import de._13ducks.spacebatz.shared.network.NetCommand;
 import de._13ducks.spacebatz.shared.network.NetPacket;
 import de._13ducks.spacebatz.util.Bits;
@@ -51,7 +52,7 @@ public class STCPacket extends NetPacket implements Comparable<STCPacket> {
 
     @Override
     protected NetCommand getCommand(int id) {
-        return ClientNetwork2.cmdMap[id];
+        return MessageRegister.getSTC(id);
     }
 
     @Override
