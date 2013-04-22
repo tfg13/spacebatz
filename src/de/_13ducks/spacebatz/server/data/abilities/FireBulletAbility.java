@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
+
 import java.util.Random;
 
 /**
@@ -68,8 +69,11 @@ public class FireBulletAbility extends WeaponAbility {
         Random random = new Random();
         angle += random.nextGaussian() * spread;
         int lifetime = (int) (range / bulletspeed);
+        
+        double x = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
+        double y = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
 
-        Bullet bullet = new Bullet(lifetime, user.getX(), user.getY(), angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+        Bullet bullet = new Bullet(lifetime, x, y, angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
         bullet.hitEnemies = getWeaponStats().getHitEnemies();
 
 

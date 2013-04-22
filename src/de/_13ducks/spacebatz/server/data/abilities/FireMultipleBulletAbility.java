@@ -69,7 +69,10 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
             double newangle = angle + (i - (amount + 1) / 2.0) * spread;
 
-            Bullet bullet = new Bullet(lifetime, user.getX(), user.getY(), newangle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+            double x = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
+            double y = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
+            
+            Bullet bullet = new Bullet(lifetime, x, y, newangle, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
             if (explosionradius > 0) {
                 bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));

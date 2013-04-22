@@ -26,6 +26,10 @@ public class WeaponStats implements Serializable {
      */
     private double attackspeed;
     /**
+     * In welcher Distanz zum Spieler beim Schiessen z.B. das Bullet gespawnt wird
+     */
+    private double attackOffset;
+    /**
      * Die Reichweite, die die Waffe hat.
      */
     private double range;
@@ -67,6 +71,7 @@ public class WeaponStats implements Serializable {
         damagespread += other.getDamagespread();
         damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
         attackspeed += other.getAttackspeed();
+        attackOffset += other.attackOffset;
         range += other.getRange();
         bulletpic += other.getBulletpic();
         bulletspeed += other.getBulletspeed();
@@ -261,4 +266,12 @@ public class WeaponStats implements Serializable {
     public void setHitEnemies(boolean hitEnemies) {
         this.hitEnemies = hitEnemies;
     }
+
+	public double getAttackOffset() {
+		return attackOffset;
+	}
+
+	public void setAttackOffset(double attackOffset) {
+		this.attackOffset = attackOffset;
+	}
 }
