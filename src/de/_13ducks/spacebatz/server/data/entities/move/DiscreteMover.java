@@ -97,18 +97,25 @@ public class DiscreteMover implements Mover {
     }
 
     /**
-     * Läuft einen Schritt in die gegebenen Richtung.
+     * Läuft einen Schritt in Richtung des gegebenen Ziels.
      * Läuft nur, soweit es etwaige Hindernisse erlauben.
      * Läuft mit der derzeit eingestellten Geschwindigkeit.
+     * Läuft maximal bis zum gegebenen Ziel.
+     * Muss regelmäßig aufgerufen werden, auch wenn man sich nicht bewegen will!
      *
-     * @param direction die Richtung, in die sich der Client bewegt
+     * @param tX Ziel in X-Richtung
+     * @param tY Ziel in Y-Richtung
      */
-    public void step(Vector direction) {
+    public void step(double tX, double tY) {
+        Vector direction = new Vector(tX - x, tY - y);
+        if (direction.length() > speed) {
+            // Der Client will zu schnell laufen, Pech für seine Prediction aber das geht nicht
+            direction = direction.normalize().multiply(speed);
+        }
         Vector oldLastStep = lastStep;
         double lastX = x;
         double lastY = y;
         // Laufen:
-        direction = direction.normalize().multiply(speed);
         x += direction.x;
         y += direction.y;
         double predictedX = x;

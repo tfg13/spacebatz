@@ -284,19 +284,6 @@ public class ClientTerminal {
                             }
                             outln("usage: nicknames off|hover|on");
                             break;
-                        case "prediction":
-                            if (words.length == 2) {
-                                switch (words[1]) {
-                                    case "off":
-                                        GameClient.player.setPrediction(false);
-                                        break OUTER;
-                                    case "on":
-                                        GameClient.player.setPrediction(true);
-                                        break OUTER;
-                                }
-                            }
-                            outln("usage: prediction off|on");
-                            break;
                         case "about":
                             outln("spacebatz aurora");
                             outln("13ducks PROPRIETARY/CONFIDENTIAL");
@@ -317,7 +304,6 @@ public class ClientTerminal {
                             outln("maxfancy");
                             outln("net_graph");
                             outln("nicknames");
-                            outln("prediction");
                             outln("rcon");
                             outln("sendsevens");
                             outln("shadow");

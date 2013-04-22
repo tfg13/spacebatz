@@ -14,18 +14,19 @@ import de._13ducks.spacebatz.util.Bits;
 public class CTS_MOVE extends FixedSizeCTSCommand {
     
     public CTS_MOVE() {
-        super(5);
+        super(12);
     }
 
     @Override
     public void execute(Client client, byte[] data) {
-        client.getPlayer().clientMove((data[0] & 0x80) != 0, (data[0] & 0x40) != 0, (data[0] & 0x20) != 0, (data[0] & 0x10) != 0, Bits.getFloat(data, 1));
+        client.getPlayer().clientMove(Bits.getFloat(data, 0), Bits.getFloat(data, 4), Bits.getFloat(data, 8));
     }
     
-    public static void sendMove(byte dir, float turretDir) {
-        byte[] data = new byte[5];
-        data[0] = dir;
-        Bits.putFloat(data, 1, turretDir);
+    public static void sendMove(float turretDir, float targetX, float targetY) {
+        byte[] data = new byte[12];
+        Bits.putFloat(data, 0, turretDir);
+        Bits.putFloat(data, 4, targetX);
+        Bits.putFloat(data, 8, targetY);
         GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_MOVE, data));
     }
 

@@ -25,7 +25,6 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
-import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
@@ -92,36 +91,17 @@ public class Player extends ItemCarrier {
     /**
      * Ein move-Request vom Client ist eingegangen.
      *
-     * Teil der Bewegungs- und Predictionlogik.
-     * Diese Methoden und alle dazugehörigen Submethoden und Variablen unterliegen deshalb
-     * den gleichen Einschränkungen der Schreibrechte wie die gesamte Klasse Entity
-     *
-     * @param w W-Button gedrückt.
-     * @param a A-Button gedrückt.
-     * @param s S-Button gedrückt.
-     * @param d D-Button gedrückt.
      * @param turretDir die Richtung des Turrets.
+     * @param toX wo der Client sich laut seiner Prediction hinbewegt hat
+     * @param toY wo der Client sich laut seiner Prediction hinbewegt hat
      */
-    public void clientMove(boolean w, boolean a, boolean s, boolean d, float turretDir) {
+    public void clientMove(float turretDir, float toX, float toY) {
         this.turretDir = turretDir;
-        // Bewegungsvektor:
-        double x = 0, y = 0;
-        if (!dead) { // Tote bewegen sich nicht
-            if (w) {
-                y += 1;
-            }
-            if (a) {
-                x += -1;
-            }
-            if (s) {
-                y += -1;
-            }
-            if (d) {
-                x += 1;
-            }
+        if (dead) { // Tote bewegen sich nicht
+            move.step(move.getX(), move.getY());
+        } else {
+            move.step(toX, toY);
         }
-        Vector direction = new Vector(x, y).normalize();
-        move.step(direction);
     }
 
     /**

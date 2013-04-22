@@ -174,7 +174,6 @@ public class GodControl implements Control {
      */
     @Override
     public void input() {
-        byte move = 0;
         if (!terminal) {
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
                 sendAbilityRequest((byte) 1);
