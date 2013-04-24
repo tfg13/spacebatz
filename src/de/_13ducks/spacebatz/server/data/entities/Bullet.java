@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.data.Teams;
+import de._13ducks.spacebatz.server.data.Teams;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.entities.move.InterpolatedMover;
@@ -45,10 +47,6 @@ public class Bullet extends Entity {
      * Die Effekte, die dieses Geschoss hat.
      */
     private ArrayList<Effect> effects;
-    /**
-     * Gibt an, ob das Bullet Gegner trifft.
-     */
-    public boolean hitEnemies = true;
 
     /**
      * Erzeugt ein neues Bullet
@@ -140,11 +138,12 @@ public class Bullet extends Entity {
 
     @Override
     public void onCollision(Entity other) {
-        if (other instanceof Enemy && !hitEnemies) {
-            return;
-        }
         super.onCollision(other);
-        hitChar(other);
+        if (other instanceof Char) {
+            if (Teams.canHit(((Char) owner).team, ((Char) other).team)) {
+                hitChar(other);
+            }
+        }
     }
 
     @Override

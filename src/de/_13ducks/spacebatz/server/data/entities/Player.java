@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
@@ -78,8 +79,8 @@ public class Player extends ItemCarrier {
      * @param id netID, nicht mehr änderbar.
      * @param client der Client, dem dieser Player gehören soll.
      */
-    public Player(double x, double y, int id, Client client) {
-        super(id, (byte) 2, new DiscreteMover(x, y));
+    public Player(double x, double y, int id, Client client, Team team) {
+        super(id, (byte) 2, new DiscreteMover(x, y), team);
         this.move = (DiscreteMover) super.move;
         move.setEntity(this);
         client.setPlayer(this);

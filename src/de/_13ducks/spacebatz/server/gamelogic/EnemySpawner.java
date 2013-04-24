@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
+import de._13ducks.spacebatz.server.data.Teams;
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.kamikaze.KamikazeLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.lurker.LurkerLurkBehaviour;
@@ -266,7 +268,7 @@ public class EnemySpawner {
             if (pos != null) {
                 // Einen zufälligen Gegner aus der EnemytypeList wählen:
                 int enemytype = random.nextInt(Server.game.enemytypes.getEnemytypelist().size());
-                Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
+                Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype, Team.MOBS);
                 EnemyTypeStats stats = Server.game.enemytypes.getEnemytypelist().get(enemytype);
                 // AI-Verhalten einrichten:
                 switch (stats.behaviour) {

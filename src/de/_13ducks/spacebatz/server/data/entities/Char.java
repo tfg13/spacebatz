@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.effects.Effect;
 import de._13ducks.spacebatz.server.data.entities.move.Mover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
@@ -42,6 +43,10 @@ public abstract class Char extends Entity {
      * Ist dieser Char gerade unsichtbar?
      */
     private boolean invisible;
+    /**
+     * Das Team dieses Chars
+     */
+    public Team team;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -51,8 +56,9 @@ public abstract class Char extends Entity {
      * @param netID die netID des Chars
      * @param entityTypeID die typeID des Chars
      */
-    public Char(int netID, byte entityTypeID, Mover mover) {
+    public Char(int netID, byte entityTypeID, Mover mover, Team team) {
         super(netID, entityTypeID, mover);
+        this.team = team;
         properties = new PropertyList();
 
         properties.setHitpoints(CompileTimeParameters.CHARHEALTH);

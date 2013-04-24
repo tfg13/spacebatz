@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.server;
 
+import de._13ducks.spacebatz.server.data.Teams;
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.data.Client;
@@ -301,7 +303,7 @@ public class DebugConsole {
                         break;
                     case "spawnenemy":
                         for (Client c : Server.game.clients.values()) {
-                            Enemy e1 = new Enemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1);
+                            Enemy e1 = new Enemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1, Team.MOBS);
                             e1.setBehaviour(new StandardEnemyBehaviour(e1));
                             Server.game.getEntityManager().addEntity(e1.netID, e1);
                         }
@@ -337,7 +339,7 @@ public class DebugConsole {
                         break;
                     case "netstats":
                         // Keine Argumente = einmal printen.
-                        for (Client c: Server.game.clients.values()) {
+                        for (Client c : Server.game.clients.values()) {
                             c.getNetworkConnection().getStats().printAll();
                         }
                         break;

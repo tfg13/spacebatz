@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.move.Mover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
@@ -45,8 +46,8 @@ public class ItemCarrier extends Char {
      * @param netId die netId des Carriers
      * @param typeId die typeId des Carriers
      */
-    public ItemCarrier(int netId, byte typeId, Mover mover) {
-        super(netId, typeId, mover);
+    public ItemCarrier(int netId, byte typeId, Mover mover, Team team) {
+        super(netId, typeId, mover, team);
         Item[] wslot = new Item[3];
         Item[] aslot = new Item[1];
 

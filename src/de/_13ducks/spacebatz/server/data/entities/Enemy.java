@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
@@ -76,8 +77,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * @param netid netID, nicht mehr änderbar.
      * @param typeid typeID gibt Gegnertyp an
      */
-    public Enemy(double x, double y, int netid, int enemytypeID) {
-        super(netid, (byte) 3, new InterpolatedMover(x, y));
+    public Enemy(double x, double y, int netid, int enemytypeID, Team team) {
+        super(netid, (byte) 3, new InterpolatedMover(x, y), team);
         this.move = (InterpolatedMover) super.move;
         move.setEntity(this);
         this.enemytypeID = enemytypeID;

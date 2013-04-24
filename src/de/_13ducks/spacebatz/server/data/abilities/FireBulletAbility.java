@@ -43,7 +43,6 @@ public class FireBulletAbility extends WeaponAbility {
         getWeaponStats().setExplosionRadius(explosionradius);
         getWeaponStats().setMaxoverheat(maxoverheat);
         getWeaponStats().setReduceoverheat(reduceoverheat);
-        getWeaponStats().setHitEnemies(hitEnemies);
     }
 
     @Override
@@ -69,12 +68,11 @@ public class FireBulletAbility extends WeaponAbility {
         Random random = new Random();
         angle += random.nextGaussian() * spread;
         int lifetime = (int) (range / bulletspeed);
-        
+
         double x = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
         double y = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
 
         Bullet bullet = new Bullet(lifetime, x, y, angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
-        bullet.hitEnemies = getWeaponStats().getHitEnemies();
 
 
         if (explosionradius > 0) {

@@ -10,6 +10,8 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
+import de._13ducks.spacebatz.server.data.Teams;
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.data.Client;
@@ -195,7 +197,7 @@ public class Game {
         if (newClient.clientID != -1) {
             STC_CHANGE_LEVEL.sendLevel(newClient);
             STC_TRANSFER_ENEMYTYPES.sendEnemyTypes(newClient);
-            Player player = new Player(level.respawnX, level.respawnY, newNetID(), newClient);
+            Player player = new Player(level.respawnX, level.respawnY, newNetID(), newClient, Team.PVPPLAYERS);
             STC_SET_PLAYER.sendSetPlayer(newClient, player);
             getEntityManager().addEntity(player.netID, player);
             // Neuen Player allen anderen bekannt machen:
