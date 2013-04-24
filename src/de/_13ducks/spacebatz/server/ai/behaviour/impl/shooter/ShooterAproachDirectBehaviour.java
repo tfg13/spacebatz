@@ -12,7 +12,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 public class ShooterAproachDirectBehaviour extends GenericDirectPursuitBehaviour {
 
     public ShooterAproachDirectBehaviour(Enemy owner, Player target) {
-        super(owner, target, 5);
+        super(owner, target, 3);
     }
 
     @Override
