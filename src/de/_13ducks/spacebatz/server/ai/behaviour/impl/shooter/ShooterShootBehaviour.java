@@ -24,4 +24,10 @@ class ShooterShootBehaviour extends Behaviour {
             return new ShooterApproachIndirectBehaviour(owner, target);
         }
     }
+    
+     @Override
+    public Behaviour onTargetDeath() {
+        return new ShooterLurkBehaviour(owner);
+    }
+    
 }

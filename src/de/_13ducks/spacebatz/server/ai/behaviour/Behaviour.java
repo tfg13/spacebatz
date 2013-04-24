@@ -76,4 +76,13 @@ public class Behaviour {
     public Behaviour onCollision(Entity other) {
         return this;
     }
+
+    /**
+     * Wird aufgerufen wenn das verfolgte Ziel stirbt.
+     *
+     * @return
+     */
+    public Behaviour onTargetDeath() {
+        return this;
+    }
 }

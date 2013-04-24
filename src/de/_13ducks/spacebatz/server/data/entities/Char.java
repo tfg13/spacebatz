@@ -47,6 +47,10 @@ public abstract class Char extends Entity {
      * Das Team dieses Chars
      */
     public Team team;
+    /**
+     * Liste der Chars, die diesen Char verfolgen.
+     */
+    public ArrayList<Char> hunters;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -60,7 +64,7 @@ public abstract class Char extends Entity {
         super(netID, entityTypeID, mover);
         this.team = team;
         properties = new PropertyList();
-
+        hunters = new ArrayList<>();
         properties.setHitpoints(CompileTimeParameters.CHARHEALTH);
         properties.setSightrange(10.0);
         effects = new ArrayList<>();
@@ -144,6 +148,17 @@ public abstract class Char extends Entity {
         if (this.invisible != invisible) {
             this.invisible = invisible;
             STC_SET_CHAR_INVISIBILITY.broadcast(this);
+        }
+    }
+
+    /**
+     * Benachrichtigt alle Gegner die diesen Char verfolgen vom Tod.
+     */
+    public void onDeath() {
+        for (Char hunter : hunters) {
+            if (hunter instanceof Enemy) {
+                ((Enemy) hunter).targetDied();
+            }
         }
     }
 }

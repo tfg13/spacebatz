@@ -86,4 +86,9 @@ public class ShooterBehaviour extends Behaviour {
         }
         return this;
     }
+    
+     @Override
+    public Behaviour onTargetDeath() {
+        return new ShooterLurkBehaviour(owner);
+    }
 }

@@ -18,6 +18,7 @@ public class ShooterLurkBehaviour extends GenericLurkBehaviour {
 
     @Override
     public Behaviour targetSpotted(Player target) {
+        target.hunters.add(owner);
         return new ShooterApproachIndirectBehaviour(owner, target);
     }
 }

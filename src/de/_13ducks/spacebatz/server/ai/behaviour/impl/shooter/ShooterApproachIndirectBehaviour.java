@@ -21,4 +21,9 @@ class ShooterApproachIndirectBehaviour extends GenericIndirectPursuitBehaviour {
     public Behaviour targetLost() {
        return new ShooterLurkBehaviour(owner);
     }
+    
+     @Override
+    public Behaviour onTargetDeath() {
+        return new ShooterLurkBehaviour(owner);
+    }
 }

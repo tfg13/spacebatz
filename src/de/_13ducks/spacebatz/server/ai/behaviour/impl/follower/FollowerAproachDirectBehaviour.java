@@ -25,4 +25,9 @@ public class FollowerAproachDirectBehaviour extends GenericDirectPursuitBehaviou
         owner.move.stopMovement();
         return new FollowerWatchBehaviour(owner, target);
     }
+    
+    @Override
+    public Behaviour onTargetDeath() {
+        return new FollowerLurkBehaviour(owner);
+    }
 }

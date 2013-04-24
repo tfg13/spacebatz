@@ -21,4 +21,9 @@ class SpectatorApproachTargetBehaviour extends GenericIndirectPursuitBehaviour {
     public Behaviour targetLost() {
         return new SpectatorLurkBehaviour(owner);
     }
+    
+     @Override
+    public Behaviour onTargetDeath() {
+        return new SpectatorLurkBehaviour(owner);
+    }
 }

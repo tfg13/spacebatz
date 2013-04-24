@@ -20,4 +20,9 @@ class KamikazeApproachTargetBehaviour extends GenericIndirectPursuitBehaviour {
     public Behaviour targetLost() {
         return new KamikazeLurkBehaviour(owner);
     }
+
+    @Override
+    public Behaviour onTargetDeath() {
+        return new KamikazeLurkBehaviour(owner);
+    }
 }

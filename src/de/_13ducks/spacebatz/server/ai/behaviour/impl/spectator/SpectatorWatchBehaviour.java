@@ -21,4 +21,9 @@ class SpectatorWatchBehaviour extends Behaviour {
             return new SpectatorApproachTargetBehaviour(owner, target);
         }
     }
+    
+     @Override
+    public Behaviour onTargetDeath() {
+        return new SpectatorLurkBehaviour(owner);
+    }
 }

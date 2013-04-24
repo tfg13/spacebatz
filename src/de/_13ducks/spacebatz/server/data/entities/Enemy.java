@@ -382,4 +382,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void setLastSightContact(int lastSightContact) {
         this.lastSightContact = lastSightContact;
     }
+    
+    public void targetDied(){
+        this.behaviour = behaviour.onTargetDeath();
+    }
 }

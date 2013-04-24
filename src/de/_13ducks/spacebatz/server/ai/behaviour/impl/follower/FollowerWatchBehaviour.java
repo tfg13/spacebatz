@@ -23,4 +23,9 @@ class FollowerWatchBehaviour extends Behaviour {
             return new FollowerApproachTargetBehaviour(owner, target);
         }
     }
+
+    @Override
+    public Behaviour onTargetDeath() {
+        return new FollowerLurkBehaviour(owner);
+    }
 }

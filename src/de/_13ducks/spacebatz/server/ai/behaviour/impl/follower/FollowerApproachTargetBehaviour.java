@@ -21,4 +21,9 @@ class FollowerApproachTargetBehaviour extends GenericIndirectPursuitBehaviour {
     public Behaviour targetLost() {
         return new FollowerLurkBehaviour(owner);
     }
+
+    @Override
+    public Behaviour onTargetDeath() {
+        return new FollowerLurkBehaviour(owner);
+    }
 }

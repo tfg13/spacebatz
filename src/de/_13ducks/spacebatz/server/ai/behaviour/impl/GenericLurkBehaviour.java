@@ -23,7 +23,7 @@ public abstract class GenericLurkBehaviour extends Behaviour {
     @Override
     public Behaviour tick(int gameTick) {
         for (Entity target : Server.entityMap.getEntitiesAroundPoint(owner.getX(), owner.getY(), owner.getProperties().getSightrange())) {
-            if (target instanceof Player && Distance.getDistance(target.getX(), target.getY(), owner.getX(), owner.getY()) < owner.getProperties().getSightrange()) {
+            if (target instanceof Player && Distance.getDistance(target.getX(), target.getY(), owner.getX(), owner.getY()) < owner.getProperties().getSightrange() && !((Player) target).dead) {
                 return targetSpotted((Player) target);
             }
         }

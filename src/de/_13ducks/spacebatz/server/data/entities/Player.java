@@ -57,7 +57,7 @@ public class Player extends ItemCarrier {
     /**
      * Spieler ist tot und wartet auf Respawn
      */
-    private boolean dead = false;
+    public boolean dead = false;
     /**
      * Ab wann der Spieler respawnwn kann
      */
@@ -203,6 +203,7 @@ public class Player extends ItemCarrier {
         if (dead == false) {
             super.decreaseHitpoints(damage);
             if (properties.getHitpoints() <= 0) {
+                super.onDeath();
                 dead = true;
                 respawntick = Server.game.getTick() + CompileTimeParameters.RESPAWNTIME;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(client.clientID, true);

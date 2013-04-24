@@ -28,4 +28,9 @@ public class KamikazeAproachDirectBehaviour extends GenericDirectPursuitBehaviou
         Server.game.getEntityManager().removeEntity(owner.netID);
         return new KamikazeLurkBehaviour(owner);
     }
+
+    @Override
+    public Behaviour onTargetDeath() {
+        return new KamikazeLurkBehaviour(owner);
+    }
 }

@@ -25,4 +25,9 @@ public class ShooterAproachDirectBehaviour extends GenericDirectPursuitBehaviour
         owner.move.stopMovement();
         return new ShooterShootBehaviour(owner, target);
     }
+
+    @Override
+    public Behaviour onTargetDeath() {
+        return new ShooterLurkBehaviour(owner);
+    }
 }

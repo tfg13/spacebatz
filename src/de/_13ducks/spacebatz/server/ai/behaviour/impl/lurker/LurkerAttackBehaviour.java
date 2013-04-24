@@ -38,4 +38,9 @@ class LurkerAttackBehaviour extends Behaviour {
         }
         return this;
     }
+    
+     @Override
+    public Behaviour onTargetDeath() {
+        return new LurkerLurkBehaviour(owner);
+    }
 }

@@ -17,6 +17,7 @@ public class SpectatorLurkBehaviour extends GenericLurkBehaviour {
 
     @Override
     public Behaviour targetSpotted(Player target) {
+        target.hunters.add(owner);
         return new SpectatorApproachTargetBehaviour(owner, target);
     }
 }
