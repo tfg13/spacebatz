@@ -14,6 +14,7 @@ import de._13ducks.spacebatz.server.data.Teams;
 import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.kamikaze.KamikazeLurkBehaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.kiter.KiterLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.lurker.LurkerLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.ShooterLurkBehaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.SpectatorLurkBehaviour;
@@ -283,6 +284,10 @@ public class EnemySpawner {
                         break;
                     case LURKER:
                         enem.setBehaviour(new LurkerLurkBehaviour(enem));
+                        break;
+                    case KITER:
+                        enem.setBehaviour(new KiterLurkBehaviour(enem));
+                        break;
                 }
                 // GGF Ability setzen:
                 switch (stats.shootAbility) {
