@@ -19,12 +19,15 @@ public class Teams {
         {1, 1, 1, 1}
     };
 
+    /**
+     * Definiert die möglichen Teams.
+     */
     public enum Team {
 
         FRIENDLYPLAYERS(0), // Normale Spieler
         PVPPLAYERS(1), // Spieler im PVP-Modus
         MOBS(2), // Gegner, die kein friendly-fire haben
-        FRIENDLYFIREMOBS(3);
+        FRIENDLYFIREMOBS(3); // Gegner, die andere Gegner verletzen können
         private final int id;
 
         Team(int id) {

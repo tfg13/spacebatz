@@ -24,7 +24,6 @@ public class EnemyTypes implements java.io.Serializable {
 
     public EnemyTypes() {
         enemytypelist = new ArrayList<>();
-        //int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel, (Farbe in floats)
 
         EnemyTypeStats smallShooter = new EnemyTypeStats();
         enemytypelist.add(smallShooter);
