@@ -175,6 +175,16 @@ public class EnemyTypes implements java.io.Serializable {
         kiter.sightrange = (10);
         kiter.enemylevel = (5);
 
+        EnemyTypeStats summoner = new EnemyTypeStats();
+        enemytypelist.add(summoner);
+        summoner.behaviour = (EnemyTypeStats.BehaviourType.SUMMONER);
+        summoner.shootAbility = (EnemyTypeStats.AbilityType.SUMMONENEMYS);
+        summoner.healthpoints = (5);
+        summoner.picture = (20);
+        summoner.speed = (0.1f);
+        summoner.sightrange = (10);
+        summoner.enemylevel = (5);
+
     }
 
     /**

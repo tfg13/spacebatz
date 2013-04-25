@@ -18,7 +18,7 @@ import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnem
 public class SummonEnemyAbility extends Ability {
 
     public SummonEnemyAbility() {
-        setCooldown(100);
+        setCooldown(300);
     }
 
     @Override
