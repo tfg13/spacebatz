@@ -76,7 +76,6 @@ public class PropertyList implements Serializable {
         rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
         damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
         attackSpeedMultiplicatorBonus += other.getAttackSpeedMultiplicatorBonus();
-        System.out.println("! armor: " + armor);
     }
 
     /**
