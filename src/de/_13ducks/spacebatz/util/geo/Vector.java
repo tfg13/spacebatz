@@ -26,6 +26,17 @@ public class Vector {
     }
 
     /**
+     * Erstellt einen neuen Vektor, der in die gegebene Richtung zeigt.
+     * Der Vektor ist normiert.
+     *
+     * @param angle Richtung von 0 bis 2*PI
+     */
+    public Vector(double angle) {
+        this.x = Math.cos(angle);
+        this.y = Math.sin(angle);
+    }
+
+    /**
      * Liefert eine Skalar multiplizierte Version dieses Vektors hinzu
      *
      * @param scalar

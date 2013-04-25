@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.IntVector;
 import java.util.ArrayList;
 
@@ -32,15 +33,10 @@ public class HitscanAbility extends WeaponAbility {
         getWeaponStats().setReduceoverheat(reduceoverheat);
     }
 
-    /**
-     * Benutzt die Fähigkeit in einem bestimmten Winkel.
-     *
-     * @param user der Benutzerchar
-     */
     @Override
-    public void useInAngle(Char user, double angle) {
+    public void useOnPosition(Char user, double x, double y) {
+        double angle = GeoTools.toAngle(x - user.getX(), y - user.getY());
         STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, true);
-
         double range = getWeaponStats().getRange();
 
         // Schaden an Gegnern
@@ -52,24 +48,16 @@ public class HitscanAbility extends WeaponAbility {
 
         for (Char character : charsHit) {
             for (Effect effect : effects) {
-                effect.applyToChar((Char) character);
+                effect.applyToChar(character);
             }
         }
 
-        // Block abbauem
+        // Block abbauen
         IntVector test = CollisionManager.computeHitscanOnBlocks(user, angle, getWeaponStats().getRange());
         if (test != null) {
             if (Server.game.getLevel().isBlockDestroyable(test.x, test.y)) {
                 Server.game.getLevel().destroyBlock(test.x, test.y);
             }
         }
-
-    }
-
-    @Override
-    public void useOnPosition(Char user,
-            double x,
-            double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

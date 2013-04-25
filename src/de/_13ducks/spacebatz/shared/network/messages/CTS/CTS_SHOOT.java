@@ -1,8 +1,6 @@
 package de._13ducks.spacebatz.shared.network.messages.CTS;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
 import de._13ducks.spacebatz.shared.network.BitDecoder;
@@ -24,24 +22,21 @@ public class CTS_SHOOT extends FixedSizeCTSCommand {
     @Override
     public void execute(Client client, byte[] data) {
         BitDecoder decoder = new BitDecoder(data);
-        float dir = decoder.readFloat();
-        float distance = decoder.readFloat();
-        double x = client.getPlayer().getX() + distance * Math.cos(dir);
-        double y = client.getPlayer().getY() + distance * Math.sin(dir);
-        client.getPlayer().playerShoot(dir);
+        float targetX = decoder.readFloat();
+        float targetY = decoder.readFloat();
+        client.getPlayer().playerShoot(targetX, targetY);
     }
 
     /**
      * Sendet eine Schießen-Anforderung an den Server.
      *
-     * @param dx
-     * @param dy
-     * @param distance
+     * @param targetX
+     * @param targetY
      */
-    public static void sendShoot(double dir, float distance) {
+    public static void sendShoot(double targetX, double targetY) {
         BitEncoder encoder = new BitEncoder();
-        encoder.writeFloat((float) dir);
-        encoder.writeFloat(distance);
+        encoder.writeFloat((float) targetX);
+        encoder.writeFloat((float) targetY);
         GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_SHOOT, encoder.getBytes()));
     }
 }

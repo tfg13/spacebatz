@@ -48,20 +48,6 @@ public abstract class Ability {
     }
 
     /**
-     * Benutzt die Fähigkeitin einem Winkel, WENN der cooldown abgelaufen ist.
-     * Macht niochts wenn der cooldown noch läuft.
-     *
-     * @param user
-     * @param angle
-     */
-    public void tryUseInAngle(Char user, double angle) {
-        if (!isOnCooldown()) {
-            lastActivation = Server.game.getTick();
-            useInAngle(user, angle);
-        }
-    }
-
-    /**
      * Benutzt die Fähigkeit auf eine Position.
      *
      * @param user der Char, der die Fähigkeit benutzt
@@ -69,12 +55,4 @@ public abstract class Ability {
      * @param y die Y-Koordinate der Zielposition
      */
     protected abstract void useOnPosition(Char user, double x, double y);
-
-    /**
-     * Benutzt die Fähigkeit in einem Winkel
-     *
-     * @param user der Benutzer
-     * @param angle der Zielwinkel
-     */
-    protected abstract void useInAngle(Char user, double angle);
 }

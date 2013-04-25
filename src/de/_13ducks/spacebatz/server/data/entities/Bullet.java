@@ -10,11 +10,10 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.server.data.Teams;
-import de._13ducks.spacebatz.server.data.Teams;
 import de._13ducks.spacebatz.server.Server;
+import de._13ducks.spacebatz.server.data.Teams;
 import de._13ducks.spacebatz.server.data.effects.Effect;
-import de._13ducks.spacebatz.server.data.entities.move.InterpolatedMover;
+import de._13ducks.spacebatz.server.data.entities.move.ClientModifiableInterpolatedMover;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class Bullet extends Entity {
      * Das Bewegungssystem dieses Geschosses.
      * Geschosse verwenden immer InterpolatedMover.
      */
-    public final InterpolatedMover move;
+    public final ClientModifiableInterpolatedMover move;
     /**
      * Der Besitzer des Bullets, i.d.R. der Char der es erzeugt hat.
      */
@@ -54,18 +53,31 @@ public class Bullet extends Entity {
      * @param lifetime die Zahl der Ticks, nach der das Bullet gelöscht wird
      * @param spawnposx X-Koordinate des Anfangspunktes der Bewegung
      * @param spawnposy Y-Koordinate des Anfangspunktes der Bewegung
-     * @param angle der Winkel, in dem das Bullet fliegt
+     * @param targetX Fadenkreuz des Spielers
+     * @param targetY Fadenkreuz des Spielers
      * @param speed die Geschwindigkeit des Bullets
      * @param pictureID die ID des Bildes des Bullets
      * @param netID die netID des Bullets
      * @param owner der Besitzer, i.d.R. der Char der das Bullet erzeugt hat
      */
-    public Bullet(int lifetime, double spawnposx, double spawnposy, double angle, double speed, int pictureID, int netID, Entity owner) {
-        super(netID, (byte) 4, new InterpolatedMover(spawnposx, spawnposy));
-        this.move = (InterpolatedMover) super.move;
+    public Bullet(int lifetime, double spawnposx, double spawnposy, double targetX, double targetY, double speed, int pictureID, int netID, Entity owner) {
+        super(netID, (byte) 4, new ClientModifiableInterpolatedMover(spawnposx, spawnposy));
+        this.move = (ClientModifiableInterpolatedMover) super.move;
         move.setEntity(this);
         this.bulletpic = pictureID;
-        move.setVector(Math.cos(angle), Math.sin(angle));
+        move.setLinearTarget(targetX, targetY, new EntityLinearTargetObserver() {
+            @Override
+            public void targetReached() {
+            }
+
+            @Override
+            public void movementBlocked() {
+            }
+
+            @Override
+            public void movementAborted() {
+            }
+        });
         setSpeed(speed);
         this.owner = owner;
         this.deletetick = Server.game.getTick() + lifetime;

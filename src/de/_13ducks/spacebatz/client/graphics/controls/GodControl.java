@@ -113,6 +113,10 @@ public class GodControl implements Control {
      */
     private Cursor crossHairCursor;
     /**
+     * Die Position der Maus in Spielkoordinaten.
+     */
+    private double logicMouseX, logicMouseY;
+    /**
      * Hier ist reincodiert, welches Muster sich bei welchen Nachbarschaften
      * ergibt. Bitweise Texturvergleich und OR. Reihenfolge fängt Rechts an,
      * Gegen den Uhrzeigersinn Angabe 0xFF = Muster F, Rotation F
@@ -253,6 +257,10 @@ public class GodControl implements Control {
         Camera camera = renderer.getCamera();
         TextWriter textWriter = renderer.getTextWriter();
 
+        // Maus updaten:
+        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * camera.getTilesX()) - panX;
+        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * camera.getTilesY()) - panY;
+
         // Player in der Mitte
         if (!lookahead) {
             renderer.getCamera().setPanX((float) -GameClient.player.getX() + camera.getTilesX() / 2.0f);
@@ -363,7 +371,7 @@ public class GodControl implements Control {
 
                     // Werte fürs Einfärben nehmen und rendern
                     EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
-                    glColor4f(ets.color_red, ets.color_green , ets.color_blue, ets.color_alpha);
+                    glColor4f(ets.color_red, ets.color_green, ets.color_blue, ets.color_alpha);
                     renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
                     glColor3f(1f, 1f, 1f);
                 }
@@ -657,15 +665,7 @@ public class GodControl implements Control {
      * Sagt dem Server, das geschossen werden soll
      */
     private void sendShootRequest() {
-        double dx = Mouse.getX() - Display.getWidth() / 2;
-        double dy = Mouse.getY() - Display.getHeight() / 2;
-        double dir = Math.atan2(dy, dx);
-        if (dir < 0) {
-            dir += 2 * Math.PI;
-        }
-        // Fragwürdige Berechnung der Distanz:
-        float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * GameClient.getEngine().getGraphics().getCamera().getTilesX() / Display.getWidth();
-        CTS_SHOOT.sendShoot(dir, distance);
+        CTS_SHOOT.sendShoot(logicMouseX, logicMouseY);
     }
 
     /**

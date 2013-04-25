@@ -57,12 +57,8 @@ public class ShooterBehaviour extends Behaviour {
                     owner.move.stopMovement();
                     double dx = myTarget.getX() - owner.getX();
                     double dy = myTarget.getY() - owner.getY();
-                    double dir = Math.atan2(dy, dx);
-                    if (dir < 0) {
-                        dir += 2 * Math.PI;
-                    }
                     if (gameTick - lastShootTick > 120) {
-                        shootAbility.tryUseInAngle(owner, dir);
+                        shootAbility.tryUseOnPosition(owner, myTarget.getX(), myTarget.getY());
                         lastShootTick = gameTick;
                     }
 

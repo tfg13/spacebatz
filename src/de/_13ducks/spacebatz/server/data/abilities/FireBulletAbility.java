@@ -6,7 +6,8 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
-
+import de._13ducks.spacebatz.util.geo.GeoTools;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.Random;
 
 /**
@@ -46,17 +47,8 @@ public class FireBulletAbility extends WeaponAbility {
     }
 
     @Override
-    public void useOnPosition(Char user, double x, double y) {
-        double dir = Math.atan2(y, x);
-        if (dir < 0) {
-            dir += 2 * Math.PI;
-        }
-        useInAngle(user, dir);
-    }
-
-    @Override
-    public void useInAngle(Char user, double angle) {
-        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);
+    public void useOnPosition(Char user, double targetX, double targetY) {
+        double angle = GeoTools.toAngle(targetX - user.getX(), targetY - user.getY());
 
         double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
         double range = getWeaponStats().getRange();
@@ -69,10 +61,14 @@ public class FireBulletAbility extends WeaponAbility {
         angle += random.nextGaussian() * spread;
         int lifetime = (int) (range / bulletspeed);
 
-        double x = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
-        double y = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
+        double startX = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
+        double startY = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
 
-        Bullet bullet = new Bullet(lifetime, x, y, angle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+        double dist = new Vector(targetX - startX, targetY - startY).length();
+
+        Vector newTarget = new Vector(startX, startY).add(new Vector(angle).multiply(dist));
+
+        Bullet bullet = new Bullet(lifetime, startX, startY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
 
         if (explosionradius > 0) {
@@ -81,6 +77,6 @@ public class FireBulletAbility extends WeaponAbility {
         bullet.addEffect(new TrueDamageEffect((int) damage));
 
         Server.game.getEntityManager().addEntity(bullet.netID, bullet);
-
+        STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);
     }
 }

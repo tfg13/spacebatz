@@ -163,6 +163,15 @@ public class PlayerCharacter extends Char {
     }
 
     /**
+     * Findert heraus, ob die Bewegungen dieses Spielers predicted werden.
+     *
+     * @return true, wenn Prediction aktiv ist
+     */
+    public boolean isPredicted() {
+        return predictMovements;
+    }
+
+    /**
      * Muss jeden Tick aufgerufen werden, sonst funktioniert die Prediction nicht.
      * Es müssen die WASD-Tastendrücke codiert übergeben werden.
      * Die oberen 4 Bits des übergebenen Bytes entsprechen den Buttons in der Reihenfolge WASD.
@@ -411,5 +420,19 @@ public class PlayerCharacter extends Char {
 
     public void setParalyzed(boolean paralyzed) {
         this.paralyzed = paralyzed;
+    }
+
+    /**
+     * Liefert einen Vektor der den aktuellen Unterschied zwischen Serverposition und Prediction beschreibt.
+     * Darf nicht aufgerufen werden, wenn die Einheit gar nicht predicted wird.
+     * Der Vektor zeigt von der öffentlichen, vorhergesagten Position zur Serverposition.
+     *
+     * @return Delta-Vektor
+     */
+    public Vector getPredictionDelta() {
+        if (!predictMovements) {
+            throw new IllegalStateException("Cannot return prediction-delta, prediction is disabled!");
+        }
+        return new Vector(super.getX() - predictedX, super.getY() - predictedY);
     }
 }
