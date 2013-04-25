@@ -65,6 +65,7 @@ public abstract class Char extends Entity {
         this.team = team;
         properties = new PropertyList();
         hunters = new ArrayList<>();
+        properties.setMaxHitpoints(CompileTimeParameters.CHARHEALTH);
         properties.setHitpoints(CompileTimeParameters.CHARHEALTH);
         properties.setSightrange(10.0);
         effects = new ArrayList<>();

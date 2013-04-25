@@ -34,7 +34,7 @@ public class ItemAttributeTypes {
             ItemAttribute moreEverything = new ItemAttribute("More Everything");
             moreEverything.setQuality(3);
             moreEverything.weaponStats.setDamagemultiplicator(0.5);
-            moreEverything.weaponStats.setAttackspeed(0.03);
+            moreEverything.weaponStats.setAttackspeed(0.02);
             moreEverything.weaponStats.setRange(3);
             moreEverything.setIsWeaponAttribute(true);
             attributelist.add(moreEverything);
@@ -47,7 +47,7 @@ public class ItemAttributeTypes {
             evenMoreDamage.weaponStats.setDamagemultiplicator(r_evenmoredamage);
             evenMoreDamage.setIsWeaponAttribute(true);
             attributelist.add(evenMoreDamage);
-            
+
             double r_alldamage = randomValue(0.2, 0.4, 1);
             ItemAttribute allDamage = new ItemAttribute("+" + (r_alldamage * 100) + "% Damage For Every Weapon");
             allDamage.setQuality(2);
@@ -61,20 +61,16 @@ public class ItemAttributeTypes {
             evenMoreAttackSpeed.setIsWeaponAttribute(true);
             attributelist.add(evenMoreAttackSpeed);
 
-            //        ItemAttribute evenMoreArmor = new ItemAttribute("0.3 Even More Armor");
-            //        evenMoreArmor.setQuality(2);
-            //        evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(0.3);
-            //        attributelist.add(evenMoreArmor);
+            ItemAttribute evenMoreArmor = new ItemAttribute("30% More Armor");
+            evenMoreArmor.setQuality(2);
+            evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(0.3);
+            attributelist.add(evenMoreArmor);
 
             double r_moremovespeed = randomValue(0.05, 0.20, 2);
             ItemAttribute moreMovespeed = new ItemAttribute("+" + (r_moremovespeed * 100) + "% Movespeed");
             moreMovespeed.setQuality(2);
             moreMovespeed.bonusStats.setMovespeedMultiplicatorBonus(r_moremovespeed);
             attributelist.add(moreMovespeed);
-
-            ItemAttribute unusual = new ItemAttribute("Unusual");
-            unusual.setQuality(2);
-            attributelist.add(unusual);
         }
         if (quality >= 1) {
 
@@ -112,15 +108,15 @@ public class ItemAttributeTypes {
             moreReduceOverheat.setIsWeaponAttribute(true);
             attributelist.add(moreReduceOverheat);
 
-            //        ItemAttribute moreArmor = new ItemAttribute("0.1 More Armor");
-            //        moreArmor.setQuality(1);
-            //        moreArmor.bonusStats.setArmorMultiplicatorBonus(0.1);
-            //        attributelist.add(moreArmor);
+            ItemAttribute moreArmor = new ItemAttribute("+10 Armor");
+            moreArmor.setQuality(1);
+            moreArmor.bonusStats.setArmor(10);
+            attributelist.add(moreArmor);
 
-            //        ItemAttribute moreHP = new ItemAttribute("More Healthpoints");
-            //        moreHP.setQuality(1);
-            //        moreHP.bonusStats.setHitpoints(20);
-            //        attributelist.add(moreHP);
+            ItemAttribute moreHP = new ItemAttribute("+40 Healthpoints");
+            moreHP.setQuality(1);
+            moreHP.bonusStats.setMaxHitpoints(40);
+            attributelist.add(moreHP);
         }
         return attributelist;
     }
