@@ -32,7 +32,7 @@ public class FireBulletAbility extends WeaponAbility {
      * @param maxoverheat Wie oft die Waffe schiessen kann, bis sie überhitzt ist
      * @param reduceoverheat
      */
-    public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat, boolean hitEnemies) {
+    public FireBulletAbility(double damage, double damagespread, double attackspeed, double range, int bulletpic, double bulletspeed, double spread, double explosionradius, double maxoverheat, double reduceoverheat) {
         getWeaponStats().setDamage(damage);
         getWeaponStats().setDamagespread(damagespread);
         getWeaponStats().setAttackspeed(attackspeed);

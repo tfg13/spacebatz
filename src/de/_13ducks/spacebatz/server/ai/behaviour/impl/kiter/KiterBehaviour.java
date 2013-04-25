@@ -1,11 +1,9 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.kiter;
 
-import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.*;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
-import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.Distance;
@@ -22,7 +20,6 @@ public class KiterBehaviour extends Behaviour {
 
     public KiterBehaviour(Enemy enemy) {
         super(enemy);
-        shootAbility = new FireBulletAbility(5, 1, 0.1, 9.0, 1, 0.2, 0.025, 0.0, 0.0, 0.0,true);
     }
 
     /**
@@ -87,8 +84,8 @@ public class KiterBehaviour extends Behaviour {
         }
         return this;
     }
-    
-     @Override
+
+    @Override
     public Behaviour onTargetDeath() {
         return new KiterLurkBehaviour(owner);
     }

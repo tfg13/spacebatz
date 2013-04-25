@@ -47,7 +47,7 @@ public class ItemTypes {
         pistol.setQuality(1);
         pistol.setAmount(0);
         pistol.getWeaponStats().setAttackOffset(1.0);
-        pistol.setWeaponAbility(new FireBulletAbility(7, 6, 0.067, 15.0, 1, 0.45, 0.05, 0.0, 0, 0, true));
+        pistol.setWeaponAbility(new FireBulletAbility(7, 6, 0.067, 15.0, 1, 0.45, 0.05, 0.0, 0, 0));
         itemtypelist.add(pistol);
 
         ItemAttribute shotgun = new ItemAttribute("Shotgun");
@@ -74,7 +74,7 @@ public class ItemTypes {
         laser.setQuality(1);
         laser.setAmount(0);
         laser.getWeaponStats().setAttackOffset(1.0);
-        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.16, 15.0, 3, 0.45, 0.07, 0.0, 32, 0.1, true));
+        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.16, 15.0, 3, 0.45, 0.07, 0.0, 32, 0.1));
         itemtypelist.add(laser);
 
         ItemAttribute superlaser = new ItemAttribute("Super Laser");
@@ -83,7 +83,7 @@ public class ItemTypes {
         superlaser.setQuality(1);
         superlaser.setAmount(0);
         superlaser.getWeaponStats().setAttackOffset(1.2);
-        superlaser.setWeaponAbility(new FireBulletAbility(25, 20, 0.04, 20.0, 2, 0.65, 0.02, 0.0, 5, 0.01, true));
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 20, 0.04, 20.0, 2, 0.65, 0.02, 0.0, 5, 0.01));
         itemtypelist.add(superlaser);
 
         ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
@@ -92,7 +92,7 @@ public class ItemTypes {
         rocketlauncher.setQuality(1);
         rocketlauncher.setAmount(0);
         rocketlauncher.getWeaponStats().setAttackOffset(1.0);
-        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0, 0.025, 20.0, 4, 0.35, 0.0, 6.0, 4, 0.01, true));
+        rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0, 0.025, 20.0, 4, 0.35, 0.0, 6.0, 4, 0.01));
         itemtypelist.add(rocketlauncher);
 
         ItemAttribute drill = new ItemAttribute("Drill");
@@ -117,7 +117,7 @@ public class ItemTypes {
         superrocketlauncher.setQuality(3);
         superrocketlauncher.setAmount(0);
         superrocketlauncher.getWeaponStats().setAttackOffset(1.0);
-        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 20.0, 4, 0.45, 0.0, 4.0, 12, 0.025, true));
+        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 20.0, 4, 0.45, 0.0, 4.0, 12, 0.025));
         itemtypelist.add(superrocketlauncher);
 
         ItemAttribute superpistol = new ItemAttribute("Super Pistol");
@@ -126,7 +126,7 @@ public class ItemTypes {
         superpistol.setQuality(3);
         superpistol.setAmount(0);
         superpistol.getWeaponStats().setAttackOffset(1.0);
-        superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 16.0, 1, 0.45, 0.02, 0.0, 0, 0, true));
+        superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 16.0, 1, 0.45, 0.02, 0.0, 0, 0));
         itemtypelist.add(superpistol);
 
         ItemAttribute superdrill = new ItemAttribute("Super Drill");
