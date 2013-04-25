@@ -25,15 +25,22 @@ public class PropertyList implements Serializable {
         serialVersionUID = aSerialVersionUID;
     }
     /**
-     * Die Lebenspunkte
+     * Die aktuellen Lebenspunkte
      */
     private int hitpoints;
+    /**
+     * Die maximalen Lebenspunkte
+     */
+    private int maxHitpoints;
     private double sightrange;
     /**
-     * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 +
-     * movespeedMultiplicatorBonus.
+     * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 + movespeedMultiplicatorBonus.
      */
     private double movespeedMultiplicatorBonus;
+    /**
+     * Rüstung, reduziert Schaden.
+     */
+    private int armor;
     /**
      * Der Bonus auf den Rüstungsmultiplikator. Der Rüstungsmultiplikator ist also 1.0 + armorMultiplicatorBonus.
      */
@@ -47,8 +54,7 @@ public class PropertyList implements Serializable {
      */
     private double damageMultiplicatorBonus;
     /**
-     * Der Bonus auf den Angriffsgeschwindigkeitsmultiplikator. Der Angriffsgeschwindigkeitsmultiplikator ist also 1.0 +
-     * attackSpeedMultiplicatorBonus.
+     * Der Bonus auf den Angriffsgeschwindigkeitsmultiplikator. Der Angriffsgeschwindigkeitsmultiplikator ist also 1.0 + attackSpeedMultiplicatorBonus.
      */
     private double attackSpeedMultiplicatorBonus;
 
@@ -62,7 +68,9 @@ public class PropertyList implements Serializable {
      */
     public void addProperties(PropertyList other) {
         hitpoints += other.getHitpoints();
+        maxHitpoints += other.getMaxHitpoints();
         sightrange += other.getSightrange();
+        armor += other.getArmor();
         movespeedMultiplicatorBonus += other.getMovespeedMultiplicatorBonus();
         armorMultiplicatorBonus += other.getArmorMultiplicatorBonus();
         rangeMultiplicatorBonus += other.getRangeMultiplicatorBonus();
@@ -77,7 +85,9 @@ public class PropertyList implements Serializable {
      */
     public void removeProperties(PropertyList other) {
         hitpoints -= other.getHitpoints();
+        maxHitpoints -= other.getMaxHitpoints();
         sightrange -= other.getSightrange();
+        armor -= other.getArmor();
         movespeedMultiplicatorBonus -= other.getMovespeedMultiplicatorBonus();
         armorMultiplicatorBonus -= other.getArmorMultiplicatorBonus();
         rangeMultiplicatorBonus -= other.getRangeMultiplicatorBonus();
@@ -193,5 +203,33 @@ public class PropertyList implements Serializable {
      */
     public void setMovespeedMultiplicatorBonus(double movespeedMultiplicatorBonus) {
         this.movespeedMultiplicatorBonus = movespeedMultiplicatorBonus;
+    }
+
+    /**
+     * @return the maxHitpoints
+     */
+    public int getMaxHitpoints() {
+        return maxHitpoints;
+    }
+
+    /**
+     * @param maxHitpoints the maxHitpoints to set
+     */
+    public void setMaxHitpoints(int maxHitpoints) {
+        this.maxHitpoints = maxHitpoints;
+    }
+
+    /**
+     * @return the armor
+     */
+    public int getArmor() {
+        return armor;
+    }
+
+    /**
+     * @param armor the armor to set
+     */
+    public void setArmor(int armor) {
+        this.armor = armor;
     }
 }

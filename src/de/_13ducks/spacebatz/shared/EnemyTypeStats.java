@@ -52,7 +52,6 @@ public class EnemyTypeStats implements java.io.Serializable {
     public double abilityExplosionradius;
     public double abilityMaxoverheat;
     public double abilityReduceoverheat;
-    public boolean abilityHitEnemies;
     /**
      * Das Verhalten dieses Gegnertyps.
      */
@@ -67,7 +66,7 @@ public class EnemyTypeStats implements java.io.Serializable {
      */
     public static enum BehaviourType {
 
-        SHOOTER, SPECTATOR, KAMIKAZE, LURKER
+        SHOOTER, SPECTATOR, KAMIKAZE, LURKER, KITER, SUMMONER
     };
 
     /**
@@ -75,7 +74,7 @@ public class EnemyTypeStats implements java.io.Serializable {
      */
     public static enum AbilityType {
 
-        FIREBULLET, NONE, KAMIKAZE
+        FIREBULLET, NONE, KAMIKAZE, SUMMONENEMYS
     };
 
     /**

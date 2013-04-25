@@ -24,7 +24,6 @@ public class EnemyTypes implements java.io.Serializable {
 
     public EnemyTypes() {
         enemytypelist = new ArrayList<>();
-        //int healthpoints, int damage, int picture, float speed, int sightrange, int enemylevel, (Farbe in floats)
 
         EnemyTypeStats smallShooter = new EnemyTypeStats();
         enemytypelist.add(smallShooter);
@@ -36,7 +35,6 @@ public class EnemyTypes implements java.io.Serializable {
         smallShooter.abilityDamage = 1;
         smallShooter.abilityDamagespread = 0;
         smallShooter.abilityExplosionradius = 0;
-        smallShooter.abilityHitEnemies = false;
         smallShooter.abilityMaxoverheat = 10;
         smallShooter.abilityReduceoverheat = 1;
         smallShooter.abilityRange = 10;
@@ -58,7 +56,6 @@ public class EnemyTypes implements java.io.Serializable {
         bigShooter.abilityDamage = 10;
         bigShooter.abilityDamagespread = 0;
         bigShooter.abilityExplosionradius = 1;
-        bigShooter.abilityHitEnemies = false;
         bigShooter.abilityMaxoverheat = 10;
         bigShooter.abilityReduceoverheat = 1;
         bigShooter.abilityRange = 10;
@@ -90,7 +87,6 @@ public class EnemyTypes implements java.io.Serializable {
         crab.abilityDamage = 1;
         crab.abilityDamagespread = 0;
         crab.abilityExplosionradius = 0;
-        crab.abilityHitEnemies = false;
         crab.abilityMaxoverheat = 10;
         crab.abilityReduceoverheat = 1;
         crab.abilityRange = 10;
@@ -125,7 +121,6 @@ public class EnemyTypes implements java.io.Serializable {
         lurker.abilityDamage = 80;
         lurker.abilityDamagespread = 0;
         lurker.abilityExplosionradius = 0;
-        lurker.abilityHitEnemies = false;
         lurker.abilityMaxoverheat = 10;
         lurker.abilityReduceoverheat = 1;
         lurker.abilityRange = 10;
@@ -136,7 +131,7 @@ public class EnemyTypes implements java.io.Serializable {
         lurker.speed = (0.1f);
         lurker.sightrange = (5);
         lurker.enemylevel = (2);
-        
+
         EnemyTypeStats boss = new EnemyTypeStats();
         enemytypelist.add(boss);
         boss.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
@@ -147,7 +142,6 @@ public class EnemyTypes implements java.io.Serializable {
         boss.abilityDamage = 120;
         boss.abilityDamagespread = 0;
         boss.abilityExplosionradius = 0;
-        boss.abilityHitEnemies = false;
         boss.abilityMaxoverheat = 10;
         boss.abilityReduceoverheat = 1;
         boss.abilityRange = 20;
@@ -159,13 +153,37 @@ public class EnemyTypes implements java.io.Serializable {
         boss.sightrange = (10);
         boss.enemylevel = (5);
 
+        EnemyTypeStats kiter = new EnemyTypeStats();
+        enemytypelist.add(kiter);
+        kiter.behaviour = (EnemyTypeStats.BehaviourType.KITER);
+        kiter.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
+        kiter.abilityAttackspeed = 1;
+        kiter.abilityBulletpic = 2;
+        kiter.abilityBulletspeed = 0.15;
+        kiter.abilityDamage = 1;
+        kiter.abilityDamagespread = 0;
+        kiter.abilityExplosionradius = 0;
+        kiter.abilityMaxoverheat = 10;
+        kiter.abilityReduceoverheat = 1;
+        kiter.abilityRange = 20;
+        kiter.abilitySpread = 0.15;
+        kiter.healthpoints = (5);
+        kiter.damage = (1);
+        kiter.picture = (12);
+        kiter.speed = (0.16f);
+        kiter.sightrange = (10);
+        kiter.enemylevel = (5);
 
+        EnemyTypeStats summoner = new EnemyTypeStats();
+        enemytypelist.add(summoner);
+        summoner.behaviour = (EnemyTypeStats.BehaviourType.SUMMONER);
+        summoner.shootAbility = (EnemyTypeStats.AbilityType.SUMMONENEMYS);
+        summoner.healthpoints = (5);
+        summoner.picture = (20);
+        summoner.speed = (0.1f);
+        summoner.sightrange = (10);
+        summoner.enemylevel = (5);
 
-//
-//        enemytypelist.add(new EnemyTypeStats(12, 3, 0, 0.12f, 8, 1));
-//        enemytypelist.add(new EnemyTypeStats(60, 5, 1, 0.1f, 11, 4, 1f, 0f, 0f, 1f));
-//        enemytypelist.add(new EnemyTypeStats(25, 7, 2, 0.17f, 8, 6));
-//        enemytypelist.add(new EnemyTypeStats(100, 7, 3, 0.20f, 8, 10, 1f, 1f, 1f, 0.35f));
     }
 
     /**

@@ -1,10 +1,9 @@
-package de._13ducks.spacebatz.server.ai.behaviour.impl.shooter;
+package de._13ducks.spacebatz.server.ai.behaviour.impl.kiter;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
-import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.Distance;
@@ -13,13 +12,13 @@ import de._13ducks.spacebatz.util.geo.Distance;
  *
  * @author michael
  */
-public class ShooterBehaviour extends Behaviour {
+public class KiterBehaviour extends Behaviour {
 
     private Player myTarget;
     private Ability shootAbility;
     private int lastShootTick;
 
-    public ShooterBehaviour(Enemy enemy) {
+    public KiterBehaviour(Enemy enemy) {
         super(enemy);
     }
 
@@ -56,8 +55,12 @@ public class ShooterBehaviour extends Behaviour {
                     owner.move.stopMovement();
                     double dx = myTarget.getX() - owner.getX();
                     double dy = myTarget.getY() - owner.getY();
+                    double dir = Math.atan2(dy, dx);
+                    if (dir < 0) {
+                        dir += 2 * Math.PI;
+                    }
                     if (gameTick - lastShootTick > 120) {
-                        shootAbility.tryUseOnPosition(owner, myTarget.getX(), myTarget.getY());
+                        shootAbility.tryUseInAngle(owner, dir);
                         lastShootTick = gameTick;
                     }
 
@@ -84,6 +87,6 @@ public class ShooterBehaviour extends Behaviour {
 
     @Override
     public Behaviour onTargetDeath() {
-        return new ShooterLurkBehaviour(owner);
+        return new KiterLurkBehaviour(owner);
     }
 }
