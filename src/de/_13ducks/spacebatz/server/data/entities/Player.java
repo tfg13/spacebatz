@@ -142,7 +142,7 @@ public class Player extends ItemCarrier {
         } else {
             if (Server.game.getTick() >= respawntick) {
                 // respawnen
-                properties.setHitpoints(CompileTimeParameters.CHARHEALTH);
+                properties.setHitpoints(properties.getMaxHitpoints());
                 dead = false;
                 STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(client.clientID, false);
                 attackCooldownTick = Server.game.getTick() + 30; // damit nicht sofort geschossen wird
