@@ -217,6 +217,10 @@ public class Char {
     public int getHealthpointsmax() {
         return healthpointsmax;
     }
+    
+    public void setHealthpointsmax(int healthpointsmax) {
+        this.healthpointsmax = healthpointsmax;
+    }
 
     /**
      * @return the renderObject

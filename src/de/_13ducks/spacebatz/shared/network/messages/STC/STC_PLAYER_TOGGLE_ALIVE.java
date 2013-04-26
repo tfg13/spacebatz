@@ -39,7 +39,7 @@ public class STC_PLAYER_TOGGLE_ALIVE extends FixedSizeSTCCommand {
             if (dead) {
                 p.setHealthpoints(0);
             } else {
-                p.setHealthpoints(CompileTimeParameters.CHARHEALTH);
+                p.setHealthpoints(p.getHealthpointsmax());
             }
         }
     }

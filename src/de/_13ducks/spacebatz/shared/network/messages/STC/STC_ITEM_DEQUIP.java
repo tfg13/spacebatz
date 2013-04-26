@@ -29,6 +29,8 @@ public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
             Item item = GameClient.getEquippedItems().getEquipslots()[slottype][selslot2];
             GameClient.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
             GameClient.addToInventory(item);
+            
+            GameClient.player.setHealthpointsmax(GameClient.player.getHealthpointsmax() - item.getBonusProperties().getMaxHitpoints());
         }
     }
 
