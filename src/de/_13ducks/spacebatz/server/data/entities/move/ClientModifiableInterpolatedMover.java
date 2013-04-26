@@ -20,6 +20,15 @@ import de._13ducks.spacebatz.util.geo.Vector;
 public class ClientModifiableInterpolatedMover extends InterpolatedMover {
 
     /**
+     * Das Ziel, auf das der Spieler ursprünglich geschossen hat.
+     */
+    private double originalTargetX;
+    /**
+     * Das Ziel, auf das der Spieler ursprünglich geschossen hat.
+     */
+    private double originalTargetY;
+
+    /**
      * Erzeugt eine neuen ClientModifiableInterpolatedMover.
      * Die übergebenen Koordinaten sind die Start-Koodinaten.
      *
@@ -62,6 +71,8 @@ public class ClientModifiableInterpolatedMover extends InterpolatedMover {
      */
     @Override
     public void setLinearTarget(double tx, double ty, EntityLinearTargetObserver obs) {
+        originalTargetX = tx;
+        originalTargetY = ty;
         // Ziel so ändern, dass Richtung gleich bleibt
         Vector moveVector = new Vector(tx - getX(), ty - getY()).normalize().multiply(1000000.0);
         super.setLinearTarget(getX() + moveVector.x, getY() + moveVector.y, obs);
@@ -70,6 +81,6 @@ public class ClientModifiableInterpolatedMover extends InterpolatedMover {
     @Override
     protected Movement computeMovement() {
         Movement orig = super.computeMovement();
-        return new Movement(orig.startX, orig.startY, getTargetX(), getTargetY(), orig.startTick, orig.speed);
+        return new Movement(orig.startX, orig.startY, originalTargetX, originalTargetY, orig.startTick, orig.speed);
     }
 }
