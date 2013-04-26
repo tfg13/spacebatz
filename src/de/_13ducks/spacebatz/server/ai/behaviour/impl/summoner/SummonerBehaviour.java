@@ -61,7 +61,7 @@ public class SummonerBehaviour extends Behaviour {
                         dir += 2 * Math.PI;
                     }
                     if (gameTick - lastShootTick > 120) {
-                        shootAbility.tryUseInAngle(owner, dir);
+                        shootAbility.tryUseOnPosition(owner, myTarget.getX(), myTarget.getY());
                         lastShootTick = gameTick;
                     }
 

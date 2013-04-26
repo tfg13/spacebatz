@@ -53,14 +53,9 @@ public class KiterBehaviour extends Behaviour {
                 // Wenn wir schon nahe genug dran sind anhalten:
                 if (3.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                     owner.move.stopMovement();
-                    double dx = myTarget.getX() - owner.getX();
-                    double dy = myTarget.getY() - owner.getY();
-                    double dir = Math.atan2(dy, dx);
-                    if (dir < 0) {
-                        dir += 2 * Math.PI;
-                    }
+
                     if (gameTick - lastShootTick > 120) {
-                        shootAbility.tryUseInAngle(owner, dir);
+                        shootAbility.tryUseOnPosition(owner, myTarget.getX(), myTarget.getY());
                         lastShootTick = gameTick;
                     }
 
