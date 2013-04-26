@@ -345,7 +345,7 @@ public class InterpolatedMover implements Mover {
         return computeMovement();
     }
 
-    private Movement computeMovement() {
+    protected Movement computeMovement() {
         if (isMoving()) {
             if (targetEntity == null) {
                 // Modus 1 + 2
@@ -617,5 +617,19 @@ public class InterpolatedMover implements Mover {
     public boolean positionUpdateRequired() {
         // Ausreichend präzise
         return moving;
+    }
+
+    /**
+     * @return the targetX
+     */
+    protected double getTargetX() {
+        return targetX;
+    }
+
+    /**
+     * @return the targetY
+     */
+    protected double getTargetY() {
+        return targetY;
     }
 }

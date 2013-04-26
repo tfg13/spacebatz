@@ -4,7 +4,6 @@
  */
 package de._13ducks.spacebatz.shared.network.messages.CTS;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.network.FixedSizeCTSCommand;
@@ -28,18 +27,16 @@ public class CTS_REQUEST_USE_ABILITY extends FixedSizeCTSCommand {
     public void execute(Client client, byte[] data) {
         BitDecoder decoder = new BitDecoder(data);
         byte ability = decoder.readByte();
-        float dir = decoder.readFloat();
-        float distance = decoder.readFloat();
-        double x = client.getPlayer().getX() + distance * Math.cos(dir);
-        double y = client.getPlayer().getY() + distance * Math.sin(dir);
-        client.getPlayer().useAbility(ability, x, y);
+        float targetX = decoder.readFloat();
+        float targetY = decoder.readFloat();
+        client.getPlayer().useAbility(ability, targetX, targetY);
     }
 
-    public static void sendAbilityUseRequest(byte ability, float angle, float distance) {
+    public static void sendAbilityUseRequest(byte ability, double targetX, double targetY) {
         BitEncoder encoder = new BitEncoder();
         encoder.writeByte(ability);
-        encoder.writeFloat((float) angle);
-        encoder.writeFloat(distance);
+        encoder.writeFloat((float) targetX);
+        encoder.writeFloat((float) targetY);
         GameClient.getNetwork2().queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_CTS_USE_ABILITY, encoder.getBytes()));
 
     }

@@ -10,10 +10,10 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.SpellBook;
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.abilities.WeaponAbility;
 import de._13ducks.spacebatz.server.data.entities.move.DiscreteMover;
@@ -118,7 +118,7 @@ public class Player extends ItemCarrier {
      * @param angle der Winkel in dem die Fähigkeit benutzt wird
      *
      */
-    public void playerShoot(double angle) {
+    public void playerShoot(double tx, double ty) {
         if (!dead) {
             if (Server.game.getTick() >= attackCooldownTick) {
 
@@ -130,12 +130,12 @@ public class Player extends ItemCarrier {
 
                 if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
                     attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                    standardAttack.tryUseInAngle(this, angle);
+                    standardAttack.tryUseOnPosition(this, tx, ty);
                 } else {
                     if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
                         attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
                         getActiveWeapon().increaseOverheat(1);
-                        getActiveWeapon().getWeaponAbility().tryUseInAngle(this, angle);
+                        getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
                     }
                 }
             }

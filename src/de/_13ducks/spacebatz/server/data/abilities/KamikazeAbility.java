@@ -30,9 +30,4 @@ public class KamikazeAbility extends Ability {
             }
         }
     }
-    
-    @Override
-    protected void useInAngle(Char user, double angle) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

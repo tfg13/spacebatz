@@ -6,6 +6,9 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
+import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
+import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Die Fähigkeit, mehrere Bullets auf einmal zu schießen. Erzeugt neue Bullets und regisriert sie beim Server.
@@ -51,11 +54,7 @@ public class FireMultipleBulletAbility extends WeaponAbility {
 
     @Override
     public void useOnPosition(Char user, double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void useInAngle(Char user, double angle) {
+        double angle = GeoTools.toAngle(x - user.getX(), y - user.getY());
         STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);
 
         double range = getWeaponStats().getRange();
@@ -69,10 +68,12 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
             double newangle = angle + (i - (amount + 1) / 2.0) * spread;
 
-            double x = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
-            double y = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
-            
-            Bullet bullet = new Bullet(lifetime, x, y, newangle, bulletspeed, bulletpic, Server.game.newNetID(), user);
+            double spawnX = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
+            double spawnY = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
+
+            Vector newTarget = new Vector(user.getX(), user.getY()).add(new Vector(angle).multiply(Distance.getDistance(x, y, user.getX(), user.getY())));
+
+            Bullet bullet = new Bullet(lifetime, spawnX, spawnY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
             if (explosionradius > 0) {
                 bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));

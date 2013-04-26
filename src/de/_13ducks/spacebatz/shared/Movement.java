@@ -93,4 +93,9 @@ public class Movement {
             return hash;
         }
     }
+
+    @Override
+    public String toString() {
+        return "mov: start " + startX + " " + startY + " vec " + vecX + " " + vecY + " at " + startTick + " speed " + speed;
+    }
 }
