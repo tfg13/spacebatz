@@ -38,6 +38,18 @@ public class ItemAttributeTypes {
             moreEverything.weaponStats.setRange(3);
             moreEverything.setIsWeaponAttribute(true);
             attributelist.add(moreEverything);
+
+            double r_evenMoreHpReg = randomValue(0.8, 1.0, 1);
+            ItemAttribute moreHpReg = new ItemAttribute("+" + r_evenMoreHpReg + " HP Regeneration");
+            moreHpReg.setQuality(3);
+            moreHpReg.bonusStats.setHitpointRegeneration(r_evenMoreHpReg);
+            attributelist.add(moreHpReg);
+
+            int r_evenMorehp = (int) randomValue(31, 40, 0);
+            ItemAttribute moreHP = new ItemAttribute("+" + r_evenMorehp + " Healthpoints");
+            moreHP.setQuality(3);
+            moreHP.bonusStats.setMaxHitpoints(r_evenMorehp);
+            attributelist.add(moreHP);
         }
         if (quality >= 2) {
 
@@ -113,10 +125,17 @@ public class ItemAttributeTypes {
             moreArmor.bonusStats.setArmor(10);
             attributelist.add(moreArmor);
 
-            ItemAttribute moreHP = new ItemAttribute("+40 Healthpoints");
+            int r_morehp = (int) randomValue(10, 30, 0);
+            ItemAttribute moreHP = new ItemAttribute("+" + r_morehp + " Healthpoints");
             moreHP.setQuality(1);
-            moreHP.bonusStats.setMaxHitpoints(40);
+            moreHP.bonusStats.setMaxHitpoints(r_morehp);
             attributelist.add(moreHP);
+
+            double r_moreHpReg = randomValue(0.2, 0.7, 1);
+            ItemAttribute moreHpReg = new ItemAttribute("+" + r_moreHpReg + " HP Regeneration");
+            moreHpReg.setQuality(1);
+            moreHpReg.bonusStats.setHitpointRegeneration(r_moreHpReg);
+            attributelist.add(moreHpReg);
         }
         return attributelist;
     }

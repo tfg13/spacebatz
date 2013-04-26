@@ -51,6 +51,10 @@ public abstract class Char extends Entity {
      * Liste der Chars, die diesen Char verfolgen.
      */
     public ArrayList<Char> hunters;
+    /**
+     * Übertrag für HP-Regeneration
+     */
+    private double hpRegCarryover;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -122,6 +126,15 @@ public abstract class Char extends Entity {
                 effect.remove();
                 iter.remove();
             }
+        }
+        // Chars können HP regenerieren, einmal pro Sekunde aufrufen
+        if (properties.getHitpointRegeneration() != 0 && gametick % (1000 / CompileTimeParameters.SERVER_TICKRATE) == 0) {
+            double bla = properties.getHitpointRegeneration() + hpRegCarryover;
+            properties.setHitpoints(properties.getHitpoints() + (int) bla);
+            if (properties.getHitpoints() > properties.getMaxHitpoints()) {
+                properties.setHitpoints(properties.getMaxHitpoints());
+            }
+            hpRegCarryover = bla - (int) bla;
         }
     }
 

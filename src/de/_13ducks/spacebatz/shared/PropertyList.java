@@ -32,6 +32,13 @@ public class PropertyList implements Serializable {
      * Die maximalen Lebenspunkte
      */
     private int maxHitpoints;
+    /**
+     * Wieviele HP in der Sekunde regeneriert werden
+     */
+    private double hitpointRegeneration;
+    /**
+     * Sichtweite der Gegner
+     */
     private double sightrange;
     /**
      * Der Bonus auf den Geschwindigkeitsmultiplikator. Der Geschwindigkeitsmultiplikator ist also 1.0 + movespeedMultiplicatorBonus.
@@ -68,6 +75,7 @@ public class PropertyList implements Serializable {
      */
     public void addProperties(PropertyList other) {
         hitpoints += other.getHitpoints();
+        hitpointRegeneration += other.getHitpointRegeneration();
         maxHitpoints += other.getMaxHitpoints();
         sightrange += other.getSightrange();
         armor += other.getArmor();
@@ -85,6 +93,7 @@ public class PropertyList implements Serializable {
      */
     public void removeProperties(PropertyList other) {
         hitpoints -= other.getHitpoints();
+        hitpointRegeneration -= other.getHitpointRegeneration();
         maxHitpoints -= other.getMaxHitpoints();
         sightrange -= other.getSightrange();
         armor -= other.getArmor();
@@ -231,5 +240,19 @@ public class PropertyList implements Serializable {
      */
     public void setArmor(int armor) {
         this.armor = armor;
+    }
+
+    /**
+     * @return the hitpointRegeneration
+     */
+    public double getHitpointRegeneration() {
+        return hitpointRegeneration;
+    }
+
+    /**
+     * @param hitpointRegeneration the hitpointRegeneration to set
+     */
+    public void setHitpointRegeneration(double hitpointRegeneration) {
+        this.hitpointRegeneration = hitpointRegeneration;
     }
 }
