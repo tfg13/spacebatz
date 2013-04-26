@@ -31,6 +31,7 @@ public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
             GameClient.addToInventory(item);
             
             GameClient.player.setHealthpointsmax(GameClient.player.getHealthpointsmax() - item.getBonusProperties().getMaxHitpoints());
+            GameClient.player.setHitpointRegeneration(GameClient.player.getHitpointRegeneration() - item.getBonusProperties().getHitpointRegeneration());
         }
     }
 
