@@ -38,7 +38,7 @@ public class Char {
     /**
      * Die Lebenspunkt-Regeneration pro Sekunde
      */
-    private double hitpointRegeneration;
+    protected double hitpointRegeneration;
     /**
      * Übertrag für HP-Regeneration
      */
