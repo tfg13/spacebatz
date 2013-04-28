@@ -8,6 +8,7 @@ import de._13ducks.spacebatz.client.graphics.controls.Inventory;
 import de._13ducks.spacebatz.client.graphics.controls.QuestControl;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
 import java.lang.reflect.Field;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -80,6 +81,8 @@ public class GraphicsEngine {
      */
     public void initialise() {
         try {
+            // Hat die Platform alles was wir brauchen?
+            checkCapabilities();
             // Fenster erzeugen:
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create(new PixelFormat(8, 8, 8)); // Die dritte acht erzeugt/aktiviert den Stencil-Buffer mit 8 Bits pro Pixel.
@@ -235,5 +238,29 @@ public class GraphicsEngine {
      */
     public boolean isMenuActive() {
         return activeMenu != null;
+    }
+
+    private void checkCapabilities() {
+        int cursorcap = Cursor.getCapabilities();
+        System.out.print("INFO: GFX: 1-Bit cursor transparency is ");
+        if ((cursorcap & Cursor.CURSOR_ONE_BIT_TRANSPARENCY) != 0) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: 8-Bit cursor transparency is ");
+        if ((cursorcap & Cursor.CURSOR_8_BIT_ALPHA) != 0) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: Cursor animation is ");
+        if ((cursorcap & Cursor.CURSOR_ANIMATION) != 0) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
     }
 }
