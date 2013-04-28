@@ -17,7 +17,7 @@ class ShooterShootBehaviour extends Behaviour {
     @Override
     public Behaviour tick(int gameTick) {
         // schießen wenn möglich:
-        owner.getShootAbility().tryUseOnPosition(owner, target.getX() - owner.getX(), target.getY() - owner.getY());
+        owner.getShootAbility().tryUseOnPosition(owner, target.getX(), target.getY());
         if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < 4) {
             return this;
         } else {

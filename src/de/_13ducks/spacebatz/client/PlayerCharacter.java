@@ -80,6 +80,7 @@ public class PlayerCharacter extends Char {
         selectedattack = 0;
         healthpoints = CompileTimeParameters.CHARHEALTH;
         healthpointsmax = CompileTimeParameters.CHARHEALTH;
+        hitpointRegeneration = CompileTimeParameters.PLAYERHEALTH_REGENERATION;
     }
 
     /**

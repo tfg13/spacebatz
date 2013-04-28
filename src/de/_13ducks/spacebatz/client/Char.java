@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.util.geo.Vector;
@@ -35,6 +36,14 @@ public class Char {
      */
     protected int healthpointsmax;
     /**
+     * Die Lebenspunkt-Regeneration pro Sekunde
+     */
+    protected double hitpointRegeneration;
+    /**
+     * Übertrag für HP-Regeneration
+     */
+    private double hpRegCarryover;
+    /**
      * Die netID.
      */
     public final int netID;
@@ -43,13 +52,11 @@ public class Char {
      */
     private double x, y;
     /**
-     * Die Richtung, in die dieser Char schaut.
-     * Die übliche PI-Einheitskreis-Zählweise
+     * Die Richtung, in die dieser Char schaut. Die übliche PI-Einheitskreis-Zählweise
      */
     private double dir = 0;
     /**
-     * Die Richtung, in die dieser Char schauen soll.
-     * Er dreht sich in jedem Tick etwas in diese Richtung.
+     * Die Richtung, in die dieser Char schauen soll. Er dreht sich in jedem Tick etwas in diese Richtung.
      */
     private double target_dir = 0;
     /**
@@ -112,8 +119,7 @@ public class Char {
     }
 
     /**
-     * Interne Wegberechungsmethode, die nicht überschrieben werden kann,
-     * und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
      *
      * @return die aktuelle X-Position, Bewegungen eingerechnet
      */
@@ -122,8 +128,7 @@ public class Char {
     }
 
     /**
-     * Interne Wegberechungsmethode, die nicht überschrieben werden kann,
-     * und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
      *
      * @return die aktuelle Y-Position, Bewegungen eingerechnet
      */
@@ -217,7 +222,7 @@ public class Char {
     public int getHealthpointsmax() {
         return healthpointsmax;
     }
-    
+
     public void setHealthpointsmax(int healthpointsmax) {
         this.healthpointsmax = healthpointsmax;
     }
@@ -286,6 +291,16 @@ public class Char {
                 dir = turnCurrent - 2 * Math.PI;
             }
         }
+
+        // Chars können HP regenerieren, einmal pro Sekunde aufrufen
+        if (getHitpointRegeneration() != 0 && gameTick % (1000 / CompileTimeParameters.SERVER_TICKRATE) == 0) {
+            double bla = getHitpointRegeneration() + hpRegCarryover;
+            healthpoints += (int) bla;
+            if (healthpoints > healthpointsmax) {
+                healthpoints = healthpointsmax;
+            }
+            hpRegCarryover = bla - (int) bla;
+        }
     }
 
     /**
@@ -307,5 +322,19 @@ public class Char {
      */
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
+    }
+
+    /**
+     * @return the hitpointRegeneration
+     */
+    public double getHitpointRegeneration() {
+        return hitpointRegeneration;
+    }
+
+    /**
+     * @param hitpointRegeneration the hitpointRegeneration to set
+     */
+    public void setHitpointRegeneration(double hitpointRegeneration) {
+        this.hitpointRegeneration = hitpointRegeneration;
     }
 }

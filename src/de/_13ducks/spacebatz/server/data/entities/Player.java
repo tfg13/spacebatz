@@ -87,6 +87,7 @@ public class Player extends ItemCarrier {
         this.client = client;
         skillTree = new MarsroverSkilltree();
         abilities = new SpellBook();
+        properties.setHitpointRegeneration(CompileTimeParameters.PLAYERHEALTH_REGENERATION);
     }
 
     /**

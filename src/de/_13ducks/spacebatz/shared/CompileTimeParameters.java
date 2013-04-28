@@ -15,14 +15,14 @@ package de._13ducks.spacebatz.shared;
  * Im Gegensatz zu dem Settings sind diese hier final und können deshalb ins
  * Ziel direkt eincompiliert werden.
  * Dafür lassen diese Werte sich aber nicht so einfach wie Settings überschreiben.
- * 
+ *
  * Faustregel für Trennung zwischen DefaultSettings und CompileTimeParameters:
  * Werte, die bei mehreren Clients auf dem gleichen Server konstant sein müssen hier rein.
  *
  * @author tfg
  */
 public final class CompileTimeParameters {
-    
+
     /**
      * Privater Konstruktor, da Utility-Class.
      */
@@ -55,6 +55,10 @@ public final class CompileTimeParameters {
      */
     public static final int CHARHEALTH = 100;
     /**
+     * Die HP-Regeneration der Player (pro Sekunde)
+     */
+    public static final double PLAYERHEALTH_REGENERATION = 0.5;
+    /**
      * Abstand bei der double noch als "gleich" gilt.
      */
     public static final double DOUBLE_EQUALS_DIST = 0.0001;
@@ -71,16 +75,13 @@ public final class CompileTimeParameters {
      */
     public static final int NUMBER_OF_MATERIALS = 3;
     /**
-     * Maximal zulässiger Unterschied zwischen Logik-Tickzählung des Clients,
-     * und Originaltick des letzten verarbeiteten Pakets.
-     * Bei größeren Werten wird der strengere Pakettick bevorzugt, bis es sich wieder normalisiert.
+     * Maximal zulässiger Unterschied zwischen Logik-Tickzählung des Clients, und Originaltick des letzten verarbeiteten Pakets. Bei größeren Werten wird der strengere Pakettick bevorzugt, bis es sich
+     * wieder normalisiert.
      */
     public static final int CLIENT_NET_ACCEPTABLE_LOGIC_DELTA = 4;
     /**
-     * Maximal zulässige Abweichung der vorhergesagten Spielerposition mit der vom Server empfangenen.
-     * Angabe in Feldern pro Tick eingestelltem Lerp.
-     * Bei einem Wert von 0.5 und Lerp 10 darf die Position also bis zu 5 Felder abweichen.
+     * Maximal zulässige Abweichung der vorhergesagten Spielerposition mit der vom Server empfangenen. Angabe in Feldern pro Tick eingestelltem Lerp. Bei einem Wert von 0.5 und Lerp 10 darf die
+     * Position also bis zu 5 Felder abweichen.
      */
     public static final double CLIENT_PREDICT_MAX_DELTA_PER_LERP = 0.5;
-    
 }

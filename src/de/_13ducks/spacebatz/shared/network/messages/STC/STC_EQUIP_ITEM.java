@@ -34,6 +34,7 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
             GameClient.getItems()[inventoryslot] = null;
             
             GameClient.player.setHealthpointsmax(GameClient.player.getHealthpointsmax() + item.getBonusProperties().getMaxHitpoints());
+            GameClient.player.setHitpointRegeneration(GameClient.player.getHitpointRegeneration() + item.getBonusProperties().getHitpointRegeneration());
             
         }
         GameClient.players.get(clientID4).getPlayer().setPrediction_speed(newspeed);
