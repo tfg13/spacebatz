@@ -910,8 +910,6 @@ public class GodControl implements Control {
      * @return true, wenn drüber, sonst false
      */
     private boolean mouseOverChar(Char c, Camera cam) {
-        float logicMouseX = (1f * Mouse.getX() / Display.getWidth() * cam.getTilesX()) - panX;
-        float logicMouseY = (1f * Mouse.getY() / Display.getHeight() * cam.getTilesY()) - panY;
         return (logicMouseX >= c.getX() - c.getSize() && logicMouseX <= c.getX() + c.getSize() && logicMouseY >= c.getY() - c.getSize() && logicMouseY <= c.getY() + c.getSize());
     }
 
