@@ -17,7 +17,7 @@ class KiterShootBehaviour extends Behaviour {
     @Override
     public Behaviour tick(int gameTick) {
         // schießen wenn möglich:
-        owner.getShootAbility().tryUseOnPosition(owner, target.getX() - owner.getX(), target.getY() - owner.getY());
+        owner.getShootAbility().tryUseOnPosition(owner, target.getX(), owner.getY());
         double distance = Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY());
         if (distance < 4) {
             // Zu nah dran, wegrennen
