@@ -728,15 +728,7 @@ public class GodControl implements Control {
     }
 
     public void sendAbilityRequest(byte ability) {
-        double dx = Mouse.getX() - Display.getWidth() / 2;
-        double dy = Mouse.getY() - Display.getHeight() / 2;
-        double dir = Math.atan2(dy, dx);
-        if (dir < 0) {
-            dir += 2 * Math.PI;
-        }
-        // Fragwürdige Berechnung der Distanz:
-        float distance = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * GameClient.getEngine().getGraphics().getCamera().getTilesX() / Display.getWidth();
-        CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, (float) dir, distance);
+        CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, logicMouseX, logicMouseY);
     }
 
     /**
