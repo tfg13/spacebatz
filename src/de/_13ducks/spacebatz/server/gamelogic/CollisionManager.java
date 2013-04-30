@@ -14,7 +14,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
-import de._13ducks.spacebatz.util.geo.Distance;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.IntVector;
 import de._13ducks.spacebatz.util.geo.Vector;
@@ -103,7 +102,7 @@ public class CollisionManager {
                         Entity e2 = iter2.next();
                         if (e2 instanceof Enemy) {
                             Enemy mob = (Enemy) e2;
-                            double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
+                            double distance = GeoTools.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
                             if (distance < CompileTimeParameters.SERVER_COLLISION_DISTANCE) {
                                 mob.onCollision(mover);
                             }

@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.server.ai.behaviour.impl.lurker;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 
 /**
  * Wartet eine bestimmte Zeit, schießt dann jeden Tick auf das Ziel.
@@ -28,7 +28,7 @@ class LurkerAttackBehaviour extends Behaviour {
 
     @Override
     public Behaviour tick(int gameTick) {
-        if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) > owner.getProperties().getSightrange()) {
+        if (GeoTools.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) > owner.getProperties().getSightrange()) {
             return new LurkerLurkBehaviour(owner);
         } else if (timeTillAttack == 0) {
             owner.getShootAbility().tryUseOnPosition(owner, target.getX() - owner.getX(), target.getY() - owner.getY());

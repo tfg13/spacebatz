@@ -1,10 +1,9 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.summoner;
 
-import de._13ducks.spacebatz.server.ai.behaviour.impl.kiter.*;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 
 class SummonerSummonBehaviour extends Behaviour {
 
@@ -19,7 +18,7 @@ class SummonerSummonBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         // schießen wenn möglich:
         owner.getShootAbility().tryUseOnPosition(owner, owner.getX(), owner.getY());
-        double distance = Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY());
+        double distance = GeoTools.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY());
         if (distance < 5) {
             // Zu nah dran, wegrennen
             double dx = (owner.getX() - target.getX());

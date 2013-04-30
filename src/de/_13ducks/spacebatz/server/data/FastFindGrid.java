@@ -12,7 +12,7 @@ package de._13ducks.spacebatz.server.data;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -97,7 +97,7 @@ public class FastFindGrid {
         Iterator<Entity> iter = entities.iterator();
         while (iter.hasNext()) {
             Entity e = iter.next();
-            if (Distance.getDistance(e.getX(), e.getY(), x, y) > radius) {
+            if (GeoTools.getDistance(e.getX(), e.getY(), x, y) > radius) {
                 iter.remove();
             }
         }

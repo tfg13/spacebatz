@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.server.ai.behaviour.impl.shooter;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 
 class ShooterShootBehaviour extends Behaviour {
 
@@ -18,7 +18,7 @@ class ShooterShootBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         // schießen wenn möglich:
         owner.getShootAbility().tryUseOnPosition(owner, target.getX(), target.getY());
-        if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < 4) {
+        if (GeoTools.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < 4) {
             return this;
         } else {
             return new ShooterApproachIndirectBehaviour(owner, target);
