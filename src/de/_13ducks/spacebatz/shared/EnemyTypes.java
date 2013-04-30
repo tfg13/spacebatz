@@ -139,7 +139,7 @@ public class EnemyTypes implements java.io.Serializable {
         boss.abilityAttackspeed = 1;
         boss.abilityBulletpic = 2;
         boss.abilityBulletspeed = 0.15;
-        boss.abilityDamage = 120;
+        boss.abilityDamage = 30;
         boss.abilityDamagespread = 0;
         boss.abilityExplosionradius = 0;
         boss.abilityMaxoverheat = 10;
