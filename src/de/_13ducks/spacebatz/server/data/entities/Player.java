@@ -126,7 +126,7 @@ public class Player extends ItemCarrier {
                 // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
                 double aspeed = standardAttack.getWeaponStats().getAttackspeed();
                 if (getActiveWeapon() != null) {
-                    aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed();
+                    aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
                 }
 
                 if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {

@@ -31,11 +31,9 @@ public class ItemAttributeTypes {
         attributelist = new ArrayList<>();
         if (quality >= 3) {
 
-            ItemAttribute moreEverything = new ItemAttribute("More Everything");
+            ItemAttribute moreEverything = new ItemAttribute("+100% Attackspeed");
             moreEverything.setQuality(3);
-            moreEverything.weaponStats.setDamagemultiplicator(0.5);
-            moreEverything.weaponStats.setAttackspeed(0.02);
-            moreEverything.weaponStats.setRange(3);
+            moreEverything.weaponStats.setAttackspeedMultiplicatorBonus(1.00);
             moreEverything.setIsWeaponAttribute(true);
             attributelist.add(moreEverything);
 
@@ -66,10 +64,10 @@ public class ItemAttributeTypes {
             allDamage.bonusStats.setDamageMultiplicatorBonus(r_alldamage);
             attributelist.add(allDamage);
 
-            double r_evenmoreattackspeed = randomValue(0.05, 0.08, 2);
+            double r_evenmoreattackspeed = randomValue(0.5, 0.8, 2);
             ItemAttribute evenMoreAttackSpeed = new ItemAttribute("+" + (r_evenmoreattackspeed * 100) + "% Attackspeed");
             evenMoreAttackSpeed.setQuality(2);
-            evenMoreAttackSpeed.weaponStats.setAttackspeed(r_evenmoreattackspeed);
+            evenMoreAttackSpeed.weaponStats.setAttackspeedMultiplicatorBonus(r_evenmoreattackspeed);
             evenMoreAttackSpeed.setIsWeaponAttribute(true);
             attributelist.add(evenMoreAttackSpeed);
 
@@ -93,10 +91,10 @@ public class ItemAttributeTypes {
             moreDamage.setIsWeaponAttribute(true);
             attributelist.add(moreDamage);
 
-            double r_moreattackspeed = randomValue(0.02, 0.04, 2);
+            double r_moreattackspeed = randomValue(0.2, 0.4, 2);
             ItemAttribute moreAttackSpeed = new ItemAttribute("+" + (r_moreattackspeed * 100) + "% Attackspeed");
             moreAttackSpeed.setQuality(1);
-            moreAttackSpeed.weaponStats.setAttackspeed(r_moreattackspeed);
+            moreAttackSpeed.weaponStats.setAttackspeedMultiplicatorBonus(r_moreattackspeed);
             moreAttackSpeed.setIsWeaponAttribute(true);
             attributelist.add(moreAttackSpeed);
 
