@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
+import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.geo.Vector;
 
@@ -68,6 +69,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * Der GameTick, in dem zuletzt Sichtkontakt zum Ziel war.
      */
     private int lastSightContact;
+    public boolean dead = false;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -82,7 +84,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         this.move = (InterpolatedMover) super.move;
         move.setEntity(this);
         this.enemytypeID = enemytypeID;
-        EnemyTypeStats estats = Server.game.enemytypes.getEnemytypelist().get(enemytypeID);
+        EnemyTypeStats estats = (new EnemyTypes()).getEnemytypelist().get(enemytypeID);
         getProperties().setHitpoints(estats.healthpoints);
         getProperties().setMaxHitpoints(estats.healthpoints);
         getProperties().setSightrange(estats.sightrange);
@@ -174,6 +176,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void decreaseHitpoints(int damage) {
         super.decreaseHitpoints(damage);
         if (properties.getHitpoints() <= 0) {
+            dead = true;
             EnemySpawner.notifyEnemyDeath();
             Server.game.getEntityManager().removeEntity(netID);
             DropManager.dropItem(getX(), getY(), enemylevel);
@@ -383,8 +386,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void setLastSightContact(int lastSightContact) {
         this.lastSightContact = lastSightContact;
     }
-    
-    public void targetDied(){
+
+    public void targetDied() {
         this.behaviour = behaviour.onTargetDeath();
     }
 }

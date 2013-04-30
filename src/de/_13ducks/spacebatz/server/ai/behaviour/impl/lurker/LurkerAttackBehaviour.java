@@ -31,15 +31,15 @@ class LurkerAttackBehaviour extends Behaviour {
         if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) > owner.getProperties().getSightrange()) {
             return new LurkerLurkBehaviour(owner);
         } else if (timeTillAttack == 0) {
-            owner.getShootAbility().tryUseOnPosition(owner, target.getX() - owner.getX(), target.getY() - owner.getY());
+            owner.getShootAbility().tryUseOnPosition(owner, target.getX(), target.getY());
         } else {
             timeTillAttack--;
 
         }
         return this;
     }
-    
-     @Override
+
+    @Override
     public Behaviour onTargetDeath() {
         return new LurkerLurkBehaviour(owner);
     }

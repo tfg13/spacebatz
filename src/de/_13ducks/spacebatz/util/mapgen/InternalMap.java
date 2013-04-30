@@ -26,6 +26,7 @@ public class InternalMap {
     public HashMap<Integer, Entity> startEntitys = new HashMap<>();
     public ArrayList<Quest> quests = new ArrayList<>();
     public String hash;
+    private int netId;
 
     /**
      * Wandelt die interne Map-Darstellung in ein ServerLevel um.
@@ -49,5 +50,14 @@ public class InternalMap {
         level.respawnX = spawn[0];
         level.respawnY = spawn[1];
         return level;
+    }
+
+    /**
+     * Gibt die nächste freie netId.
+     *
+     * @return
+     */
+    public int getNextNetId() {
+        return netId++;
     }
 }

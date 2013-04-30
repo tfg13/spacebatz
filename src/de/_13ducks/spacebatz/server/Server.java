@@ -54,6 +54,7 @@ public final class Server {
     public static void startServer() {
         game = new Game();
         entityMap = new FastFindGrid(game.getLevel().getSizeX(), game.getLevel().getSizeY());
+        game.initMapEntities();
         serverNetwork2.start();
 
         MainLoop mainLoop = new MainLoop();

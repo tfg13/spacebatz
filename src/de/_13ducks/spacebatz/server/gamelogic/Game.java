@@ -105,7 +105,6 @@ public class Game {
         entityManager = new EntityManager();
         clients = new HashMap<>();
         loadOrReloadLevel();
-        initMapEntities();
         enemytypes = new EnemyTypes();
         pathfinder = new AStarPathfinder();
 
@@ -182,7 +181,7 @@ public class Game {
      * bei Laden in die Spiel-Datenstrukturen, so
      * dass diese sofort nach dem Spielstart vorhanden sind.
      */
-    private void initMapEntities() {
+    public void initMapEntities() {
         for (Integer i : level.initNetMap.keySet()) {
             entityManager.addEntity(i, level.initNetMap.get(i));
         }
