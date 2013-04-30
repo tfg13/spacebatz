@@ -274,7 +274,7 @@ public class GodControl implements Control {
 
         // Turret zeigt auf Maus
         if (!freezeScroll) {
-            GameClient.player.setTurretDir(Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)));
+            GameClient.player.setTurretDir(Math.atan2(logicMouseY - GameClient.player.getY(), logicMouseX - GameClient.player.getX()));
         }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
@@ -596,8 +596,8 @@ public class GodControl implements Control {
                     textWriter.renderText("playerpos: " + String.format("%.3f", GameClient.player.getX()), 0, camera.getTilesY() - 2f);
                     textWriter.renderText(String.format("%.3f", GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
                     // Mausposition:
-                    textWriter.renderText(String.format("Mouse: %.2f", -camera.getPanX() + (Mouse.getX() / (double) DefaultSettings.CLIENT_GFX_RES_X) * camera.getTilesX()), 0, camera.getTilesY() - 2.5f);
-                    textWriter.renderText(String.format("%.2f", -camera.getPanY() + (Mouse.getY() / (double) DefaultSettings.CLIENT_GFX_RES_Y) * camera.getTilesY()), 6.5f, camera.getTilesY() - 2.5f);
+                    textWriter.renderText(String.format("Mouse: %.2f", logicMouseX), 0, camera.getTilesY() - 2.5f);
+                    textWriter.renderText(String.format("%.2f", logicMouseY), 6.5f, camera.getTilesY() - 2.5f);
                 }
                 if (NetStats.netGraph >= 3) {
                     textWriter.renderText("----------SERVER-NET----------", 0, camera.getTilesY() - 3f);

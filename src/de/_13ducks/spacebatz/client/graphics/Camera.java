@@ -48,8 +48,8 @@ public class Camera {
     public final void setZoomFact(float zoomFact) {
         glLoadIdentity();
         GLU.gluOrtho2D(0f, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0f, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
-        tilesX = (int) Math.ceil(CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact));
-        tilesY = (int) Math.ceil(CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+        tilesX = CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact);
+        tilesY = CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact);
         zoomFactor = zoomFact;
     }
 
