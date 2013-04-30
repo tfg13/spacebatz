@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.EntityLinearTargetObserver;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.Movement;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
@@ -412,11 +413,7 @@ public class InterpolatedMover implements Mover {
      * @return die Richtung in die sich diese Einheit gerade bewegt
      */
     public double getDirection() {
-        double dir = Math.atan2(vecY, vecX);
-        if (dir < 0) {
-            dir += 2 * Math.PI;
-        }
-        return dir;
+        return GeoTools.toAngle(vecX, vecY);
     }
 
     /**

@@ -23,6 +23,7 @@ import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.IOException;
 import java.util.Iterator;
@@ -274,7 +275,7 @@ public class GodControl implements Control {
 
         // Turret zeigt auf Maus
         if (!freezeScroll) {
-            GameClient.player.setTurretDir(Math.atan2(logicMouseY - GameClient.player.getY(), logicMouseX - GameClient.player.getX()));
+            GameClient.player.setTurretDir(GeoTools.toAngle(logicMouseX - GameClient.player.getX(), logicMouseY - GameClient.player.getY()));
         }
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
