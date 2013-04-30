@@ -6,7 +6,6 @@ import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
-import de._13ducks.spacebatz.util.geo.Distance;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 
@@ -71,7 +70,7 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             double spawnX = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
             double spawnY = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
 
-            Vector newTarget = new Vector(user.getX(), user.getY()).add(new Vector(newangle).multiply(Distance.getDistance(x, y, user.getX(), user.getY())));
+            Vector newTarget = new Vector(user.getX(), user.getY()).add(new Vector(newangle).multiply(GeoTools.getDistance(x, y, user.getX(), user.getY())));
 
             Bullet bullet = new Bullet(lifetime, spawnX, spawnY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 

@@ -1,8 +1,7 @@
 package de._13ducks.spacebatz.server.ai.astar;
 
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.IntVector;
-import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -182,7 +181,7 @@ class AStarImplementation {
      * @return
      */
     private static float getWeight(AStarNode current, AStarNode successor) {
-        return (float) Distance.getDistance(current.x, current.y, successor.x, successor.y);
+        return (float) GeoTools.getDistance(current.x, current.y, successor.x, successor.y);
     }
 
     /**

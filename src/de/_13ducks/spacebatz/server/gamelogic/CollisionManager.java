@@ -14,7 +14,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.abilities.HitscanAbility;
 import de._13ducks.spacebatz.server.data.entities.*;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.IntVector;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class CollisionManager {
                         Entity e2 = iter2.next();
                         if (e2 instanceof Enemy) {
                             Enemy mob = (Enemy) e2;
-                            double distance = Distance.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
+                            double distance = GeoTools.getDistance(mover.getX(), mover.getY(), mob.getX(), mob.getY());
                             if (distance < CompileTimeParameters.SERVER_COLLISION_DISTANCE) {
                                 mob.onCollision(mover);
                             }
@@ -155,13 +155,7 @@ public class CollisionManager {
                 // Hitscan-Gerade nah genug am Gegner?
                 if (distance < CompileTimeParameters.CHARSIZE / 2) {
                     // Nicht hinter dem Abilityuser?
-                    double dx = s.x - x;
-                    double dy = s.y - y;
-                    double testangle = Math.atan2(dy, dx); // zwischen 0 und 2 pi
-                    if (testangle < 0) {
-                        testangle += 2 * Math.PI;
-                    }
-
+                    double testangle = GeoTools.toAngle(s.x - x, s.y - y);
                     if (testangle < angle + Math.PI / 2 && testangle > angle - Math.PI / 2) {
                         charsHit.add(c);
                     }

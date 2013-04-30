@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.server.ai.behaviour.impl;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 
 /**
  * Lässt den Besitzer in Luftlinie zu sienem Ziel laufen.
@@ -38,7 +38,7 @@ public abstract class GenericDirectPursuitBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         if (!owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
             return lostSight(target, owner);
-        } else if (Distance.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < desiredDistance) {
+        } else if (GeoTools.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < desiredDistance) {
             return reachedDesiredDistance(target, owner);
         } else {
             if (!owner.move.isFollowingTarget(target)) {

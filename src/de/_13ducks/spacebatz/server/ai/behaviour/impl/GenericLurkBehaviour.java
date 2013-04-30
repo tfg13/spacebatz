@@ -6,7 +6,7 @@ import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 
 /**
  * Wartet bis ein Spieler in Sichtweite ist oder auf uns schießt.
@@ -23,7 +23,7 @@ public abstract class GenericLurkBehaviour extends Behaviour {
     @Override
     public Behaviour tick(int gameTick) {
         for (Entity target : Server.entityMap.getEntitiesAroundPoint(owner.getX(), owner.getY(), owner.getProperties().getSightrange())) {
-            if (target instanceof Player && Distance.getDistance(target.getX(), target.getY(), owner.getX(), owner.getY()) < owner.getProperties().getSightrange() && !((Player) target).dead) {
+            if (target instanceof Player && GeoTools.getDistance(target.getX(), target.getY(), owner.getX(), owner.getY()) < owner.getProperties().getSightrange() && !((Player) target).dead) {
                 return targetSpotted((Player) target);
             }
         }

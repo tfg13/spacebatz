@@ -1,13 +1,12 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.summoner;
 
-import de._13ducks.spacebatz.server.ai.behaviour.impl.kiter.*;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.Distance;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 
 /**
  *
@@ -41,25 +40,19 @@ public class SummonerBehaviour extends Behaviour {
             // wenn er kein Ziel hat sucht er ob eines in dwer Nähe ist:
             for (Client client : Server.game.clients.values()) {
                 Player player = client.getPlayer();
-                if (owner.getProperties().getSightrange() > Distance.getDistance(owner.getX(), owner.getY(), player.getX(), player.getY())) {
+                if (owner.getProperties().getSightrange() > GeoTools.getDistance(owner.getX(), owner.getY(), player.getX(), player.getY())) {
                     myTarget = player;
                 }
             }
         } else {
             // wenn er eins hat schaut er ob es noch in reichweite ist:
-            if (owner.getProperties().getSightrange() * 2 < Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
+            if (owner.getProperties().getSightrange() * 2 < GeoTools.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                 myTarget = null;
                 owner.move.stopMovement();
             } else {
                 // Wenn wir schon nahe genug dran sind anhalten:
-                if (3.0 > Distance.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
+                if (3.0 > GeoTools.getDistance(owner.getX(), owner.getY(), myTarget.getX(), myTarget.getY())) {
                     owner.move.stopMovement();
-                    double dx = myTarget.getX() - owner.getX();
-                    double dy = myTarget.getY() - owner.getY();
-                    double dir = Math.atan2(dy, dx);
-                    if (dir < 0) {
-                        dir += 2 * Math.PI;
-                    }
                     if (gameTick - lastShootTick > 120) {
                         shootAbility.tryUseOnPosition(owner, myTarget.getX(), myTarget.getY());
                         lastShootTick = gameTick;
