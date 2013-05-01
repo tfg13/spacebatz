@@ -53,7 +53,7 @@ public class Bullet extends Char {
             if (player.isPredicted()) {
                 // Startposition verschieben
                 Vector predictionDelta = player.getPredictionDelta();
-                Vector newStart = predictionDelta.getInverted().add(new Vector(movement.startX, movement.startY));
+                Vector newStart = predictionDelta.invert().add(new Vector(movement.startX, movement.startY));
                 Vector direction = new Vector(movement.vecX - newStart.x, movement.vecY - newStart.y).normalize();
                 super.applyMove(new Movement(newStart.x, newStart.y, direction.x, direction.y, movement.startTick, movement.speed));
                 return;

@@ -41,7 +41,8 @@ public final class GeoTools {
     }
 
     /**
-     * Berechnet die Distanz zwischen zwei Punkten
+     * Berechnet die Distanz zwischen zwei Punkten. (euklid)
+     *
      * @param x1 X-Koordinate des ersten Punkts
      * @param y1 Y-Koordinate des ersten Punkts
      * @param x2 X-Koordinate des zweiten Punkts
@@ -50,5 +51,16 @@ public final class GeoTools {
      */
     public static double getDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
+    /**
+     * Berechnet die Distanz zwischen zwei Punkten. (euklid)
+     *
+     * @param v1̣ Der erste Punkt
+     * @param v2 Der zweite Punkt
+     * @return die Distanz der Punkte als double
+     */
+    public static double getDistance(Vector v1, Vector v2) {
+        return getDistance(v1.x, v1.y, v2.x, v2.y);
     }
 }

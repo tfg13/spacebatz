@@ -57,11 +57,21 @@ public class Vector {
     }
 
     /**
+     * Liefert den Vector, der herauskommt, wenn man den gegebenen von diesem abzieht.
+     *
+     * @param vector was abgezogen wird
+     * @return neuer Vector
+     */
+    public Vector substract(Vector vector) {
+        return new Vector(x - vector.x, y - vector.y);
+    }
+
+    /**
      * Liefert eine invertierte Kopie dieses Vektors.
      *
      * @return
      */
-    public Vector getInverted() {
+    public Vector invert() {
         return new Vector(-x, -y);
     }
 
@@ -101,7 +111,7 @@ public class Vector {
     public boolean isParallel(Vector vec) {
         vec = vec.normalize();
         Vector meNormal = this.normalize();
-        return (vec.equals(meNormal) || vec.equals(meNormal.getInverted()));
+        return (vec.equals(meNormal) || vec.equals(meNormal.invert()));
     }
 
     /**

@@ -268,7 +268,7 @@ public class GodControl implements Control {
             renderer.getCamera().setPanY((float) -GameClient.player.getY() + camera.getTilesY() / 2.0f);
         } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
-            Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).getInverted().multiply(20f / Display.getHeight());
+            Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
             renderer.getCamera().setPanX((float) (-GameClient.player.getX() + camera.getTilesX() / 2.0f + vec.x));
             renderer.getCamera().setPanY((float) (-GameClient.player.getY() + camera.getTilesY() / 2.0f + vec.y));
         }
