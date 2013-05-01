@@ -75,6 +75,10 @@ public class GodControl implements Control {
      */
     private float panX, panY;
     /**
+     * Kopie vom tiles der Kamera, aus Performance-Gründen
+     */
+    private float tilesX, tilesY;
+    /**
      * Links auf die Shader.
      */
     private int[] shader;
@@ -284,6 +288,8 @@ public class GodControl implements Control {
         // Werte cachen
         panX = renderer.getCamera().getPanX();
         panY = renderer.getCamera().getPanY();
+        tilesX = renderer.getCamera().getTilesX();
+        tilesY = renderer.getCamera().getTilesY();
         int[][] ground = GameClient.currentLevel.ground;
         byte[][] ground_random = GameClient.currentLevel.ground_randomize;
         // Boden zuerst
@@ -366,8 +372,8 @@ public class GodControl implements Control {
         // Enemies zeichnen:
         enemyTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
-            if (!c.isInvisible()) {
-                if (c instanceof Enemy) {
+            if (c instanceof Enemy) {
+                if (inSight(c) && !c.isInvisible()) {
                     Enemy enemy = (Enemy) c;
 
                     // Werte fürs Einfärben nehmen und rendern
@@ -383,7 +389,7 @@ public class GodControl implements Control {
         playerTiles.bind();
         for (LogicPlayer p : GameClient.players.values()) {
             PlayerCharacter player = p.getPlayer();
-            if (player != null && !p.isDead()) {
+            if (player != null && inSight(player) && !p.isDead()) {
                 renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
                 renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
             }
@@ -392,7 +398,7 @@ public class GodControl implements Control {
         // Namen einblenden?
         for (LogicPlayer p : GameClient.players.values()) {
             PlayerCharacter player = p.getPlayer();
-            if (player != null && !p.isDead()) {
+            if (player != null && inSight(player) && !p.isDead()) {
                 if ((showNickNames == 1 && mouseOverChar(player, camera)) || showNickNames == 2) {
                     textWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
                 }
@@ -403,7 +409,7 @@ public class GodControl implements Control {
         // Bullets zeichnen
         bulletTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
-            if (c instanceof Bullet) {
+            if (c instanceof Bullet && inSight(c)) {
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
             }
         }
@@ -660,6 +666,13 @@ public class GodControl implements Control {
         } else {
             return layer[x][y];
         }
+    }
+
+    private boolean inSight(Char c) {
+        double x = c.getX();
+        double y = c.getY();
+        double size = c.getSize();
+        return (x + size >= -panX && x - size <= -panX + tilesX && y + size >= -panY && y - size <= -panY + tilesY);
     }
 
     /**
