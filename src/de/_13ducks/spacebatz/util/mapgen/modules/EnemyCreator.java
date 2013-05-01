@@ -22,13 +22,13 @@ import java.util.Random;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class EnemyFiller extends Module {
+public class EnemyCreator extends Module {
 
     private InternalMap map;
 
     @Override
     public String getName() {
-        return "enemyfiller";
+        return "enemycreator";
     }
 
     @Override
@@ -110,14 +110,14 @@ public class EnemyFiller extends Module {
     private List<Vector> calcSpawnLocations(MPolygon poly) {
         ArrayList<Vector> spawnPositions = new ArrayList<>();
         // Alle Felder einfügen, die das Polygon enthält
-        int fromX = (int) Math.floor(poly.outRect.smallX);
-        int toX = (int) Math.ceil(poly.outRect.largeX);
-        int fromY = (int) Math.floor(poly.outRect.smallY);
-        int toY = (int) Math.ceil(poly.outRect.largeY);
+        int fromX = (int) Math.floor(poly.outRect.smallX * map.groundTex.length);
+        int toX = (int) Math.ceil(poly.outRect.largeX * map.groundTex.length);
+        int fromY = (int) Math.floor(poly.outRect.smallY * map.groundTex[0].length);
+        int toY = (int) Math.ceil(poly.outRect.largeY * map.groundTex[0].length);
         for (int x = fromX; x <= toX; x++) {
             for (int y = fromY; y <= toY; y++) {
                 // Genau prüfen, ob enthalten:
-                if (poly.contains(x, y)) {
+                if (poly.contains(1.0 * x / map.groundTex.length, 1.0 * y / map.groundTex[0].length)) {
                     spawnPositions.add(new Vector(x, y));
                 }
             }
