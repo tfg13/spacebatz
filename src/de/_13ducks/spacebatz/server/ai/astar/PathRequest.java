@@ -184,7 +184,8 @@ public class PathRequest {
         // bei kolliison oben und unten oder links und rechts fehler!
 
         if ((topCollision && botCollision) || (leftCollision && rightCollision)) {
-            throw new IllegalStateException("OMG Entity ist zwischen Wänden eingeklemmt!");
+//            throw new IllegalStateException("OMG Entity ist zwischen Wänden eingeklemmt!");
+            System.out.println("OMG Entity ist zwischen Wänden eingeklemmt!");
         }
 
 
