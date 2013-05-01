@@ -9,6 +9,7 @@ import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.data.quests.Quest;
+import de._13ducks.spacebatz.server.gamelogic.EnemyFactory;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.network.BitEncoder;
@@ -27,32 +28,32 @@ import java.util.Random;
  * @author michael
  */
 public class BossQuestGenerator extends Module {
-    
+
     @Override
     public String getName() {
         return "bossquest";
     }
-    
+
     @Override
     public boolean requiresSeed() {
         return true;
     }
-    
+
     @Override
     public String[] provides() {
         return new String[]{};
     }
-    
+
     @Override
     public boolean computesPolygons() {
         return false;
     }
-    
+
     @Override
     public String[] requires() {
         return new String[]{"SPAWN"};
     }
-    
+
     @Override
     public void computeMap(final InternalMap map, HashMap<String, String> parameters) {
         Random random = new Random(Long.parseLong(parameters.get("SEED")));
@@ -71,23 +72,17 @@ public class BossQuestGenerator extends Module {
         final double x = targetPoly.calcCenter().x * map.topTex.length;
         final double y = targetPoly.calcCenter().y * map.topTex[0].length;
         final int netId = map.getNextNetId();
-        Enemy boss = new Enemy(x, y, netId, 6, Teams.Team.MOBS);
-        boss.setBehaviour(new ShooterLurkBehaviour(boss));
-        EnemyTypeStats stats = (new EnemyTypes()).getEnemytypelist().get(6);
-        FireBulletAbility shoot = new FireBulletAbility(stats.abilityDamage, stats.abilityDamagespread, stats.abilityAttackspeed, stats.abilityRange, stats.abilityBulletpic, stats.abilityBulletspeed, stats.abilitySpread, stats.abilityExplosionradius, stats.abilityMaxoverheat, stats.abilityReduceoverheat);
-        shoot.setCooldown(100);
-        boss.setShootAbility(shoot);
-        
+        Enemy boss = EnemyFactory.createEnemy(x, y, netId, 6);
         map.startEntitys.put(netId, boss);
         // Quest bauen:
         Quest q = new Quest() {
             Enemy boss;
-            
+
             @Override
             public void tick() {
                 // Quest macht nichts spezielles an der Spielmechanik
             }
-            
+
             @Override
             protected int checkState() {
                 if (boss == null) {
@@ -99,17 +94,17 @@ public class BossQuestGenerator extends Module {
                     return Quest.STATE_RUNNING;
                 }
             }
-            
+
             @Override
             public String getName() {
                 return "BossQuest";
             }
-            
+
             @Override
             public boolean isHidden() {
                 return false;
             }
-            
+
             @Override
             public byte[] getClientData() {
                 BitEncoder encoder = new BitEncoder();

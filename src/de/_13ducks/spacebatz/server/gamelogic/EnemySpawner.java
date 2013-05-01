@@ -271,41 +271,7 @@ public class EnemySpawner {
             if (pos != null) {
                 // Einen zufälligen Gegner aus der EnemytypeList wählen:
                 int enemytype = random.nextInt(Server.game.enemytypes.getEnemytypelist().size());
-                Enemy enem = new Enemy(pos[0], pos[1], Server.game.newNetID(), enemytype, Team.MOBS);
-                EnemyTypeStats stats = Server.game.enemytypes.getEnemytypelist().get(enemytype);
-                // AI-Verhalten einrichten:
-                switch (stats.behaviour) {
-                    case SHOOTER:
-                        enem.setBehaviour(new ShooterLurkBehaviour(enem));
-                        break;
-                    case SPECTATOR:
-                        enem.setBehaviour(new SpectatorLurkBehaviour(enem));
-                        break;
-                    case KAMIKAZE:
-                        enem.setBehaviour(new KamikazeLurkBehaviour(enem));
-                        break;
-                    case LURKER:
-                        enem.setBehaviour(new LurkerLurkBehaviour(enem));
-                        break;
-                    case KITER:
-                        enem.setBehaviour(new KiterLurkBehaviour(enem));
-                        break;
-                    case SUMMONER:
-                        enem.setBehaviour(new SummonerLurkBehaviour(enem));
-                        break;
-                }
-                // GGF Ability setzen:
-                switch (stats.shootAbility) {
-                    case FIREBULLET:
-                        enem.setShootAbility(new FireBulletAbility(stats.abilityDamage, stats.abilityDamagespread, stats.abilityAttackspeed, stats.abilityRange, stats.abilityBulletpic, stats.abilityBulletspeed, stats.abilitySpread, stats.abilityExplosionradius, stats.abilityMaxoverheat, stats.abilityReduceoverheat));
-                        enem.getShootAbility().setCooldown(100);
-                        break;
-                    case KAMIKAZE:
-                        enem.setShootAbility(new KamikazeAbility(stats.abilityDamage, (int) stats.abilityRange));
-                        break;
-                    case SUMMONENEMYS:
-                        enem.setShootAbility(new SummonEnemyAbility());
-                }
+                Enemy enem = EnemyFactory.createEnemy(pos[0], pos[1], Server.game.newNetID(), enemytype);
                 Server.game.getEntityManager().addEntity(enem.netID, enem);
             }
         }
