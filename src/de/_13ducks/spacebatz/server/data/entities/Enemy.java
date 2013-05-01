@@ -69,7 +69,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * Der GameTick, in dem zuletzt Sichtkontakt zum Ziel war.
      */
     private int lastSightContact;
-    public boolean dead = false;
+    
 
     /**
      * Erzeugt einen neuen Gegner

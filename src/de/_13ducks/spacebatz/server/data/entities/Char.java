@@ -55,6 +55,10 @@ public abstract class Char extends Entity {
      * Übertrag für HP-Regeneration
      */
     private double hpRegCarryover;
+    /**
+     * Gibt an ob der Char tot ist.
+     */
+    public boolean dead = false;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -146,6 +150,9 @@ public abstract class Char extends Entity {
     public void decreaseHitpoints(int damage) {
         properties.setHitpoints(properties.getHitpoints() - damage);
         STC_CHAR_HIT.sendCharHit(netID, damage);
+        if (properties.getHitpoints() <= 0) {
+            dead = true;
+        }
     }
 
     /**
