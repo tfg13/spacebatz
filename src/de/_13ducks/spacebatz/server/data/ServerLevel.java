@@ -16,7 +16,6 @@ import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.Level;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_TOP_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +33,6 @@ public class ServerLevel extends Level {
      * Liste der Typen von zerstörbaren Blocken
      */
     private HashMap<Integer, DestroyableBlockType> destroyableBlockTypes;
-    /**
-     * Die Liste mit Gebieten
-     */
-    private ArrayList<Zone> areas;
     /**
      * Enthält alle vom MapGenerator für diese Map erstellten Quests. Die
      * meisten Quests funktionieren nur auf bestimmten Map-Strukturen und müssen
@@ -65,7 +60,6 @@ public class ServerLevel extends Level {
     public ServerLevel(int xSize, int ySize, String hash, List<Quest> quests, HashMap<Integer, Entity> initIDMap) {
         super(xSize, ySize);
         this.hash = hash;
-        areas = new ArrayList<>();
         destroyableBlockTypes = new HashMap<>();
         destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, -1)); // -1: droppt nichts
         destroyableBlockTypes.put(4, new DestroyableBlockType(11, 3, 1));
@@ -130,30 +124,6 @@ public class ServerLevel extends Level {
      */
     public void addNewDestroyableBlockType(DestroyableBlockType newBlock) {
         destroyableBlockTypes.put(newBlock.texture, newBlock);
-    }
-
-    /**
-     * Fügt der Map ein neues Gebiet hinzu
-     *
-     * @param area das neue Gebiet
-     */
-    public void addArea(Zone area) {
-        areas.add(area);
-    }
-
-    /**
-     * Gibt das Gebiet mit dem angegebenen Namen zurück oder null wenns keins
-     * gibt
-     *
-     * @return das Gebiet mit dem Namen oder null wenns keins gibt
-     */
-    public Zone getArea(String name) {
-        for (Zone area : areas) {
-            if (area.getName().equals(name)) {
-                return area;
-            }
-        }
-        return null;
     }
 
     public String getHash() {

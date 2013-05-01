@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.Polygon;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -109,5 +110,14 @@ public class PolyMesh {
             }
         }
         return null;
+    }
+
+    /**
+     * Liefert einen Iterator über alle MPolygone in diesem Mesh.
+     *
+     * @return einen Iterator über alle MPolygone in diesem Mesh
+     */
+    public Iterator<MPolygon> polyIter() {
+        return polys.iterator();
     }
 }

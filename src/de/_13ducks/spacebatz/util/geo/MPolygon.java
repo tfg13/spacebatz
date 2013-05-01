@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.util.geo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class MPolygon {
     public int resource = 0;
     /**
      * Ist dies der (einzige) Spawn-Polygon?
+     * Im spawn-Polygon spawnt der Spieler.
      */
     public boolean spawn = false;
     /**
@@ -36,6 +38,11 @@ public class MPolygon {
      * (Wird derzeit nur für Freiflächen beachtet)
      */
     public int texture;
+    /**
+     * Was soll in diesem Polygon so spawnen?
+     * Hier geht es um Gegner.
+     */
+    public HashMap<Integer, Integer> spawnInfo;
     /**
      * Eine Liste mit allen Nodes, die auf einer Kante dieses Polygons liegen oder die eine Ecke darstellen.
      */

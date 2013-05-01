@@ -10,14 +10,13 @@
  */
 package de._13ducks.spacebatz.server.data.entities;
 
-import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.data.entities.move.InterpolatedMover;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.server.gamelogic.EnemySpawner;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.EnemyTypes;
@@ -177,7 +176,6 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         super.decreaseHitpoints(damage);
         if (properties.getHitpoints() <= 0) {
             dead = true;
-            EnemySpawner.notifyEnemyDeath();
             Server.game.getEntityManager().removeEntity(netID);
             DropManager.dropItem(getX(), getY(), enemylevel);
         }
@@ -248,8 +246,6 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         double smallestD = Double.MAX_VALUE;
         // Variablen, die wir in jedem Schleifendurchlauf brauchen:
         double blockMidX, blockMidY, d1, d2;
-        // Den Block, mit dem wir kollidieren zwischenspeichern
-        int[] collisionBlock = new int[2];
         // Jetzt alle Blöcke im angegebenen Gebiet checken:
         for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
             for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
@@ -277,8 +273,6 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
                         // Also wenn die Kollision näher ist als die anderen speichern:
                         if (d < smallestD) {
                             smallestD = d;
-                            collisionBlock[0] = x;
-                            collisionBlock[1] = y;
                         }
                     }
                 }
@@ -325,8 +319,6 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
                         // Näher als die von X?
                         if (d < globalsmallestD) {
                             globalsmallestD = d;
-                            collisionBlock[0] = x;
-                            collisionBlock[1] = y;
                         }
                     }
                 }
