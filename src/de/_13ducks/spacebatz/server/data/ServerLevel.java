@@ -69,7 +69,7 @@ public class ServerLevel extends Level {
         destroyableBlockTypes = new HashMap<>();
         destroyableBlockTypes.put(2, new DestroyableBlockType(2, 3, -1)); // -1: droppt nichts
         destroyableBlockTypes.put(4, new DestroyableBlockType(11, 3, 1));
-       // destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, 2));
+        // destroyableBlockTypes.put(12, new DestroyableBlockType(12, 3, 2));
         this.quests = Collections.unmodifiableList(quests);
         this.initNetMap = initIDMap;
     }

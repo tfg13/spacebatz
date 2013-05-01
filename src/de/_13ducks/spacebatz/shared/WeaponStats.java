@@ -26,6 +26,10 @@ public class WeaponStats implements Serializable {
      */
     private double attackspeed;
     /**
+     * Der Angriffsgeschwindigkeit-Multiplikator.
+     */
+    private double attackspeedMultiplicatorBonus;
+    /**
      * In welcher Distanz zum Spieler beim Schiessen z.B. das Bullet gespawnt wird
      */
     private double attackOffset;
@@ -56,9 +60,17 @@ public class WeaponStats implements Serializable {
      */
     private double maxoverheat;
     /**
+     * Nach wievielen Schüssen die Waffe überhitzt ist
+     */
+    private double maxoverheatMultiplicatorBonus;
+    /**
      * Wieviel Overheat pro Gametick abgebaut wird
      */
     private double reduceoverheat;
+    /**
+     * Bonus zu: Wieviel Overheat pro Gametick abgebaut wird
+     */
+    private double reduceoverheatMultiplicatorBonus;
 
     /**
      * Addiert Attribute zu diesen hinzu.
@@ -68,8 +80,9 @@ public class WeaponStats implements Serializable {
     public void addStats(WeaponStats other) {
         damage += other.getDamage();
         damagespread += other.getDamagespread();
-        damageMultiplicatorBonus += other.getDamageMultiplicatorBonus();
+        setDamageMultiplicatorBonus(damageMultiplicatorBonus + other.getDamageMultiplicatorBonus());
         attackspeed += other.getAttackspeed();
+        setAttackspeedMultiplicatorBonus(getAttackspeedMultiplicatorBonus() + other.getAttackspeedMultiplicatorBonus());
         attackOffset += other.attackOffset;
         range += other.getRange();
         bulletpic += other.getBulletpic();
@@ -81,7 +94,9 @@ public class WeaponStats implements Serializable {
         if (maxoverheat > 0) {
             maxoverheat += other.getMaxoverheat();
         }
+        setMaxoverheatMultiplicatorBonus(getMaxoverheatMultiplicatorBonus() + other.getMaxoverheatMultiplicatorBonus());
         reduceoverheat += other.getReduceoverheat();
+        setReduceoverheatMultiplicatorBonus(getReduceoverheatMultiplicatorBonus() + other.getReduceoverheatMultiplicatorBonus());
     }
 
     /**
@@ -207,7 +222,7 @@ public class WeaponStats implements Serializable {
      * @param damagemultiplicator the damagemultiplicator to set
      */
     public void setDamagemultiplicator(double damagemultiplicator) {
-        this.damageMultiplicatorBonus = damagemultiplicator;
+        this.setDamageMultiplicatorBonus(damagemultiplicator);
     }
 
     /**
@@ -258,5 +273,54 @@ public class WeaponStats implements Serializable {
 
     public void setAttackOffset(double attackOffset) {
         this.attackOffset = attackOffset;
+    }
+
+    /**
+     * @param damageMultiplicatorBonus the damageMultiplicatorBonus to set
+     */
+    public void setDamageMultiplicatorBonus(double damageMultiplicatorBonus) {
+        this.damageMultiplicatorBonus = damageMultiplicatorBonus;
+    }
+
+    /**
+     * @return the attackspeedMultiplicatorBonus
+     */
+    public double getAttackspeedMultiplicatorBonus() {
+        return attackspeedMultiplicatorBonus;
+    }
+
+    /**
+     * @param attackspeedMultiplicatorBonus the attackspeedMultiplicatorBonus to set
+     */
+    public void setAttackspeedMultiplicatorBonus(double attackspeedMultiplicatorBonus) {
+        this.attackspeedMultiplicatorBonus = attackspeedMultiplicatorBonus;
+    }
+
+    /**
+     * @return the maxoverheatMultiplicatorBonus
+     */
+    public double getMaxoverheatMultiplicatorBonus() {
+        return maxoverheatMultiplicatorBonus;
+    }
+
+    /**
+     * @param maxoverheatMultiplicatorBonus the maxoverheatMultiplicatorBonus to set
+     */
+    public void setMaxoverheatMultiplicatorBonus(double maxoverheatMultiplicatorBonus) {
+        this.maxoverheatMultiplicatorBonus = maxoverheatMultiplicatorBonus;
+    }
+
+    /**
+     * @return the reduceoverheatMultiplicatorBonus
+     */
+    public double getReduceoverheatMultiplicatorBonus() {
+        return reduceoverheatMultiplicatorBonus;
+    }
+
+    /**
+     * @param reduceoverheatMultiplicatorBonus the reduceoverheatMultiplicatorBonus to set
+     */
+    public void setReduceoverheatMultiplicatorBonus(double reduceoverheatMultiplicatorBonus) {
+        this.reduceoverheatMultiplicatorBonus = reduceoverheatMultiplicatorBonus;
     }
 }
