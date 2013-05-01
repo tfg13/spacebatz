@@ -17,6 +17,7 @@ import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
+import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -181,5 +182,16 @@ public abstract class Char extends Entity {
                 ((Enemy) hunter).targetDied();
             }
         }
+    }
+
+    @Override
+    public int byteArraySize() {
+        return super.byteArraySize() + 2;
+    }
+
+    @Override
+    public void netPack(byte[] b, int offset) {
+        super.netPack(b, offset);
+        Bits.putChar(b, super.byteArraySize() + offset, (isInvisible() ? '1' : '0'));
     }
 }

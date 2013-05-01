@@ -41,7 +41,8 @@ public class STC_ENTITY_CREATE extends STCCommand {
                 GameClient.netIDMap.put(pl.netID, pl);
                 break;
             case 3:
-                Enemy en = new Enemy(netID, size, Bits.getInt(data, 10));
+                Enemy en = new Enemy(netID, size, Bits.getInt(data, 12));
+                en.setInvisible(Bits.getChar(data, 10) == '1');
                 GameClient.netIDMap.put(en.netID, en);
                 break;
             case 4:
