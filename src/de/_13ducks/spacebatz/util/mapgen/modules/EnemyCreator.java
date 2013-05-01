@@ -93,9 +93,15 @@ public class EnemyCreator extends Module {
                 int number = spawnInfo.get(type);
                 // Jetzt so viele Gegner spawnen:
                 for (int i = 0; i < number; i++) {
+                    if (spawnLocations.isEmpty()) {
+                        System.out.println("WARN: MAPGEN: ENEMYCREATOR: Cannot place (all) enemys in " + poly + ", insufficient space");
+                    }
                     // Zufallsposition im Polygon
                     Vector position = spawnLocations.get(random.nextInt(spawnLocations.size()));
                     spawnLocations.remove(position);
+                    spawnLocations.remove(position.substract(Vector.ONE_X));
+                    spawnLocations.remove(position.substract(Vector.ONE_Y));
+                    spawnLocations.remove(position.substract(Vector.ONE_XY));
                     Enemy enemy = EnemyFactory.createEnemy(position.x, position.y, map.getNextNetId(), type);
                     map.startEntitys.put(enemy.netID, enemy);
                 }
@@ -120,10 +126,28 @@ public class EnemyCreator extends Module {
             for (int y = fromY; y <= toY; y++) {
                 // Genau prüfen, ob enthalten:
                 if (poly.contains(1.0 * x / map.groundTex.length, 1.0 * y / map.groundTex[0].length)) {
-                    spawnPositions.add(new Vector(x, y));
+                    // Position ist im Polygon gültig.
+                    // Prüfen, ob auf der gerasterten Map auch genug Platz für eine Einheit der Größe 2 ist.
+                    if (positionFree(x, y) && positionFree(x - 1, y) && positionFree(x, y - 1) && positionFree(x - 1, y - 1)) {
+                        spawnPositions.add(new Vector(x, y));
+                    }
                 }
             }
         }
         return spawnPositions;
+    }
+
+    /**
+     * Findet heraus, ob das gegebenen Feld frei ist.
+     *
+     * @param x X-Koordinate
+     * @param y Y-Koordinate
+     * @return true, wenn frei
+     */
+    private boolean positionFree(int x, int y) {
+        if (x >= 0 && x < map.groundTex.length && y >= 0 && y < map.groundTex[0].length) {
+            return !map.collision[x][y];
+        }
+        return false;
     }
 }
