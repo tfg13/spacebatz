@@ -145,7 +145,7 @@ class NodeFactory {
                         }
                     }
                     // Wenn kein Feld blockiert ist:
-                    if (!blocked) {
+                    if (!blocked && (0 <= x && x <= nodeMap.length) && (0 <= y && y <= nodeMap[0].length)) {
                         neighbors.add(getNode(x, y));
 
                     }
