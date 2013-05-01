@@ -11,6 +11,9 @@ import de._13ducks.spacebatz.shared.CompileTimeParameters;
 public class Vector {
 
     public static final Vector ZERO = new Vector(0, 0);
+    public static final Vector ONE_X = new Vector(1, 0);
+    public static final Vector ONE_Y = new Vector(0, 1);
+    public static final Vector ONE_XY = new Vector(1, 1);
     public final double x;
     public final double y;
 
