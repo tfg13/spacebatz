@@ -87,16 +87,18 @@ public class EnemyCreator extends Module {
         List<Vector> spawnLocations = calcSpawnLocations(poly);
         // Zonen die bevölkert werden sollen, haben eine Menge von Gegnertypen, die da spawnen sollen
         HashMap<Integer, Integer> spawnInfo = poly.spawnInfo;
-        // Spawnen
-        for (Integer type : spawnInfo.keySet()) {
-            int number = spawnInfo.get(type);
-            // Jetzt so viele Gegner spawnen:
-            for (int i = 0; i < number; i++) {
-                // Zufallsposition im Polygon
-                Vector position = spawnLocations.get(random.nextInt(spawnLocations.size()));
-                spawnLocations.remove(position);
-                Enemy enemy = EnemyFactory.createEnemy(position.x, position.y, map.getNextNetId(), type);
-                map.startEntitys.put(enemy.netID, enemy);
+        if (spawnInfo != null) {
+            // Spawnen
+            for (Integer type : spawnInfo.keySet()) {
+                int number = spawnInfo.get(type);
+                // Jetzt so viele Gegner spawnen:
+                for (int i = 0; i < number; i++) {
+                    // Zufallsposition im Polygon
+                    Vector position = spawnLocations.get(random.nextInt(spawnLocations.size()));
+                    spawnLocations.remove(position);
+                    Enemy enemy = EnemyFactory.createEnemy(position.x, position.y, map.getNextNetId(), type);
+                    map.startEntitys.put(enemy.netID, enemy);
+                }
             }
         }
     }

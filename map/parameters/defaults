@@ -8,6 +8,7 @@ perlinterrain 2
  sizey 128
 resourceplacer 0
 spawn 0
+defaultenemyplacer 0
 rasterizer 3
  sizex 128
  sizey 128
@@ -16,3 +17,4 @@ prelight 1
  type underground
 surfacerandomizer 0
 bossquest 0
+enemycreator 0
