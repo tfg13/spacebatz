@@ -288,6 +288,10 @@ public class GodControl implements Control {
         byte[][] ground_random = GameClient.currentLevel.ground_randomize;
         // Boden zuerst
         groundTiles.bind(); // groundTiles-Textur wird jetzt verwendet
+        int dx1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaX");
+        int dy1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaY");
+        int dx2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaX");
+        int dy2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaY");
         for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
                 int tex = realTexAt(ground, ground_random, x, y);
@@ -297,10 +301,6 @@ public class GodControl implements Control {
                     int blendTex = blendTexAt(ground, x, y, patRot >> 4, patRot & 0x0F);
                     if (smoothGround && tex < 32 && blendTex >= 32 && (patRot >> 4) != 5) {
                         ARBShaderObjects.glUseProgramObjectARB(shader[1]);
-                        int dx1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaX");
-                        int dy1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaY");
-                        int dx2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaX");
-                        int dy2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaY");
                         int texX = tex % 16;
                         int texY = tex / 16;
                         int blendX = blendTex % 16;
