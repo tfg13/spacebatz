@@ -29,7 +29,6 @@ public class EnemySpawner {
     public static void tick() {
         Random random = new Random();
         if (Server.game.getTick() % (1000 / CompileTimeParameters.SERVER_TICKRATE / DefaultSettings.SERVER_SPAWNER_EXECSPERSEC) == 0) {
-            System.out.println("FIXME: Re-implement spawning!");
         }
     }
 

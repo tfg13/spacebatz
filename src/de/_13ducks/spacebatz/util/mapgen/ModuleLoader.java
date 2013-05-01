@@ -2,6 +2,8 @@ package de._13ducks.spacebatz.util.mapgen;
 
 import de._13ducks.spacebatz.util.mapgen.modules.BorderGenerator;
 import de._13ducks.spacebatz.util.mapgen.modules.BossQuestGenerator;
+import de._13ducks.spacebatz.util.mapgen.modules.DefaultEnemyPlacer;
+import de._13ducks.spacebatz.util.mapgen.modules.EnemyCreator;
 import de._13ducks.spacebatz.util.mapgen.modules.ExampleQuestCreator;
 import de._13ducks.spacebatz.util.mapgen.modules.PerlinTerrainFormer;
 import de._13ducks.spacebatz.util.mapgen.modules.PolygonMapGenerator;
@@ -37,6 +39,8 @@ public final class ModuleLoader {
             addModule(new Prelight());
             addModule(new SurfaceRandomizer());
             addModule(new BossQuestGenerator());
+            addModule(new DefaultEnemyPlacer());
+            addModule(new EnemyCreator());
         }
         return map;
     }
