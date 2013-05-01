@@ -10,12 +10,11 @@
  */
 package de._13ducks.spacebatz.server.gamelogic;
 
-import de._13ducks.spacebatz.server.data.Teams;
-import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.astar.AStarPathfinder;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.ServerLevel;
+import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.data.quests.Quest;
@@ -184,6 +183,9 @@ public class Game {
     public void initMapEntities() {
         for (Integer i : level.initNetMap.keySet()) {
             entityManager.addEntity(i, level.initNetMap.get(i));
+            if (nextNetID <= i) {
+                nextNetID = i + 1;
+            }
         }
     }
 
