@@ -82,6 +82,9 @@ public class HudControl implements Control {
         int maxhp = Math.max(1, GameClient.player.getHealthpointsmax());
         int hp = Math.min(GameClient.player.getHealthpoints(), maxhp);
         hp = Math.max(hp, 0);
+        if (GameClient.logicPlayer.isDead()) {
+            hp = 0;
+        }
 
         glDisable(GL_TEXTURE_2D);
         // roter HP-Balken, Länge anhängig von HP
