@@ -1,11 +1,12 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.summoner;
 
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericStandDivergeBehaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 
-class SummonerSummonBehaviour extends Behaviour {
+class SummonerSummonBehaviour extends GenericStandDivergeBehaviour {
 
     private Player target;
 
@@ -30,7 +31,7 @@ class SummonerSummonBehaviour extends Behaviour {
             return new SummonerApproachIndirectBehaviour(owner, target);
         } else {
             // Genau ruchtig, stehenbleiben
-            return this;
+            return super.tick(gameTick);
         }
     }
 

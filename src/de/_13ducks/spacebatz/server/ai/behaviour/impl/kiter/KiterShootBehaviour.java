@@ -1,19 +1,20 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.kiter;
 
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericStandDivergeBehaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 
-class KiterShootBehaviour extends Behaviour {
-
+class KiterShootBehaviour extends GenericStandDivergeBehaviour {
+    
     private Player target;
-
+    
     public KiterShootBehaviour(Enemy owner, Player target) {
         super(owner);
         this.target = target;
     }
-
+    
     @Override
     public Behaviour tick(int gameTick) {
         // schießen wenn möglich:
@@ -24,16 +25,16 @@ class KiterShootBehaviour extends Behaviour {
             double dx = (owner.getX() - target.getX());
             double dy = (owner.getY() - target.getY());
             owner.move.setVector(dx, dy);
-            return this;
+            return super.tick(gameTick);
         } else if (distance > 7) {
             // Zu weit weg, hinrennen
             return new KiterApproachIndirectBehaviour(owner, target);
         } else {
             // Genau ruchtig, stehenbleiben
-            return this;
+            return super.tick(gameTick);
         }
     }
-
+    
     @Override
     public Behaviour onTargetDeath() {
         return new KiterLurkBehaviour(owner);
