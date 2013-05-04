@@ -1,12 +1,13 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import de._13ducks.spacebatz.client.GameClient;
-import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.graphics.controls.HudControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;
 import de._13ducks.spacebatz.client.graphics.controls.QuestControl;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
+import static de._13ducks.spacebatz.shared.DefaultSettings.*;
+import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
 import java.lang.reflect.Field;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
@@ -69,6 +70,8 @@ public class GraphicsEngine {
      */
     private Renderer renderer;
     private ShadowAnimator shadowAnimator = new ShadowAnimator();
+    //DEBUG
+    private StatisticRingBuffer timing = new StatisticRingBuffer(60);
 
     /**
      * Initialisiert die GrafikEngine.
@@ -136,9 +139,16 @@ public class GraphicsEngine {
 
         // Bild löschen, neu malen
         glClear(GL_COLOR_BUFFER_BIT);
+        long ns = System.nanoTime();
         godControl.render(renderer);
         hudControl.render(renderer);
         questControl.render(renderer);
+        long ns2 = System.nanoTime();
+        timing.push((int) (ns2 - ns));
+
+        if (GameClient.frozenGametick % 66 == 0) {
+            System.out.println("AFT: " + timing.getNiceAvg() + "ns");
+        }
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
         if (activeMenu == null) {
