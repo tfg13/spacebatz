@@ -201,15 +201,15 @@ public class Player extends ItemCarrier {
 
     @Override
     public void decreaseHitpoints(int damage) {
-        if (dead == false) {
-            super.decreaseHitpoints(damage);
-            if (properties.getHitpoints() <= 0) {
-                super.onDeath();
-                dead = true;
-                respawntick = Server.game.getTick() + CompileTimeParameters.RESPAWNTIME;
-                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(client.clientID, true);
-            }
-        }
+//        if (dead == false) {
+//            super.decreaseHitpoints(damage);
+//            if (properties.getHitpoints() <= 0) {
+//                super.onDeath();
+//                dead = true;
+//                respawntick = Server.game.getTick() + CompileTimeParameters.RESPAWNTIME;
+//                STC_PLAYER_TOGGLE_ALIVE.sendPlayerToggleAlive(client.clientID, true);
+//            }
+//        }
     }
 
     @Override
