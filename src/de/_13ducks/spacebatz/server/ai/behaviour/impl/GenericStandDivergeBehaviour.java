@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
@@ -16,29 +17,39 @@ import java.util.LinkedList;
  */
 public class GenericStandDivergeBehaviour extends Behaviour {
 
+    /**
+     * Die Zahl der Ticks zwischen Diverge-Vorgängen.
+     */
+    private final int DIVERGE_TIMEOUT_TICKS = 40;
+    /**
+     * Zufälliger Wert zwischen 0 und DIVERGE_TIMEOUT für Lastverteilung.
+     */
+    private final int randomTick = (int) (Math.random() * (DIVERGE_TIMEOUT_TICKS));
+
     public GenericStandDivergeBehaviour(Enemy owner) {
         super(owner);
     }
 
     @Override
     public Behaviour tick(int gameTick) {
-        LinkedList<Entity> entities = Server.entityMap.getEntitiesAroundPoint(owner.move.getX(), owner.move.getY(), 5);
-        ArrayList<Vector> positions = new ArrayList<>();
-        for (Entity e : entities) {
-            if (e instanceof Enemy && e != owner && GeoTools.getDistance(e.getX(), e.getY(), owner.getX(), owner.getY()) < (owner.getSize() + e.getSize())) {
-                positions.add(new Vector(e.getX(), e.getY()));
+        if (Server.game.getTick() % DIVERGE_TIMEOUT_TICKS == randomTick) {
+            LinkedList<Entity> entities = Server.entityMap.getEntitiesAroundPoint(owner.move.getX(), owner.move.getY(), 5);
+            ArrayList<Vector> positions = new ArrayList<>();
+            for (Entity e : entities) {
+                if (e instanceof Enemy && e != owner && GeoTools.getDistance(e.getX(), e.getY(), owner.getX(), owner.getY()) < (owner.getSize() + e.getSize())) {
+                    positions.add(new Vector(e.getX(), e.getY()));
+                }
+            }
+            Vector enemyPositions[] = new Vector[positions.size()];
+            enemyPositions = positions.toArray(enemyPositions);
+            Vector divergeVector = computeDivergationVector(new Vector(owner.move.getX(), owner.move.getY()), enemyPositions);
+            if (divergeVector.x != 0 || divergeVector.y != 0) {
+                owner.move.setVector(divergeVector.x, divergeVector.y);
+            } else {
+                owner.move.stopMovement();
             }
         }
-        Vector enemyPositions[] = new Vector[positions.size()];
-        enemyPositions = positions.toArray(enemyPositions);
-        Vector divergeVector = computeDivergationVector(new Vector(owner.move.getX(), owner.move.getY()), enemyPositions);
-        if (divergeVector.x != 0 || divergeVector.y != 0) {
-            owner.move.setVector(divergeVector.x, divergeVector.y);
-        } else {
-            owner.move.stopMovement();
-        }
         return this;
-
     }
 
     /**
