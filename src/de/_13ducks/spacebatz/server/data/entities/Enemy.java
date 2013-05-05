@@ -31,8 +31,7 @@ import de._13ducks.spacebatz.util.geo.Vector;
 public class Enemy extends Char implements EntityLinearTargetObserver, PathRequester {
 
     /**
-     * Das Bewegungssystem dieses Gegeners.
-     * Gegner werden immer vom Server gesteuert, verwenden deshalb InterpolatedMover
+     * Das Bewegungssystem dieses Gegeners. Gegner werden immer vom Server gesteuert, verwenden deshalb InterpolatedMover
      */
     public final InterpolatedMover move;
     ;
@@ -68,7 +67,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * Der GameTick, in dem zuletzt Sichtkontakt zum Ziel war.
      */
     private int lastSightContact;
-    
+    public double maxSpeed;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -88,6 +87,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         getProperties().setMaxHitpoints(estats.healthpoints);
         getProperties().setSightrange(estats.sightrange);
         setSpeed(estats.speed);
+        maxSpeed = estats.speed;
         this.enemylevel = estats.enemylevel;
     }
 
@@ -115,6 +115,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * @param path der Pfad dem der Gegner folgen soll.
      */
     public void followPath(Vector path[]) {
+        setSpeed(maxSpeed);
         if (path.length <= 1) {
             throw new IllegalArgumentException("Der übergebene Pfad muss mindestens 2 Elemente enthalten!");
         }

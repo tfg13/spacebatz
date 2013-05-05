@@ -4,7 +4,6 @@ import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
-import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class GenericStandDivergeBehaviour extends Behaviour {
     /**
      * Die Zahl der Ticks zwischen Diverge-Vorgängen.
      */
-    private final int DIVERGE_TIMEOUT_TICKS = 40;
+    private final int DIVERGE_TIMEOUT_TICKS = 25;
     /**
      * Zufälliger Wert zwischen 0 und DIVERGE_TIMEOUT für Lastverteilung.
      */
@@ -34,18 +33,27 @@ public class GenericStandDivergeBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         if (Server.game.getTick() % DIVERGE_TIMEOUT_TICKS == randomTick) {
             LinkedList<Entity> entities = Server.entityMap.getEntitiesAroundPoint(owner.move.getX(), owner.move.getY(), 5);
+            if (entities.isEmpty()) {
+                return this;
+            }
             ArrayList<Vector> positions = new ArrayList<>();
+            double overlap = 0;
             for (Entity e : entities) {
                 if (e instanceof Enemy && e != owner && GeoTools.getDistance(e.getX(), e.getY(), owner.getX(), owner.getY()) < (owner.getSize() + e.getSize())) {
                     positions.add(new Vector(e.getX(), e.getY()));
+                    overlap += (owner.getSize() + e.getSize()) - GeoTools.getDistance(e.getX(), e.getY(), owner.getX(), owner.getY());
                 }
             }
+            double averageOverlap = overlap / entities.size();
             Vector enemyPositions[] = new Vector[positions.size()];
             enemyPositions = positions.toArray(enemyPositions);
             Vector divergeVector = computeDivergationVector(new Vector(owner.move.getX(), owner.move.getY()), enemyPositions);
             if (divergeVector.x != 0 || divergeVector.y != 0) {
+                double speedFactor = (averageOverlap / owner.getSize());
+                owner.setSpeed(owner.maxSpeed * speedFactor);
                 owner.move.setVector(divergeVector.x, divergeVector.y);
             } else {
+                owner.setSpeed(owner.maxSpeed);
                 owner.move.stopMovement();
             }
         }

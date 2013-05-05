@@ -29,6 +29,7 @@ class KiterShootBehaviour extends GenericWatchTargetBehaviour {
     @Override
     public Behaviour toCloseToTarget(Enemy owner, Player target) {
         // Zu nah dran, wegrennen
+        owner.setSpeed(owner.maxSpeed);
         double dx = (owner.getX() - target.getX());
         double dy = (owner.getY() - target.getY());
         owner.move.setVector(dx, dy);
