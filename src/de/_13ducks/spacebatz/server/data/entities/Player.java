@@ -133,7 +133,8 @@ public class Player extends ItemCarrier {
                     attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
                     standardAttack.tryUseOnPosition(this, tx, ty);
                 } else {
-                    if (getActiveWeapon().getOverheat() + 1 <= getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
+                    int maxOverheat = (int) (getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
+                    if (getActiveWeapon().getOverheat() + 1 <= maxOverheat || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
                         attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
                         getActiveWeapon().increaseOverheat(1);
                         getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
