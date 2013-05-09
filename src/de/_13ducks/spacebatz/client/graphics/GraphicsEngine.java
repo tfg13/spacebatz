@@ -14,6 +14,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.PixelFormat;
 
 /**
@@ -84,12 +85,14 @@ public class GraphicsEngine {
      */
     public void initialise() {
         try {
-            // Hat die Platform alles was wir brauchen?
-            checkCapabilities();
             // Fenster erzeugen:
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             Display.create(new PixelFormat(8, 8, 8)); // Die dritte acht erzeugt/aktiviert den Stencil-Buffer mit 8 Bits pro Pixel.
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
+
+            // Hat die Platform alles was wir brauchen?
+            // Erst nach dem Fenster-erzeugen, manche Tests brauchen einen aktiven OpenGL-Context
+            checkCapabilities();
 
             // Kamera erzeugen:
             camera = new Camera(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y);
@@ -268,6 +271,27 @@ public class GraphicsEngine {
 
         System.out.print("INFO: GFX: Cursor animation is ");
         if ((cursorcap & Cursor.CURSOR_ANIMATION) != 0) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 3.0 is ");
+        if (GLContext.getCapabilities().OpenGL30) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 3.1 is ");
+        if (GLContext.getCapabilities().OpenGL30) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: Vertex Buffer Objects (VBO) are ");
+        if (GLContext.getCapabilities().GL_ARB_vertex_buffer_object) {
             System.out.println("SUPPORTED");
         } else {
             System.out.println("NOT SUPPORTED");

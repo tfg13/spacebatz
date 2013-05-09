@@ -83,6 +83,11 @@ public class DefaultSettings {
      */
     public static int CLIENT_GFX_SHOW_NICKNAMES = 1;
     /**
+     * Die Einstellung, ob die Grafik VertexBufferObjects zum Rendern verwenden darf.
+     * Diese sind normalerweise deutlich schneller, funktionieren aber eventuell auf einigen alten Karten nicht.
+     */
+    public static boolean CLIENT_GFX_USE_VBOS = true;
+    /**
      * Sound (zum schnelleren Testen) komplett abschalten.
      * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.
      */

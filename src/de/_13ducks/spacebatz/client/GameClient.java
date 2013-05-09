@@ -10,7 +10,6 @@
  */
 package de._13ducks.spacebatz.client;
 
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.input.TickedInput;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;

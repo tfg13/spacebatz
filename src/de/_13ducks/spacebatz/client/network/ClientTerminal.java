@@ -258,6 +258,19 @@ public class ClientTerminal {
                             }
                             outln("usage: top block|fancy");
                             break;
+                        case "vbo":
+                            if (words.length == 2) {
+                                switch (words[1]) {
+                                    case "on":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setUseVBOs(true);
+                                        break OUTER;
+                                    case "off":
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setUseVBOs(false);
+                                        break OUTER;
+                                }
+                            }
+                            outln("usage: vbo on|off");
+                            break;
                         case "maxfps":
                             GameClient.getEngine().getGraphics().defactoRenderer().setFancyTop(false);
                             GameClient.getEngine().getGraphics().defactoRenderer().setSmoothGround(false);

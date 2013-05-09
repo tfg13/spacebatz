@@ -26,13 +26,17 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBShaderObjects;
+import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.CursorLoader;
@@ -109,6 +113,14 @@ public class GodControl implements Control {
      * 2 - Immer
      */
     private int showNickNames = DefaultSettings.CLIENT_GFX_SHOW_NICKNAMES;
+    /**
+     * Ob für (viele, nicht alle) Zeichenoperationen VBOs statt immediate-Zeichnen verwendet werden soll.
+     * Normalerweise viel schneller, eventuell aber auf sehr, sehr antiken Karten nicht unterstützt.
+     */
+    private boolean useVBOs = DefaultSettings.CLIENT_GFX_USE_VBOS;
+    private FloatBuffer tvBuffer;
+    private IntBuffer ib;
+    private int tvHandle;
     /**
      * Wenn true, scrollt lookahead nicht mehr mit.
      */
@@ -284,6 +296,21 @@ public class GodControl implements Control {
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         glColor4f(1f, 1f, 1f, 1f);
+        if (useVBOs) {
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glEnableClientState(GL_VERTEX_ARRAY);
+            // Daten für VBO erstellen
+            tvBuffer = BufferUtils.createFloatBuffer(8 + 12);
+            ib = BufferUtils.createIntBuffer(1);
+            glGenBuffersARB(ib);
+            tvHandle = ib.get(0);
+
+            // VBO aktivieren
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, tvHandle);
+            //glBufferDataARB(GL_ARRAY_BUFFER_ARB, tvBuffer, GL_STATIC_DRAW_ARB);
+            glTexCoordPointer(2, GL_FLOAT, 2 << 2, 0 << 2);
+            glVertexPointer(3, GL_FLOAT, 3 << 2, 8 << 2);
+        }
         // Boden und Wände zeichnen
         // Werte cachen
         panX = renderer.getCamera().getPanX();
@@ -367,6 +394,19 @@ public class GodControl implements Control {
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
+
+        if (useVBOs) {
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glDisableClientState(GL_VERTEX_ARRAY);
+
+
+            // Unbinden
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+            // Handles löschen
+            ib.put(0, tvHandle);
+            glDeleteBuffersARB(ib);
+        }
 
 
         // Enemies zeichnen:
@@ -757,26 +797,49 @@ public class GodControl implements Control {
     private void drawUncoloredTilePanned(int tile, float x, float y, int numRot) {
         int tx = tile % 16;
         int ty = tile / 16;
-        float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
-        tileCoords[0][0] = tx * 0.0625f + 0.001953125f;
-        tileCoords[0][1] = tx * 0.0625f + 0.060546875f;
-        tileCoords[0][2] = tx * 0.0625f + 0.060546875f;
-        tileCoords[0][3] = tx * 0.0625f + 0.001953125f;
-        tileCoords[1][0] = ty * 0.0625f + 0.001953125f;
-        tileCoords[1][1] = ty * 0.0625f + 0.001953125f;
-        tileCoords[1][2] = ty * 0.0625f + 0.060546875f;
-        tileCoords[1][3] = ty * 0.0625f + 0.060546875f;
-        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-        glTexCoord2f(tileCoords[0][(0 + numRot) % 4], tileCoords[1][(0 + numRot) % 4]); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
-        glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
-        // Die weiteren 3 Ecken im Uhrzeigersinn:
-        glTexCoord2f(tileCoords[0][(1 + numRot) % 4], tileCoords[1][(1 + numRot) % 4]);
-        glVertex3f(x + 1 + panX, y + 1 + panY, 0);
-        glTexCoord2f(tileCoords[0][(2 + numRot) % 4], tileCoords[1][(2 + numRot) % 4]);
-        glVertex3f(x + 1 + panX, y + panY, 0);
-        glTexCoord2f(tileCoords[0][(3 + numRot) % 4], tileCoords[1][(3 + numRot) % 4]);
-        glVertex3f(x + panX, y + panY, 0);
-        glEnd(); // Zeichnen des QUADs fertig
+
+        if (useVBOs) {
+            //tvBuffer.position(0);
+            // Textur-Koordinaten
+            tvBuffer.put(tx * 0.0625f + 0.001953125f).put(ty * 0.0625f + 0.001953125f);
+            tvBuffer.put(tx * 0.0625f + 0.060546875f).put(ty * 0.0625f + 0.001953125f);
+            tvBuffer.put(tx * 0.0625f + 0.060546875f).put(ty * 0.0625f + 0.060546875f);
+            tvBuffer.put(tx * 0.0625f + 0.001953125f).put(ty * 0.0625f + 0.060546875f);
+
+            // Vertex-Koordinaten
+            tvBuffer.put(x + panX).put(y + 1 + panY).put(0);
+            tvBuffer.put(x + 1 + panX).put(y + 1 + panY).put(0);
+            tvBuffer.put(x + 1 + panX).put(y + panY).put(0);
+            tvBuffer.put(x + panX).put(y + panY).put(0);
+            tvBuffer.flip();
+
+            // Daten zur Grafikkarte hochladen
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, tvBuffer, GL_STREAM_DRAW_ARB);
+
+            // Zeichnen
+            glDrawArrays(GL_QUADS, 0, 4);
+        } else {
+            float[][] tileCoords = new float[2][4]; // X, Y dann 4 Ecken
+            tileCoords[0][0] = tx * 0.0625f + 0.001953125f;
+            tileCoords[0][1] = tx * 0.0625f + 0.060546875f;
+            tileCoords[0][2] = tx * 0.0625f + 0.060546875f;
+            tileCoords[0][3] = tx * 0.0625f + 0.001953125f;
+            tileCoords[1][0] = ty * 0.0625f + 0.001953125f;
+            tileCoords[1][1] = ty * 0.0625f + 0.001953125f;
+            tileCoords[1][2] = ty * 0.0625f + 0.060546875f;
+            tileCoords[1][3] = ty * 0.0625f + 0.060546875f;
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(tileCoords[0][(0 + numRot) % 4], tileCoords[1][(0 + numRot) % 4]); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
+            glVertex3f(x + panX, y + 1 + panY, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))
+            // Die weiteren 3 Ecken im Uhrzeigersinn:
+            glTexCoord2f(tileCoords[0][(1 + numRot) % 4], tileCoords[1][(1 + numRot) % 4]);
+            glVertex3f(x + 1 + panX, y + 1 + panY, 0);
+            glTexCoord2f(tileCoords[0][(2 + numRot) % 4], tileCoords[1][(2 + numRot) % 4]);
+            glVertex3f(x + 1 + panX, y + panY, 0);
+            glTexCoord2f(tileCoords[0][(3 + numRot) % 4], tileCoords[1][(3 + numRot) % 4]);
+            glVertex3f(x + panX, y + panY, 0);
+            glEnd(); // Zeichnen des QUADs fertig
+        }
     }
 
     /**
@@ -1019,5 +1082,12 @@ public class GodControl implements Control {
      */
     public boolean isTerminal() {
         return terminal;
+    }
+
+    /**
+     * @param useVBOs the useVBOs to set
+     */
+    public void setUseVBOs(boolean useVBOs) {
+        this.useVBOs = useVBOs;
     }
 }
