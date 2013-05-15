@@ -20,6 +20,7 @@ public abstract class GenericWatchTargetBehaviour extends GenericStandDivergeBeh
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
         this.target = target;
+        owner.setFacingTarget(target);
     }
 
     @Override

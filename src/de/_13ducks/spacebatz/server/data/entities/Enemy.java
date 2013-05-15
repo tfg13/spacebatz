@@ -20,6 +20,7 @@ import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.EnemyTypes;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_FACING_TARGET;
 import de._13ducks.spacebatz.util.Bits;
 import de._13ducks.spacebatz.util.geo.Vector;
 
@@ -68,6 +69,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      */
     private int lastSightContact;
     public double maxSpeed;
+    private boolean isFacingTarget;
+    private int facingTargetNetId;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -93,13 +96,15 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
 
     @Override
     public int byteArraySize() {
-        return super.byteArraySize() + 4;
+        return super.byteArraySize() + 9;
     }
 
     @Override
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
         Bits.putInt(b, super.byteArraySize() + offset, enemytypeID);
+        Bits.putChar(b, super.byteArraySize() + offset + 4, (isFacingTarget ? '1' : '0'));
+        Bits.putInt(b, super.byteArraySize() + offset + 5, facingTargetNetId);
     }
 
     /**
@@ -382,5 +387,25 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
 
     public void targetDied() {
         this.behaviour = behaviour.onTargetDeath();
+    }
+
+    /**
+     * Lässt diesen Gegner immer auf das angegebene Ziel schauen, egal wie er sich bewegt.
+     *
+     * @param target
+     */
+    public void setFacingTarget(Entity target) {
+        isFacingTarget = true;
+        facingTargetNetId = target.netID;
+        STC_SET_FACING_TARGET.sendSetFacingTarget(isFacingTarget, this.netID, facingTargetNetId);
+
+    }
+
+    /**
+     * Lässt den Gegner wieder normal schauen.
+     */
+    public void stopFacingTarget() {
+        isFacingTarget = false;
+        STC_SET_FACING_TARGET.sendSetFacingTarget(isFacingTarget, this.netID, facingTargetNetId);
     }
 }
