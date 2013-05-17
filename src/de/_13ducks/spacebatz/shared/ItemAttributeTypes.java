@@ -105,10 +105,10 @@ public class ItemAttributeTypes {
             moreRange.setIsWeaponAttribute(true);
             attributelist.add(moreRange);
 
-            double r_moremaxoverheat = randomValue(5, 12, 0);
+            double r_moremaxoverheat = randomValue(0.3, 0.7, 1);
             ItemAttribute moreMaxOverheat = new ItemAttribute("+" + r_moremaxoverheat + " MaxOverheat");
             moreMaxOverheat.setQuality(1);
-            moreMaxOverheat.weaponStats.setMaxoverheat(r_moremaxoverheat);
+            moreMaxOverheat.weaponStats.setMaxoverheatMultiplicatorBonus(r_moremaxoverheat);
             moreMaxOverheat.setIsWeaponAttribute(true);
             attributelist.add(moreMaxOverheat);
 

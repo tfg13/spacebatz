@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Verwaltet Attribute von Chars oder Items.
+ * Attribute für Waffen kommen hier rein, wenn sie global für alle Waffen gelten sollen.
+ * Wenn sie nur für diese eine Waffe gelten sollen -> WeaponStats
  *
  * @author michael
  */

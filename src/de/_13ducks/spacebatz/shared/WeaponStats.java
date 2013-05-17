@@ -3,7 +3,8 @@ package de._13ducks.spacebatz.shared;
 import java.io.Serializable;
 
 /**
- * Stats einer Waffe.
+ * Stats einer Waffe. Diese gelten nur für eine Waffe.
+ * Wenn etwas für alle Waffen gelten soll -> PropertyList
  *
  * @author michael
  */
