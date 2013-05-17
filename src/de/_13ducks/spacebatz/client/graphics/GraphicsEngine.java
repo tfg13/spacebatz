@@ -72,7 +72,7 @@ public class GraphicsEngine {
     private Renderer renderer;
     private ShadowAnimator shadowAnimator = new ShadowAnimator();
     //DEBUG
-    private StatisticRingBuffer timing = new StatisticRingBuffer(60);
+    public static StatisticRingBuffer timing = new StatisticRingBuffer(60);
 
     /**
      * Initialisiert die GrafikEngine.
@@ -148,10 +148,6 @@ public class GraphicsEngine {
         questControl.render(renderer);
         long ns2 = System.nanoTime();
         timing.push((int) (ns2 - ns));
-
-        if (GameClient.frozenGametick % 66 == 0) {
-            System.out.println("AFT: " + timing.getNiceAvg() + "ns");
-        }
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
         if (activeMenu == null) {
