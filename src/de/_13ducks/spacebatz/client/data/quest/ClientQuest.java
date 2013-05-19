@@ -1,7 +1,5 @@
 package de._13ducks.spacebatz.client.data.quest;
 
-import de._13ducks.spacebatz.client.graphics.Renderer;
-
 /**
  * Client-Version eines Quests
  *
@@ -32,7 +30,6 @@ public abstract class ClientQuest {
     /**
      * Rendert das Quest-Hud für diesen Quest.
      * Undefiniert, wenn hasVisual() false liefert.
-     * @param renderer der aktuelle Renderer für simples Zeichnen. Muss aber nicht benutzt werden
      */
-    public abstract void renderVisual(Renderer renderer);
+    public abstract void renderVisual();
 }

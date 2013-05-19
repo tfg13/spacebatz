@@ -1,10 +1,10 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.Camera;
-import de._13ducks.spacebatz.client.graphics.Control;
-import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
+import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
 import de._13ducks.spacebatz.shared.Item;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
@@ -13,21 +13,18 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author House of Nikolouse
  */
-public class HudControl implements Control {
+public class HudControl extends Overlay {
 
     private Texture itemTiles;
     private Texture hud1;
-    private Camera camera;
 
-    public HudControl(Renderer renderer) {
-        itemTiles = renderer.getTextureByName("item.png");
-        hud1 = renderer.getTextureByName("hud1.png");
-        camera = renderer.getCamera();
+    public HudControl() {
+        itemTiles = RenderUtils.getTextureByName("item.png");
+        hud1 = RenderUtils.getTextureByName("hud1.png");
     }
 
     @Override
-    public void render(Renderer renderer) {
-        TextWriter textWriter = renderer.getTextWriter();
+    public void render() {
 
         // HUD-Hintergrund:
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -36,8 +33,8 @@ public class HudControl implements Control {
         hud1.bind();
 
         // HUD-Bild bei HP
-        float width1 = (0.475f / 16.0f * 9.0f) * camera.getTilesX();
-        float height1 = 0.475f * camera.getTilesY() * 0.262f;
+        float width1 = (0.475f / 16.0f * 9.0f) * GodControl.tilesX;
+        float height1 = 0.475f * GodControl.tilesY * 0.262f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0, 1);
         glVertex3f(0, 0, 0.0f);
@@ -50,8 +47,8 @@ public class HudControl implements Control {
         glEnd(); // Zeichnen des QUADs fertig } }
 
         // HUD-Bild bei Waffen
-        float height2 = 0.42f * camera.getTilesY();
-        float height3 = 0.77f * camera.getTilesY();
+        float height2 = 0.42f * GodControl.tilesY;
+        float height3 = 0.77f * GodControl.tilesY;
         float width2 = width1 * 0.234f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0, 0.738f);
@@ -68,13 +65,13 @@ public class HudControl implements Control {
         if (GameClient.logicPlayer.isDead()) {
             glDisable(GL_TEXTURE_2D);
             glColor4f(1.0f, 0.1f, 0.0f, 0.5f);
-            glRectf(0.0f * camera.getTilesX(), 0.0f * camera.getTilesY(), 1.0f * camera.getTilesX(), 1.0f * camera.getTilesY());
+            glRectf(0.0f * GodControl.tilesX, 0.0f * GodControl.tilesY, 1.0f * GodControl.tilesX, 1.0f * GodControl.tilesY);
             glEnable(GL_TEXTURE_2D);
             if (GameClient.frozenGametick >= GameClient.player.getRespawntick()) {
-                textWriter.renderText("Press <Fire> to respawn", 0.5f * camera.getTilesX(), 0.5f * camera.getTilesY());
+                TextWriter.renderText("Press <Fire> to respawn", 0.5f * GodControl.tilesX, 0.5f * GodControl.tilesY);
             } else {
                 int seconds = (int) Math.ceil((GameClient.player.getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
-                textWriter.renderText("Respawn in " + seconds + " Seconds", 0.5f * camera.getTilesX(), 0.5f * camera.getTilesY());
+                TextWriter.renderText("Respawn in " + seconds + " Seconds", 0.5f * GodControl.tilesX, 0.5f * GodControl.tilesY);
             }
         }
 
@@ -89,7 +86,7 @@ public class HudControl implements Control {
         glDisable(GL_TEXTURE_2D);
         // roter HP-Balken, Länge anhängig von HP
         glColor3f(0.7f, 0.0f, 0.0f);
-        glRectf(0.0295f * camera.getTilesX(), 0.028f * camera.getTilesY(), (0.0295f + 0.1655f * ((float) hp / maxhp)) * camera.getTilesX(), 0.04f * camera.getTilesY());
+        glRectf(0.0295f * GodControl.tilesX, 0.028f * GodControl.tilesY, (0.0295f + 0.1655f * ((float) hp / maxhp)) * GodControl.tilesX, 0.04f * GodControl.tilesY);
         glEnable(GL_TEXTURE_2D);
 
         // angelegte Waffen in Hud zeichnen
@@ -103,11 +100,11 @@ public class HudControl implements Control {
                 float width = 0.05f / 16.0f * 9.0f;
                 float height = 0.05f;
 
-                renderer.setTilemap(itemTiles);
-                renderer.setTileSize(32, 32);
-                renderer.setScreenMapping(0, 1, 0, 1);
-                renderer.drawTile(item.getPic(), x, y, width, height);
-                renderer.restoreScreenMapping();
+                RenderUtils.setTilemap(itemTiles);
+                RenderUtils.setTileSize(32, 32);
+                RenderUtils.setScreenMapping(0, 1, 0, 1);
+                RenderUtils.drawTile(item.getPic(), x, y, width, height);
+                RenderUtils.restoreScreenMapping();
             }
         }
 
@@ -117,10 +114,10 @@ public class HudControl implements Control {
 
             glColor3f(0.0f, 0.0f, 0.0f);
 
-            float x1 = 0.014f * camera.getTilesX();
-            float y1 = (0.705f - 0.1f * j) * camera.getTilesY();
-            float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * camera.getTilesX();
-            float y2 = (0.7505f - 0.1f * j) * camera.getTilesY();
+            float x1 = 0.014f * GodControl.tilesX;
+            float y1 = (0.705f - 0.1f * j) * GodControl.tilesY;
+            float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * GodControl.tilesX;
+            float y2 = (0.7505f - 0.1f * j) * GodControl.tilesY;
 
             glBegin(GL_LINE_LOOP);
             glVertex2d(x1, y1);
@@ -152,14 +149,14 @@ public class HudControl implements Control {
 
                 // weißer Hintergrund
                 glColor3f(1.0f, 1.0f, 1.0f);
-                glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                glRectf(0.005f * GodControl.tilesX, height * GodControl.tilesY, 0.055f * GodControl.tilesX, (height + 0.01f) * GodControl.tilesY);
                 // roter Overheat-Balken
                 glColor3f(0.7f, 0.0f, 0.0f);
-                glRectf(0.007f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.007f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
+                glRectf(0.007f * GodControl.tilesX, (height + 0.002f) * GodControl.tilesY, (0.007f + 0.046f * overheatpermax) * GodControl.tilesX, (height + 0.008f) * GodControl.tilesY);
             } else {
                 // grauer Hintergrund
                 glColor3f(0.6f, 0.6f, 0.6f);
-                glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                glRectf(0.005f * GodControl.tilesX, height * GodControl.tilesY, 0.055f * GodControl.tilesX, (height + 0.01f) * GodControl.tilesY);
             }
             glColor3f(1f, 1f, 1f);
         }
@@ -167,12 +164,8 @@ public class HudControl implements Control {
         // Markierung an angelegte Waffe:
         glColor3f(0.7f, 0.0f, 0.0f);
         float height = 0.7f - 0.1f * GameClient.player.getSelectedattack();
-        glRectf(0.0f * camera.getTilesX(), height * camera.getTilesY(), 0.005f * camera.getTilesX(), (height + 0.05f) * camera.getTilesY());
+        glRectf(0.0f * GodControl.tilesX, height * GodControl.tilesY, 0.005f * GodControl.tilesX, (height + 0.05f) * GodControl.tilesY);
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
-    }
-
-    @Override
-    public void input() {
     }
 }

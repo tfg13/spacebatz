@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.graphics.ControlElement;
-import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.RenderUtils;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 
@@ -28,12 +28,12 @@ public class SkillSlot extends ControlElement {
      * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
      * @param renderer
      */
-    public SkillSlot(int tile, SkillTreeControl skilltree, byte key, Renderer renderer) {
+    public SkillSlot(int tile, SkillTreeControl skilltree, byte key) {
         super();
         this.tile = tile;
         targetKey = key;
         this.skilltree = skilltree;
-        texture = renderer.getTextureByName("skilltree.png");
+        texture = RenderUtils.getTextureByName("skilltree.png");
     }
 
     /**
@@ -44,12 +44,12 @@ public class SkillSlot extends ControlElement {
     }
 
     @Override
-    public void render(Renderer renderer) {
-        renderer.setTilemap(texture);
-        renderer.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
-        renderer.setTileSize(32, 32);
-        renderer.drawTile(tile, getX(), getY(), getWidth(), getHeight());
-        renderer.restoreScreenMapping();
+    public void render() {
+        RenderUtils.setTilemap(texture);
+        RenderUtils.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
+        RenderUtils.setTileSize(32, 32);
+        RenderUtils.drawTile(tile, getX(), getY(), getWidth(), getHeight());
+        RenderUtils.restoreScreenMapping();
     }
 
     @Override

@@ -51,7 +51,7 @@ public abstract class ControlElement {
     /**
      * Rendert dieses Controlelement.
      */
-    public abstract void render(Renderer renderer);
+    public abstract void render();
 
     /**
      * Berechnet Benutzereingaben für dieses Controlelement.

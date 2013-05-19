@@ -1,9 +1,9 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.Control;
-import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.RenderUtils;
+import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import org.lwjgl.util.Color;
  *
  * @author michael
  */
-public class SkillTreeControl implements Control {
+public class SkillTreeControl extends Overlay {
 
     /**
      * Liste der Skilltreeienträge.
@@ -38,21 +38,21 @@ public class SkillTreeControl implements Control {
      *
      * @param renderer
      */
-    public SkillTreeControl(Renderer renderer) {
+    public SkillTreeControl() {
         skills = new HashMap<>();
         skillSlots = new HashMap<>();
 
-        SkillButton summon = new SkillButton("summon", 0, this, renderer);
+        SkillButton summon = new SkillButton("summon", 0, this);
         summon.setGeometry(0.4f, 0.4f, 0.05f, 0.05f);
         summon.setAvailable(true);
         skills.put("summon", summon);
 
-        SkillButton masssummon = new SkillButton("masssummon", 1, this, renderer);
+        SkillButton masssummon = new SkillButton("masssummon", 1, this);
         masssummon.setGeometry(0.4f, 0.5f, 0.05f, 0.05f);
         masssummon.setAvailable(false);
         skills.put("masssummon", masssummon);
 
-        SkillSlot primaryAttack = new SkillSlot(4, this, (byte) 1, renderer);
+        SkillSlot primaryAttack = new SkillSlot(4, this, (byte) 1);
         primaryAttack.setGeometry(0.6f, 0.5f, 0.05f, 0.05f);
         skillSlots.put((byte) 1, primaryAttack);
 
@@ -88,27 +88,27 @@ public class SkillTreeControl implements Control {
     }
 
     @Override
-    public void render(Renderer renderer) {
-        renderer.setTileSize(32, 32);
-        renderer.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, backgroundColor);
+    public void render() {
+        RenderUtils.setTileSize(32, 32);
+        RenderUtils.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, backgroundColor);
 
         // Skillbuttons rendern:
         for (SkillButton item : skills.values()) {
-            item.render(renderer);
+            item.render();
         }
         // SkillSlots rendern:
         for (SkillSlot slot : skillSlots.values()) {
-            slot.render(renderer);
+            slot.render();
         }
         // Den gedraggten Skill rendern:
         if (dragging) {
-            renderer.setScreenMapping(0, 1, 0, 1);
-            renderer.drawTile(dragTile, (float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y, 0.05f, 0.05f);
-            renderer.restoreScreenMapping();
+            RenderUtils.setScreenMapping(0, 1, 0, 1);
+            RenderUtils.drawTile(dragTile, (float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y, 0.05f, 0.05f);
+            RenderUtils.restoreScreenMapping();
         }
     }
 
-    @Override
+    //@Override
     public void input() {
         // Input für alle Controls berechnen:
         for (SkillButton button : skills.values()) {

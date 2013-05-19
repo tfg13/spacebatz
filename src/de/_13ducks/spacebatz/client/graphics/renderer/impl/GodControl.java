@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.client.graphics.controls;
+package de._13ducks.spacebatz.client.graphics.renderer.impl;
 
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
@@ -8,22 +8,20 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.Animation;
-import de._13ducks.spacebatz.client.graphics.Camera;
-import de._13ducks.spacebatz.client.graphics.Control;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
-import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
+import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
 import de._13ducks.spacebatz.shared.DefaultSettings;
+import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_RES_X;
+import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_RES_Y;
 import static de._13ducks.spacebatz.shared.DefaultSettings.CLIENT_GFX_TILESIZE;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.IOException;
@@ -34,12 +32,12 @@ import java.util.LinkedList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBShaderObjects;
 import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.Texture;
 
@@ -47,7 +45,7 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author michael
  */
-public class GodControl implements Control {
+public class GodControl extends CoreRenderer {
 
     /**
      * Tilemaps.
@@ -76,13 +74,20 @@ public class GodControl implements Control {
      */
     private final int DAMAGENUMBER_LIFETIME = 1000;
     /**
-     * Kopie vom pan der Kamera, aus Performance-Gründen
+     * Scrollen auf der Map, in Feldern.
+     * TODO: Change public static to private, after Overlays switched to absolute rendering
      */
-    private float panX, panY;
+    public static float panX, panY;
     /**
-     * Kopie vom tiles der Kamera, aus Performance-Gründen
+     * Anzahl Tiles auf dem Bildschrim, in Feldern.
+     * TODO: Change public static to private, after Overlays switched to absolute rendering
      */
-    private float tilesX, tilesY;
+    public static float tilesX, tilesY;
+    /**
+     * Zoomfaktor, fliegt bald raus.
+     */
+    @Deprecated
+    private float zoomFactor;
     /**
      * Links auf die Shader.
      */
@@ -172,13 +177,13 @@ public class GodControl implements Control {
         0x22, 0x43, 0x22, 0x43, 0x93, 0xC2, 0x93, 0xE2,// 240 - 247
         0x22, 0x43, 0x22, 0x43, 0x40, 0xE3, 0x40, 0x50};// 248 - 255
 
-    public GodControl(Renderer renderer) {
-        groundTiles = renderer.getTextureByName("ground.png");
-        topTiles = renderer.getTextureByName("top.png");
-        playerTiles = renderer.getTextureByName("player.png");
-        enemyTiles = renderer.getTextureByName("enemy00.png");
-        bulletTiles = renderer.getTextureByName("bullet.png");
-        fxTiles = renderer.getTextureByName("fx.png");
+    public GodControl() {
+        groundTiles = RenderUtils.getTextureByName("ground.png");
+        topTiles = RenderUtils.getTextureByName("top.png");
+        playerTiles = RenderUtils.getTextureByName("player.png");
+        enemyTiles = RenderUtils.getTextureByName("enemy00.png");
+        bulletTiles = RenderUtils.getTextureByName("bullet.png");
+        fxTiles = RenderUtils.getTextureByName("fx.png");
         try {
             crossHairCursor = CursorLoader.get().getCursor("tex/cursor00.png", 16, 16);
             Mouse.setNativeCursor(crossHairCursor);
@@ -192,102 +197,24 @@ public class GodControl implements Control {
     }
 
     /**
-     * Verarbeitet den Input, der mit dem frames Synchron sein soll.
-     */
-    @Override
-    public void input() {
-        if (!terminal) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-                sendAbilityRequest((byte) 1);
-            }
-            if (Mouse.isButtonDown(0)) {
-                sendShootRequest();
-            }
-
-            outer:
-            while (Keyboard.next()) {
-                int key = Keyboard.getEventKey();
-                boolean pressed = Keyboard.getEventKeyState();
-                if (pressed) {
-                    switch (key) {
-                        case Keyboard.KEY_F1:
-                            terminal = true;
-                            break outer;
-                        case Keyboard.KEY_I:
-                            GameClient.getEngine().getGraphics().toggleInventory();
-
-                            break;
-
-                        case Keyboard.KEY_T:
-                            GameClient.getEngine().getGraphics().toggleSkillTree();
-                            break;
-                        case Keyboard.KEY_1:
-                            if (GameClient.player.getSelectedattack() != 0) {
-                                CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
-                            }
-                            break;
-                        case Keyboard.KEY_2:
-                            if (GameClient.player.getSelectedattack() != 1) {
-                                CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
-                            }
-                            break;
-                        case Keyboard.KEY_3:
-                            if (GameClient.player.getSelectedattack() != 2) {
-                                CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
-                            }
-                            break;
-                    }
-                }
-            }
-        } else {
-            while (Keyboard.next()) {
-                // Nur gedrückte Tasten
-                if (Keyboard.getEventKeyState()) {
-                    int key = Keyboard.getEventKey();
-                    if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-                        GameClient.terminal.enter();
-                    } else if (key == Keyboard.KEY_BACK) {
-                        GameClient.terminal.backspace();
-                    } else if (key == Keyboard.KEY_UP) {
-                        GameClient.terminal.scrollBack();
-                    } else if (key == Keyboard.KEY_DOWN) {
-                        GameClient.terminal.scrollForward();
-                    } else if (key == Keyboard.KEY_F1) {
-                        terminal = false;
-                        break;
-                    } else {
-                        char c = Keyboard.getEventCharacter();
-                        if (c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= ' ' && c <= '?')) {
-                            GameClient.terminal.input(c);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Wird bei jedem Frame aufgerufen, hier ist aller Rendercode.
      */
     @Override
-    public void render(Renderer renderer) {
-
-        Camera camera = renderer.getCamera();
-        TextWriter textWriter = renderer.getTextWriter();
+    public void render() {
 
         // Maus updaten:
-        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * camera.getTilesX()) - panX;
-        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * camera.getTilesY()) - panY;
+        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * tilesX) - panX;
+        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * tilesY) - panY;
 
         // Player in der Mitte
         if (!lookahead) {
-            renderer.getCamera().setPanX((float) -GameClient.player.getX() + camera.getTilesX() / 2.0f);
-            renderer.getCamera().setPanY((float) -GameClient.player.getY() + camera.getTilesY() / 2.0f);
+            panX = ((float) -GameClient.player.getX() + tilesX / 2.0f);
+            panY = ((float) -GameClient.player.getY() + tilesY / 2.0f);
         } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
-            renderer.getCamera().setPanX((float) (-GameClient.player.getX() + camera.getTilesX() / 2.0f + vec.x));
-            renderer.getCamera().setPanY((float) (-GameClient.player.getY() + camera.getTilesY() / 2.0f + vec.y));
+            panX = ((float) (-GameClient.player.getX() + tilesX / 2.0f + vec.x));
+            panY = ((float) (-GameClient.player.getY() + tilesY / 2.0f + vec.y));
         }
 
         // Turret zeigt auf Maus
@@ -313,11 +240,6 @@ public class GodControl implements Control {
             glVertexPointer(3, GL_FLOAT, 3 << 2, 8 << 2);
         }
         // Boden und Wände zeichnen
-        // Werte cachen
-        panX = renderer.getCamera().getPanX();
-        panY = renderer.getCamera().getPanY();
-        tilesX = renderer.getCamera().getTilesX();
-        tilesY = renderer.getCamera().getTilesY();
         int[][] ground = GameClient.currentLevel.ground;
         byte[][] ground_random = GameClient.currentLevel.ground_randomize;
         // Boden zuerst
@@ -326,8 +248,8 @@ public class GodControl implements Control {
         int dy1adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex1deltaY");
         int dx2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaX");
         int dy2adr = ARBShaderObjects.glGetUniformLocationARB(shader[1], "tex2deltaY");
-        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+        for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
+            for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
                 int tex = realTexAt(ground, ground_random, x, y);
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if ((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) {
@@ -360,8 +282,8 @@ public class GodControl implements Control {
         int[][] top = GameClient.currentLevel.top;
         byte[][] top_random = GameClient.currentLevel.top_randomize;
         topTiles.bind(); // groundTiles-Textur wird jetzt verwendet
-        for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-            for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+        for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
+            for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                 if (((shadowLevel == 1 && shadow != 127) || !surroundingDark(GameClient.currentLevel.shadow, x, y) || shadowLevel == 0) && baseTexAt(top, x, y) != 0) {
                     int tex = realTexAt(top, top_random, x, y);
@@ -420,7 +342,7 @@ public class GodControl implements Control {
                     // Werte fürs Einfärben nehmen und rendern
                     EnemyTypeStats ets = GameClient.enemytypes.getEnemytypelist().get(enemy.getEnemytypeid());
                     glColor4f(ets.color_red, ets.color_green, ets.color_blue, ets.color_alpha);
-                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                    renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
                     glColor3f(1f, 1f, 1f);
                 }
             }
@@ -431,8 +353,8 @@ public class GodControl implements Control {
         for (LogicPlayer p : GameClient.players.values()) {
             PlayerCharacter player = p.getPlayer();
             if (player != null && inSight(player) && !p.isDead()) {
-                renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0, renderer);
-                renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0, renderer);
+                renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0);
+                renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0);
             }
         }
 
@@ -440,8 +362,8 @@ public class GodControl implements Control {
         for (LogicPlayer p : GameClient.players.values()) {
             PlayerCharacter player = p.getPlayer();
             if (player != null && inSight(player) && !p.isDead()) {
-                if ((showNickNames == 1 && mouseOverChar(player, camera)) || showNickNames == 2) {
-                    textWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
+                if ((showNickNames == 1 && mouseOverChar(player)) || showNickNames == 2) {
+                    TextWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
                 }
             }
         }
@@ -451,7 +373,7 @@ public class GodControl implements Control {
         bulletTiles.bind();
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Bullet && inSight(c)) {
-                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0, renderer);
+                renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
             }
         }
 
@@ -464,9 +386,9 @@ public class GodControl implements Control {
                 itera.remove();
             } else {
                 if (f.getOwner() != null) {
-                    renderAnim(f.getAnim(), f.getOwner().getX(), f.getOwner().getY(), f.getAnim().getDirection(), f.getStarttick(), renderer);
+                    renderAnim(f.getAnim(), f.getOwner().getX(), f.getOwner().getY(), f.getAnim().getDirection(), f.getStarttick());
                 } else {
-                    renderAnim(f.getAnim(), f.getX(), f.getY(), f.getAnim().getDirection(), f.getStarttick(), renderer);
+                    renderAnim(f.getAnim(), f.getX(), f.getY(), f.getAnim().getDirection(), f.getStarttick());
                 }
             }
         }
@@ -483,7 +405,7 @@ public class GodControl implements Control {
                 float height = (Engine.getTime() - d.getSpawntime()) / 250.0f;
                 float visibility = 1 - ((float) (Engine.getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
                 visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
-                textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
+                TextWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + panX, (float) d.getY() + panY + height, 1f, .1f, .2f, visibility);
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
@@ -493,8 +415,8 @@ public class GodControl implements Control {
             if (shadowLevel == 1) {
                 int lastShadow = -1;
                 glDisable(GL_TEXTURE_2D);
-                for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-                    for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
+                    for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
                         int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                         if (shadow != lastShadow) {
                             glColor4f(0f, 0f, 0f, 0.0078740157f * shadow);
@@ -513,8 +435,8 @@ public class GodControl implements Control {
                 byte[][] shadowMap = GameClient.currentLevel.shadow;
                 // Neue smooth-Schatten:
                 glDisable(GL_TEXTURE_2D);
-                for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-                    for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
+                    for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
                         int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                         // 4 Schattenpunkte
                         float lo, lu, ro, ru;
@@ -541,8 +463,8 @@ public class GodControl implements Control {
                 glColor4f(0f, 0f, 0f, 1f);
                 //boolean shaderActive = false;
                 // Werte precachen:
-                float xFact = 1f / (DefaultSettings.CLIENT_GFX_RES_X / (DefaultSettings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * DefaultSettings.CLIENT_GFX_RES_X;
-                float yFact = 1f / (DefaultSettings.CLIENT_GFX_RES_Y / (DefaultSettings.CLIENT_GFX_TILESIZE * renderer.getCamera().getZoomFactor())) * DefaultSettings.CLIENT_GFX_RES_Y;
+                float xFact = 1f / (DefaultSettings.CLIENT_GFX_RES_X / (DefaultSettings.CLIENT_GFX_TILESIZE * zoomFactor)) * DefaultSettings.CLIENT_GFX_RES_X;
+                float yFact = 1f / (DefaultSettings.CLIENT_GFX_RES_Y / (DefaultSettings.CLIENT_GFX_TILESIZE * zoomFactor)) * DefaultSettings.CLIENT_GFX_RES_Y;
                 int pixelPerSpriteAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "pixelPerSprite");
                 int loAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLO");
                 int luAdr = ARBShaderObjects.glGetUniformLocationARB(shader[0], "shadowLU");
@@ -556,8 +478,8 @@ public class GodControl implements Control {
                 ARBShaderObjects.glUseProgramObjectARB(0);
                 byte[][] shadowMap = GameClient.currentLevel.shadow;
                 // Renderloop
-                for (int x = -(int) (1 + panX); x < -(1 + panX) + camera.getTilesX() + 2; x++) {
-                    for (int y = -(int) (1 + panY); y < -(1 + panY) + camera.getTilesY() + 2; y++) {
+                for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
+                    for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
                         int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
                         // Schatten an 4 Punkten ausrechnen
                         float lo, lu, ro, ru;
@@ -610,7 +532,7 @@ public class GodControl implements Control {
             } else {
                 glColor4f(1f, 0f, 0f, 1f);
             }
-            glRectf(0, camera.getTilesY(), 10, NetStats.netGraph >= 2 ? (NetStats.netGraph >= 3 ? camera.getTilesY() - 5f : camera.getTilesY() - 2.5f) : camera.getTilesY() - 1.5f);
+            glRectf(0, tilesY, 10, NetStats.netGraph >= 2 ? (NetStats.netGraph >= 3 ? tilesY - 5f : tilesY - 2.5f) : tilesY - 1.5f);
             glColor4f(1f, 1f, 1f, 1f);
             // Warnung bei Lag?
             if (GameClient.getNetwork2().isLagging() && connectionAlive) {
@@ -618,54 +540,54 @@ public class GodControl implements Control {
             } else {
                 glColor4f(0f, 1f, 0f, 1f);
             }
-            glRectf(7, camera.getTilesY(), 10f, camera.getTilesY() - 0.5f);
+            glRectf(7, tilesY, 10f, tilesY - 0.5f);
             // Arbeitet das Netzwerk gerade an dem Problem?
             if (GameClient.getNetwork2().isTickSyncing() && connectionAlive) {
                 glColor4f(1f, 1f, 0f, 1f);
-                glRectf(7, camera.getTilesY() - 0.5f, 10f, camera.getTilesY() - 1f);
+                glRectf(7, tilesY - 0.5f, 10f, tilesY - 1f);
             }
             glEnable(GL_TEXTURE_2D);
             if (connectionAlive) {
                 if (GameClient.getNetwork2().isLagging()) {
-                    textWriter.renderText("LAG", 8, camera.getTilesY() - 0.5f);
+                    TextWriter.renderText("LAG", 8, tilesY - 0.5f);
                 } else {
-                    textWriter.renderText("NET OK", 7.5f, camera.getTilesY() - 0.5f);
+                    TextWriter.renderText("NET OK", 7.5f, tilesY - 0.5f);
                 }
                 if (GameClient.getNetwork2().isTickSyncing()) {
-                    textWriter.renderText("tuning net", 7.1f, camera.getTilesY() - 1f);
+                    TextWriter.renderText("tuning net", 7.1f, tilesY - 1f);
                 }
-                textWriter.renderText("lerp: " + net.getLerp() + " (~" + (GameClient.getNetwork2().getLogicTickDelay() * net.getLerp() + "ms)"), 0, camera.getTilesY() - .5f);
-                //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, camera.getTilesY() - 1);
-                textWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, camera.getTilesY() - 1f);
-                textWriter.renderText("AFT: " + GraphicsEngine.timing.getNiceAvg(), 5, camera.getTilesY() - 1f);
-                textWriter.renderText("Net %health: " + net.getConnectionHealthPercent(), 0, camera.getTilesY() - 1.5f, net.getConnectionHealthPercent() < 95 ? 1 : 0, 0, 0, 1);
-                textWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, camera.getTilesY() - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
+                TextWriter.renderText("lerp: " + net.getLerp() + " (~" + (GameClient.getNetwork2().getLogicTickDelay() * net.getLerp() + "ms)"), 0, tilesY - .5f);
+                //renderText("netIn/tick: number " + NetStats.getAndResetInCounter() + " bytes " + NetStats.getAndResetInBytes(), 0, tilesY - 1);
+                TextWriter.renderText("fps: " + GameClient.getEngine().getFps() + " ping: " + NetStats.ping, 0, tilesY - 1f);
+                TextWriter.renderText("AFT: " + GraphicsEngine.timing.getNiceAvg(), 5, tilesY - 1f);
+                TextWriter.renderText("Net %health: " + net.getConnectionHealthPercent(), 0, tilesY - 1.5f, net.getConnectionHealthPercent() < 95 ? 1 : 0, 0, 0, 1);
+                TextWriter.renderText("%load: " + net.getConnectionLoadPercent(), 6.5f, tilesY - 1.5f, net.getConnectionLoadPercent() > 80 ? 1 : 0, 0, 0, 1);
                 if (NetStats.netGraph >= 2) {
                     // Einheitenposition:
-                    textWriter.renderText("playerpos: " + String.format("%.3f", GameClient.player.getX()), 0, camera.getTilesY() - 2f);
-                    textWriter.renderText(String.format("%.3f", GameClient.player.getY()), 6.5f, camera.getTilesY() - 2f);
+                    TextWriter.renderText("playerpos: " + String.format("%.3f", GameClient.player.getX()), 0, tilesY - 2f);
+                    TextWriter.renderText(String.format("%.3f", GameClient.player.getY()), 6.5f, tilesY - 2f);
                     // Mausposition:
-                    textWriter.renderText(String.format("Mouse: %.2f", logicMouseX), 0, camera.getTilesY() - 2.5f);
-                    textWriter.renderText(String.format("%.2f", logicMouseY), 6.5f, camera.getTilesY() - 2.5f);
+                    TextWriter.renderText(String.format("Mouse: %.2f", logicMouseX), 0, tilesY - 2.5f);
+                    TextWriter.renderText(String.format("%.2f", logicMouseY), 6.5f, tilesY - 2.5f);
                 }
                 if (NetStats.netGraph >= 3) {
-                    textWriter.renderText("----------SERVER-NET----------", 0, camera.getTilesY() - 3f);
-                    textWriter.renderText("Cmds/Prios:", 0, camera.getTilesY() - 3.5f);
-                    textWriter.renderText(String.format("%.3f", NetStats.avgNumberOfCmdsPerPacket), 4, camera.getTilesY() - 3.5f);
-                    textWriter.renderText(String.format("%.3f", NetStats.avgNumberOfPrioCmdsPerPacket), 7, camera.getTilesY() - 3.5f);
-                    textWriter.renderText("PackLoad: ", 0, camera.getTilesY() - 4f);
-                    textWriter.renderText(String.format("%.3f", NetStats.avgLoadPerPacket), 3.5f, camera.getTilesY() - 4f);
-                    textWriter.renderText("PPT:", 5.5f, camera.getTilesY() - 4f);
-                    textWriter.renderText(String.format("%.3f", NetStats.recentNumberOfPacketsPerTick), 7.5f, camera.getTilesY() - 4f);
-                    textWriter.renderText("Perc Out/Retrans:", 0, camera.getTilesY() - 4.5f);
-                    textWriter.renderText(String.format("%.0f", NetStats.recentOutBufferLoad), 6f, camera.getTilesY() - 4.5f);
-                    textWriter.renderText(String.format("%.3f", NetStats.recentRetransmitNumber), 7.5f, camera.getTilesY() - 4.5f);
-                    textWriter.renderText("Queues Cmd/Prio:", 0, camera.getTilesY() - 5f);
-                    textWriter.renderText(String.format("%.0f", NetStats.recentOutQueueSize), 6f, camera.getTilesY() - 5f);
-                    textWriter.renderText(String.format("%.0f", NetStats.recentPrioOutQueueSize), 9f, camera.getTilesY() - 5f);
+                    TextWriter.renderText("----------SERVER-NET----------", 0, tilesY - 3f);
+                    TextWriter.renderText("Cmds/Prios:", 0, tilesY - 3.5f);
+                    TextWriter.renderText(String.format("%.3f", NetStats.avgNumberOfCmdsPerPacket), 4, tilesY - 3.5f);
+                    TextWriter.renderText(String.format("%.3f", NetStats.avgNumberOfPrioCmdsPerPacket), 7, tilesY - 3.5f);
+                    TextWriter.renderText("PackLoad: ", 0, tilesY - 4f);
+                    TextWriter.renderText(String.format("%.3f", NetStats.avgLoadPerPacket), 3.5f, tilesY - 4f);
+                    TextWriter.renderText("PPT:", 5.5f, tilesY - 4f);
+                    TextWriter.renderText(String.format("%.3f", NetStats.recentNumberOfPacketsPerTick), 7.5f, tilesY - 4f);
+                    TextWriter.renderText("Perc Out/Retrans:", 0, tilesY - 4.5f);
+                    TextWriter.renderText(String.format("%.0f", NetStats.recentOutBufferLoad), 6f, tilesY - 4.5f);
+                    TextWriter.renderText(String.format("%.3f", NetStats.recentRetransmitNumber), 7.5f, tilesY - 4.5f);
+                    TextWriter.renderText("Queues Cmd/Prio:", 0, tilesY - 5f);
+                    TextWriter.renderText(String.format("%.0f", NetStats.recentOutQueueSize), 6f, tilesY - 5f);
+                    TextWriter.renderText(String.format("%.0f", NetStats.recentPrioOutQueueSize), 9f, tilesY - 5f);
                 }
             } else {
-                textWriter.renderText(" LOST CONNECTION TO SERVER", 0, camera.getTilesY() - 1.5f);
+                TextWriter.renderText(" LOST CONNECTION TO SERVER", 0, tilesY - 1.5f);
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
@@ -673,13 +595,13 @@ public class GodControl implements Control {
         if (terminal) {
             glDisable(GL_TEXTURE_2D);
             glColor4f(.9f, .9f, .9f, .7f);
-            glRectf(camera.getTilesX() / 3, camera.getTilesY() / 2, camera.getTilesX(), 0);
+            glRectf(tilesX / 3, tilesY / 2, tilesX, 0);
             glColor4f(1f, 1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
-            textWriter.renderText(GameClient.terminal.getCurrentLine(), camera.getTilesX() / 3 + 0.5f, 0, true);
-            int numberoflines = (int) ((int) camera.getTilesY() * camera.getZoomFactor() / 2);
+            TextWriter.renderText(GameClient.terminal.getCurrentLine(), tilesX / 3 + 0.5f, 0, true);
+            int numberoflines = (int) ((int) tilesY * zoomFactor / 2);
             for (int i = 0; i < numberoflines - 1; i++) {
-                textWriter.renderText(GameClient.terminal.getHistory(i), camera.getTilesX() / 3 + 0.5f, camera.getTilesY() * ((i + 1) / (float) numberoflines / 2.0f), true);
+                TextWriter.renderText(GameClient.terminal.getHistory(i), tilesX / 3 + 0.5f, tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
             }
             glColor4f(1f, 1f, 1f, 1f);
         }
@@ -718,13 +640,6 @@ public class GodControl implements Control {
     }
 
     /**
-     * Sagt dem Server, das geschossen werden soll
-     */
-    private void sendShootRequest() {
-        CTS_SHOOT.sendShoot(logicMouseX, logicMouseY);
-    }
-
-    /**
      * Legt eine Schadenszahl an, die in der nächsten Sekunde gerendert wird
      *
      * @param damage Schaden der angezeigt wird
@@ -755,7 +670,7 @@ public class GodControl implements Control {
      * @param starttick Zu welchem Tick die Animation begonnen hat, wichtig,
      * wenn sie beim ersten Bild anfangen soll. Bei Einzelbild egal.
      */
-    private void renderAnim(Animation animation, double x, double y, double dir, int starttick, Renderer renderer) {
+    private void renderAnim(Animation animation, double x, double y, double dir, int starttick) {
         float picsizex = 0.0625f * animation.getPicsizex();
         float picsizey = 0.0625f * animation.getPicsizey();
 
@@ -767,24 +682,20 @@ public class GodControl implements Control {
         float onepixel = 1.0f / 512; // einen pixel vom Bild in jede Richtung abschneiden
 
         glPushMatrix();
-        glTranslated(x + renderer.getCamera().getPanX(), y + renderer.getCamera().getPanY(), 0);
+        glTranslated(x + panX, y + panY, 0);
         glRotated(dir / Math.PI * 180.0, 0, 0, 1);
-        glTranslated(-(x + renderer.getCamera().getPanX()), -(y + renderer.getCamera().getPanY()), 0);
+        glTranslated(-(x + panX), -(y + panY), 0);
         glBegin(GL_QUADS);
         glTexCoord2f(v + onepixel, w + picsizey - onepixel);
-        glVertex3f((float) x + renderer.getCamera().getPanX() - 1, (float) y + renderer.getCamera().getPanY() + 1, 0);
+        glVertex3f((float) x + panX - 1, (float) y + panY + 1, 0);
         glTexCoord2f(v + picsizex - onepixel, w + picsizey - onepixel);
-        glVertex3f((float) x + renderer.getCamera().getPanX() + 1, (float) y + renderer.getCamera().getPanY() + 1, 0);
+        glVertex3f((float) x + panX + 1, (float) y + panY + 1, 0);
         glTexCoord2f(v + picsizex - onepixel, w + onepixel);
-        glVertex3f((float) x + renderer.getCamera().getPanX() + 1, (float) y + renderer.getCamera().getPanY() - 1, 0);
+        glVertex3f((float) x + panX + 1, (float) y + panY - 1, 0);
         glTexCoord2f(v + onepixel, w + onepixel);
-        glVertex3f((float) x + renderer.getCamera().getPanX() - 1, (float) y + renderer.getCamera().getPanY() - 1, 0);
+        glVertex3f((float) x + panX - 1, (float) y + panY - 1, 0);
         glEnd();
         glPopMatrix();
-    }
-
-    public void sendAbilityRequest(byte ability) {
-        CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, logicMouseX, logicMouseY);
     }
 
     /**
@@ -980,7 +891,7 @@ public class GodControl implements Control {
      * @param c der zu untersuchende Char
      * @return true, wenn drüber, sonst false
      */
-    private boolean mouseOverChar(Char c, Camera cam) {
+    private boolean mouseOverChar(Char c) {
         return (logicMouseX >= c.getX() - c.getSize() && logicMouseX <= c.getX() + c.getSize() && logicMouseY >= c.getY() - c.getSize() && logicMouseY <= c.getY() + c.getSize());
     }
 
@@ -1038,9 +949,9 @@ public class GodControl implements Control {
      */
     public void setLookAhead(boolean lookAhead) {
         if (lookAhead) {
-            GameClient.getEngine().getGraphics().getCamera().setZoomFact(Display.getHeight() / 20.0f / CLIENT_GFX_TILESIZE);
+            setZoomFact(Display.getHeight() / 20.0f / CLIENT_GFX_TILESIZE);
         } else {
-            GameClient.getEngine().getGraphics().getCamera().setZoomFact(Display.getHeight() / 34.0f / CLIENT_GFX_TILESIZE);
+            setZoomFact(Display.getHeight() / 34.0f / CLIENT_GFX_TILESIZE);
         }
         this.lookahead = lookAhead;
     }
@@ -1091,5 +1002,38 @@ public class GodControl implements Control {
      */
     public void setUseVBOs(boolean useVBOs) {
         this.useVBOs = useVBOs;
+    }
+
+    @Override
+    public void defineOpenGLMatrices() {
+        if (!DefaultSettings.CLIENT_GFX_LOOKAHEAD) {
+            // Zoom korrekt berechnen. Man sieht immer 58 * 34 Felder weit.
+            // Höhe hat Prio, bei 4:3 sieht man weniger...
+            setZoomFact(CLIENT_GFX_RES_Y / 34.0f / CLIENT_GFX_TILESIZE);
+        } else {
+            // Bei Lookahead sieht man weniger weit, weil man ja die Ansicht verschieben kann.
+            setZoomFact(CLIENT_GFX_RES_Y / 20.f / CLIENT_GFX_TILESIZE);
+        }
+    }
+    
+    /**
+     * Setzt den Zoomfaktor.
+     * TODO: Erst mal private machen, dann aber bald ganz rauswerfen
+     * @param zoomFact 
+     */
+    @Deprecated
+    public void setZoomFact(float zoomFact) {
+        glLoadIdentity();
+        GLU.gluOrtho2D(0f, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact), 0f, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact));
+        tilesX = CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact);
+        tilesY = CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact);
+        zoomFactor = zoomFact;
+    }
+
+    /**
+     * @param terminal the terminal to set
+     */
+    public void setTerminal(boolean terminal) {
+        this.terminal = terminal;
     }
 }

@@ -10,62 +10,29 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author michael
  */
-public class Renderer {
+public class RenderUtils {
 
-    /**
-     * Der Text-Renderer.
-     */
-    private TextWriter textWriter;
-    /**
-     * Die Kamera der Engine.
-     */
-    private Camera camera;
     /**
      * Lädt Texturen und erzeugt Bilder.
      */
-    private ImageLoader imageLoader;
+    private static ImageLoader imageLoader = new ImageLoader(new File("").getAbsolutePath() + "/tex");
     /**
      * Die Breite der Bilder in Pixel.
      */
-    private int imageWidth;
+    private static int imageWidth;
     /**
      * Die Höhe der Bilder in Pixel.
      */
-    private int imageHeight;
+    private static int imageHeight;
     /**
      * Die Zahl der Bilder pro Reihe auf der Textur.
      */
-    private int imagesPerRow;
+    private static int imagesPerRow;
     /**
      * Die Größe und Breite der geladenen Textur.
      */
-    private int textureSize;
+    private static int textureSize;
     private static Color neutral = new Color(Color.WHITE);
-
-    /**
-     * Erzeugt einen neuen Renderer.
-     *
-     * @param camera
-     */
-    Renderer(Camera camera) {
-        this.camera = camera;
-        textWriter = new TextWriter(camera);
-        imageLoader = new ImageLoader(new File("").getAbsolutePath() + "/tex");
-    }
-
-    /**
-     * @return the textWriter
-     */
-    public TextWriter getTextWriter() {
-        return textWriter;
-    }
-
-    /**
-     * @return the camera
-     */
-    public Camera getCamera() {
-        return camera;
-    }
 
     /**
      * Gibt die Textur mit dem angegebenen Namen zurück.
@@ -73,7 +40,7 @@ public class Renderer {
      * @param name der Name der gesuchten Textur.
      * @return
      */
-    public Texture getTextureByName(String name) {
+    public static Texture getTextureByName(String name) {
         return imageLoader.getTexture(name);
     }
 
@@ -91,7 +58,7 @@ public class Renderer {
      * @param y Y-Startkoordinate
      * @param y2 Y-Endkoordinate
      */
-    public void setScreenMapping(float x, float x2, float y, float y2) {
+    public static void setScreenMapping(float x, float x2, float y, float y2) {
         glPushMatrix();
         glLoadIdentity();
         glOrtho(x, x2, y, y2, -1, 1);
@@ -100,7 +67,7 @@ public class Renderer {
     /**
      * Macht den letzten Aufruf von setScreenMapping rückgängig.
      */
-    public void restoreScreenMapping() {
+    public static void restoreScreenMapping() {
         glPopMatrix();
     }
 
@@ -109,7 +76,7 @@ public class Renderer {
      *
      * @param texture
      */
-    public void setTilemap(Texture texture) {
+    public static void setTilemap(Texture texture) {
         texture.bind();
         textureSize = texture.getImageWidth();
         if (texture.getImageHeight() != texture.getImageWidth()) {
@@ -123,7 +90,7 @@ public class Renderer {
      * @param width die Breite der Tiles in Pixel
      * @param height die Höhe der Tiles in Pixel
      */
-    public void setTileSize(int width, int height) {
+    public static void setTileSize(int width, int height) {
         imageHeight = height;
         imageWidth = width;
         imagesPerRow = (textureSize / width);
@@ -134,7 +101,7 @@ public class Renderer {
      *
      * @param image
      */
-    public void drawImage(Image image) {
+    public static void drawImage(Image image) {
         setTilemap(image.getTilemap());
         drawTileColored(image.getIndex(), image.getPosX(), image.getPosY(), image.getWidth(), image.getHeight(), neutral);
     }
@@ -151,7 +118,7 @@ public class Renderer {
      * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
      * @param color die Farbe
      */
-    public void drawTileColored(int index, float x, float y, float width, float height, Color color) {
+    public static void drawTileColored(int index, float x, float y, float width, float height, Color color) {
 
         glBegin(GL_QUADS); // Viereck zeichnen
         glEnable(GL_TEXTURE_2D); // Textur zeichnen
@@ -172,32 +139,32 @@ public class Renderer {
 
         // alle Angaben über rechts, links, oben und unten sind ohne Gewähr
         // links unten
-        fromX = (float) textureX / textureSize;
-        fromY = (float) textureY / textureSize;
+        fromX = textureX / textureSize;
+        fromY = textureY / textureSize;
         toX = x;
         toY = y + height;
         glTexCoord2f(fromX, fromY);
         glVertex2d(toX, toY);
 
         // rechts unten
-        fromX = (float) (textureX + imageWidth) / textureSize;
-        fromY = (float) textureY / textureSize;
+        fromX = (textureX + imageWidth) / textureSize;
+        fromY = textureY / textureSize;
         toX = x + width;
         toY = y + height;
         glTexCoord2f(fromX, fromY);
         glVertex2d(toX, toY);
 
         // rechts oben
-        fromX = (float) (textureX + imageWidth) / textureSize;
-        fromY = (float) (textureY + imageHeight) / textureSize;
+        fromX = (textureX + imageWidth) / textureSize;
+        fromY = (textureY + imageHeight) / textureSize;
         toX = x + width;
         toY = y;
         glTexCoord2f(fromX, fromY);
         glVertex2d(toX, toY);
 
         // links oben
-        fromX = (float) textureX / textureSize;
-        fromY = (float) (textureY + imageHeight) / textureSize;
+        fromX = textureX / textureSize;
+        fromY = (textureY + imageHeight) / textureSize;
         toX = x;
         toY = y;
         glTexCoord2f(fromX, fromY);
@@ -217,20 +184,8 @@ public class Renderer {
      * @param width Breite mit der das Bild gezeichent wird (in Prozent)
      * @param height Höhe mit der das Bild gezeichent wird (in Prozent)
      */
-    public void drawTile(int index, float x, float y, float width, float height) {
+    public static void drawTile(int index, float x, float y, float width, float height) {
         drawTileColored(index, x, y, width, height, neutral);
-    }
-
-    /**
-     * Rendert Text auf den Bildschirm.
-     * ACHTUNG braucht die setScreenMapping()-Einstellung des GodControls!
-     *
-     * @param text der Text der gerendert wird.
-     * @param x X-Koordinate in % des Bildschirms (0.5f ist die Mitte).
-     * @param y Y-Koordinate in % des Bildschirms (0.5f ist die Mitte).
-     */
-    public void renderText(String text, float x, float y) {
-        textWriter.renderText(text, x * camera.getTilesX(), y * camera.getTilesY());
     }
 
     /**
@@ -243,7 +198,7 @@ public class Renderer {
      * @param height die Höhe des Rechtecks
      * @param color die Farbe des Rechtecks
      */
-    public void drawRectangle(float x, float y, float width, float height, Color color) {
+    public static void drawRectangle(float x, float y, float width, float height, Color color) {
 
         glPushMatrix(); // Transformationsmatrix sichern
 
@@ -260,5 +215,8 @@ public class Renderer {
 
         glEnd(); // Zeichnen des QUADs fertig
         glPopMatrix();// wieder die ursprüngliche Transformationsmatrix herstellen
+    }
+
+    private RenderUtils() {
     }
 }

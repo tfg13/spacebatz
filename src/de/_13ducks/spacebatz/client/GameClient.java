@@ -268,10 +268,10 @@ public class GameClient {
     static void gameTick() {
         int serverTick = network2.getLogicTick();
         while (logicGameTick <= serverTick) {
-            if (!GameClient.getEngine().getGraphics().isMenuActive()) {
+            //if (!GameClient.getEngine().getGraphics().isMenuActive()) {
                 // Input berechnen:
                 TickedInput.tick();
-            }
+            //}
             for (Char c : GameClient.netIDMap.values()) {
                 c.tick(logicGameTick);
             }
@@ -281,5 +281,8 @@ public class GameClient {
 
     public static void setLogicTick(int serverTick) {
         logicGameTick = serverTick;
+    }
+
+    private GameClient() {
     }
 }

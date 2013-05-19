@@ -10,7 +10,7 @@ public interface Control {
     /**
      * Rendert dieses Control.
      */
-    public abstract void render(Renderer renderer);
+    public abstract void render(RenderUtils renderer);
 
     /**
      * Verarbeitet Eingaben.

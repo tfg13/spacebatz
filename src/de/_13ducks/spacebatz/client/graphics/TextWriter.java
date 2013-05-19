@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -12,27 +13,26 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.util.ResourceLoader;
 
 /**
- * Rendert Text.
- *
- * @author michael
+ * Ein Hilfsmodul, das Text rendert.
+ * 
+ * Darf nur aufgerufen werden, wenn die Projektionsmatrix derzeit auf Pixel eingestellt ist.
+ * (Also normalerweise nur aus Overlays)
  */
 public class TextWriter {
 
     /**
-     * Camera, notwendig für Koordinaten-Transformationen.
-     */
-    private final Camera camera;
-    /**
      * Die geladenen Schriften.
      */
     @SuppressWarnings("deprecation")
-    private TrueTypeFont fonts[] = new TrueTypeFont[2];
+    private static TrueTypeFont fonts[] = new TrueTypeFont[2];
+    
+    private TextWriter() {
+    }
 
     /**
-     * Lädt die Schriften.
+     * Lädt die Schriften, muss aufgerufen werden, bevor der TextWriter zum ersten Mal verwendet wird.
      */
-    public TextWriter(Camera camera) {
-        this.camera = camera;
+    public static void initialize() {
         try {
             GL11.glPushMatrix();
             GL11.glLoadIdentity();
@@ -62,7 +62,7 @@ public class TextWriter {
      * @param x PositionX (links)
      * @param y PositionY (unten)
      */
-    public void renderText(String text, float x, float y) {
+    public static void renderText(String text, float x, float y) {
         renderText(text, x, y, false);
     }
 
@@ -76,8 +76,8 @@ public class TextWriter {
      * @param x PositionX (mitte)
      * @param y PositionY (unten)
      */
-    public void renderTextXCentered(String text, float x, float y) {
-        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * camera.getTilesX()), y, false);
+    public static void renderTextXCentered(String text, float x, float y) {
+        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * GodControl.tilesX), y, false);
     }
 
     /**
@@ -91,11 +91,11 @@ public class TextWriter {
      * @param y PositionY (unten)
      * @param mono Monospace-Font und (!) klein?
      */
-    public void renderText(String text, float x, float y, boolean mono) {
+    public static void renderText(String text, float x, float y, boolean mono) {
         GL11.glPushMatrix();
         GL11.glLoadIdentity();
         GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / camera.getTilesX() * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / camera.getTilesY())) * Display.getHeight(), text, Color.black);
+        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / GodControl.tilesX * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / GodControl.tilesY)) * Display.getHeight(), text, Color.black);
         GL11.glPopMatrix();
     }
 
@@ -112,7 +112,7 @@ public class TextWriter {
      * @param green_color Textfarbe Grünanteil
      * @param green_color Textfarbe Alpha-anteil
      */
-    public void renderText(String text, float x, float y, float red_color, float blue_color, float green_color, float alpha_color) {
+    public static void renderText(String text, float x, float y, float red_color, float blue_color, float green_color, float alpha_color) {
         renderText(text, x, y, false, red_color, blue_color, green_color, alpha_color);
     }
 
@@ -130,11 +130,11 @@ public class TextWriter {
      * @param green_color Textfarbe Grünanteil
      * @param green_color Textfarbe Alpha-anteil
      */
-    public void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color, float alpha_color) {
+    public static void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color, float alpha_color) {
         GL11.glPushMatrix();
         GL11.glLoadIdentity();
         GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-        fonts[mono ? 1 : 0].drawString(x / camera.getTilesX() * Display.getWidth(), (1f - ((y + 0.5f) / camera.getTilesY())) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
+        fonts[mono ? 1 : 0].drawString(x / GodControl.tilesX * Display.getWidth(), (1f - ((y + 0.5f) / GodControl.tilesY)) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
         GL11.glPopMatrix();
     }
 
@@ -144,8 +144,8 @@ public class TextWriter {
      * @param f X-Koordinate
      * @return gerundete Koordinate
      */
-    private float snapToXRaster(float f) {
-        return Math.round(f / camera.getTilesX() * Display.getWidth()) * camera.getTilesX() / Display.getWidth();
+    private static float snapToXRaster(float f) {
+        return Math.round(f / GodControl.tilesX * Display.getWidth()) * GodControl.tilesX / Display.getWidth();
     }
 
     /**
@@ -154,7 +154,7 @@ public class TextWriter {
      * @param f Y-Koordinate
      * @return gerundete Koordinate
      */
-    private float snapToYRaster(float f) {
-        return Math.round(f / camera.getTilesY() * Display.getHeight()) * camera.getTilesY() / Display.getHeight();
+    private static float snapToYRaster(float f) {
+        return Math.round(f / GodControl.tilesY * Display.getHeight()) * GodControl.tilesY / Display.getHeight();
     }
 }

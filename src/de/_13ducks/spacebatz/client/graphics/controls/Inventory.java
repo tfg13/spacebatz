@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.client.graphics.controls;
 
-import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.Camera;
-import de._13ducks.spacebatz.client.graphics.Control;
-import de._13ducks.spacebatz.client.graphics.Renderer;
+import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
+import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
+import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
@@ -22,7 +22,7 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author michael
  */
-public class Inventory implements Control {
+public class Inventory extends Overlay {
 
     /**
      * Sagt, ob Inventar gerade geöffnet ist (Taste i)
@@ -32,34 +32,30 @@ public class Inventory implements Control {
     private Texture itemTiles;
     private Texture hud1;
 
-    public Inventory(Renderer renderer) {
-        itemTiles = renderer.getTextureByName("item.png");
-        hud1 = renderer.getTextureByName("hud1.png");
+    public Inventory() {
+        itemTiles = RenderUtils.getTextureByName("item.png");
+        hud1 = RenderUtils.getTextureByName("hud1.png");
         selecteditemslot = -1;
     }
 
     @Override
-    public void render(Renderer renderer) {
-        Camera camera = renderer.getCamera();
-        TextWriter textWriter = renderer.getTextWriter();
-
-
+    public void render() {
         // dunkler Hintergrund
 //        glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
-//        glRectf(0, 0, camera.getTilesX(), camera.getTilesY());
+//        glRectf(0, 0, GodControl.tilesX, GodControl.tilesY);
 
         // Koordinaten für waagrechte Linien
-        float x1 = 0.095125f * camera.getTilesX();
-        float x2 = 0.895125f * camera.getTilesX();
-        float bottom1 = 0.07f * camera.getTilesY();
+        float x1 = 0.095125f * GodControl.tilesX;
+        float x2 = 0.895125f * GodControl.tilesX;
+        float bottom1 = 0.07f * GodControl.tilesY;
 
         // Koordinaten für senkrechte Linien
-        float y1 = 0.17f * camera.getTilesY();
-        float y2 = 0.47f * camera.getTilesY();
-        float left1 = 0.095125f * camera.getTilesX();
+        float y1 = 0.17f * GodControl.tilesY;
+        float y2 = 0.47f * GodControl.tilesY;
+        float left1 = 0.095125f * GodControl.tilesY;
 
         glDisable(GL_TEXTURE_2D);
-        // Hintergrund  für Inventar-Items zeichnen
+        // HintergrunGod  für Inventar-Items zeichnen
         glColor3f(0.243f, 0.243f, 0.243f);
         glRectf(x1, y1, x2, y2);
 
@@ -70,10 +66,10 @@ public class Inventory implements Control {
         // Bild für die Inventar-Slots
         for (int i = 0; i <= 9; i++) {
             for (int j = 0; j <= 2; j++) {
-                float xa = x1 + i * 0.08f * camera.getTilesX();
-                float xb = x1 + (i + 1) * 0.08f * camera.getTilesX();
-                float ya = y1 + j * 0.1f * camera.getTilesY();
-                float yb = y1 + (j + 1) * 0.1f * camera.getTilesY();
+                float xa = x1 + i * 0.08f * GodControl.tilesX;
+                float xb = x1 + (i + 1) * 0.08f * GodControl.tilesX;
+                float ya = y1 + j * 0.1f * GodControl.tilesY;
+                float yb = y1 + (j + 1) * 0.1f * GodControl.tilesY;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(273.0f / 512, 307.0f / 512);
@@ -88,10 +84,10 @@ public class Inventory implements Control {
             }
         }
         
-        float x01 = 0.815125f * camera.getTilesX();
-        float x02 = 0.895125f * camera.getTilesX();
-        float ya = 0.53f * camera.getTilesY();
-        float yb = ya + 0.1f * camera.getTilesY();
+        float x01 = 0.815125f * GodControl.tilesX;
+        float x02 = 0.895125f * GodControl.tilesX;
+        float ya = 0.53f * GodControl.tilesY;
+        float yb = ya + 0.1f * GodControl.tilesY;
         
         // Bild für Mülleimer
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
@@ -107,7 +103,7 @@ public class Inventory implements Control {
 
         // Hut-Slot:
         float xa = x1;
-        float xb = x1 + 0.08f * camera.getTilesX();
+        float xb = x1 + 0.08f * GodControl.tilesX;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(125.0f / 512, 307.0f / 512);
         glVertex3f(xa, ya, 0.0f);
@@ -121,8 +117,8 @@ public class Inventory implements Control {
 
         // Waffen-Slots:
         for (int i = 0; i <= 2; i++) {
-            float xw1 = x1 + (0.1f * i + 0.15f) * camera.getTilesX();
-            float xw2 = xw1 + 0.08f * camera.getTilesX();
+            float xw1 = x1 + (0.1f * i + 0.15f) * GodControl.tilesX;
+            float xw2 = xw1 + 0.08f * GodControl.tilesX;
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(125.0f / 512, 204.0f / 512);
             glVertex3f(xw1, ya, 0.0f);
@@ -138,9 +134,9 @@ public class Inventory implements Control {
 
         // Items im Inventory zeichnen
         // Anzahl der Materialien:
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * camera.getTilesX(), 0.64f * camera.getTilesY());
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * camera.getTilesX(), 0.59f * camera.getTilesY());
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * camera.getTilesX(), 0.54f * camera.getTilesY());
+        TextWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * GodControl.tilesX, 0.64f * GodControl.tilesY);
+        TextWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * GodControl.tilesX, 0.59f * GodControl.tilesY);
+        TextWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * GodControl.tilesX, 0.54f * GodControl.tilesY);
         glColor4f(1f, 1f, 1f, 1f);
 
         itemTiles.bind();
@@ -153,22 +149,22 @@ public class Inventory implements Control {
 
             Item item = GameClient.getItems()[i];
 
-            float x = (0.107f + 0.08f * (i % 10)) * camera.getTilesX();
+            float x = (0.107f + 0.08f * (i % 10)) * GodControl.tilesX;
 
             float y;
             if (i < 10) {
-                y = 0.37f * camera.getTilesY();
+                y = 0.37f * GodControl.tilesY;
             } else if (i < 20) {
-                y = 0.27f * camera.getTilesY();
+                y = 0.27f * GodControl.tilesY;
             } else {
-                y = 0.17f * camera.getTilesY();
+                y = 0.17f * GodControl.tilesY;
             }
 
-            float width = (0.1f / 16.0f * 9.0f) * camera.getTilesX();
-            float height = 0.1f * camera.getTilesY();
+            float width = (0.1f / 16.0f * 9.0f) * GodControl.tilesX;
+            float height = 0.1f * GodControl.tilesY;
 
-            float v = 0.0625f * (int) item.getPic();
-            float w = 0.0625f * ((int) item.getPic() / 16);
+            float v = 0.0625f * item.getPic();
+            float w = 0.0625f * (item.getPic() / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.0625f);
@@ -191,14 +187,14 @@ public class Inventory implements Control {
         Item itemx = GameClient.getEquippedItems().getEquipslots()[2][0];
         if (itemx != null) {
             // Item zeichnen;
-            float x = 0.11f * camera.getTilesX();
-            float y = 0.53f * camera.getTilesY();
+            float x = 0.11f * GodControl.tilesX;
+            float y = 0.53f * GodControl.tilesY;
 
-            float width = 0.1f / 16 * 9 * camera.getTilesX();
-            float height = 0.1f * camera.getTilesY();
+            float width = 0.1f / 16 * 9 * GodControl.tilesX;
+            float height = 0.1f * GodControl.tilesY;
 
-            float v = 0.0625f * (int) itemx.getPic();
-            float w = 0.0625f * ((int) itemx.getPic() / 16);
+            float v = 0.0625f * itemx.getPic();
+            float w = 0.0625f * (itemx.getPic() / 16);
 
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(v, w + 0.0625f);
@@ -218,14 +214,14 @@ public class Inventory implements Control {
             Item item1 = GameClient.getEquippedItems().getEquipslots()[1][j];
             if (item1 != null) {
                 // Item zeichnen;
-                float x = (0.26f + 0.1f * j) * camera.getTilesX();
-                float y = 0.53f * camera.getTilesY();
+                float x = (0.26f + 0.1f * j) * GodControl.tilesX;
+                float y = 0.53f * GodControl.tilesY;
 
-                float width = 0.1f / 16 * 9 * camera.getTilesX();
-                float height = 0.1f * camera.getTilesY();
+                float width = 0.1f / 16 * 9 * GodControl.tilesX;
+                float height = 0.1f * GodControl.tilesY;
 
-                float v = 0.0625f * (int) item1.getPic();
-                float w = 0.0625f * ((int) item1.getPic() / 16);
+                float v = 0.0625f * item1.getPic();
+                float w = 0.0625f * (item1.getPic() / 16);
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.0625f);
@@ -248,23 +244,23 @@ public class Inventory implements Control {
             if (item2 != null) {
             	itemTiles.bind();
 
-            	float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
-            	float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
+            	float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * GodControl.tilesX;
+            	float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * GodControl.tilesY;
 
             	float size = 0.08f;
 
-            	float v = 0.0625f * (int) item2.getPic();
-            	float w = 0.0625f * ((int) item2.getPic() / 16);
+            	float v = 0.0625f * item2.getPic();
+            	float w = 0.0625f * (item2.getPic() / 16);
 
             	glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             	glTexCoord2f(v, w + 0.0625f);
-            	glVertex3f(x - camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
+            	glVertex3f(x - GodControl.tilesX * size / 2, y - GodControl.tilesX * size / 2, 0.0f);
             	glTexCoord2f(v + 0.0625f, w + 0.0625f);
-            	glVertex3f(x + camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
+            	glVertex3f(x + GodControl.tilesX * size / 2, y - GodControl.tilesX * size / 2, 0.0f);
             	glTexCoord2f(v + 0.0625f, w);
-            	glVertex3f(x + camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
+            	glVertex3f(x + GodControl.tilesX * size / 2, y + GodControl.tilesX * size / 2, 0.0f);
             	glTexCoord2f(v, w);
-            	glVertex3f(x - camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
+            	glVertex3f(x - GodControl.tilesX * size / 2, y + GodControl.tilesX * size / 2, 0.0f);
             	glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
@@ -328,20 +324,20 @@ public class Inventory implements Control {
             // Item gefunden, jetzt Mousehover rendern
             glDisable(GL_TEXTURE_2D);
             glColor3f(0.9f, 0.9f, 0.9f);
-            glRectf((x - 0.01f) * camera.getTilesX(), (y - 0.01f) * camera.getTilesY(), (x + 0.3f) * camera.getTilesX(), (y - 0.015f + 0.05f * item.getItemAttributes().size()) * camera.getTilesY());
+            glRectf((x - 0.01f) * GodControl.tilesX, (y - 0.01f) * GodControl.tilesY, (x + 0.3f) * GodControl.tilesX, (y - 0.015f + 0.05f * item.getItemAttributes().size()) * GodControl.tilesY);
             glColor3f(1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
             float yadd = 0.0f;
             for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
-                textWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * camera.getTilesX(), (y + yadd) * camera.getTilesY());
+                TextWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * GodControl.tilesX, (y + yadd) * GodControl.tilesY);
                 yadd += 0.05f;
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
     }
 
-    @Override
+    //@Override
     public void input() {
         // Mausklick suchen
         {
@@ -359,7 +355,7 @@ public class Inventory implements Control {
                         if (y > 0.53 && y < 0.63) {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = GameClient.getItems()[selecteditemslot];
-                                if ((int) selecteditem.getItemClass() == 2) {
+                                if (selecteditem.getItemClass() == 2) {
                                     CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // 2 = Hut-Slot
                                     selecteditemslot = -1;
                                 }
@@ -384,7 +380,7 @@ public class Inventory implements Control {
                             // Waffenslot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = GameClient.getItems()[selecteditemslot];
-                                if ((int) selecteditem.getItemClass() == 1) {
+                                if (selecteditem.getItemClass() == 1) {
                                     CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                                     selecteditemslot = -1;
                                 }

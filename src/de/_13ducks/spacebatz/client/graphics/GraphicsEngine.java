@@ -1,14 +1,19 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.controls.GodControl;
 import de._13ducks.spacebatz.client.graphics.controls.HudControl;
 import de._13ducks.spacebatz.client.graphics.controls.Inventory;
 import de._13ducks.spacebatz.client.graphics.controls.QuestControl;
+import de._13ducks.spacebatz.client.graphics.input.Input;
+import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -38,38 +43,25 @@ public class GraphicsEngine {
         }
     }
     /**
-     * Die Kamera mit Position und Zoom.
+     * Das derzeit aktive Kern-Rendermodul.
      */
-    Camera camera;
+    private CoreRenderer coreRenderer;
+    /**
+     * Das derzeit aktive InputSystem.
+     */
+    private Input input;
+    /**
+     * Die Liste mit den aktiven Overlays.
+     */
+    private List<Overlay> overlays = new ArrayList<>();
     /**
      * Das God-Control, das auch Effekte und FX zeichent.
      */
     private GodControl godControl;
     /**
-     * Das Hud-Control, zeichnet HP-Balken etc.
-     */
-    private HudControl hudControl;
-    /**
-     * Infos über Quests.
-     */
-    private QuestControl questControl;
-    /**
      * Der Skilltree.
      */
     private SkillTreeControl skilltree;
-    /**
-     * Das Inventar
-     */
-    private Inventory inventory;
-    /**
-     * Das aktive Menü, das über das Spiel gerendert wird.
-     * z.B. Inventar
-     */
-    private Control activeMenu;
-    /**
-     * Der Renderer, der Geometrie und Texturen zeichnet.
-     */
-    private Renderer renderer;
     private ShadowAnimator shadowAnimator = new ShadowAnimator();
     //DEBUG
     public static StatisticRingBuffer timing = new StatisticRingBuffer(60);
@@ -93,9 +85,7 @@ public class GraphicsEngine {
             // Hat die Platform alles was wir brauchen?
             // Erst nach dem Fenster-erzeugen, manche Tests brauchen einen aktiven OpenGL-Context
             checkCapabilities();
-
-            // Kamera erzeugen:
-            camera = new Camera(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y);
+            
             // OpenGL-Init:
             // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
             // GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE));
@@ -108,15 +98,19 @@ public class GraphicsEngine {
             // Tastatureingaben einstallen:
             Keyboard.enableRepeatEvents(true);
 
-            // Renderer Initialisieren:
-            renderer = new Renderer(camera);
-
-            // Controls erzeugen:
-            godControl = new GodControl(renderer);
-            hudControl = new HudControl(renderer);
-            questControl = new QuestControl();
-            skilltree = new SkillTreeControl(renderer);
-            inventory = new Inventory(renderer);
+            // Komponenten erzeugen:
+            godControl = new GodControl();
+            skilltree = new SkillTreeControl();
+            overlays.add(new HudControl());
+            overlays.add(new QuestControl());
+            overlays.add(skilltree);
+            overlays.add(new Inventory());
+            input = new Input();
+            
+            TextWriter.initialize();
+            
+            coreRenderer = godControl;
+            coreRenderer.defineOpenGLMatrices();
 
 
         } catch (Exception ex) {
@@ -143,20 +137,25 @@ public class GraphicsEngine {
         // Bild löschen, neu malen
         glClear(GL_COLOR_BUFFER_BIT);
         long ns = System.nanoTime();
-        godControl.render(renderer);
-        hudControl.render(renderer);
-        questControl.render(renderer);
+        
+        // Haupt-Renderer:
+        coreRenderer.render();
+        
+        
+        // Alle aktiven Overlays:
+        for (int i = 0; i < overlays.size(); i++) {
+            Overlay overlay = overlays.get(i);
+            overlay.render();
+        }
+        
+//        hudControl.render(renderer);
+//        questControl.render(renderer);
         long ns2 = System.nanoTime();
         timing.push((int) (ns2 - ns));
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
-        if (activeMenu == null) {
-            godControl.input();
-        } else {
-            activeMenu.render(renderer);
-            activeMenu.input();
-        }
-
+        input.input();
+        
         // Fertig, Puffer swappen:
         Display.update();
 
@@ -169,15 +168,6 @@ public class GraphicsEngine {
             GameClient.getEngine().stopEngine();
             GameClient.soundEngine.shutdown();
         }
-    }
-
-    /**
-     * Gibt die Kamera zurück.
-     *
-     * @return
-     */
-    public Camera getCamera() {
-        return camera;
     }
 
     /**
@@ -208,23 +198,25 @@ public class GraphicsEngine {
      * Schält das Skilltreemenü um.
      */
     public void toggleSkillTree() {
-        if (activeMenu == null) {
-            activeMenu = skilltree;
-            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
-        } else if (activeMenu == skilltree) {
-            activeMenu = null;
-            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
-        }
+//        if (activeMenu == null) {
+//            activeMenu = skilltree;
+//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
+//        } else if (activeMenu == skilltree) {
+//            activeMenu = null;
+//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
+//        }
+        System.out.println("AddMe: Re-Implement SkillTree-Toggle");
     }
 
     public void toggleInventory() {
-        if (activeMenu == null) {
-            activeMenu = inventory;
-            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
-        } else if (activeMenu == inventory) {
-            activeMenu = null;
-            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
-        }
+//        if (activeMenu == null) {
+//            activeMenu = inventory;
+//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
+//        } else if (activeMenu == inventory) {
+//            activeMenu = null;
+//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
+//        }
+        System.out.println("AddMe: Re-Implement Inventory-Toggle");
     }
 
     public GodControl defactoRenderer() {
@@ -238,15 +230,6 @@ public class GraphicsEngine {
      */
     public ShadowAnimator getShadowAnimator() {
         return shadowAnimator;
-    }
-
-    /**
-     * True, wenn derzeit ein Menu eingeblendet wird, also der Input dahin soll.
-     *
-     * @return true bei eingeblendetem menu
-     */
-    public boolean isMenuActive() {
-        return activeMenu != null;
     }
 
     private void checkCapabilities() {

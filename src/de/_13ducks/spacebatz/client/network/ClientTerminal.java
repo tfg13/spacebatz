@@ -134,7 +134,7 @@ public class ClientTerminal {
                                 try {
                                     float fact = Float.parseFloat(words[1]);
                                     if (fact > 0) {
-                                        GameClient.getEngine().getGraphics().getCamera().setZoomFact(fact);
+                                        GameClient.getEngine().getGraphics().defactoRenderer().setZoomFact(fact);
                                         break;
                                     }
                                 } catch (NumberFormatException ex) {
