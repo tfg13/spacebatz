@@ -1,111 +1,189 @@
 package de._13ducks.spacebatz.client.graphics.input;
 
-import de._13ducks.spacebatz.client.GameClient;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl.panX;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl.panY;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl.tilesX;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl.tilesY;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
+import de._13ducks.spacebatz.client.graphics.input.impl.OverlayInputMode;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 /**
- * Genereller Spiel-Input. (synchon mit Frames)
+ * Genereller Spiel-Input. (synchron mit Frames)
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class Input {
-    
+
     /**
-     * Die Position der Maus in Spielkoordinaten.
+     * Der derzeit aktive, primäre Inputmodus.
      */
-    private double logicMouseX, logicMouseY;
+    private InputMode input = new GameInput();
+    /**
+     * Die Listener der Overlays, die sich für Input interessieren.
+     */
+    private Map<OverlayInputListener, OverlayInputMode> inputOverlays = new ConcurrentHashMap<>();
+    /**
+     * Der aktuell getriggerte Listener.
+     */
+    private OverlayInputListener triggeredListener;
 
+    /**
+     * Input-Hauptmethode.
+     * Muss synchron zu den Frames regelmäßig aufgerufen werden.
+     */
     public void input() {
-        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * tilesX) - panX;
-        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * tilesY) - panY;
-        
-        if (!GameClient.getEngine().getGraphics().defactoRenderer().isTerminal()) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-                sendAbilityRequest((byte) 1);
+        // Zuerst Mausbewegung
+        // Ist derzeit ein Overlay getriggert und fängt die Bewegung ab?
+        boolean sendMouseMoveToRest = true;
+        if (triggeredListener != null) {
+            OverlayInputMode mode = inputOverlays.get(triggeredListener);
+            if (mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_BLOCKING || mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_NONBLOCKING) {
+                // Mausbewegungen gehen an dieses Overlay:
+                triggeredListener.mouseMove(Mouse.getX(), Mouse.getY());
+                // War das exklusiv?
+                if (mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_BLOCKING) {
+                    sendMouseMoveToRest = false;
+                }
             }
-            if (Mouse.isButtonDown(0)) {
-                sendShootRequest();
+        }
+        // Exklusive Mausbewegungen sind jetzt verarbeitet.
+        // Mausbewegung trotzdem an den Rest?
+        if (sendMouseMoveToRest) {
+            input.mouseMovement();
+            // Gibt es ein Overlay das da ist?
+            OverlayInputListener l = listenerForPoint(Mouse.getX(), Mouse.getY());
+            if (l != null) {
+                // Dann senden:
+                l.mouseMove(Mouse.getX(), Mouse.getY());
             }
+        }
 
-            outer:
-            while (Keyboard.next()) {
-                int key = Keyboard.getEventKey();
-                boolean pressed = Keyboard.getEventKeyState();
+        // Jetzt Tastatureingaben verarbeiten:
+        while (Keyboard.next()) {
+            int key = Keyboard.getEventKey();
+            boolean pressed = Keyboard.getEventKeyState();
+            boolean sendInputToRest = true;
+            // Ist aktuell jemand getriggert?
+            if (triggeredListener != null) {
+                OverlayInputMode mode = inputOverlays.get(triggeredListener);
+                // Interessiert sich der für KeyboardEvents?
+                if (mode.keyboardMode == OverlayInputMode.KEYBOARD_MODE_TRIGGER) {
+                    sendInputToRest = false;
+                    triggeredListener.keyboardInput(key, pressed);
+                }
+            } else {
+                // Es ist zur Zeit niemand getriggert, ist das eine neue Triggertaste?
                 if (pressed) {
-                    switch (key) {
-                        case Keyboard.KEY_F1:
-                            GameClient.getEngine().getGraphics().defactoRenderer().setTerminal(true);
-                            break outer;
-                        case Keyboard.KEY_I:
-                            GameClient.getEngine().getGraphics().toggleInventory();
-
-                            break;
-
-                        case Keyboard.KEY_T:
-                            GameClient.getEngine().getGraphics().toggleSkillTree();
-                            break;
-                        case Keyboard.KEY_1:
-                            if (GameClient.player.getSelectedattack() != 0) {
-                                CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
-                            }
-                            break;
-                        case Keyboard.KEY_2:
-                            if (GameClient.player.getSelectedattack() != 1) {
-                                CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
-                            }
-                            break;
-                        case Keyboard.KEY_3:
-                            if (GameClient.player.getSelectedattack() != 2) {
-                                CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
-                            }
-                            break;
+                    for (OverlayInputListener listener : inputOverlays.keySet()) {
+                        OverlayInputMode mode = inputOverlays.get(listener);
+                        if (mode.triggerKeys.contains(key)) {
+                            // Trigger!
+                            sendInputToRest = false;
+                            // Self-Untrigger vorbereiten
+                            listener.internalTrigger(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // De-Trigger
+                                    triggeredListener.internalUntrigger();
+                                    triggeredListener = null;
+                                }
+                            });
+                            triggeredListener = listener;
+                        }
+                        // Es kann nur einer getriggert werden
+                        break;
                     }
                 }
             }
-        } else {
-            while (Keyboard.next()) {
-                // Nur gedrückte Tasten
-                if (Keyboard.getEventKeyState()) {
-                    int key = Keyboard.getEventKey();
-                    if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-                        GameClient.terminal.enter();
-                    } else if (key == Keyboard.KEY_BACK) {
-                        GameClient.terminal.backspace();
-                    } else if (key == Keyboard.KEY_UP) {
-                        GameClient.terminal.scrollBack();
-                    } else if (key == Keyboard.KEY_DOWN) {
-                        GameClient.terminal.scrollForward();
-                    } else if (key == Keyboard.KEY_F1) {
-                        GameClient.getEngine().getGraphics().defactoRenderer().setTerminal(false);
-                        break;
-                    } else {
-                        char c = Keyboard.getEventCharacter();
-                        if (c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= ' ' && c <= '?')) {
-                            GameClient.terminal.input(c);
+            // Jetzt sind die exklusiven und die Trigger-Events fertig, kriegt noch jemand den Input?
+            if (sendInputToRest) {
+                // Hauptmodul
+                input.keyboardPressed(key, pressed);
+                // Alle passiven:
+                for (OverlayInputListener listener : inputOverlays.keySet()) {
+                    OverlayInputMode mode = inputOverlays.get(listener);
+                    if (mode.keyboardMode == OverlayInputMode.KEYBOARD_MODE_PASSIVE) {
+                        listener.keyboardInput(key, pressed);
+                    }
+                }
+            }
+        }
+
+        // Jetzt Mausklicks verarbeiten, falls gerade einer ist:
+        for (int i = 0; i < Mouse.getButtonCount(); i++) {
+            if (Mouse.isButtonDown(i)) {
+                boolean sendMouseKlickToRest = true;
+                // Jemand exklusiv getriggert?
+                if (triggeredListener != null) {
+                    OverlayInputMode mode = inputOverlays.get(triggeredListener);
+                    if (mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_BLOCKING || mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_NONBLOCKING || mode.mouseMode == OverlayInputMode.MOUSE_MODE_HOVER_NONBLOCKING) {
+                        // Trigger bekommt Mausklick:
+                        triggeredListener.mouseDown(Mouse.getX(), Mouse.getY(), i);
+                        sendMouseKlickToRest = false;
+                    }
+                } else {
+                    int mx = Mouse.getX();
+                    int my = Mouse.getY();
+                    // Wird jemandem in eine Trigger-Zone geklickt?
+                    OUTER:
+                    for (OverlayInputListener listener : inputOverlays.keySet()) {
+                        OverlayInputMode mode = inputOverlays.get(listener);
+                        for (int[] zone : mode.triggerZones) {
+                            if (zone[0] <= mx && zone[3] >= mx && zone[1] <= my && zone[3] >= my) {
+                                // Trigger-Zone getroffen
+                                sendMouseKlickToRest = false;
+                                // Self-Untrigger vorbereiten
+                                listener.internalTrigger(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // De-Trigger
+                                        triggeredListener.internalUntrigger();
+                                        triggeredListener = null;
+                                    }
+                                });
+                                triggeredListener = listener;
+                                break OUTER;
+                            }
                         }
+                    }
+                }
+                
+                // Exklusive Maus-Eingaben sind verarbeitet, gibt es noch was für den Rest?
+                if (sendMouseKlickToRest) {
+                    // Gibt es ein Overlay, das den Klick will?
+                    OverlayInputListener l = listenerForPoint(Mouse.getX(), Mouse.getY());
+                    if (l != null && inputOverlays.get(l).mouseMode == OverlayInputMode.MOUSE_MODE_HOVER_NONBLOCKING) {
+                        // Ja, Mausklick da hin:
+                        l.mouseDown(Mouse.getX(), Mouse.getY(), i);
+                    } else {
+                        // Mausklick an das Haupt-Inputmodul
+                        input.mouseInput();
                     }
                 }
             }
         }
     }
 
-    private void sendAbilityRequest(byte ability) {
-        CTS_REQUEST_USE_ABILITY.sendAbilityUseRequest(ability, logicMouseX, logicMouseY);
-    }
-
     /**
-     * Sagt dem Server, das geschossen werden soll
+     * Sucht unter den registrierten Listenern nach einem, der sich für den gegebenen Bereich interessiert.
+     *
+     * @param px X-Position der Maus
+     * @param py Y-Position der Maus
+     * @return der Erste, der sich dafür interessiert, oder null
      */
-    private void sendShootRequest() {
-        CTS_SHOOT.sendShoot(logicMouseX, logicMouseY);
+    private OverlayInputListener listenerForPoint(int px, int py) {
+        for (OverlayInputListener listener : inputOverlays.keySet()) {
+            OverlayInputMode mode = inputOverlays.get(listener);
+            if (listener.getCatchX1() != -1) {
+                // Hat eine Input-Zone:
+                if (listener.getCatchX1() <= px && listener.getCatchX2() >= px && listener.getCatchY1() <= py && listener.getCatchY2() >= py) {
+                    // drin
+                    if (mode.mouseMode == OverlayInputMode.MOUSE_MODE_HOVER_NONBLOCKING) {
+                        return listener;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
