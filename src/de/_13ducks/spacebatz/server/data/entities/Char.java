@@ -149,7 +149,9 @@ public abstract class Char extends Entity {
      * @param damage
      */
     public void decreaseHitpoints(int damage) {
-        properties.setHitpoints(properties.getHitpoints() - damage);
+        double armor = getProperties().getArmor() * (1 + getProperties().getArmorMultiplicatorBonus());
+        double damred = armor / (armor + 10);
+        properties.setHitpoints(properties.getHitpoints() - (int) (damage * (1 - damred)));
         STC_CHAR_HIT.sendCharHit(netID, damage);
         if (properties.getHitpoints() <= 0) {
             dead = true;
