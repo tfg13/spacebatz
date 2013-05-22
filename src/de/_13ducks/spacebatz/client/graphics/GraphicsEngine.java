@@ -276,4 +276,11 @@ public class GraphicsEngine {
             System.out.println("NOT SUPPORTED");
         }
     }
+
+    /**
+     * @return the input
+     */
+    public Input getInput() {
+        return input;
+    }
 }

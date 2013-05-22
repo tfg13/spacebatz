@@ -186,4 +186,12 @@ public class Input {
         }
         return null;
     }
+
+    /**
+     * Registriert einen neuen OverlayInputListener mit dem gegebenen Modus.
+     * Spätestens ab dem nächsten Tick bekommt das Overlay Input wie angefordert.
+     */
+    public void registerOverlayInputListener(OverlayInputListener listener, OverlayInputMode mode) {
+        inputOverlays.put(listener, mode);
+    }
 }
