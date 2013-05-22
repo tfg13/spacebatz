@@ -50,7 +50,8 @@ public class FireBulletAbility extends WeaponAbility {
     public void useOnPosition(Char user, double targetX, double targetY) {
         double angle = GeoTools.toAngle(targetX - user.getX(), targetY - user.getY());
 
-        double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
+        int damagespread = (int) ((getWeaponStats().getDamagespread() * 2 + 2) * Math.random() - getWeaponStats().getDamagespread() - 1);
+        int damage = (int) ((getWeaponStats().getDamage() + damagespread) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus()));
         double range = getWeaponStats().getRange();
         int bulletpic = getWeaponStats().getBulletpic();
         double bulletspeed = getWeaponStats().getBulletspeed();
@@ -70,11 +71,10 @@ public class FireBulletAbility extends WeaponAbility {
 
         Bullet bullet = new Bullet(lifetime, startX, startY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
-
         if (explosionradius > 0) {
-            bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+            bullet.addEffect(new ExplosionDamageEffect(damage, explosionradius));
         }
-        bullet.addEffect(new TrueDamageEffect((int) damage));
+        bullet.addEffect(new TrueDamageEffect(damage));
 
         Server.game.getEntityManager().addEntity(bullet.netID, bullet);
         STC_CHAR_ATTACK.sendCharAttack(user.netID, (float) angle, false);

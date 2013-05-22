@@ -42,7 +42,9 @@ public class HitscanAbility extends WeaponAbility {
         // Schaden an Gegnern
         ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
 
-        TrueDamageEffect damageeff = new TrueDamageEffect((int) ((getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus())));
+        int damagespread = (int) ((getWeaponStats().getDamagespread() * 2 + 2) * Math.random() - getWeaponStats().getDamagespread() - 1);
+        int damage = (int) ((getWeaponStats().getDamage() + damagespread) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus()));
+        TrueDamageEffect damageeff = new TrueDamageEffect(damage);
         effects.clear();
         effects.add(damageeff);
 

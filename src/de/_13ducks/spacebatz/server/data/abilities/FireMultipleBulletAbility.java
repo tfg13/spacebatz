@@ -64,7 +64,8 @@ public class FireMultipleBulletAbility extends WeaponAbility {
         int lifetime = (int) (range / bulletspeed);
 
         for (int i = 1; i <= amount; i++) {
-            double damage = (getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus());
+            int damagespread = (int) ((getWeaponStats().getDamagespread() * 2 + 2) * Math.random() - getWeaponStats().getDamagespread() - 1);
+            int damage = (int) ((getWeaponStats().getDamage() + damagespread) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus()));
             double newangle = angle + (i - (amount + 1) / 2.0) * spread;
 
             double spawnX = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
@@ -75,9 +76,9 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             Bullet bullet = new Bullet(lifetime, spawnX, spawnY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
             if (explosionradius > 0) {
-                bullet.addEffect(new ExplosionDamageEffect((int) damage, explosionradius));
+                bullet.addEffect(new ExplosionDamageEffect(damage, explosionradius));
             }
-            bullet.addEffect(new TrueDamageEffect((int) damage));
+            bullet.addEffect(new TrueDamageEffect(damage));
 
             Server.game.getEntityManager().addEntity(bullet.netID, bullet);
         }
