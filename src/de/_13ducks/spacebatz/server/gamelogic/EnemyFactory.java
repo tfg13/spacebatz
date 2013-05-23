@@ -50,7 +50,7 @@ public class EnemyFactory {
         switch (stats.shootAbility) {
             case FIREBULLET:
                 enem.setShootAbility(new FireBulletAbility(stats.abilityDamage, stats.abilityDamagespread, stats.abilityAttackspeed, stats.abilityRange, stats.abilityBulletpic, stats.abilityBulletspeed, stats.abilitySpread, stats.abilityExplosionradius, stats.abilityMaxoverheat, stats.abilityReduceoverheat));
-                enem.getShootAbility().setCooldown(100);
+                enem.getShootAbility().setCooldown((int) Math.ceil(1 / stats.abilityAttackspeed));
                 break;
             case KAMIKAZE:
                 enem.setShootAbility(new KamikazeAbility(stats.abilityRange, (int) stats.abilityDamage));

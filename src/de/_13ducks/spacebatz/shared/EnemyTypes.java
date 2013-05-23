@@ -29,7 +29,7 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(smallShooter);
         smallShooter.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
         smallShooter.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        smallShooter.abilityAttackspeed = 3;
+        smallShooter.abilityAttackspeed = 0.04;
         smallShooter.abilityBulletpic = 1;
         smallShooter.abilityBulletspeed = 0.15;
         smallShooter.abilityDamage = 5;
@@ -50,10 +50,10 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(bigShooter);
         bigShooter.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
         bigShooter.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        bigShooter.abilityAttackspeed = 1;
+        bigShooter.abilityAttackspeed = 0.01;
         bigShooter.abilityBulletpic = 1;
         bigShooter.abilityBulletspeed = 0.15;
-        bigShooter.abilityDamage = 15;
+        bigShooter.abilityDamage = 20;
         bigShooter.abilityDamagespread = 0;
         bigShooter.abilityExplosionradius = 1;
         bigShooter.abilityMaxoverheat = 10;
@@ -81,7 +81,7 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(crab);
         crab.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
         crab.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        smallShooter.abilityAttackspeed = 1;
+        crab.abilityAttackspeed = 0.025;
         crab.abilityBulletpic = 1;
         crab.abilityBulletspeed = 0.15;
         crab.abilityDamage = 10;
@@ -97,28 +97,6 @@ public class EnemyTypes implements java.io.Serializable {
         crab.speed = (0.1f);
         crab.sightrange = (5);
         crab.enemylevel = (2);
-        
-        
-                EnemyTypeStats drake = new EnemyTypeStats();
-        enemytypelist.add(drake);
-        drake.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
-        drake.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        smallShooter.abilityAttackspeed = 1;
-        drake.abilityBulletpic = 1;
-        drake.abilityBulletspeed = 0.15;
-        drake.abilityDamage = 30;
-        drake.abilityDamagespread = 0;
-        drake.abilityExplosionradius = 10;
-        drake.abilityMaxoverheat = 10;
-        drake.abilityReduceoverheat = 1;
-        drake.abilityRange = 10;
-        drake.abilitySpread = 0;
-        drake.healthpoints = (12);
-        drake.damage = (1);
-        drake.picture = (28);
-        drake.speed = (0.1f);
-        drake.sightrange = (5);
-        drake.enemylevel = (2);
 
         EnemyTypeStats kamikaze = new EnemyTypeStats();
         enemytypelist.add(kamikaze);
@@ -137,7 +115,7 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(lurker);
         lurker.behaviour = (EnemyTypeStats.BehaviourType.LURKER);
         lurker.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        lurker.abilityAttackspeed = 1.0;
+        lurker.abilityAttackspeed = 0.05;
         lurker.abilityBulletpic = 1;
         lurker.abilityBulletspeed = 0.25;
         lurker.abilityDamage = 40;
@@ -158,10 +136,10 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(boss);
         boss.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
         boss.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        boss.abilityAttackspeed = 1;
+        boss.abilityAttackspeed = 0.01;
         boss.abilityBulletpic = 2;
         boss.abilityBulletspeed = 0.15;
-        boss.abilityDamage = 50;
+        boss.abilityDamage = 60;
         boss.abilityDamagespread = 0;
         boss.abilityExplosionradius = 0;
         boss.abilityMaxoverheat = 10;
@@ -179,7 +157,7 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(kiter);
         kiter.behaviour = (EnemyTypeStats.BehaviourType.KITER);
         kiter.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
-        kiter.abilityAttackspeed = 1;
+        kiter.abilityAttackspeed = 0.02;
         kiter.abilityBulletpic = 2;
         kiter.abilityBulletspeed = 0.15;
         kiter.abilityDamage = 20;
@@ -200,11 +178,32 @@ public class EnemyTypes implements java.io.Serializable {
         enemytypelist.add(summoner);
         summoner.behaviour = (EnemyTypeStats.BehaviourType.SUMMONER);
         summoner.shootAbility = (EnemyTypeStats.AbilityType.SUMMONENEMYS);
-        summoner.healthpoints = (5);
+        summoner.healthpoints = (10);
         summoner.picture = (20);
         summoner.speed = (0.1f);
         summoner.sightrange = (10);
         summoner.enemylevel = (5);
+
+        EnemyTypeStats drake = new EnemyTypeStats();
+        enemytypelist.add(drake);
+        drake.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
+        drake.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
+        drake.abilityAttackspeed = 0.15;
+        drake.abilityBulletpic = 1;
+        drake.abilityBulletspeed = 0.15;
+        drake.abilityDamage = 10;
+        drake.abilityDamagespread = 0;
+        drake.abilityExplosionradius = 5;
+        drake.abilityMaxoverheat = 10;
+        drake.abilityReduceoverheat = 1;
+        drake.abilityRange = 10;
+        drake.abilitySpread = 0;
+        drake.healthpoints = (50);
+        drake.damage = (1);
+        drake.picture = (28);
+        drake.speed = (0.1f);
+        drake.sightrange = (10);
+        drake.enemylevel = (2);
 
     }
 
