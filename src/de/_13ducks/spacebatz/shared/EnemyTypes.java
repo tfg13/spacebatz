@@ -97,6 +97,28 @@ public class EnemyTypes implements java.io.Serializable {
         crab.speed = (0.1f);
         crab.sightrange = (5);
         crab.enemylevel = (2);
+        
+        
+                EnemyTypeStats drake = new EnemyTypeStats();
+        enemytypelist.add(drake);
+        drake.behaviour = (EnemyTypeStats.BehaviourType.SHOOTER);
+        drake.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
+        smallShooter.abilityAttackspeed = 1;
+        drake.abilityBulletpic = 1;
+        drake.abilityBulletspeed = 0.15;
+        drake.abilityDamage = 30;
+        drake.abilityDamagespread = 0;
+        drake.abilityExplosionradius = 10;
+        drake.abilityMaxoverheat = 10;
+        drake.abilityReduceoverheat = 1;
+        drake.abilityRange = 10;
+        drake.abilitySpread = 0;
+        drake.healthpoints = (12);
+        drake.damage = (1);
+        drake.picture = (28);
+        drake.speed = (0.1f);
+        drake.sightrange = (5);
+        drake.enemylevel = (2);
 
         EnemyTypeStats kamikaze = new EnemyTypeStats();
         enemytypelist.add(kamikaze);
