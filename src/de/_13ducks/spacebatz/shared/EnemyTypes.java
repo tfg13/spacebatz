@@ -55,7 +55,7 @@ public class EnemyTypes implements java.io.Serializable {
         bigShooter.abilityBulletspeed = 0.15;
         bigShooter.abilityDamage = 20;
         bigShooter.abilityDamagespread = 0;
-        bigShooter.abilityExplosionradius = 1;
+        bigShooter.abilityExplosionradius = 0;
         bigShooter.abilityMaxoverheat = 10;
         bigShooter.abilityReduceoverheat = 1;
         bigShooter.abilityRange = 10;
@@ -83,7 +83,7 @@ public class EnemyTypes implements java.io.Serializable {
         crab.shootAbility = (EnemyTypeStats.AbilityType.FIREBULLET);
         crab.abilityAttackspeed = 0.025;
         crab.abilityBulletpic = 1;
-        crab.abilityBulletspeed = 0.15;
+        crab.abilityBulletspeed = 0.25;
         crab.abilityDamage = 10;
         crab.abilityDamagespread = 0;
         crab.abilityExplosionradius = 0;
@@ -91,11 +91,11 @@ public class EnemyTypes implements java.io.Serializable {
         crab.abilityReduceoverheat = 1;
         crab.abilityRange = 10;
         crab.abilitySpread = 0;
-        crab.healthpoints = (12);
+        crab.healthpoints = (20);
         crab.damage = (10);
         crab.picture = (40);
-        crab.speed = (0.1f);
-        crab.sightrange = (5);
+        crab.speed = (0.15f);
+        crab.sightrange = (7);
         crab.enemylevel = (2);
 
         EnemyTypeStats kamikaze = new EnemyTypeStats();
@@ -104,7 +104,7 @@ public class EnemyTypes implements java.io.Serializable {
         kamikaze.shootAbility = (EnemyTypeStats.AbilityType.KAMIKAZE);
         kamikaze.abilityDamage = 75;
         kamikaze.abilityRange = 6;
-        kamikaze.healthpoints = (15);
+        kamikaze.healthpoints = (20);
         kamikaze.damage = (60);
         kamikaze.picture = (48);
         kamikaze.speed = (0.1f);
