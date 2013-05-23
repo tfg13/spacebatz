@@ -71,9 +71,10 @@ public class ItemAttributeTypes {
             evenMoreAttackSpeed.setIsWeaponAttribute(true);
             attributelist.add(evenMoreAttackSpeed);
 
-            ItemAttribute evenMoreArmor = new ItemAttribute("30% More Armor");
+            double r_morearmor = randomValue(0.2, 0.4, 1);
+            ItemAttribute evenMoreArmor = new ItemAttribute("+" + (r_morearmor * 100) + " % More Armor");
             evenMoreArmor.setQuality(2);
-            evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(0.3);
+            evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(r_morearmor);
             attributelist.add(evenMoreArmor);
 
             double r_moremovespeed = randomValue(0.05, 0.20, 2);
@@ -98,7 +99,7 @@ public class ItemAttributeTypes {
             moreAttackSpeed.setIsWeaponAttribute(true);
             attributelist.add(moreAttackSpeed);
 
-            double r_morerange = randomValue(1, 3, 0);
+            double r_morerange = randomValue(1, 4, 0);
             ItemAttribute moreRange = new ItemAttribute("+" + r_morerange + " Range");
             moreRange.setQuality(1);
             moreRange.weaponStats.setRange(r_morerange);
@@ -106,7 +107,7 @@ public class ItemAttributeTypes {
             attributelist.add(moreRange);
 
             double r_moremaxoverheat = randomValue(0.3, 0.7, 1);
-            ItemAttribute moreMaxOverheat = new ItemAttribute("+" + r_moremaxoverheat + " MaxOverheat");
+            ItemAttribute moreMaxOverheat = new ItemAttribute("+" + (r_moremaxoverheat * 100) + "% MaxOverheat");
             moreMaxOverheat.setQuality(1);
             moreMaxOverheat.weaponStats.setMaxoverheatMultiplicatorBonus(r_moremaxoverheat);
             moreMaxOverheat.setIsWeaponAttribute(true);
@@ -118,9 +119,10 @@ public class ItemAttributeTypes {
             moreReduceOverheat.setIsWeaponAttribute(true);
             attributelist.add(moreReduceOverheat);
 
-            ItemAttribute moreArmor = new ItemAttribute("+10 Armor");
+            int r_morearmor = (int) randomValue(5, 10, 0);
+            ItemAttribute moreArmor = new ItemAttribute("+" + r_morearmor + " Armor");
             moreArmor.setQuality(1);
-            moreArmor.bonusStats.setArmor(10);
+            moreArmor.bonusStats.setArmor(r_morearmor);
             attributelist.add(moreArmor);
 
             int r_morehp = (int) randomValue(10, 30, 0);

@@ -32,6 +32,7 @@ public class ItemTypes {
         hat.setItemClass(2);
         hat.setQuality(1);
         hat.setAmount(0);
+        hat.bonusStats.setArmor(5);
         itemtypelist.add(hat);
 
         ItemAttribute betterhat = new ItemAttribute("Better Hat");
@@ -39,6 +40,7 @@ public class ItemTypes {
         betterhat.setItemClass(2);
         betterhat.setQuality(3);
         betterhat.setAmount(0);
+        betterhat.bonusStats.setArmor(10);
         itemtypelist.add(betterhat);
 
         ItemAttribute pistol = new ItemAttribute("Pistol");
