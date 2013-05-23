@@ -53,7 +53,7 @@ public class EnemyFactory {
                 enem.getShootAbility().setCooldown(100);
                 break;
             case KAMIKAZE:
-                enem.setShootAbility(new KamikazeAbility(stats.abilityDamage, (int) stats.abilityRange));
+                enem.setShootAbility(new KamikazeAbility(stats.abilityRange, (int) stats.abilityDamage));
                 break;
             case SUMMONENEMYS:
                 enem.setShootAbility(new SummonEnemyAbility());
