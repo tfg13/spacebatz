@@ -1,9 +1,9 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.controls.HudControl;
-import de._13ducks.spacebatz.client.graphics.controls.Inventory;
-import de._13ducks.spacebatz.client.graphics.controls.QuestControl;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.HudControl;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.Inventory;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;

@@ -1,4 +1,4 @@
-package de._13ducks.spacebatz.client.graphics.controls;
+package de._13ducks.spacebatz.client.graphics.overlay.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
