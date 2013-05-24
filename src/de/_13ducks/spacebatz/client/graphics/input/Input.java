@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics.input;
 
 import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.input.impl.OverlayInputMode;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.lwjgl.input.Keyboard;
@@ -39,7 +40,7 @@ public class Input {
             OverlayInputMode mode = inputOverlays.get(triggeredListener);
             if (mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_BLOCKING || mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_NONBLOCKING) {
                 // Mausbewegungen gehen an dieses Overlay:
-                triggeredListener.mouseMove(Mouse.getX(), Mouse.getY());
+                triggeredListener.mousePosition(Mouse.getX(), Mouse.getY());
                 // War das exklusiv?
                 if (mode.mouseMode == OverlayInputMode.MOUSE_MODE_TRIGGER_BLOCKING) {
                     sendMouseMoveToRest = false;
@@ -54,7 +55,7 @@ public class Input {
             OverlayInputListener l = listenerForPoint(Mouse.getX(), Mouse.getY());
             if (l != null) {
                 // Dann senden:
-                l.mouseMove(Mouse.getX(), Mouse.getY());
+                l.mousePosition(Mouse.getX(), Mouse.getY());
             }
         }
 
@@ -110,7 +111,7 @@ public class Input {
         }
 
         // Jetzt Mausklicks verarbeiten, falls gerade einer ist:
-        for (int i = 0; i < Mouse.getButtonCount(); i++) {
+        for (int i = 0; i < CompileTimeParameters.CLIENT_MAX_MOUSE_BUTTONS; i++) {
             if (Mouse.isButtonDown(i)) {
                 boolean sendMouseKlickToRest = true;
                 // Jemand exklusiv getriggert?
@@ -147,7 +148,7 @@ public class Input {
                         }
                     }
                 }
-                
+
                 // Exklusive Maus-Eingaben sind verarbeitet, gibt es noch was für den Rest?
                 if (sendMouseKlickToRest) {
                     // Gibt es ein Overlay, das den Klick will?

@@ -1,11 +1,11 @@
 package de._13ducks.spacebatz.client.graphics;
 
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.graphics.input.Input;
+import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.HudControl;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.Inventory;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
-import de._13ducks.spacebatz.client.graphics.input.Input;
-import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
@@ -85,7 +85,7 @@ public class GraphicsEngine {
             // Hat die Platform alles was wir brauchen?
             // Erst nach dem Fenster-erzeugen, manche Tests brauchen einen aktiven OpenGL-Context
             checkCapabilities();
-            
+
             // OpenGL-Init:
             // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
             // GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE));
@@ -99,16 +99,19 @@ public class GraphicsEngine {
             Keyboard.enableRepeatEvents(true);
 
             // Komponenten erzeugen:
+            input = new Input();
+
             godControl = new GodControl();
             skilltree = new SkillTreeControl();
             overlays.add(new HudControl());
             overlays.add(new QuestControl());
             overlays.add(skilltree);
-            overlays.add(new Inventory());
-            input = new Input();
-            
+            Inventory inventory = new Inventory();
+            inventory.init(new int[]{Keyboard.KEY_I}, true);
+            overlays.add(inventory);
+
             TextWriter.initialize();
-            
+
             coreRenderer = godControl;
             coreRenderer.defineOpenGLMatrices();
 
@@ -137,17 +140,17 @@ public class GraphicsEngine {
         // Bild löschen, neu malen
         glClear(GL_COLOR_BUFFER_BIT);
         long ns = System.nanoTime();
-        
+
         // Haupt-Renderer:
         coreRenderer.render();
-        
-        
+
+
         // Alle aktiven Overlays:
         for (int i = 0; i < overlays.size(); i++) {
             Overlay overlay = overlays.get(i);
             overlay.render();
         }
-        
+
 //        hudControl.render(renderer);
 //        questControl.render(renderer);
         long ns2 = System.nanoTime();
@@ -155,7 +158,7 @@ public class GraphicsEngine {
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
         input.input();
-        
+
         // Fertig, Puffer swappen:
         Display.update();
 

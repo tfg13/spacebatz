@@ -91,7 +91,7 @@ public abstract class OverlayInputListener {
      * @param mx Mausposition in X
      * @param my Mausposition in Y
      */
-    public abstract void mouseMove(int mx, int my);
+    public abstract void mousePosition(int mx, int my);
     
     /**
      * Wird aufgerufen, wenn Mauseingaben für dieses Overlay vorliegen.

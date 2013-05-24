@@ -136,6 +136,10 @@ public class GodControl extends CoreRenderer {
      */
     private Cursor crossHairCursor;
     /**
+     * Die Position der Maus in Pixeln.
+     */
+    private double mouseX, mouseY;
+    /**
      * Die Position der Maus in Spielkoordinaten.
      */
     private double logicMouseX, logicMouseY;
@@ -202,17 +206,13 @@ public class GodControl extends CoreRenderer {
     @Override
     public void render() {
 
-        // Maus updaten:
-        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * tilesX) - panX;
-        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * tilesY) - panY;
-
         // Player in der Mitte
         if (!lookahead) {
             panX = ((float) -GameClient.player.getX() + tilesX / 2.0f);
             panY = ((float) -GameClient.player.getY() + tilesY / 2.0f);
         } else if (!freezeScroll) {
             // Maus-Richtung von der Mitte aus:
-            Vector vec = new Vector(Mouse.getX() - Display.getWidth() / 2, Mouse.getY() - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
+            Vector vec = new Vector(mouseX - Display.getWidth() / 2, mouseY - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
             panX = ((float) (-GameClient.player.getX() + tilesX / 2.0f + vec.x));
             panY = ((float) (-GameClient.player.getY() + tilesY / 2.0f + vec.y));
         }
@@ -1015,11 +1015,12 @@ public class GodControl extends CoreRenderer {
             setZoomFact(CLIENT_GFX_RES_Y / 20.f / CLIENT_GFX_TILESIZE);
         }
     }
-    
+
     /**
      * Setzt den Zoomfaktor.
      * TODO: Erst mal private machen, dann aber bald ganz rauswerfen
-     * @param zoomFact 
+     *
+     * @param zoomFact
      */
     @Deprecated
     public void setZoomFact(float zoomFact) {
@@ -1035,5 +1036,19 @@ public class GodControl extends CoreRenderer {
      */
     public void setTerminal(boolean terminal) {
         this.terminal = terminal;
+    }
+
+    /**
+     * Setzt die Mausposition, notwendig, weil sich die Ansicht der Maus anpasst.
+     *
+     * @param x X-Koordinate
+     * @param y Y-Koordinate
+     */
+    public void setMouseXY(double x, double y) {
+        mouseX = x;
+        mouseY = y;
+        // Maus updaten:
+        logicMouseX = (1f * x / Display.getWidth() * tilesX) - panX;
+        logicMouseY = (1f * y / Display.getHeight() * tilesY) - panY;
     }
 }

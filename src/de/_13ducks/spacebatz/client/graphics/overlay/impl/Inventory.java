@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.client.graphics.overlay.impl;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
-import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.Item;
@@ -22,12 +22,11 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author michael
  */
-public class Inventory extends Overlay {
+public class Inventory extends TriggeredOverlay {
 
     /**
      * Sagt, ob Inventar gerade geöffnet ist (Taste i)
      */
-    private boolean lmbpressed; // linke maustaste gedrückt
     private int selecteditemslot; // zuletzt angeklickter Inventarslot
     private Texture itemTiles;
     private Texture hud1;
@@ -39,7 +38,7 @@ public class Inventory extends Overlay {
     }
 
     @Override
-    public void render() {
+    protected void triggeredRender() {
         // dunkler Hintergrund
 //        glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
 //        glRectf(0, 0, GodControl.tilesX, GodControl.tilesY);
@@ -83,12 +82,12 @@ public class Inventory extends Overlay {
                 glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
-        
+
         float x01 = 0.815125f * GodControl.tilesX;
         float x02 = 0.895125f * GodControl.tilesX;
         float ya = 0.53f * GodControl.tilesY;
         float yb = ya + 0.1f * GodControl.tilesY;
-        
+
         // Bild für Mülleimer
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(125.0f / 512, 101.0f / 512);
@@ -242,26 +241,26 @@ public class Inventory extends Overlay {
         if (selecteditemslot != -1) {
             Item item2 = GameClient.getItems()[selecteditemslot];
             if (item2 != null) {
-            	itemTiles.bind();
+                itemTiles.bind();
 
-            	float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * GodControl.tilesX;
-            	float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * GodControl.tilesY;
+                float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * GodControl.tilesX;
+                float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * GodControl.tilesY;
 
-            	float size = 0.08f;
+                float size = 0.08f;
 
-            	float v = 0.0625f * item2.getPic();
-            	float w = 0.0625f * (item2.getPic() / 16);
+                float v = 0.0625f * item2.getPic();
+                float w = 0.0625f * (item2.getPic() / 16);
 
-            	glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            	glTexCoord2f(v, w + 0.0625f);
-            	glVertex3f(x - GodControl.tilesX * size / 2, y - GodControl.tilesX * size / 2, 0.0f);
-            	glTexCoord2f(v + 0.0625f, w + 0.0625f);
-            	glVertex3f(x + GodControl.tilesX * size / 2, y - GodControl.tilesX * size / 2, 0.0f);
-            	glTexCoord2f(v + 0.0625f, w);
-            	glVertex3f(x + GodControl.tilesX * size / 2, y + GodControl.tilesX * size / 2, 0.0f);
-            	glTexCoord2f(v, w);
-            	glVertex3f(x - GodControl.tilesX * size / 2, y + GodControl.tilesX * size / 2, 0.0f);
-            	glEnd(); // Zeichnen des QUADs fertig } }
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.0625f);
+                glVertex3f(x - GodControl.tilesX * size / 2, y - GodControl.tilesX * size / 2, 0.0f);
+                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+                glVertex3f(x + GodControl.tilesX * size / 2, y - GodControl.tilesX * size / 2, 0.0f);
+                glTexCoord2f(v + 0.0625f, w);
+                glVertex3f(x + GodControl.tilesX * size / 2, y + GodControl.tilesX * size / 2, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x - GodControl.tilesX * size / 2, y + GodControl.tilesX * size / 2, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
 
@@ -340,139 +339,135 @@ public class Inventory extends Overlay {
     //@Override
     public void input() {
         // Mausklick suchen
-        {
-            if (Mouse.isButtonDown(0)) {
+    }
 
-                if (!lmbpressed) {
-                    lmbpressed = true;
-                    float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
-                    float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
-                    //System.out.println("x " + x + ",y " + y);
+    @Override
+    protected void keyboardInput(int key, boolean pressed) {
+        if (pressed) {
+            switch (key) {
+                case Keyboard.KEY_1:
+                    CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
+                    break;
+                case Keyboard.KEY_2:
+                    CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
+                    break;
+                case Keyboard.KEY_3:
+                    CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void mouseMove(int mx, int my) {
+    }
+
+    @Override
+    protected void mousePressed(int mx, int my, int button) {
+
+        if (button == 0) {
+            float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
+            float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
+            //System.out.println("x " + x + ",y " + y);
 
 
-                    // Hut-Slot
-                    if (x > 0.095125f && x < 0.175125f) {
-                        if (y > 0.53 && y < 0.63) {
-                            if (selecteditemslot != -1) {
-                                Item selecteditem = GameClient.getItems()[selecteditemslot];
-                                if (selecteditem.getItemClass() == 2) {
-                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // 2 = Hut-Slot
-                                    selecteditemslot = -1;
-                                }
-                            } else {
-                                if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
-                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
-                                }
-                            }
-                        }
-                    }
-
-                    if (y > 0.53 && y < 0.63) {
-                        byte weaponslot = -1;
-                        if (x > 0.245125f && x < 0.325125f) {
-                            weaponslot = 0;
-                        } else if (x > 0.345125f && x < 0.425125f) {
-                            weaponslot = 1;
-                        } else if (x > 0.445125f && x < 0.525125f) {
-                            weaponslot = 2;
-                        }
-                        if (weaponslot != -1) {
-                            // Waffenslot
-                            if (selecteditemslot != -1) {
-                                Item selecteditem = GameClient.getItems()[selecteditemslot];
-                                if (selecteditem.getItemClass() == 1) {
-                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
-                                    selecteditemslot = -1;
-                                }
-                            } else {
-                                if (GameClient.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
-                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
-                                }
-                            }
-                        }
-                    }
-                    
-                    //Müll-Slot
-                    if (x > 0.815125f && x < 0.895125f) {
-                        if (y > 0.53 && y < 0.63) {
-                            CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
+            // Hut-Slot
+            if (x > 0.095125f && x < 0.175125f) {
+                if (y > 0.53 && y < 0.63) {
+                    if (selecteditemslot != -1) {
+                        Item selecteditem = GameClient.getItems()[selecteditemslot];
+                        if (selecteditem.getItemClass() == 2) {
+                            CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // 2 = Hut-Slot
                             selecteditemslot = -1;
                         }
-                    }
-
-                    // Inventarslot angeklickt?
-                    int slotklicked = -1;
-                    double width = 0.08;
-                    double left = 0.107;
-
-                    if (y > 0.37 && y <= 0.47) {
-                        for (int i = 0; i < 10; i++) {
-                            if (x > left + i * width && x <= left + (i + 1) * width) {
-                                slotklicked = i;
-                                break;
-                            }
-                        }
-                    } else if (y > 0.27 && y <= 0.37) {
-                        for (int i = 0; i < 10; i++) {
-                            if (x > left + i * width && x <= left + (i + 1) * width) {
-                                slotklicked = i + 10;
-                                break;
-                            }
-                        }
-                    } else if (y > 0.17 && y <= 0.27) {
-                        for (int i = 0; i < 10; i++) {
-                            if (x > left + i * width && x <= left + (i + 1) * width) {
-                                slotklicked = i + 20;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (slotklicked != -1) {
-                        // gültiger Inventar-Slot angeklickt
-
-                        if (selecteditemslot == -1) {
-                            // zur Zeit war kein Slot ausgewählt -> der hier wird
-                            if (GameClient.getItems()[slotklicked] != null) {
-                                // nur wenn hier ein item drin ist
-                                selecteditemslot = slotklicked;
-                            }
-                        } else {
-                            // es war bereits ein Slot ausgewählt
-                            CTS_REQUEST_INV_ITEM_MOVE.sendInvItemMove(selecteditemslot, slotklicked);
-                            selecteditemslot = -1;
+                    } else {
+                        if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
+                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
                         }
                     }
                 }
-
-            } else {
-                lmbpressed = false;
-
             }
-        }
 
-        // Inventar wieder abschalten wenn I gedrückt wird:
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_I:
-                        GameClient.getEngine().getGraphics().toggleInventory();
-                        break;
-                    case Keyboard.KEY_ESCAPE:
-                        GameClient.getEngine().getGraphics().toggleInventory();
-                        break;
-                    case Keyboard.KEY_1:
-                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
-                        break;
-                    case Keyboard.KEY_2:
-                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
-                        break;
-                    case Keyboard.KEY_3:
-                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
-                        break;
+            if (y > 0.53 && y < 0.63) {
+                byte weaponslot = -1;
+                if (x > 0.245125f && x < 0.325125f) {
+                    weaponslot = 0;
+                } else if (x > 0.345125f && x < 0.425125f) {
+                    weaponslot = 1;
+                } else if (x > 0.445125f && x < 0.525125f) {
+                    weaponslot = 2;
+                }
+                if (weaponslot != -1) {
+                    // Waffenslot
+                    if (selecteditemslot != -1) {
+                        Item selecteditem = GameClient.getItems()[selecteditemslot];
+                        if (selecteditem.getItemClass() == 1) {
+                            CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
+                            selecteditemslot = -1;
+                        }
+                    } else {
+                        if (GameClient.getEquippedItems().getEquipslots()[1][weaponslot] != null) {
+                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(1, weaponslot); // 1 = Waffen-Slot
+                        }
+                    }
                 }
             }
 
+            //Müll-Slot
+            if (x > 0.815125f && x < 0.895125f) {
+                if (y > 0.53 && y < 0.63) {
+                    CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
+                    selecteditemslot = -1;
+                }
+            }
+
+            // Inventarslot angeklickt?
+            int slotklicked = -1;
+            double width = 0.08;
+            double left = 0.107;
+
+            if (y > 0.37 && y <= 0.47) {
+                for (int i = 0; i < 10; i++) {
+                    if (x > left + i * width && x <= left + (i + 1) * width) {
+                        slotklicked = i;
+                        break;
+                    }
+                }
+            } else if (y > 0.27 && y <= 0.37) {
+                for (int i = 0; i < 10; i++) {
+                    if (x > left + i * width && x <= left + (i + 1) * width) {
+                        slotklicked = i + 10;
+                        break;
+                    }
+                }
+            } else if (y > 0.17 && y <= 0.27) {
+                for (int i = 0; i < 10; i++) {
+                    if (x > left + i * width && x <= left + (i + 1) * width) {
+                        slotklicked = i + 20;
+                        break;
+                    }
+                }
+            }
+
+            if (slotklicked != -1) {
+                // gültiger Inventar-Slot angeklickt
+
+                if (selecteditemslot == -1) {
+                    // zur Zeit war kein Slot ausgewählt -> der hier wird
+                    if (GameClient.getItems()[slotklicked] != null) {
+                        // nur wenn hier ein item drin ist
+                        selecteditemslot = slotklicked;
+                    }
+                } else {
+                    // es war bereits ein Slot ausgewählt
+                    CTS_REQUEST_INV_ITEM_MOVE.sendInvItemMove(selecteditemslot, slotklicked);
+                    selecteditemslot = -1;
+                }
+            }
         }
+    }
+
+    @Override
+    protected void mouseReleased(int mx, int my, int button) {
     }
 }

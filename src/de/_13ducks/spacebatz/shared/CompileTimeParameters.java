@@ -84,4 +84,8 @@ public final class CompileTimeParameters {
      * Position also bis zu 5 Felder abweichen.
      */
     public static final double CLIENT_PREDICT_MAX_DELTA_PER_LERP = 0.5;
+    /**
+     * Die Maximal zu erwartende Anzahl Maustasten, die verwendet werden.
+     */
+    public static final int CLIENT_MAX_MOUSE_BUTTONS = 3;
 }

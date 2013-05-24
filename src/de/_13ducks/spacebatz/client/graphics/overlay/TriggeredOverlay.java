@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.overlay;
 
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.graphics.input.OverlayInputListener;
+import de._13ducks.spacebatz.client.graphics.input.SimpleMouseOverlayInputListener;
 import de._13ducks.spacebatz.client.graphics.input.impl.OverlayInputMode;
 import org.lwjgl.input.Keyboard;
 
@@ -15,6 +15,7 @@ import org.lwjgl.input.Keyboard;
 public abstract class TriggeredOverlay extends Overlay {
 
     private boolean triggered = false;
+    private SimpleMouseOverlayInputListener listener;
 
     /**
      * Initialisiert das Overlay mit den gegebenen Triggertasten.
@@ -35,7 +36,7 @@ public abstract class TriggeredOverlay extends Overlay {
             mode.triggerKeys.add(key);
         }
 
-        GameClient.getEngine().getGraphics().getInput().registerOverlayInputListener(new OverlayInputListener() {
+        listener = new SimpleMouseOverlayInputListener() {
             @Override
             public void triggerChanged() {
                 triggered = this.isTriggered();
@@ -44,7 +45,7 @@ public abstract class TriggeredOverlay extends Overlay {
             @Override
             public void keyboardInput(int key, boolean pressed) {
                 // Abschalt-Trigger?
-                if (closeWithSameKeys) {
+                if (closeWithSameKeys && pressed) {
                     for (int tkey : triggerKeys) {
                         if (tkey == key) {
                             untrigger();
@@ -54,16 +55,6 @@ public abstract class TriggeredOverlay extends Overlay {
                 }
                 // Kein detrigger, dann weiterleiten:
                 TriggeredOverlay.this.keyboardInput(key, pressed);
-            }
-
-            @Override
-            public void mouseMove(int mx, int my) {
-                TriggeredOverlay.this.mouseMove(mx, my);
-            }
-
-            @Override
-            public void mouseDown(int mx, int my, int button) {
-                TriggeredOverlay.this.mouseDown(mx, my, button);
             }
 
             @Override
@@ -85,7 +76,24 @@ public abstract class TriggeredOverlay extends Overlay {
             public int getCatchY2() {
                 return -1;
             }
-        }, mode);
+
+            @Override
+            public void mousePressed(int mx, int my, int button) {
+                TriggeredOverlay.this.mousePressed(mx, my, button);
+            }
+
+            @Override
+            public void mouseReleased(int mx, int my, int button) {
+                TriggeredOverlay.this.mouseReleased(mx, my, button);
+            }
+
+            @Override
+            public void mouseMove(int mx, int my) {
+                TriggeredOverlay.this.mouseMove(mx, my);
+            }
+        };
+
+        GameClient.getEngine().getGraphics().getInput().registerOverlayInputListener(listener, mode);
     }
 
     @Override
@@ -93,6 +101,7 @@ public abstract class TriggeredOverlay extends Overlay {
         if (triggered) {
             triggeredRender();
         }
+        listener.manageInput();
     }
 
     /**
@@ -101,14 +110,19 @@ public abstract class TriggeredOverlay extends Overlay {
     protected abstract void keyboardInput(int key, boolean pressed);
 
     /**
-     * Siehe OverlayInputListener.mouseMove(int, int)
+     * Siehe SimpleMouseOverlayInputListener.mouseMove(int, int)
      */
     protected abstract void mouseMove(int mx, int my);
 
     /**
-     * Siehe OverlayInputListener.mouseDown(int, int, boolean)
+     * Siehe SimpleMouseOverlayInputListener.mousePressed(int, int, boolean)
      */
-    protected abstract void mouseDown(int mx, int my, int button);
+    protected abstract void mousePressed(int mx, int my, int button);
+
+    /**
+     * Siehe SimpleMouseOverlayInputListener.mouseReleased(int, int, boolean)
+     */
+    protected abstract void mouseReleased(int mx, int my, int button);
 
     /**
      * Siehe Overlay.render()
