@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.HudControl;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.Inventory;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.NetGraph;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer;
@@ -110,6 +111,7 @@ public class GraphicsEngine {
             Inventory inventory = new Inventory();
             inventory.init(new int[]{Keyboard.KEY_I}, true);
             overlays.add(inventory);
+            overlays.add(new NetGraph());
 
             TextWriter.initialize();
 

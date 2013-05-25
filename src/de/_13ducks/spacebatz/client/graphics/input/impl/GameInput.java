@@ -23,7 +23,7 @@ public class GameInput extends InputMode {
     /**
      * Die Position der Maus in Spielkoordinaten.
      */
-    private double logicMouseX, logicMouseY;
+    private static double logicMouseX, logicMouseY;
 
     @Override
     public void permanentKeyboardInput() {
@@ -107,5 +107,19 @@ public class GameInput extends InputMode {
      */
     private void sendShootRequest() {
         CTS_SHOOT.sendShoot(logicMouseX, logicMouseY);
+    }
+
+    /**
+     * @return the logicMouseX
+     */
+    public static double getLogicMouseX() {
+        return logicMouseX;
+    }
+
+    /**
+     * @return the logicMouseY
+     */
+    public static double getLogicMouseY() {
+        return logicMouseY;
     }
 }
