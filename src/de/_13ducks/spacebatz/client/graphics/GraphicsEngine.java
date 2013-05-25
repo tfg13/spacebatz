@@ -3,7 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
-import de._13ducks.spacebatz.client.graphics.overlay.impl.HudControl;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.HudOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.Inventory;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.NetGraph;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
@@ -106,7 +106,7 @@ public class GraphicsEngine {
             godControl = new GameRenderer();
             skilltree = new SkillTreeOverlay();
             skilltree.init(new int[]{Keyboard.KEY_T}, true);
-            overlays.add(new HudControl());
+            overlays.add(new HudOverlay());
             overlays.add(new QuestControl());
             overlays.add(skilltree);
             Inventory inventory = new Inventory();

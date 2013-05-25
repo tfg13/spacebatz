@@ -13,12 +13,12 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author House of Nikolouse
  */
-public class HudControl extends Overlay {
+public class HudOverlay extends Overlay {
 
     private Texture itemTiles;
     private Texture hud1;
 
-    public HudControl() {
+    public HudOverlay() {
         itemTiles = RenderUtils.getTextureByName("item.png");
         hud1 = RenderUtils.getTextureByName("hud1.png");
     }
