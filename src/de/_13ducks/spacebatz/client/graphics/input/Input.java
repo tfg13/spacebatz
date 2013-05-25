@@ -90,9 +90,9 @@ public class Input {
                                 }
                             });
                             triggeredListener = listener;
+                            // Es kann nur einer getriggert werden
+                            break;
                         }
-                        // Es kann nur einer getriggert werden
-                        break;
                     }
                 }
             }
