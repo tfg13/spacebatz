@@ -19,7 +19,7 @@ public class SkillSlot extends ControlElement {
      */
     private byte targetKey;
     private int tile;
-    private SkillTreeControl skilltree;
+    private SkillTreeOverlay skilltree;
     private Texture texture;
 
     /**
@@ -28,7 +28,7 @@ public class SkillSlot extends ControlElement {
      * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
      * @param renderer
      */
-    public SkillSlot(int tile, SkillTreeControl skilltree, byte key) {
+    public SkillSlot(int tile, SkillTreeOverlay skilltree, byte key) {
         super();
         this.tile = tile;
         targetKey = key;

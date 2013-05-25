@@ -20,7 +20,7 @@ public class SkillButton extends ControlElement {
     private byte level;
     private String skillName;
     private int tile;
-    private SkillTreeControl skilltree;
+    private SkillTreeOverlay skilltree;
     private Texture texture;
     private Color filter;
     private static Color red = new Color((byte) 100, (byte) 0, (byte) 0);
@@ -32,7 +32,7 @@ public class SkillButton extends ControlElement {
      * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
      * @param renderer
      */
-    public SkillButton(String name, int tile, SkillTreeControl skilltree) {
+    public SkillButton(String name, int tile, SkillTreeOverlay skilltree) {
         super();
         this.skillName = name;
         this.level = 0;

@@ -1,13 +1,11 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import java.util.HashMap;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
 
@@ -18,7 +16,7 @@ import org.lwjgl.util.Color;
  *
  * @author michael
  */
-public class SkillTreeControl extends Overlay {
+public class SkillTreeOverlay extends TriggeredOverlay {
 
     /**
      * Liste der Skilltreeienträge.
@@ -38,7 +36,7 @@ public class SkillTreeControl extends Overlay {
      *
      * @param renderer
      */
-    public SkillTreeControl() {
+    public SkillTreeOverlay() {
         skills = new HashMap<>();
         skillSlots = new HashMap<>();
 
@@ -88,7 +86,7 @@ public class SkillTreeControl extends Overlay {
     }
 
     @Override
-    public void render() {
+    public void triggeredRender() {
         RenderUtils.setTileSize(32, 32);
         RenderUtils.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, backgroundColor);
 
@@ -105,31 +103,6 @@ public class SkillTreeControl extends Overlay {
             RenderUtils.setScreenMapping(0, 1, 0, 1);
             RenderUtils.drawTile(dragTile, (float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y, 0.05f, 0.05f);
             RenderUtils.restoreScreenMapping();
-        }
-    }
-
-    //@Override
-    public void input() {
-        // Input für alle Controls berechnen:
-        for (SkillButton button : skills.values()) {
-            button.input((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
-        }
-        // Input für alle SkillSlots berechnen:
-        for (SkillSlot slot : skillSlots.values()) {
-            slot.input(Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
-        }
-        // Wenn kein Slot ausgewählt ist das draggen abbrechen:
-        if (!Mouse.isButtonDown(0)) {
-            dragging = false;
-            dragTile = -1;
-            draggedSkill = null;
-        }
-
-        // Tastatureingaben verarbeiten:
-        while (Keyboard.next()) {// Skilltree wieder verbergen wenn T oder ESCAPE gedrückt wird:
-            if ((Keyboard.getEventKey() == Keyboard.KEY_T || Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) && Keyboard.getEventKeyState()) {
-                GameClient.getEngine().getGraphics().toggleSkillTree();
-            }
         }
     }
 
@@ -166,5 +139,38 @@ public class SkillTreeControl extends Overlay {
             dragTile = -1;
             draggedSkill = null;
         }
+    }
+
+    @Override
+    protected void keyboardInput(int key, boolean pressed) {
+    }
+
+//    //@Override
+//    public void input() {
+//        // Input für alle Controls berechnen:
+//        for (SkillButton button : skills.values()) {
+//            button.input((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
+//        }
+//        // Input für alle SkillSlots berechnen:
+//        for (SkillSlot slot : skillSlots.values()) {
+//            slot.input(Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
+//        }
+//        // Wenn kein Slot ausgewählt ist das draggen abbrechen:
+//        if (!Mouse.isButtonDown(0)) {
+//            dragging = false;
+//            dragTile = -1;
+//            draggedSkill = null;
+//        }
+//    }
+    @Override
+    protected void mouseMove(int mx, int my) {
+    }
+
+    @Override
+    protected void mousePressed(int mx, int my, int button) {
+    }
+
+    @Override
+    protected void mouseReleased(int mx, int my, int button) {
     }
 }

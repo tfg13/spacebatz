@@ -8,7 +8,7 @@ import de._13ducks.spacebatz.client.graphics.overlay.impl.Inventory;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.GodControl;
-import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeControl;
+import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
 import java.lang.reflect.Field;
@@ -61,7 +61,7 @@ public class GraphicsEngine {
     /**
      * Der Skilltree.
      */
-    private SkillTreeControl skilltree;
+    private SkillTreeOverlay skilltree;
     private ShadowAnimator shadowAnimator = new ShadowAnimator();
     //DEBUG
     public static StatisticRingBuffer timing = new StatisticRingBuffer(60);
@@ -102,7 +102,8 @@ public class GraphicsEngine {
             input = new Input();
 
             godControl = new GodControl();
-            skilltree = new SkillTreeControl();
+            skilltree = new SkillTreeOverlay();
+            skilltree.init(new int[]{Keyboard.KEY_T}, true);
             overlays.add(new HudControl());
             overlays.add(new QuestControl());
             overlays.add(skilltree);
@@ -193,7 +194,7 @@ public class GraphicsEngine {
         GodControl.addFx(fx);
     }
 
-    public SkillTreeControl getSkillTree() {
+    public SkillTreeOverlay getSkillTree() {
         return skilltree;
     }
 
