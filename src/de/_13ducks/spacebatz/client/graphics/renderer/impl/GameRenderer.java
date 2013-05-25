@@ -42,10 +42,11 @@ import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- *
- * @author michael
+ * Haupt-Rendermodul.
+ * 
+ * @author Tobias Fleig <tobifleig@gmail.com>
  */
-public class GodControl extends CoreRenderer {
+public class GameRenderer extends CoreRenderer {
 
     /**
      * Tilemaps.
@@ -177,7 +178,7 @@ public class GodControl extends CoreRenderer {
         0x22, 0x43, 0x22, 0x43, 0x93, 0xC2, 0x93, 0xE2,// 240 - 247
         0x22, 0x43, 0x22, 0x43, 0x40, 0xE3, 0x40, 0x50};// 248 - 255
 
-    public GodControl() {
+    public GameRenderer() {
         groundTiles = RenderUtils.getTextureByName("ground.png");
         topTiles = RenderUtils.getTextureByName("top.png");
         playerTiles = RenderUtils.getTextureByName("player.png");
