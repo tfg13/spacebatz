@@ -10,9 +10,10 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
 
 /**
- * Zeigt den Skilltree an.
- * Der Skilltree zeigt den Status an, den der Server übermittelt und schickt Anfragen an den Server wenn ein Skill verbessert werden soll.
- * Ob das Skillen oder Skill-Mapping geklappt hat erfährt er über die Antworten des Servers.
+ * Zeigt den Skilltree an. Der Skilltree zeigt den Status an, den der Server
+ * übermittelt und schickt Anfragen an den Server wenn ein Skill verbessert
+ * werden soll. Ob das Skillen oder Skill-Mapping geklappt hat erfährt er über
+ * die Antworten des Servers.
  *
  * @author michael
  */
@@ -168,9 +169,21 @@ public class SkillTreeOverlay extends TriggeredOverlay {
 
     @Override
     protected void mousePressed(int mx, int my, int button) {
+        for (SkillButton skillButton : skills.values()) {
+            skillButton.mousePressed((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
+        }
     }
 
     @Override
     protected void mouseReleased(int mx, int my, int button) {
+        for (SkillButton skillButton : skills.values()) {
+            skillButton.mouseReleased((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
+        }
+        for (SkillSlot skillSlot : skillSlots.values()) {
+            skillSlot.mouseReleased((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y);
+        }
+        dragging = false;
+        dragTile = -1;
+        draggedSkill = null;
     }
 }

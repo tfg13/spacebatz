@@ -9,9 +9,8 @@ import org.lwjgl.util.Color;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- * Ein Button der einen Skill anzeigt.
- * Kann angelkcickt werden, um den Skill zu verbessern.
- * Kann per Drag and Drop gezogen werden.
+ * Ein Button der einen Skill anzeigt. Kann angelkcickt werden, um den Skill zu
+ * verbessern. Kann per Drag and Drop gezogen werden.
  *
  * @author michael
  */
@@ -29,7 +28,8 @@ public class SkillButton extends ControlElement {
     /**
      * Erzeugt einen neuen Skillbutton.
      *
-     * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
+     * @param tile die Tile auf der skilltree.png, die dieser Button rendern
+     * soll.
      * @param renderer
      */
     public SkillButton(String name, int tile, SkillTreeOverlay skilltree) {

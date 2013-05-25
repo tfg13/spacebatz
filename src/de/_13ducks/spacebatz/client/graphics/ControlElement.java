@@ -30,8 +30,8 @@ public abstract class ControlElement {
      */
     private boolean isMouseButtonDown;
     /**
-     * Gibt an, ob die linke Maustaste über diesem Element gedrückt wurde.
-     * Nur gültig wenn isMouseButtonDown gesetzt ist.
+     * Gibt an, ob die linke Maustaste über diesem Element gedrückt wurde. Nur
+     * gültig wenn isMouseButtonDown gesetzt ist.
      */
     private boolean wasMousePressedOverThis;
 
@@ -53,29 +53,20 @@ public abstract class ControlElement {
      */
     public abstract void render();
 
-    /**
-     * Berechnet Benutzereingaben für dieses Controlelement.
-     */
-    public void input(float mouseX, float mouseY) {
-        if (Mouse.isButtonDown(0)) {
-            if (!isMouseButtonDown) {
-                isMouseButtonDown = true;
-                onMouseButtonPressed();
-                if (isMouseOver(mouseX, mouseY)) {
-                    wasMousePressedOverThis = true;
-                } else {
-                    wasMousePressedOverThis = false;
-                }
-            }
+    public void mousePressed(float x, float y) {
+        onMouseButtonPressed();
+        if (isMouseOver(x, y)) {
+            wasMousePressedOverThis = true;
         } else {
-            if (isMouseButtonDown) {
-                isMouseButtonDown = false;
-                onMouseButtonReleased();
-                if (wasMousePressedOverThis && isMouseOver(mouseX, mouseY)) {
-                    onClick();
-                    wasMousePressedOverThis = false;
-                }
-            }
+            wasMousePressedOverThis = false;
+        }
+    }
+
+    public void mouseReleased(float x, float y) {
+        onMouseButtonReleased();
+        if (wasMousePressedOverThis && isMouseOver(x, y)) {
+            onClick();
+            wasMousePressedOverThis = false;
         }
     }
 
@@ -85,12 +76,14 @@ public abstract class ControlElement {
     public abstract void onMouseButtonPressed();
 
     /**
-     * Wird immer aufgerufen wenn die linke Maustaste irgendwo losgelassen wurde.
+     * Wird immer aufgerufen wenn die linke Maustaste irgendwo losgelassen
+     * wurde.
      */
     public abstract void onMouseButtonReleased();
 
     /**
-     * Wird aufgerufen, wenn die linke Maustaste über diesem Controlelement gedrückt und wieder losgelassen wurde.
+     * Wird aufgerufen, wenn die linke Maustaste über diesem Controlelement
+     * gedrückt und wieder losgelassen wurde.
      */
     public abstract void onClick();
 

@@ -7,8 +7,8 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- * Zeigt den Skill an der auf eine bestimmte Taste gelegt wurde.
- * Kann Skills per Drag and Drop aufnehmen, um sie auf diese Taste zu legen.
+ * Zeigt den Skill an der auf eine bestimmte Taste gelegt wurde. Kann Skills per
+ * Drag and Drop aufnehmen, um sie auf diese Taste zu legen.
  *
  * @author michael
  */
@@ -25,7 +25,8 @@ public class SkillSlot extends ControlElement {
     /**
      * Erzeugt einen neuen Skillbutton.
      *
-     * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
+     * @param tile die Tile auf der skilltree.png, die dieser Button rendern
+     * soll.
      * @param renderer
      */
     public SkillSlot(int tile, SkillTreeOverlay skilltree, byte key) {
