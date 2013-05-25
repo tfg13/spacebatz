@@ -40,7 +40,7 @@ import org.newdawn.slick.opengl.Texture;
 
 /**
  * Haupt-Rendermodul.
- * 
+ *
  * @author Tobias Fleig <tobifleig@gmail.com>
  */
 public class GameRenderer extends CoreRenderer {
@@ -54,11 +54,6 @@ public class GameRenderer extends CoreRenderer {
     private Texture enemyTiles;
     private Texture bulletTiles;
     private Texture fxTiles;
-    /**
-     * Ob das Terminal offen ist. Ein offenes Terminal verhindert jegliche
-     * andere Eingaben.
-     */
-    private boolean terminal = false;
     /**
      * Schadenszahlen über getroffenen Gegnern
      */
@@ -513,21 +508,6 @@ public class GameRenderer extends CoreRenderer {
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
-
-        if (terminal) {
-            glDisable(GL_TEXTURE_2D);
-            glColor4f(.9f, .9f, .9f, .7f);
-            glRectf(tilesX / 3, tilesY / 2, tilesX, 0);
-            glColor4f(1f, 1f, 1f, 1f);
-            glEnable(GL_TEXTURE_2D);
-            TextWriter.renderText(GameClient.terminal.getCurrentLine(), tilesX / 3 + 0.5f, 0, true);
-            int numberoflines = (int) ((int) tilesY * zoomFactor / 2);
-            for (int i = 0; i < numberoflines - 1; i++) {
-                TextWriter.renderText(GameClient.terminal.getHistory(i), tilesX / 3 + 0.5f, tilesY * ((i + 1) / (float) numberoflines / 2.0f), true);
-            }
-            glColor4f(1f, 1f, 1f, 1f);
-        }
-
     }
 
     private static int realTexAt(int[][] layer, byte[][] random, int x, int y) {
@@ -893,13 +873,6 @@ public class GameRenderer extends CoreRenderer {
     }
 
     /**
-     * @return true, wenn terminal offen ist
-     */
-    public boolean isTerminal() {
-        return terminal;
-    }
-
-    /**
      * @param useVBOs the useVBOs to set
      */
     public void setUseVBOs(boolean useVBOs) {
@@ -919,6 +892,17 @@ public class GameRenderer extends CoreRenderer {
     }
 
     /**
+     * Liest den zoomFactor aus.
+     *
+     * @return der zoomFactor
+     * @deprecated
+     */
+    @Deprecated
+    public float getZoomFact() {
+        return zoomFactor;
+    }
+
+    /**
      * Setzt den Zoomfaktor.
      * TODO: Erst mal private machen, dann aber bald ganz rauswerfen
      *
@@ -931,13 +915,6 @@ public class GameRenderer extends CoreRenderer {
         tilesX = CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE * zoomFact);
         tilesY = CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE * zoomFact);
         zoomFactor = zoomFact;
-    }
-
-    /**
-     * @param terminal the terminal to set
-     */
-    public void setTerminal(boolean terminal) {
-        this.terminal = terminal;
     }
 
     /**

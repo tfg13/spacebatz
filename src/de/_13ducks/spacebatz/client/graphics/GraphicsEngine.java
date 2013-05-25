@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.client.graphics.overlay.impl.HudControl;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.Inventory;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.NetGraph;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.TerminalOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
@@ -112,6 +113,9 @@ public class GraphicsEngine {
             inventory.init(new int[]{Keyboard.KEY_I}, true);
             overlays.add(inventory);
             overlays.add(new NetGraph());
+            TerminalOverlay terminal = new TerminalOverlay();
+            terminal.init(new int[]{Keyboard.KEY_F1}, true);
+            overlays.add(terminal);
 
             TextWriter.initialize();
 
@@ -160,7 +164,7 @@ public class GraphicsEngine {
         timing.push((int) (ns2 - ns));
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
-        input.input();
+        input.syncInput();
 
         // Fertig, Puffer swappen:
         Display.update();

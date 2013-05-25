@@ -11,7 +11,6 @@
 package de._13ducks.spacebatz.client;
 
 import de._13ducks.spacebatz.client.data.LogicPlayer;
-import de._13ducks.spacebatz.client.graphics.input.TickedInput;
 import de._13ducks.spacebatz.client.logic.ClientQuestManager;
 import de._13ducks.spacebatz.client.network.*;
 import de._13ducks.spacebatz.client.sound.SilentSoundEngine;
@@ -268,10 +267,8 @@ public class GameClient {
     static void gameTick() {
         int serverTick = network2.getLogicTick();
         while (logicGameTick <= serverTick) {
-            //if (!GameClient.getEngine().getGraphics().isMenuActive()) {
-                // Input berechnen:
-                TickedInput.tick();
-            //}
+            // Input berechnen:
+            engine.getGraphics().getInput().asyncInput();
             for (Char c : GameClient.netIDMap.values()) {
                 c.tick(logicGameTick);
             }

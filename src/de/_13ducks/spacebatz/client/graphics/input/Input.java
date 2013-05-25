@@ -32,7 +32,7 @@ public class Input {
      * Input-Hauptmethode.
      * Muss synchron zu den Frames regelmäßig aufgerufen werden.
      */
-    public void input() {
+    public void syncInput() {
         // Zuerst Mausbewegung
         // Ist derzeit ein Overlay getriggert und fängt die Bewegung ab?
         boolean sendMouseMoveToRest = true;
@@ -163,6 +163,15 @@ public class Input {
                 }
             }
         }
+    }
+
+    /**
+     * Input-Hauptmethode für an Logik-Ticks gebundene Aufgaben.
+     * Nur Keyboard, und das nur an das Haupt-Modul, falls nichts getriggert.
+     */
+    public void asyncInput() {
+        // Keyboard async ans Hauptmodul
+        input.permanentAsyncKeyboardInput(triggeredListener == null || inputOverlays.get(triggeredListener).keyboardMode != OverlayInputMode.KEYBOARD_MODE_TRIGGER);
     }
 
     /**

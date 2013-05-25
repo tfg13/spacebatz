@@ -6,6 +6,7 @@ import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.p
 import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.panY;
 import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.tilesX;
 import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.tilesY;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
@@ -27,67 +28,59 @@ public class GameInput extends InputMode {
 
     @Override
     public void permanentKeyboardInput() {
-        if (!GameClient.getEngine().getGraphics().defactoRenderer().isTerminal()) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-                sendAbilityRequest((byte) 1);
-            }
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            sendAbilityRequest((byte) 1);
         }
     }
 
     @Override
     public void keyboardPressed(int key, boolean pressed) {
         if (pressed) {
-            if (!GameClient.getEngine().getGraphics().defactoRenderer().isTerminal()) {
-                switch (key) {
-                    case Keyboard.KEY_F1:
-                        GameClient.getEngine().getGraphics().defactoRenderer().setTerminal(true);
-                        //break outer;
-                        break;
-                    case Keyboard.KEY_1:
-                        if (GameClient.player.getSelectedattack() != 0) {
-                            CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
-                        }
-                        break;
-                    case Keyboard.KEY_2:
-                        if (GameClient.player.getSelectedattack() != 1) {
-                            CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
-                        }
-                        break;
-                    case Keyboard.KEY_3:
-                        if (GameClient.player.getSelectedattack() != 2) {
-                            CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
-                        }
-                        break;
-                }
-            } else {
-                if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-                    GameClient.terminal.enter();
-                } else if (key == Keyboard.KEY_BACK) {
-                    GameClient.terminal.backspace();
-                } else if (key == Keyboard.KEY_UP) {
-                    GameClient.terminal.scrollBack();
-                } else if (key == Keyboard.KEY_DOWN) {
-                    GameClient.terminal.scrollForward();
-                } else if (key == Keyboard.KEY_F1) {
-                    GameClient.getEngine().getGraphics().defactoRenderer().setTerminal(false);
-                    System.out.println("FixMe: Implement disablement!");
-                    //reak;
-                } else {
-                    char c = Keyboard.getEventCharacter();
-                    if (c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= ' ' && c <= '?')) {
-                        GameClient.terminal.input(c);
+            switch (key) {
+                case Keyboard.KEY_1:
+                    if (GameClient.player.getSelectedattack() != 0) {
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
                     }
-                }
+                    break;
+                case Keyboard.KEY_2:
+                    if (GameClient.player.getSelectedattack() != 1) {
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
+                    }
+                    break;
+                case Keyboard.KEY_3:
+                    if (GameClient.player.getSelectedattack() != 2) {
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
+                    }
+                    break;
             }
         }
     }
 
     @Override
-    public void mouseInput() {
-        if (!GameClient.getEngine().getGraphics().defactoRenderer().isTerminal()) {
-            if (Mouse.isButtonDown(0)) {
-                sendShootRequest();
+    public void permanentAsyncKeyboardInput(boolean mainInputActive) {
+        byte move = 0;
+        if (mainInputActive) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+                move |= 0x20;
             }
+            if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+                move |= 0x80;
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+                move |= 0x40;
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+                move |= 0x10;
+            }
+        }
+        GameClient.player.predictMovement(move);
+        CTS_MOVE.sendMove((float) Math.atan2((Mouse.getY() - Display.getHeight() / 2), (Mouse.getX() - Display.getWidth() / 2)), (float) GameClient.player.getX(), (float) GameClient.player.getY());
+    }
+
+    @Override
+    public void mouseInput() {
+        if (Mouse.isButtonDown(0)) {
+            sendShootRequest();
         }
     }
 
