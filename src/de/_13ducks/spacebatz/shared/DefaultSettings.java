@@ -127,9 +127,9 @@ public class DefaultSettings {
      */
     public static double CHAR_TURN_SPEED = 0.30;
     /**
-     * Default-Level des netGraphen. 0 - Aus 1 - + Netzwerkdebug 2 - + GameDebug 3 - + Server-Netzdebug
+     * Default-Level des netGraphen. 0 - Aus; 1 - + Netzwerkdebug; 2 - + GameDebug; 3 - + Server-Netzdebug
      */
-    public static int CLIENT_NETGRAPH_LEVEL = 3;
+    public static int CLIENT_NETGRAPH_LEVEL = 2;
     /**
      * Alle wieviel Ticks die Turret-Drehung eines Spielers gebroadcastet wird.
      * Für Leitungen mit geringerem Durchsatz höher einstellen.
