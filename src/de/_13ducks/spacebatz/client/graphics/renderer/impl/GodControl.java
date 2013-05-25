@@ -128,10 +128,6 @@ public class GodControl extends CoreRenderer {
     private IntBuffer ib;
     private int tvHandle;
     /**
-     * Wenn true, scrollt lookahead nicht mehr mit.
-     */
-    private boolean freezeScroll = false;
-    /**
      * Fadenkreuz-Cursor.
      */
     private Cursor crossHairCursor;
@@ -210,7 +206,7 @@ public class GodControl extends CoreRenderer {
         if (!lookahead) {
             panX = ((float) -GameClient.player.getX() + tilesX / 2.0f);
             panY = ((float) -GameClient.player.getY() + tilesY / 2.0f);
-        } else if (!freezeScroll) {
+        } else {
             // Maus-Richtung von der Mitte aus:
             Vector vec = new Vector(mouseX - Display.getWidth() / 2, mouseY - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
             panX = ((float) (-GameClient.player.getX() + tilesX / 2.0f + vec.x));
@@ -218,9 +214,7 @@ public class GodControl extends CoreRenderer {
         }
 
         // Turret zeigt auf Maus
-        if (!freezeScroll) {
-            GameClient.player.setTurretDir(GeoTools.toAngle(logicMouseX - GameClient.player.getX(), logicMouseY - GameClient.player.getY()));
-        }
+        GameClient.player.setTurretDir(GeoTools.toAngle(logicMouseX - GameClient.player.getX(), logicMouseY - GameClient.player.getY()));
 
         glClear(GL_STENCIL_BUFFER_BIT); // Stencil-Buffer löschen.
         glColor4f(1f, 1f, 1f, 1f);
@@ -954,26 +948,6 @@ public class GodControl extends CoreRenderer {
             setZoomFact(Display.getHeight() / 34.0f / CLIENT_GFX_TILESIZE);
         }
         this.lookahead = lookAhead;
-    }
-
-    /**
-     * Stoppt im Lookahead-Modus das Mitbewegen der Ansicht mit der Maus.
-     * Aufrufen, wenn Overlay-Menüs angezeigt werden sollen.
-     */
-    public void scrollFreeze(boolean freeze) {
-        if (freezeScroll != freeze) {
-            freezeScroll = freeze;
-            try {
-                if (freezeScroll) {
-                    Mouse.setNativeCursor(null);
-                } else {
-                    Mouse.setNativeCursor(crossHairCursor);
-                }
-            } catch (LWJGLException ex) {
-                ex.printStackTrace();
-            }
-        }
-
     }
 
     /**

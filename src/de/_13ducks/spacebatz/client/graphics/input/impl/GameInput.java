@@ -43,12 +43,6 @@ public class GameInput extends InputMode {
                         GameClient.getEngine().getGraphics().defactoRenderer().setTerminal(true);
                         //break outer;
                         break;
-                    case Keyboard.KEY_I:
-                        GameClient.getEngine().getGraphics().toggleInventory();
-                        break;
-                    case Keyboard.KEY_T:
-                        GameClient.getEngine().getGraphics().toggleSkillTree();
-                        break;
                     case Keyboard.KEY_1:
                         if (GameClient.player.getSelectedattack() != 0) {
                             CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);

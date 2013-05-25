@@ -198,31 +198,6 @@ public class GraphicsEngine {
         return skilltree;
     }
 
-    /**
-     * Schält das Skilltreemenü um.
-     */
-    public void toggleSkillTree() {
-//        if (activeMenu == null) {
-//            activeMenu = skilltree;
-//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
-//        } else if (activeMenu == skilltree) {
-//            activeMenu = null;
-//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
-//        }
-        System.out.println("AddMe: Re-Implement SkillTree-Toggle");
-    }
-
-    public void toggleInventory() {
-//        if (activeMenu == null) {
-//            activeMenu = inventory;
-//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(true);
-//        } else if (activeMenu == inventory) {
-//            activeMenu = null;
-//            GameClient.getEngine().getGraphics().defactoRenderer().scrollFreeze(false);
-//        }
-        System.out.println("AddMe: Re-Implement Inventory-Toggle");
-    }
-
     public GodControl defactoRenderer() {
         return godControl;
     }
