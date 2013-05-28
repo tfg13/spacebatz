@@ -248,7 +248,49 @@ public class GraphicsEngine {
         }
 
         System.out.print("INFO: GFX: OpenGL 3.1 is ");
-        if (GLContext.getCapabilities().OpenGL30) {
+        if (GLContext.getCapabilities().OpenGL31) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 3.2 is ");
+        if (GLContext.getCapabilities().OpenGL32) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 3.3 is ");
+        if (GLContext.getCapabilities().OpenGL33) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 4.0 is ");
+        if (GLContext.getCapabilities().OpenGL40) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 4.1 is ");
+        if (GLContext.getCapabilities().OpenGL41) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 4.2 is ");
+        if (GLContext.getCapabilities().OpenGL42) {
+            System.out.println("SUPPORTED");
+        } else {
+            System.out.println("NOT SUPPORTED");
+        }
+
+        System.out.print("INFO: GFX: OpenGL 4.3 is ");
+        if (GLContext.getCapabilities().OpenGL43) {
             System.out.println("SUPPORTED");
         } else {
             System.out.println("NOT SUPPORTED");
