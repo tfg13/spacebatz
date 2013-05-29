@@ -2,10 +2,10 @@ package de._13ducks.spacebatz.client.graphics.input.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.InputMode;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.panX;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.panY;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.tilesX;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.tilesY;
+import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.panX;
+import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.panY;
+import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.tilesX;
+import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.tilesY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;

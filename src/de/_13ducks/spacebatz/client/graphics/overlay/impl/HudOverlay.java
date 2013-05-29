@@ -4,7 +4,7 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
-import de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import de._13ducks.spacebatz.shared.Item;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.opengl.Texture;
@@ -33,8 +33,8 @@ public class HudOverlay extends Overlay {
         hud1.bind();
 
         // HUD-Bild bei HP
-        float width1 = (0.475f / 16.0f * 9.0f) * GameRenderer.tilesX;
-        float height1 = 0.475f * GameRenderer.tilesY * 0.262f;
+        float width1 = (0.475f / 16.0f * 9.0f) * LegacyRenderer.tilesX;
+        float height1 = 0.475f * LegacyRenderer.tilesY * 0.262f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0, 1);
         glVertex3f(0, 0, 0.0f);
@@ -47,8 +47,8 @@ public class HudOverlay extends Overlay {
         glEnd(); // Zeichnen des QUADs fertig } }
 
         // HUD-Bild bei Waffen
-        float height2 = 0.42f * GameRenderer.tilesY;
-        float height3 = 0.77f * GameRenderer.tilesY;
+        float height2 = 0.42f * LegacyRenderer.tilesY;
+        float height3 = 0.77f * LegacyRenderer.tilesY;
         float width2 = width1 * 0.234f;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0, 0.738f);
@@ -65,13 +65,13 @@ public class HudOverlay extends Overlay {
         if (GameClient.logicPlayer.isDead()) {
             glDisable(GL_TEXTURE_2D);
             glColor4f(1.0f, 0.1f, 0.0f, 0.5f);
-            glRectf(0.0f * GameRenderer.tilesX, 0.0f * GameRenderer.tilesY, 1.0f * GameRenderer.tilesX, 1.0f * GameRenderer.tilesY);
+            glRectf(0.0f * LegacyRenderer.tilesX, 0.0f * LegacyRenderer.tilesY, 1.0f * LegacyRenderer.tilesX, 1.0f * LegacyRenderer.tilesY);
             glEnable(GL_TEXTURE_2D);
             if (GameClient.frozenGametick >= GameClient.player.getRespawntick()) {
-                TextWriter.renderText("Press <Fire> to respawn", 0.5f * GameRenderer.tilesX, 0.5f * GameRenderer.tilesY);
+                TextWriter.renderText("Press <Fire> to respawn", 0.5f * LegacyRenderer.tilesX, 0.5f * LegacyRenderer.tilesY);
             } else {
                 int seconds = (int) Math.ceil((GameClient.player.getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
-                TextWriter.renderText("Respawn in " + seconds + " Seconds", 0.5f * GameRenderer.tilesX, 0.5f * GameRenderer.tilesY);
+                TextWriter.renderText("Respawn in " + seconds + " Seconds", 0.5f * LegacyRenderer.tilesX, 0.5f * LegacyRenderer.tilesY);
             }
         }
 
@@ -86,7 +86,7 @@ public class HudOverlay extends Overlay {
         glDisable(GL_TEXTURE_2D);
         // roter HP-Balken, Länge anhängig von HP
         glColor3f(0.7f, 0.0f, 0.0f);
-        glRectf(0.0295f * GameRenderer.tilesX, 0.028f * GameRenderer.tilesY, (0.0295f + 0.1655f * ((float) hp / maxhp)) * GameRenderer.tilesX, 0.04f * GameRenderer.tilesY);
+        glRectf(0.0295f * LegacyRenderer.tilesX, 0.028f * LegacyRenderer.tilesY, (0.0295f + 0.1655f * ((float) hp / maxhp)) * LegacyRenderer.tilesX, 0.04f * LegacyRenderer.tilesY);
         glEnable(GL_TEXTURE_2D);
 
         // angelegte Waffen in Hud zeichnen
@@ -114,10 +114,10 @@ public class HudOverlay extends Overlay {
 
             glColor3f(0.0f, 0.0f, 0.0f);
 
-            float x1 = 0.014f * GameRenderer.tilesX;
-            float y1 = (0.705f - 0.1f * j) * GameRenderer.tilesY;
-            float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * GameRenderer.tilesX;
-            float y2 = (0.7505f - 0.1f * j) * GameRenderer.tilesY;
+            float x1 = 0.014f * LegacyRenderer.tilesX;
+            float y1 = (0.705f - 0.1f * j) * LegacyRenderer.tilesY;
+            float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * LegacyRenderer.tilesX;
+            float y2 = (0.7505f - 0.1f * j) * LegacyRenderer.tilesY;
 
             glBegin(GL_LINE_LOOP);
             glVertex2d(x1, y1);
@@ -149,14 +149,14 @@ public class HudOverlay extends Overlay {
 
                 // weißer Hintergrund
                 glColor3f(1.0f, 1.0f, 1.0f);
-                glRectf(0.005f * GameRenderer.tilesX, height * GameRenderer.tilesY, 0.055f * GameRenderer.tilesX, (height + 0.01f) * GameRenderer.tilesY);
+                glRectf(0.005f * LegacyRenderer.tilesX, height * LegacyRenderer.tilesY, 0.055f * LegacyRenderer.tilesX, (height + 0.01f) * LegacyRenderer.tilesY);
                 // roter Overheat-Balken
                 glColor3f(0.7f, 0.0f, 0.0f);
-                glRectf(0.007f * GameRenderer.tilesX, (height + 0.002f) * GameRenderer.tilesY, (0.007f + 0.046f * overheatpermax) * GameRenderer.tilesX, (height + 0.008f) * GameRenderer.tilesY);
+                glRectf(0.007f * LegacyRenderer.tilesX, (height + 0.002f) * LegacyRenderer.tilesY, (0.007f + 0.046f * overheatpermax) * LegacyRenderer.tilesX, (height + 0.008f) * LegacyRenderer.tilesY);
             } else {
                 // grauer Hintergrund
                 glColor3f(0.6f, 0.6f, 0.6f);
-                glRectf(0.005f * GameRenderer.tilesX, height * GameRenderer.tilesY, 0.055f * GameRenderer.tilesX, (height + 0.01f) * GameRenderer.tilesY);
+                glRectf(0.005f * LegacyRenderer.tilesX, height * LegacyRenderer.tilesY, 0.055f * LegacyRenderer.tilesX, (height + 0.01f) * LegacyRenderer.tilesY);
             }
             glColor3f(1f, 1f, 1f);
         }
@@ -164,7 +164,7 @@ public class HudOverlay extends Overlay {
         // Markierung an angelegte Waffe:
         glColor3f(0.7f, 0.0f, 0.0f);
         float height = 0.7f - 0.1f * GameClient.player.getSelectedattack();
-        glRectf(0.0f * GameRenderer.tilesX, height * GameRenderer.tilesY, 0.005f * GameRenderer.tilesX, (height + 0.05f) * GameRenderer.tilesY);
+        glRectf(0.0f * LegacyRenderer.tilesX, height * LegacyRenderer.tilesY, 0.005f * LegacyRenderer.tilesX, (height + 0.05f) * LegacyRenderer.tilesY);
         glEnable(GL_TEXTURE_2D);
         glColor3f(1f, 1f, 1f);
     }

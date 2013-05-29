@@ -4,7 +4,7 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
-import de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DELETE_ITEM;
@@ -44,14 +44,14 @@ public class Inventory extends TriggeredOverlay {
 //        glRectf(0, 0, GodControl.tilesX, GodControl.tilesY);
 
         // Koordinaten für waagrechte Linien
-        float x1 = 0.095125f * GameRenderer.tilesX;
-        float x2 = 0.895125f * GameRenderer.tilesX;
-        float bottom1 = 0.07f * GameRenderer.tilesY;
+        float x1 = 0.095125f * LegacyRenderer.tilesX;
+        float x2 = 0.895125f * LegacyRenderer.tilesX;
+        float bottom1 = 0.07f * LegacyRenderer.tilesY;
 
         // Koordinaten für senkrechte Linien
-        float y1 = 0.17f * GameRenderer.tilesY;
-        float y2 = 0.47f * GameRenderer.tilesY;
-        float left1 = 0.095125f * GameRenderer.tilesY;
+        float y1 = 0.17f * LegacyRenderer.tilesY;
+        float y2 = 0.47f * LegacyRenderer.tilesY;
+        float left1 = 0.095125f * LegacyRenderer.tilesY;
 
         glDisable(GL_TEXTURE_2D);
         // HintergrunGod  für Inventar-Items zeichnen
@@ -65,10 +65,10 @@ public class Inventory extends TriggeredOverlay {
         // Bild für die Inventar-Slots
         for (int i = 0; i <= 9; i++) {
             for (int j = 0; j <= 2; j++) {
-                float xa = x1 + i * 0.08f * GameRenderer.tilesX;
-                float xb = x1 + (i + 1) * 0.08f * GameRenderer.tilesX;
-                float ya = y1 + j * 0.1f * GameRenderer.tilesY;
-                float yb = y1 + (j + 1) * 0.1f * GameRenderer.tilesY;
+                float xa = x1 + i * 0.08f * LegacyRenderer.tilesX;
+                float xb = x1 + (i + 1) * 0.08f * LegacyRenderer.tilesX;
+                float ya = y1 + j * 0.1f * LegacyRenderer.tilesY;
+                float yb = y1 + (j + 1) * 0.1f * LegacyRenderer.tilesY;
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(273.0f / 512, 307.0f / 512);
@@ -83,10 +83,10 @@ public class Inventory extends TriggeredOverlay {
             }
         }
 
-        float x01 = 0.815125f * GameRenderer.tilesX;
-        float x02 = 0.895125f * GameRenderer.tilesX;
-        float ya = 0.53f * GameRenderer.tilesY;
-        float yb = ya + 0.1f * GameRenderer.tilesY;
+        float x01 = 0.815125f * LegacyRenderer.tilesX;
+        float x02 = 0.895125f * LegacyRenderer.tilesX;
+        float ya = 0.53f * LegacyRenderer.tilesY;
+        float yb = ya + 0.1f * LegacyRenderer.tilesY;
 
         // Bild für Mülleimer
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
@@ -102,7 +102,7 @@ public class Inventory extends TriggeredOverlay {
 
         // Hut-Slot:
         float xa = x1;
-        float xb = x1 + 0.08f * GameRenderer.tilesX;
+        float xb = x1 + 0.08f * LegacyRenderer.tilesX;
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(125.0f / 512, 307.0f / 512);
         glVertex3f(xa, ya, 0.0f);
@@ -116,8 +116,8 @@ public class Inventory extends TriggeredOverlay {
 
         // Waffen-Slots:
         for (int i = 0; i <= 2; i++) {
-            float xw1 = x1 + (0.1f * i + 0.15f) * GameRenderer.tilesX;
-            float xw2 = xw1 + 0.08f * GameRenderer.tilesX;
+            float xw1 = x1 + (0.1f * i + 0.15f) * LegacyRenderer.tilesX;
+            float xw2 = xw1 + 0.08f * LegacyRenderer.tilesX;
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(125.0f / 512, 204.0f / 512);
             glVertex3f(xw1, ya, 0.0f);
@@ -133,9 +133,9 @@ public class Inventory extends TriggeredOverlay {
 
         // Items im Inventory zeichnen
         // Anzahl der Materialien:
-        TextWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * GameRenderer.tilesX, 0.64f * GameRenderer.tilesY);
-        TextWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * GameRenderer.tilesX, 0.59f * GameRenderer.tilesY);
-        TextWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * GameRenderer.tilesX, 0.54f * GameRenderer.tilesY);
+        TextWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * LegacyRenderer.tilesX, 0.64f * LegacyRenderer.tilesY);
+        TextWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * LegacyRenderer.tilesX, 0.59f * LegacyRenderer.tilesY);
+        TextWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * LegacyRenderer.tilesX, 0.54f * LegacyRenderer.tilesY);
         glColor4f(1f, 1f, 1f, 1f);
 
         itemTiles.bind();
@@ -148,19 +148,19 @@ public class Inventory extends TriggeredOverlay {
 
             Item item = GameClient.getItems()[i];
 
-            float x = (0.107f + 0.08f * (i % 10)) * GameRenderer.tilesX;
+            float x = (0.107f + 0.08f * (i % 10)) * LegacyRenderer.tilesX;
 
             float y;
             if (i < 10) {
-                y = 0.37f * GameRenderer.tilesY;
+                y = 0.37f * LegacyRenderer.tilesY;
             } else if (i < 20) {
-                y = 0.27f * GameRenderer.tilesY;
+                y = 0.27f * LegacyRenderer.tilesY;
             } else {
-                y = 0.17f * GameRenderer.tilesY;
+                y = 0.17f * LegacyRenderer.tilesY;
             }
 
-            float width = (0.1f / 16.0f * 9.0f) * GameRenderer.tilesX;
-            float height = 0.1f * GameRenderer.tilesY;
+            float width = (0.1f / 16.0f * 9.0f) * LegacyRenderer.tilesX;
+            float height = 0.1f * LegacyRenderer.tilesY;
 
             float v = 0.0625f * item.getPic();
             float w = 0.0625f * (item.getPic() / 16);
@@ -186,11 +186,11 @@ public class Inventory extends TriggeredOverlay {
         Item itemx = GameClient.getEquippedItems().getEquipslots()[2][0];
         if (itemx != null) {
             // Item zeichnen;
-            float x = 0.11f * GameRenderer.tilesX;
-            float y = 0.53f * GameRenderer.tilesY;
+            float x = 0.11f * LegacyRenderer.tilesX;
+            float y = 0.53f * LegacyRenderer.tilesY;
 
-            float width = 0.1f / 16 * 9 * GameRenderer.tilesX;
-            float height = 0.1f * GameRenderer.tilesY;
+            float width = 0.1f / 16 * 9 * LegacyRenderer.tilesX;
+            float height = 0.1f * LegacyRenderer.tilesY;
 
             float v = 0.0625f * itemx.getPic();
             float w = 0.0625f * (itemx.getPic() / 16);
@@ -213,11 +213,11 @@ public class Inventory extends TriggeredOverlay {
             Item item1 = GameClient.getEquippedItems().getEquipslots()[1][j];
             if (item1 != null) {
                 // Item zeichnen;
-                float x = (0.26f + 0.1f * j) * GameRenderer.tilesX;
-                float y = 0.53f * GameRenderer.tilesY;
+                float x = (0.26f + 0.1f * j) * LegacyRenderer.tilesX;
+                float y = 0.53f * LegacyRenderer.tilesY;
 
-                float width = 0.1f / 16 * 9 * GameRenderer.tilesX;
-                float height = 0.1f * GameRenderer.tilesY;
+                float width = 0.1f / 16 * 9 * LegacyRenderer.tilesX;
+                float height = 0.1f * LegacyRenderer.tilesY;
 
                 float v = 0.0625f * item1.getPic();
                 float w = 0.0625f * (item1.getPic() / 16);
@@ -243,8 +243,8 @@ public class Inventory extends TriggeredOverlay {
             if (item2 != null) {
                 itemTiles.bind();
 
-                float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * GameRenderer.tilesX;
-                float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * GameRenderer.tilesY;
+                float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * LegacyRenderer.tilesX;
+                float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * LegacyRenderer.tilesY;
 
                 float size = 0.08f;
 
@@ -253,13 +253,13 @@ public class Inventory extends TriggeredOverlay {
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.0625f);
-                glVertex3f(x - GameRenderer.tilesX * size / 2, y - GameRenderer.tilesX * size / 2, 0.0f);
+                glVertex3f(x - LegacyRenderer.tilesX * size / 2, y - LegacyRenderer.tilesX * size / 2, 0.0f);
                 glTexCoord2f(v + 0.0625f, w + 0.0625f);
-                glVertex3f(x + GameRenderer.tilesX * size / 2, y - GameRenderer.tilesX * size / 2, 0.0f);
+                glVertex3f(x + LegacyRenderer.tilesX * size / 2, y - LegacyRenderer.tilesX * size / 2, 0.0f);
                 glTexCoord2f(v + 0.0625f, w);
-                glVertex3f(x + GameRenderer.tilesX * size / 2, y + GameRenderer.tilesX * size / 2, 0.0f);
+                glVertex3f(x + LegacyRenderer.tilesX * size / 2, y + LegacyRenderer.tilesX * size / 2, 0.0f);
                 glTexCoord2f(v, w);
-                glVertex3f(x - GameRenderer.tilesX * size / 2, y + GameRenderer.tilesX * size / 2, 0.0f);
+                glVertex3f(x - LegacyRenderer.tilesX * size / 2, y + LegacyRenderer.tilesX * size / 2, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
@@ -323,13 +323,13 @@ public class Inventory extends TriggeredOverlay {
             // Item gefunden, jetzt Mousehover rendern
             glDisable(GL_TEXTURE_2D);
             glColor3f(0.9f, 0.9f, 0.9f);
-            glRectf((x - 0.01f) * GameRenderer.tilesX, (y - 0.01f) * GameRenderer.tilesY, (x + 0.3f) * GameRenderer.tilesX, (y - 0.015f + 0.05f * item.getItemAttributes().size()) * GameRenderer.tilesY);
+            glRectf((x - 0.01f) * LegacyRenderer.tilesX, (y - 0.01f) * LegacyRenderer.tilesY, (x + 0.3f) * LegacyRenderer.tilesX, (y - 0.015f + 0.05f * item.getItemAttributes().size()) * LegacyRenderer.tilesY);
             glColor3f(1f, 1f, 1f);
             glEnable(GL_TEXTURE_2D);
             // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
             float yadd = 0.0f;
             for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
-                TextWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * GameRenderer.tilesX, (y + yadd) * GameRenderer.tilesY);
+                TextWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * LegacyRenderer.tilesX, (y + yadd) * LegacyRenderer.tilesY);
                 yadd += 0.05f;
             }
         }

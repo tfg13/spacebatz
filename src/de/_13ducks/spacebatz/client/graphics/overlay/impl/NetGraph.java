@@ -5,7 +5,7 @@ import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer.tilesY;
+import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.tilesY;
 import de._13ducks.spacebatz.client.network.ClientNetwork2;
 import de._13ducks.spacebatz.client.network.NetStats;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;

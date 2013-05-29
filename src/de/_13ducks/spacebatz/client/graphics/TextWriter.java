@@ -1,6 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class TextWriter {
      * @param y PositionY (unten)
      */
     public static void renderTextXCentered(String text, float x, float y) {
-        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * GameRenderer.tilesX), y, false);
+        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * LegacyRenderer.tilesX), y, false);
     }
 
     /**
@@ -95,7 +95,7 @@ public class TextWriter {
         GL11.glPushMatrix();
         GL11.glLoadIdentity();
         GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / GameRenderer.tilesX * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / GameRenderer.tilesY)) * Display.getHeight(), text, Color.black);
+        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / LegacyRenderer.tilesX * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, Color.black);
         GL11.glPopMatrix();
     }
 
@@ -134,7 +134,7 @@ public class TextWriter {
         GL11.glPushMatrix();
         GL11.glLoadIdentity();
         GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-        fonts[mono ? 1 : 0].drawString(x / GameRenderer.tilesX * Display.getWidth(), (1f - ((y + 0.5f) / GameRenderer.tilesY)) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
+        fonts[mono ? 1 : 0].drawString(x / LegacyRenderer.tilesX * Display.getWidth(), (1f - ((y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
         GL11.glPopMatrix();
     }
 
@@ -145,7 +145,7 @@ public class TextWriter {
      * @return gerundete Koordinate
      */
     private static float snapToXRaster(float f) {
-        return Math.round(f / GameRenderer.tilesX * Display.getWidth()) * GameRenderer.tilesX / Display.getWidth();
+        return Math.round(f / LegacyRenderer.tilesX * Display.getWidth()) * LegacyRenderer.tilesX / Display.getWidth();
     }
 
     /**
@@ -155,6 +155,6 @@ public class TextWriter {
      * @return gerundete Koordinate
      */
     private static float snapToYRaster(float f) {
-        return Math.round(f / GameRenderer.tilesY * Display.getHeight()) * GameRenderer.tilesY / Display.getHeight();
+        return Math.round(f / LegacyRenderer.tilesY * Display.getHeight()) * LegacyRenderer.tilesY / Display.getHeight();
     }
 }

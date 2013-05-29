@@ -9,7 +9,7 @@ import de._13ducks.spacebatz.client.graphics.overlay.impl.NetGraph;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.TerminalOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
-import de._13ducks.spacebatz.client.graphics.renderer.impl.GameRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
@@ -59,7 +59,7 @@ public class GraphicsEngine {
     /**
      * Das God-Control, das auch Effekte und FX zeichent.
      */
-    private GameRenderer godControl;
+    private LegacyRenderer godControl;
     /**
      * Der Skilltree.
      */
@@ -103,7 +103,7 @@ public class GraphicsEngine {
             // Komponenten erzeugen:
             input = new Input();
 
-            godControl = new GameRenderer();
+            godControl = new LegacyRenderer();
             skilltree = new SkillTreeOverlay();
             skilltree.init(new int[]{Keyboard.KEY_T}, true);
             overlays.add(new HudOverlay());
@@ -188,7 +188,7 @@ public class GraphicsEngine {
      * @param y
      */
     public void createDamageNumber(int damage, double x, double y) {
-        GameRenderer.createDamageNumber(damage, x, y);
+        LegacyRenderer.createDamageNumber(damage, x, y);
     }
 
     /**
@@ -197,14 +197,14 @@ public class GraphicsEngine {
      * @param fx
      */
     public void addFx(Fx fx) {
-        GameRenderer.addFx(fx);
+        LegacyRenderer.addFx(fx);
     }
 
     public SkillTreeOverlay getSkillTree() {
         return skilltree;
     }
 
-    public GameRenderer defactoRenderer() {
+    public LegacyRenderer defactoRenderer() {
         return godControl;
     }
 

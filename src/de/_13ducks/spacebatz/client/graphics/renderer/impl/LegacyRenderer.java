@@ -43,7 +43,7 @@ import org.newdawn.slick.opengl.Texture;
  *
  * @author Tobias Fleig <tobifleig@gmail.com>
  */
-public class GameRenderer extends CoreRenderer {
+public class LegacyRenderer extends CoreRenderer {
 
     /**
      * Tilemaps.
@@ -170,7 +170,7 @@ public class GameRenderer extends CoreRenderer {
         0x22, 0x43, 0x22, 0x43, 0x93, 0xC2, 0x93, 0xE2,// 240 - 247
         0x22, 0x43, 0x22, 0x43, 0x40, 0xE3, 0x40, 0x50};// 248 - 255
 
-    public GameRenderer() {
+    public LegacyRenderer() {
         groundTiles = RenderUtils.getTextureByName("ground.png");
         topTiles = RenderUtils.getTextureByName("top.png");
         playerTiles = RenderUtils.getTextureByName("player.png");
