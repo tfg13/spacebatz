@@ -880,7 +880,7 @@ public class LegacyRenderer extends CoreRenderer {
     }
 
     @Override
-    public void defineOpenGLMatrices() {
+    public void setupShaders() {
         if (!DefaultSettings.CLIENT_GFX_LOOKAHEAD) {
             // Zoom korrekt berechnen. Man sieht immer 58 * 34 Felder weit.
             // Höhe hat Prio, bei 4:3 sieht man weniger...

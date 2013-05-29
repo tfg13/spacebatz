@@ -120,7 +120,7 @@ public class GraphicsEngine {
             TextWriter.initialize();
 
             coreRenderer = godControl;
-            coreRenderer.defineOpenGLMatrices();
+            coreRenderer.setupShaders();
 
 
         } catch (Exception ex) {
