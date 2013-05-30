@@ -87,51 +87,64 @@ public class Inventory implements Control {
                 glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
-        
+
         float x01 = 0.815125f * camera.getTilesX();
-        float x02 = 0.895125f * camera.getTilesX();
-        float ya = 0.53f * camera.getTilesY();
+        float x02 = 0.655125f * camera.getTilesX();
+        float x03 = 0.335125f * camera.getTilesX();
+        float ya = 0.48f * camera.getTilesY();
         float yb = ya + 0.1f * camera.getTilesY();
-        
+
         // Bild für Mülleimer
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(125.0f / 512, 101.0f / 512);
         glVertex3f(x01, ya, 0.0f);
         glTexCoord2f(271.0f / 512, 101.0f / 512);
-        glVertex3f(x02, ya, 0.0f);
+        glVertex3f(x01 + 0.08f * camera.getTilesX(), ya, 0.0f);
         glTexCoord2f(271.0f / 512, 0.0f / 512);
-        glVertex3f(x02, yb, 0.0f);
+        glVertex3f(x01 + 0.08f * camera.getTilesX(), yb, 0.0f);
         glTexCoord2f(125.0f / 512, 0.0f / 512);
         glVertex3f(x01, yb, 0.0f);
         glEnd(); // Zeichnen des QUADs fertig } }
 
-        // Hut-Slot:
-        float xa = x1;
-        float xb = x1 + 0.08f * camera.getTilesX();
-        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-        glTexCoord2f(125.0f / 512, 307.0f / 512);
-        glVertex3f(xa, ya, 0.0f);
-        glTexCoord2f(271.0f / 512, 307.0f / 512);
-        glVertex3f(xb, ya, 0.0f);
-        glTexCoord2f(271.0f / 512, 206.0f / 512);
-        glVertex3f(xb, yb, 0.0f);
-        glTexCoord2f(125.0f / 512, 206.0f / 512);
-        glVertex3f(xa, yb, 0.0f);
-        glEnd(); // Zeichnen des QUADs fertig } }
+        // Armor-Slots:
+        for (int i = 0; i <= 4; i++) {
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(125.0f / 512, 307.0f / 512);
+            glVertex3f(x03, ya + 0.1f * camera.getTilesY() * i, 0.0f);
+            glTexCoord2f(271.0f / 512, 307.0f / 512);
+            glVertex3f(x03 + 0.08f * camera.getTilesX(), ya + 0.1f * camera.getTilesY() * i, 0.0f);
+            glTexCoord2f(271.0f / 512, 206.0f / 512);
+            glVertex3f(x03 + 0.08f * camera.getTilesX(), yb + 0.1f * camera.getTilesY() * i, 0.0f);
+            glTexCoord2f(125.0f / 512, 206.0f / 512);
+            glVertex3f(x03, yb + 0.1f * camera.getTilesY() * i, 0.0f);
+            glEnd(); // Zeichnen des QUADs fertig } }
+        }
 
         // Waffen-Slots:
         for (int i = 0; i <= 2; i++) {
-            float xw1 = x1 + (0.1f * i + 0.15f) * camera.getTilesX();
-            float xw2 = xw1 + 0.08f * camera.getTilesX();
             glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
             glTexCoord2f(125.0f / 512, 204.0f / 512);
-            glVertex3f(xw1, ya, 0.0f);
+            glVertex3f(x02, ya + 0.1f * camera.getTilesY() * i, 0.0f);
             glTexCoord2f(271.0f / 512, 204.0f / 512);
-            glVertex3f(xw2, ya, 0.0f);
+            glVertex3f(x02 + 0.08f * camera.getTilesX(), ya + 0.1f * camera.getTilesY() * i, 0.0f);
             glTexCoord2f(271.0f / 512, 103.0f / 512);
-            glVertex3f(xw2, yb, 0.0f);
+            glVertex3f(x02 + 0.08f * camera.getTilesX(), yb + 0.1f * camera.getTilesY() * i, 0.0f);
             glTexCoord2f(125.0f / 512, 103.0f / 512);
-            glVertex3f(xw1, yb, 0.0f);
+            glVertex3f(x02, yb + 0.1f * camera.getTilesY() * i, 0.0f);
+            glEnd(); // Zeichnen des QUADs fertig } }
+        }
+
+        // Werkzeug-Slots:
+        for (int i = 3; i <= 4; i++) {
+            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+            glTexCoord2f(125.0f / 512, 204.0f / 512);
+            glVertex3f(x02, ya + 0.1f * camera.getTilesY() * i, 0.0f);
+            glTexCoord2f(271.0f / 512, 204.0f / 512);
+            glVertex3f(x02 + 0.08f * camera.getTilesX(), ya + 0.1f * camera.getTilesY() * i, 0.0f);
+            glTexCoord2f(271.0f / 512, 103.0f / 512);
+            glVertex3f(x02 + 0.08f * camera.getTilesX(), yb + 0.1f * camera.getTilesY() * i, 0.0f);
+            glTexCoord2f(125.0f / 512, 103.0f / 512);
+            glVertex3f(x02, yb + 0.1f * camera.getTilesY() * i, 0.0f);
             glEnd(); // Zeichnen des QUADs fertig } }
         }
 
@@ -246,26 +259,26 @@ public class Inventory implements Control {
         if (selecteditemslot != -1) {
             Item item2 = GameClient.getItems()[selecteditemslot];
             if (item2 != null) {
-            	itemTiles.bind();
+                itemTiles.bind();
 
-            	float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
-            	float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
+                float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
+                float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
 
-            	float size = 0.08f;
+                float size = 0.08f;
 
-            	float v = 0.0625f * (int) item2.getPic();
-            	float w = 0.0625f * ((int) item2.getPic() / 16);
+                float v = 0.0625f * (int) item2.getPic();
+                float w = 0.0625f * ((int) item2.getPic() / 16);
 
-            	glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            	glTexCoord2f(v, w + 0.0625f);
-            	glVertex3f(x - camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
-            	glTexCoord2f(v + 0.0625f, w + 0.0625f);
-            	glVertex3f(x + camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
-            	glTexCoord2f(v + 0.0625f, w);
-            	glVertex3f(x + camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
-            	glTexCoord2f(v, w);
-            	glVertex3f(x - camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
-            	glEnd(); // Zeichnen des QUADs fertig } }
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.0625f);
+                glVertex3f(x - camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
+                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+                glVertex3f(x + camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
+                glTexCoord2f(v + 0.0625f, w);
+                glVertex3f(x + camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x - camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
 
@@ -353,35 +366,54 @@ public class Inventory implements Control {
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
 
+                    float x01 = 0.815125f;
+                    float x02 = 0.655125f;
+                    float x03 = 0.335125f;
+                    float ya = 0.48f;
 
                     // Hut-Slot
-                    if (x > 0.095125f && x < 0.175125f) {
-                        if (y > 0.53 && y < 0.63) {
-                            if (selecteditemslot != -1) {
-                                Item selecteditem = GameClient.getItems()[selecteditemslot];
-                                if ((int) selecteditem.getItemClass() == 2) {
-                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // 2 = Hut-Slot
+                    if (x > x03 && x < x03 + 0.08f) {
+                        for (int i = 1; i <= 5; i++) {
+                            if (y > ya + (i - 1) * 0.1f && y < ya + i * 0.1f) {
+                                if (selecteditemslot != -1) {
+                                    Item selecteditem = GameClient.getItems()[selecteditemslot];
+                                    if (i != 1 && (int) selecteditem.getItemClass() == i) {
+                                        CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (i == 1) ? (byte) 1 : (byte) 0);
+                                    } else if (i == 1 && (int) selecteditem.getItemClass() == 2) {
+                                        CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0);
+                                    }
                                     selecteditemslot = -1;
-                                }
-                            } else {
-                                if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
-                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
+                                } else {
+                                    if (i > 2) {
+                                        if (GameClient.getEquippedItems().getEquipslots()[i][0] != null) {
+                                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(i, (byte) 0);
+                                        }
+                                    } else if (i == 2) {
+                                        if (GameClient.getEquippedItems().getEquipslots()[2][1] != null) {
+                                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 1);
+                                        }
+                                    } else if (i == 1) {
+                                        if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
+                                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
 
-                    if (y > 0.53 && y < 0.63) {
+                    // Waffenslot
+                    if (x > x02 && x < x02 + 0.08f) {
                         byte weaponslot = -1;
-                        if (x > 0.245125f && x < 0.325125f) {
+                        if (y > ya && y < ya + 0.1f) {
                             weaponslot = 0;
-                        } else if (x > 0.345125f && x < 0.425125f) {
+                        } else if (y > ya + 0.1f && y < ya + 0.2f) {
                             weaponslot = 1;
-                        } else if (x > 0.445125f && x < 0.525125f) {
+                        } else if (y > ya + 0.2f && y < ya + 0.3f) {
                             weaponslot = 2;
                         }
+                        System.out.println("Weaponslot " + weaponslot);
                         if (weaponslot != -1) {
-                            // Waffenslot
                             if (selecteditemslot != -1) {
                                 Item selecteditem = GameClient.getItems()[selecteditemslot];
                                 if ((int) selecteditem.getItemClass() == 1) {
@@ -395,7 +427,30 @@ public class Inventory implements Control {
                             }
                         }
                     }
-                    
+
+                    // Werkzeugslot
+                    if (x > x02 && x < x02 + 0.08f) {
+                        byte toolslot = -1;
+                        if (y > ya + 0.3f && y < ya + 0.4f) {
+                            toolslot = 6;
+                        } else if (y > ya + 0.4f && y < ya + 0.5f) {
+                            toolslot = 7;
+                        }
+                        if (toolslot != -1) {
+                            if (selecteditemslot != -1) {
+                                Item selecteditem = GameClient.getItems()[selecteditemslot];
+                                if ((int) selecteditem.getItemClass() == toolslot) {
+                                    CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // Slotnummer, zum Auseinanderhalten von den Slots
+                                    selecteditemslot = -1;
+                                }
+                            } else {
+                                if (GameClient.getEquippedItems().getEquipslots()[toolslot][0] != null) {
+                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(toolslot, (byte) 0);
+                                }
+                            }
+                        }
+                    }
+
                     //Müll-Slot
                     if (x > 0.815125f && x < 0.895125f) {
                         if (y > 0.53 && y < 0.63) {
