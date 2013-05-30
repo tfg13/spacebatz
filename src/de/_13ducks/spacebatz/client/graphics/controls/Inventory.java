@@ -151,9 +151,9 @@ public class Inventory implements Control {
 
         // Items im Inventory zeichnen
         // Anzahl der Materialien:
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * camera.getTilesX(), 0.64f * camera.getTilesY());
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * camera.getTilesX(), 0.59f * camera.getTilesY());
-        textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * camera.getTilesX(), 0.54f * camera.getTilesY());
+        textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.2f * camera.getTilesX(), 0.64f * camera.getTilesY());
+        textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.2f * camera.getTilesX(), 0.59f * camera.getTilesY());
+        textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.2f * camera.getTilesX(), 0.54f * camera.getTilesY());
         glColor4f(1f, 1f, 1f, 1f);
 
         itemTiles.bind();
@@ -200,39 +200,61 @@ public class Inventory implements Control {
         // angelegte Items in ihre Slots im Inventar zeichnen
         itemTiles.bind();
 
-        // Hut:
-        Item itemx = GameClient.getEquippedItems().getEquipslots()[2][0];
-        if (itemx != null) {
-            // Item zeichnen;
-            float x = 0.11f * camera.getTilesX();
-            float y = 0.53f * camera.getTilesY();
+        // Armor:
+        for (int i = 0; i <= 1; i++) {
+            Item itemx = GameClient.getEquippedItems().getEquipslots()[2][i];
+            if (itemx != null) {
+                // Item zeichnen;
 
-            float width = 0.1f / 16 * 9 * camera.getTilesX();
-            float height = 0.1f * camera.getTilesY();
+                float width = 0.1f / 16 * 9 * camera.getTilesX();
+                float height = 0.1f * camera.getTilesY();
 
-            float v = 0.0625f * (int) itemx.getPic();
-            float w = 0.0625f * ((int) itemx.getPic() / 16);
+                float v = 0.0625f * (int) itemx.getPic();
+                float w = 0.0625f * ((int) itemx.getPic() / 16);
 
-            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-            glTexCoord2f(v, w + 0.0625f);
-            glVertex3f(x, y, 0.0f);
-            glTexCoord2f(v + 0.0625f, w + 0.0625f);
-            glVertex3f(x + width, y, 0.0f);
-            glTexCoord2f(v + 0.0625f, w);
-            glVertex3f(x + width, y + height, 0.0f);
-            glTexCoord2f(v, w);
-            glVertex3f(x, y + height, 0.0f);
-            glEnd(); // Zeichnen des QUADs fertig } }
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.0625f);
+                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+                glTexCoord2f(v + 0.0625f, w);
+                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
+            }
+        }
+
+        for (int i = 2; i <= 4; i++) {
+            Item itemx = GameClient.getEquippedItems().getEquipslots()[i + 1][0];
+            if (itemx != null) {
+                // Item zeichnen;
+
+                float width = 0.1f / 16 * 9 * camera.getTilesX();
+                float height = 0.1f * camera.getTilesY();
+
+                float v = 0.0625f * (int) itemx.getPic();
+                float w = 0.0625f * ((int) itemx.getPic() / 16);
+
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.0625f);
+                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+                glTexCoord2f(v + 0.0625f, w);
+                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
+            }
         }
 
 
         // Waffen:
-        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+        for (int j = 0; j <= 2; j++) {
             Item item1 = GameClient.getEquippedItems().getEquipslots()[1][j];
             if (item1 != null) {
                 // Item zeichnen;
-                float x = (0.26f + 0.1f * j) * camera.getTilesX();
-                float y = 0.53f * camera.getTilesY();
 
                 float width = 0.1f / 16 * 9 * camera.getTilesX();
                 float height = 0.1f * camera.getTilesY();
@@ -242,16 +264,40 @@ public class Inventory implements Control {
 
                 glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
                 glTexCoord2f(v, w + 0.0625f);
-                glVertex3f(x, y, 0.0f);
+                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
                 glTexCoord2f(v + 0.0625f, w + 0.0625f);
-                glVertex3f(x + width, y, 0.0f);
+                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
                 glTexCoord2f(v + 0.0625f, w);
-                glVertex3f(x + width, y + height, 0.0f);
+                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
                 glTexCoord2f(v, w);
-                glVertex3f(x, y + height, 0.0f);
+                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
                 glEnd(); // Zeichnen des QUADs fertig } }
             }
+        }
 
+        // Werkzeug
+        for (int j = 3; j <= 4; j++) {
+            Item item1 = GameClient.getEquippedItems().getEquipslots()[j + 3][0];
+            if (item1 != null) {
+                // Item zeichnen;
+
+                float width = 0.1f / 16 * 9 * camera.getTilesX();
+                float height = 0.1f * camera.getTilesY();
+
+                float v = 0.0625f * (int) item1.getPic();
+                float w = 0.0625f * ((int) item1.getPic() / 16);
+
+                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+                glTexCoord2f(v, w + 0.0625f);
+                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
+                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
+                glTexCoord2f(v + 0.0625f, w);
+                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
+                glTexCoord2f(v, w);
+                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
+                glEnd(); // Zeichnen des QUADs fertig } }
+            }
         }
 
 
@@ -315,25 +361,41 @@ public class Inventory implements Control {
             }
         }
 
+        float x02b = 0.655125f;
+        float x03b = 0.335125f;
+        float yab = 0.48f;
+
         Item item = null;
         if (slothovered != -1 && slothovered != selecteditemslot) {
             if (GameClient.getItems()[slothovered] != null) {
                 item = GameClient.getItems()[slothovered];
             }
             // Einer der Ausrüstungsslots?
-        } else if (x > 0.095125f && x < 0.175125f) {
-            if (y > 0.53 && y < 0.63) {
-                // Hutslot
+        } else if (x > x03b && x < x03b + 0.08f) {
+            // Armor
+            if (y > yab && y < yab + 0.1f) {
                 item = GameClient.getEquippedItems().getEquipslots()[2][0];
+            } else if (y > yab + 0.1f && y < yab + 0.2f) {
+                item = GameClient.getEquippedItems().getEquipslots()[2][1];
+            } else if (y > yab + 0.2f && y < yab + 0.3f) {
+                item = GameClient.getEquippedItems().getEquipslots()[3][0];
+            } else if (y > yab + 0.3f && y < yab + 0.4f) {
+                item = GameClient.getEquippedItems().getEquipslots()[4][0];
+            } else if (y > yab + 0.4f && y < yab + 0.5f) {
+                item = GameClient.getEquippedItems().getEquipslots()[5][0];
             }
-        } else if (y > 0.53 && y < 0.63) {
-            // ein Waffenslot?
-            if (x > 0.245125f && x < 0.325125f) {
+        } else if (x > x02b && x < x02b + 0.08f) {
+            // ein Waffen- / Werkzeugslot
+            if (y > yab && y < yab + 0.1f) {
                 item = GameClient.getEquippedItems().getEquipslots()[1][0];
-            } else if (x > 0.345125f && x < 0.425125f) {
+            } else if (y > yab + 0.1f && y < yab + 0.2f) {
                 item = GameClient.getEquippedItems().getEquipslots()[1][1];
-            } else if (x > 0.445125f && x < 0.525125f) {
+            } else if (y > yab + 0.2f && y < yab + 0.3f) {
                 item = GameClient.getEquippedItems().getEquipslots()[1][2];
+            } else if (y > yab + 0.3f && y < yab + 0.4f) {
+                item = GameClient.getEquippedItems().getEquipslots()[6][0];
+            } else if (y > yab + 0.4f && y < yab + 0.5f) {
+                item = GameClient.getEquippedItems().getEquipslots()[7][0];
             }
         }
 
@@ -366,7 +428,6 @@ public class Inventory implements Control {
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
 
-                    float x01 = 0.815125f;
                     float x02 = 0.655125f;
                     float x03 = 0.335125f;
                     float ya = 0.48f;
@@ -378,7 +439,7 @@ public class Inventory implements Control {
                                 if (selecteditemslot != -1) {
                                     Item selecteditem = GameClient.getItems()[selecteditemslot];
                                     if (i != 1 && (int) selecteditem.getItemClass() == i) {
-                                        CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (i == 1) ? (byte) 1 : (byte) 0);
+                                        CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (i == 2) ? (byte) 1 : (byte) 0);
                                     } else if (i == 1 && (int) selecteditem.getItemClass() == 2) {
                                         CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0);
                                     }
@@ -412,7 +473,6 @@ public class Inventory implements Control {
                         } else if (y > ya + 0.2f && y < ya + 0.3f) {
                             weaponslot = 2;
                         }
-                        System.out.println("Weaponslot " + weaponslot);
                         if (weaponslot != -1) {
                             if (selecteditemslot != -1) {
                                 Item selecteditem = GameClient.getItems()[selecteditemslot];
@@ -515,6 +575,7 @@ public class Inventory implements Control {
             if (Keyboard.getEventKeyState()) {
                 switch (Keyboard.getEventKey()) {
                     case Keyboard.KEY_I:
+                        selecteditemslot = -1;
                         GameClient.getEngine().getGraphics().toggleInventory();
                         break;
                     case Keyboard.KEY_ESCAPE:
