@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics.renderer.impl;
 
+import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 
 /**
@@ -10,13 +11,16 @@ import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
  */
 public class OpenGL32CoreRenderer extends CoreRenderer {
 
+    private int[] shader;
+
     @Override
     public void setupShaders() {
-        System.out.println("AddMe: Setup shaders");
+        // Shader laden, compilen, linken
+        shader = ShaderLoader.load();
+
     }
 
     @Override
     public void render() {
     }
-
 }
