@@ -27,6 +27,30 @@ public class ItemTypes {
     public ItemTypes() {
         itemtypelist = new ArrayList<>();
 
+        ItemAttribute testarmor1 = new ItemAttribute("3");
+        testarmor1.setPic(15);
+        testarmor1.setItemClass(3);
+        testarmor1.setQuality(1);
+        testarmor1.setAmount(0);
+        testarmor1.bonusStats.setArmor(5);
+        itemtypelist.add(testarmor1);
+
+        ItemAttribute testarmor2 = new ItemAttribute("4");
+        testarmor2 .setPic(15);
+        testarmor2 .setItemClass(4);
+        testarmor2 .setQuality(1);
+        testarmor2 .setAmount(0);
+        testarmor2 .bonusStats.setArmor(5);
+        itemtypelist.add(testarmor2);
+
+        ItemAttribute testarmor3 = new ItemAttribute("5");
+        testarmor3.setPic(15);
+        testarmor3.setItemClass(5);
+        testarmor3.setQuality(1);
+        testarmor3.setAmount(0);
+        testarmor3.bonusStats.setArmor(5);
+        itemtypelist.add(testarmor3);
+
         ItemAttribute hat = new ItemAttribute("Hat");
         hat.setPic(1);
         hat.setItemClass(2);
@@ -58,7 +82,7 @@ public class ItemTypes {
         shotgun.setQuality(1);
         shotgun.setAmount(0);
         shotgun.getWeaponStats().setAttackOffset(1.0);
-        shotgun.setWeaponAbility(new FireMultipleBulletAbility(7, 2, 0.04, 11.0, 3, 0.45, 5, 0.1, 0.0, 8, 0.02));
+        shotgun.setWeaponAbility(new FireMultipleBulletAbility(6, 2, 0.04, 11.0, 3, 0.45, 5, 0.1, 0.0, 8, 0.02));
         itemtypelist.add(shotgun);
 
         ItemAttribute shotgun2 = new ItemAttribute("Shotgun 2");
@@ -67,7 +91,7 @@ public class ItemTypes {
         shotgun2.setQuality(1);
         shotgun2.setAmount(0);
         shotgun2.getWeaponStats().setAttackOffset(1.0);
-        shotgun2.setWeaponAbility(new FireMultipleBulletAbility(13, 3, 0.025, 16.0, 3, 0.5, 3, 0.1, 0.0, 6, 0.03));
+        shotgun2.setWeaponAbility(new FireMultipleBulletAbility(12, 2, 0.025, 16.0, 3, 0.5, 3, 0.09, 0.0, 6, 0.03));
         itemtypelist.add(shotgun2);
 
         ItemAttribute laser = new ItemAttribute("Laser");
@@ -85,7 +109,7 @@ public class ItemTypes {
         superlaser.setQuality(1);
         superlaser.setAmount(0);
         superlaser.getWeaponStats().setAttackOffset(1.2);
-        superlaser.setWeaponAbility(new FireBulletAbility(25, 10, 0.04, 20.0, 2, 0.75, 0.02, 0.0, 5, 0.01));
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 5, 0.04, 20.0, 2, 0.75, 0.02, 0.0, 5, 0.015));
         itemtypelist.add(superlaser);
 
         ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
@@ -99,7 +123,7 @@ public class ItemTypes {
 
         ItemAttribute drill = new ItemAttribute("Drill");
         drill.setPic(6);
-        drill.setItemClass(1);
+        drill.setItemClass(6);
         drill.setQuality(1);
         drill.setAmount(0);
         drill.setWeaponAbility(new HitscanAbility(50, 5, 0.02, 4.0, 0, 0));
