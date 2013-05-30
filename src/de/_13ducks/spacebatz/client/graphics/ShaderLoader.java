@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -9,8 +10,7 @@ import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Läd Shader, derzeit unbenutzt, läd einen nicht verwendeten Test-Shader.
- * Für schönere Schatteneffekte aber notwendig!
+ * Läd, compiliert und linkt alle Shader.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -22,15 +22,23 @@ public class ShaderLoader {
      * @return Links auf die Shader
      */
     public static int[] load() {
-        int[] shaders = new int[2];
-        try {
-            linkSingleFragmentShader(shaders, 0, createShader("shaders/shadow.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
-            linkShaders(shaders, 1, createShader("shaders/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (!DefaultSettings.CLIENT_GFX_OPENGL_32_CORE) {
+            int[] shaders = new int[2];
+            try {
+                linkSingleFragmentShader(shaders, 0, createShader("shaders/legacy/shadow.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
+                linkShaders(shaders, 1, createShader("shaders/legacy/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return shaders;
+        } else {
+            int[] shaders = new int[0];
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return shaders;
         }
-
-        return shaders;
     }
 
     /**
@@ -47,7 +55,7 @@ public class ShaderLoader {
         }
         ARBShaderObjects.glAttachObjectARB(shaders[index], vertexShader);
         ARBShaderObjects.glAttachObjectARB(shaders[index], fragmentShader);
-        
+
         ARBShaderObjects.glLinkProgramARB(shaders[index]);
         if (ARBShaderObjects.glGetObjectParameteriARB(shaders[index], ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
             System.err.println(getLogInfo(shaders[index]));
@@ -58,7 +66,7 @@ public class ShaderLoader {
             System.err.println(getLogInfo(shaders[index]));
         }
     }
-    
+
     /**
      * Linkt den Shader in ein Shaderprogramm
      *
@@ -166,5 +174,8 @@ public class ShaderLoader {
             }
         }
         return source.toString();
+    }
+
+    private ShaderLoader() {
     }
 }
