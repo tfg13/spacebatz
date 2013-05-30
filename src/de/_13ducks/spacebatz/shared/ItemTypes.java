@@ -28,7 +28,7 @@ public class ItemTypes {
         itemtypelist = new ArrayList<>();
 
         ItemAttribute testarmor1 = new ItemAttribute("3");
-        testarmor1.setPic(15);
+        testarmor1.setPic(9);
         testarmor1.setItemClass(3);
         testarmor1.setQuality(1);
         testarmor1.setAmount(0);
@@ -36,19 +36,19 @@ public class ItemTypes {
         itemtypelist.add(testarmor1);
 
         ItemAttribute testarmor2 = new ItemAttribute("4");
-        testarmor2 .setPic(15);
-        testarmor2 .setItemClass(4);
-        testarmor2 .setQuality(1);
-        testarmor2 .setAmount(0);
-        testarmor2 .bonusStats.setArmor(5);
+        testarmor2.setPic(8);
+        testarmor2.setItemClass(4);
+        testarmor2.setQuality(1);
+        testarmor2.setAmount(0);
+        testarmor2.bonusStats.setMovespeedMultiplicatorBonus(0.1f);
         itemtypelist.add(testarmor2);
 
         ItemAttribute testarmor3 = new ItemAttribute("5");
-        testarmor3.setPic(15);
+        testarmor3.setPic(0);
         testarmor3.setItemClass(5);
         testarmor3.setQuality(1);
         testarmor3.setAmount(0);
-        testarmor3.bonusStats.setArmor(5);
+        testarmor3.bonusStats.setArmor(1);
         itemtypelist.add(testarmor3);
 
         ItemAttribute hat = new ItemAttribute("Hat");
@@ -56,7 +56,7 @@ public class ItemTypes {
         hat.setItemClass(2);
         hat.setQuality(1);
         hat.setAmount(0);
-        hat.bonusStats.setArmor(5);
+        hat.bonusStats.setArmor(3);
         itemtypelist.add(hat);
 
         ItemAttribute betterhat = new ItemAttribute("Better Hat");
@@ -64,7 +64,7 @@ public class ItemTypes {
         betterhat.setItemClass(2);
         betterhat.setQuality(3);
         betterhat.setAmount(0);
-        betterhat.bonusStats.setArmor(10);
+        betterhat.bonusStats.setArmor(5);
         itemtypelist.add(betterhat);
 
         ItemAttribute pistol = new ItemAttribute("Pistol");
@@ -73,7 +73,7 @@ public class ItemTypes {
         pistol.setQuality(1);
         pistol.setAmount(0);
         pistol.getWeaponStats().setAttackOffset(1.0);
-        pistol.setWeaponAbility(new FireBulletAbility(7, 5, 0.067, 15.0, 1, 0.45, 0.05, 0.0, 0, 0));
+        pistol.setWeaponAbility(new FireBulletAbility(6, 4, 0.07, 15.0, 1, 0.45, 0.05, 0.0, 0, 0));
         itemtypelist.add(pistol);
 
         ItemAttribute shotgun = new ItemAttribute("Shotgun");
@@ -121,20 +121,12 @@ public class ItemTypes {
         rocketlauncher.setWeaponAbility(new FireBulletAbility(20, 0, 0.025, 20.0, 4, 0.35, 0.0, 6.0, 4, 0.01));
         itemtypelist.add(rocketlauncher);
 
-        ItemAttribute drill = new ItemAttribute("Drill");
-        drill.setPic(6);
-        drill.setItemClass(6);
-        drill.setQuality(1);
-        drill.setAmount(0);
-        drill.setWeaponAbility(new HitscanAbility(50, 5, 0.02, 4.0, 0, 0));
-        itemtypelist.add(drill);
-
         ItemAttribute saw = new ItemAttribute("Saw");
         saw.setPic(7);
         saw.setItemClass(1);
         saw.setQuality(1);
         saw.setAmount(0);
-        saw.setWeaponAbility(new HitscanAbility(15, 3, 0.08, 4.0, 10, 0.04));
+        saw.setWeaponAbility(new HitscanAbility(20, 4, 0.08, 4.0, 10, 0.04));
         itemtypelist.add(saw);
 
         ItemAttribute superrocketlauncher = new ItemAttribute("Super Rocket Launcher");
@@ -155,14 +147,21 @@ public class ItemTypes {
         superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 16.0, 1, 0.45, 0.02, 0.0, 0, 0));
         itemtypelist.add(superpistol);
 
+        ItemAttribute drill = new ItemAttribute("Drill");
+        drill.setPic(6);
+        drill.setItemClass(6);
+        drill.setQuality(1);
+        drill.setAmount(0);
+        drill.setWeaponAbility(new HitscanAbility(10, 5, 0.1, 4.0, 0, 0));
+        itemtypelist.add(drill);
+        
         ItemAttribute superdrill = new ItemAttribute("Super Drill");
         superdrill.setPic(18);
-        superdrill.setItemClass(1);
+        superdrill.setItemClass(6);
         superdrill.setQuality(3);
         superdrill.setAmount(0);
-        superdrill.setWeaponAbility(new HitscanAbility(35, 20, 0.07, 4.0, 0, 0));
+        superdrill.setWeaponAbility(new HitscanAbility(20, 10, 0.12, 4.0, 0, 0));
         itemtypelist.add(superdrill);
-
 
     }
 
