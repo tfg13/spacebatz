@@ -9,8 +9,8 @@ import de._13ducks.spacebatz.client.graphics.overlay.impl.NetGraph;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.TerminalOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
-import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
@@ -23,10 +23,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GLContext;
-import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.PixelFormat;
 
 /**

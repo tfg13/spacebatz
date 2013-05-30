@@ -11,7 +11,7 @@ import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.ShaderLoader;
+import de._13ducks.spacebatz.client.graphics.LegacyShaderLoader;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
@@ -186,7 +186,7 @@ public class LegacyRenderer extends CoreRenderer {
 
         // Shader laden
         System.out.println("INFO: GFX: Loading/compiling shaders...");
-        shader = ShaderLoader.load();
+        shader = LegacyShaderLoader.load();
     }
 
     /**

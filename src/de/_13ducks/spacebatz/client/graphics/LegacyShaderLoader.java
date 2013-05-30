@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.shared.DefaultSettings;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -14,7 +13,7 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
-public class ShaderLoader {
+public class LegacyShaderLoader {
 
     /**
      * Läd alle bekannten Shader.
@@ -22,23 +21,14 @@ public class ShaderLoader {
      * @return Links auf die Shader
      */
     public static int[] load() {
-        if (!DefaultSettings.CLIENT_GFX_OPENGL_32_CORE) {
-            int[] shaders = new int[2];
-            try {
-                linkSingleFragmentShader(shaders, 0, createShader("shaders/legacy/shadow.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
-                linkShaders(shaders, 1, createShader("shaders/legacy/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return shaders;
-        } else {
-            int[] shaders = new int[0];
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return shaders;
+        int[] shaders = new int[2];
+        try {
+            linkSingleFragmentShader(shaders, 0, createShader("shaders/legacy/shadow.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
+            linkShaders(shaders, 1, createShader("shaders/legacy/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+        return shaders;
     }
 
     /**
@@ -53,7 +43,7 @@ public class ShaderLoader {
         if (shaders[index] == 0) {
             throw new RuntimeException("Error creating shader!");
         }
-        ARBShaderObjects.glAttachObjectARB(shaders[index], vertexShader);
+        org.lwjgl.opengl.ARBShaderObjects.glAttachObjectARB(shaders[index], vertexShader);
         ARBShaderObjects.glAttachObjectARB(shaders[index], fragmentShader);
 
         ARBShaderObjects.glLinkProgramARB(shaders[index]);
@@ -176,6 +166,6 @@ public class ShaderLoader {
         return source.toString();
     }
 
-    private ShaderLoader() {
+    private LegacyShaderLoader() {
     }
 }
