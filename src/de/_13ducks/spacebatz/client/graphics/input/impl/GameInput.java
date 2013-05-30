@@ -88,7 +88,7 @@ public class GameInput extends InputMode {
     public void mouseMovement() {
         logicMouseX = (1f * Mouse.getX() / Display.getWidth() * tilesX) - panX;
         logicMouseY = (1f * Mouse.getY() / Display.getHeight() * tilesY) - panY;
-        GameClient.getEngine().getGraphics().defactoRenderer().setMouseXY(Mouse.getX(), Mouse.getY());
+        GameClient.getEngine().getGraphics().setMouseXY(Mouse.getX(), Mouse.getY());
     }
 
     private void sendAbilityRequest(byte ability) {

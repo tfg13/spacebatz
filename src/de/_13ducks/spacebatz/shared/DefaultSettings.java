@@ -86,7 +86,12 @@ public class DefaultSettings {
      * Die Einstellung, ob die Grafik VertexBufferObjects zum Rendern verwenden darf.
      * Diese sind normalerweise deutlich schneller, funktionieren aber eventuell auf einigen alten Karten nicht.
      */
-    public static boolean CLIENT_GFX_USE_VBOS = true;
+    public static boolean CLIENT_GFX_USE_VBOS = false;
+    /**
+     * Die Einstellung, ob der neue, bessere, schnellere OpenGL 3.2 Core Renderer verwendet werden soll.
+     * Nicht mit Systemen kompatibel, die kein OpenGL 3.2 beherrschen.
+     */
+    public static boolean CLIENT_GFX_OPENGL_32_CORE = true;
     /**
      * Sound (zum schnelleren Testen) komplett abschalten.
      * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.

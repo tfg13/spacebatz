@@ -9,8 +9,10 @@ import de._13ducks.spacebatz.client.graphics.overlay.impl.NetGraph;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.QuestControl;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.TerminalOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
 import java.lang.reflect.Field;
@@ -18,10 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.PixelFormat;
 
 /**
@@ -59,7 +64,7 @@ public class GraphicsEngine {
     /**
      * Das God-Control, das auch Effekte und FX zeichent.
      */
-    private LegacyRenderer godControl;
+    private LegacyRenderer legacyRenderer;
     /**
      * Der Skilltree.
      */
@@ -79,11 +84,18 @@ public class GraphicsEngine {
      */
     public void initialise() {
         try {
-            // Fenster erzeugen:
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
-            Display.create(new PixelFormat(8, 8, 8)); // Die dritte acht erzeugt/aktiviert den Stencil-Buffer mit 8 Bits pro Pixel.
+            if (!DefaultSettings.CLIENT_GFX_OPENGL_32_CORE) {
+                // Legacy:
+                Display.create(new PixelFormat(8, 8, 8)); // Die dritte acht erzeugt/aktiviert den Stencil-Buffer mit 8 Bits pro Pixel.
+            } else {
+                // Neu:
+                PixelFormat pixelFormat = new PixelFormat();
+                ContextAttribs contextAttributes = new ContextAttribs(3, 2); // OpenGL 3.2
+                contextAttributes.withProfileCore(true); // Alte Befehle verbieten
+                Display.create(pixelFormat, contextAttributes);
+            }
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
-
             // Hat die Platform alles was wir brauchen?
             // Erst nach dem Fenster-erzeugen, manche Tests brauchen einen aktiven OpenGL-Context
             checkCapabilities();
@@ -91,11 +103,13 @@ public class GraphicsEngine {
             // OpenGL-Init:
             // Orthogonalperspektive mit korrekter Anzahl an Tiles initialisieren.
             // GLU.gluOrtho2D(0, CLIENT_GFX_RES_X / (CLIENT_GFX_TILESIZE), 0, CLIENT_GFX_RES_Y / (CLIENT_GFX_TILESIZE));
-            glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
-            //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
-            glEnable(GL_BLEND); // Transparenz in Texturen erlauben
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
-            glClearStencil(0); // Wert von Stencil-Clear auf 0 setzen.
+            if (!DefaultSettings.CLIENT_GFX_OPENGL_32_CORE) {
+                glEnable(GL_TEXTURE_2D); // Aktiviert Textur-Mapping
+                //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // Zeichenmodus auf überschreiben stellen
+                glEnable(GL_BLEND); // Transparenz in Texturen erlauben
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
+                glClearStencil(0); // Wert von Stencil-Clear auf 0 setzen.
+            }
 
             // Tastatureingaben einstallen:
             Keyboard.enableRepeatEvents(true);
@@ -103,23 +117,29 @@ public class GraphicsEngine {
             // Komponenten erzeugen:
             input = new Input();
 
-            godControl = new LegacyRenderer();
-            skilltree = new SkillTreeOverlay();
-            skilltree.init(new int[]{Keyboard.KEY_T}, true);
-            overlays.add(new HudOverlay());
-            overlays.add(new QuestControl());
-            overlays.add(skilltree);
-            Inventory inventory = new Inventory();
-            inventory.init(new int[]{Keyboard.KEY_I}, true);
-            overlays.add(inventory);
-            overlays.add(new NetGraph());
-            TerminalOverlay terminal = new TerminalOverlay();
-            terminal.init(new int[]{Keyboard.KEY_F1}, true);
-            overlays.add(terminal);
 
-            TextWriter.initialize();
 
-            coreRenderer = godControl;
+            if (!DefaultSettings.CLIENT_GFX_OPENGL_32_CORE) {
+                legacyRenderer = new LegacyRenderer();
+                skilltree = new SkillTreeOverlay();
+                skilltree.init(new int[]{Keyboard.KEY_T}, true);
+                overlays.add(new HudOverlay());
+                overlays.add(new QuestControl());
+                overlays.add(skilltree);
+                Inventory inventory = new Inventory();
+                inventory.init(new int[]{Keyboard.KEY_I}, true);
+                overlays.add(inventory);
+                overlays.add(new NetGraph());
+                TerminalOverlay terminal = new TerminalOverlay();
+                terminal.init(new int[]{Keyboard.KEY_F1}, true);
+                overlays.add(terminal);
+                TextWriter.initialize();
+                coreRenderer = legacyRenderer;
+            } else {
+                coreRenderer = new OpenGL32CoreRenderer();
+            }
+
+            
             coreRenderer.setupShaders();
 
 
@@ -205,7 +225,7 @@ public class GraphicsEngine {
     }
 
     public LegacyRenderer defactoRenderer() {
-        return godControl;
+        return legacyRenderer;
     }
 
     /**
@@ -309,5 +329,17 @@ public class GraphicsEngine {
      */
     public Input getInput() {
         return input;
+    }
+    
+    /**
+     * Setzt die Mausposition, notwendig, weil sich die Ansicht der Maus anpasst.
+     *
+     * @param x X-Koordinate
+     * @param y Y-Koordinate
+     */
+    public void setMouseXY(double x, double y) {
+        if (legacyRenderer != null) {
+            legacyRenderer.setMouseXY(x, y);
+        }
     }
 }
