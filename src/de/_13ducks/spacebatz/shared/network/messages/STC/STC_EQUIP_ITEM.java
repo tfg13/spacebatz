@@ -38,6 +38,7 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
             
         }
         GameClient.players.get(clientID4).getPlayer().setPrediction_speed(newspeed);
+        GameClient.players.get(clientID4).getPlayer().setMovement_speed(newspeed);
     }
 
     /**

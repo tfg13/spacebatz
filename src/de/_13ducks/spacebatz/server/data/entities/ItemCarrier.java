@@ -210,25 +210,25 @@ public class ItemCarrier extends Char {
      * @param slottype Slotart (Waffe, Hut, ...)
      * @param selectedslot Nr. des Slots dieser Art
      */
-    public Item dequipItemToGround(int slottype, byte selectedslot) {
-        Item item = null;
-        if (getEquipslots()[slottype] != null) {
-            if (getEquipslots()[slottype][selectedslot] != null) {
-                item = getEquipslots()[slottype][selectedslot];
-                getEquipslots()[slottype][selectedslot] = null;
-                removeProperties(item.getBonusProperties());
-//
-//                if (getActiveWeapon() != null) {
-//                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-//                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
-//                } else {
-//                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
-//                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
-//                }
-            }
-        }
-        return item;
-    }
+//    public Item dequipItemToGround(int slottype, byte selectedslot) {
+//        Item item = null;
+//        if (getEquipslots()[slottype] != null) {
+//            if (getEquipslots()[slottype][selectedslot] != null) {
+//                item = getEquipslots()[slottype][selectedslot];
+//                getEquipslots()[slottype][selectedslot] = null;
+//                removeProperties(item.getBonusProperties());
+////
+////                if (getActiveWeapon() != null) {
+////                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+////                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+////                } else {
+////                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+////                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+////                }
+//            }
+//        }
+//        return item;
+//    }
 
     /**
      * Wählt gerade aktive Waffe aus

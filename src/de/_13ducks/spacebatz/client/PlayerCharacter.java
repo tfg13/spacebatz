@@ -53,6 +53,10 @@ public class PlayerCharacter extends Char {
      */
     private double turretDir;
     /**
+     * Bewegungsgeschwindigkeit
+     */
+    private double movement_speed = CompileTimeParameters.BASE_MOVESPEED;
+    /**
      * Prediction an (true) oder aus (false).
      */
     private boolean predictMovements = false;
@@ -435,5 +439,19 @@ public class PlayerCharacter extends Char {
             throw new IllegalStateException("Cannot return prediction-delta, prediction is disabled!");
         }
         return new Vector(super.getX() - predictedX, super.getY() - predictedY);
+    }
+
+    /**
+     * @return the movement_speed
+     */
+    public double getMovement_speed() {
+        return movement_speed;
+    }
+
+    /**
+     * @param movement_speed the movement_speed to set
+     */
+    public void setMovement_speed(double movement_speed) {
+        this.movement_speed = movement_speed;
     }
 }

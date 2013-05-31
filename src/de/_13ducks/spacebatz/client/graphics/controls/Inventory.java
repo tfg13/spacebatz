@@ -389,8 +389,8 @@ public class Inventory implements Control {
         textWriter.renderText("HP:    " + (GameClient.logicPlayer.isDead() ? 0 : GameClient.player.getHealthpoints()) + " / " + GameClient.player.getHealthpointsmax(), x03 + 0.09f * camera.getTilesX(), ya + 0.45f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
         textWriter.renderText("HP Regeneration:    " + GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
         textWriter.renderText("Armor:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Damage Reduktion:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Movement Speed:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Damage Reduction:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Movement Speed:    " + (float) GameClient.player.getMovement_speed(), x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
         
         
         // Mousehover über Item zeichnen:
