@@ -305,7 +305,7 @@ public class Inventory implements Control {
             Item item2 = GameClient.getItems()[selecteditemslot];
             if (item2 != null) {
                 glDisable(GL_TEXTURE_2D);
-                glColor3f(0.2f, 0.0f, 1.0f);
+                glColor3f(0.0f, 0.3f, 1.0f);
                 glLineWidth(4.0f);
 
                 float width = 0.08f * camera.getTilesX();
@@ -379,7 +379,21 @@ public class Inventory implements Control {
             }
         }
 
-        // Mousehover über Item zeichnen
+
+        // Spieler-Stats rendern:
+        glDisable(GL_TEXTURE_2D);
+        glColor4f(0.05f, 0.05f, 0.05f, 0.9f);
+        glRectf(x03 + 0.08f * camera.getTilesX(), ya, x02, ya + 0.5f * camera.getTilesY());
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+        textWriter.renderText("HP:    " + (GameClient.logicPlayer.isDead() ? 0 : GameClient.player.getHealthpoints()) + " / " + GameClient.player.getHealthpointsmax(), x03 + 0.09f * camera.getTilesX(), ya + 0.45f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("HP Regeneration:    " + GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Armor:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Damage Reduktion:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Movement Speed:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        
+        
+        // Mousehover über Item zeichnen:
 
         float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
         float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
@@ -465,6 +479,7 @@ public class Inventory implements Control {
             }
         }
         glColor4f(1f, 1f, 1f, 1f);
+
     }
 
     @Override
