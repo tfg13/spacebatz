@@ -32,7 +32,8 @@ public class ItemTypes {
         testarmor1.setItemClass(3);
         testarmor1.setQuality(1);
         testarmor1.setAmount(0);
-        testarmor1.bonusStats.setArmor(5);
+        testarmor1.bonusStats.setArmor(4);
+        testarmor1.bonusStats.setMovespeedMultiplicatorBonus(-0.15f);
         itemtypelist.add(testarmor1);
 
         ItemAttribute testarmor2 = new ItemAttribute("4");
@@ -40,7 +41,7 @@ public class ItemTypes {
         testarmor2.setItemClass(4);
         testarmor2.setQuality(1);
         testarmor2.setAmount(0);
-        testarmor2.bonusStats.setMovespeedMultiplicatorBonus(0.1f);
+        testarmor2.bonusStats.setMovespeedMultiplicatorBonus(0.15f);
         itemtypelist.add(testarmor2);
 
         ItemAttribute testarmor3 = new ItemAttribute("5");
@@ -56,7 +57,7 @@ public class ItemTypes {
         hat.setItemClass(2);
         hat.setQuality(1);
         hat.setAmount(0);
-        hat.bonusStats.setArmor(3);
+        hat.bonusStats.setArmor(2);
         itemtypelist.add(hat);
 
         ItemAttribute betterhat = new ItemAttribute("Better Hat");
@@ -64,7 +65,7 @@ public class ItemTypes {
         betterhat.setItemClass(2);
         betterhat.setQuality(3);
         betterhat.setAmount(0);
-        betterhat.bonusStats.setArmor(5);
+        betterhat.bonusStats.setArmor(3);
         itemtypelist.add(betterhat);
 
         ItemAttribute pistol = new ItemAttribute("Pistol");
@@ -100,7 +101,7 @@ public class ItemTypes {
         laser.setQuality(1);
         laser.setAmount(0);
         laser.getWeaponStats().setAttackOffset(1.0);
-        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.16, 15.0, 3, 0.45, 0.07, 0.0, 32, 0.1));
+        laser.setWeaponAbility(new FireBulletAbility(5, 3, 0.16, 15.0, 3, 0.5, 0.06, 0.0, 32, 0.1));
         itemtypelist.add(laser);
 
         ItemAttribute superlaser = new ItemAttribute("Super Laser");
@@ -135,7 +136,7 @@ public class ItemTypes {
         superrocketlauncher.setQuality(3);
         superrocketlauncher.setAmount(0);
         superrocketlauncher.getWeaponStats().setAttackOffset(1.0);
-        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 20.0, 4, 0.45, 0.0, 4.0, 12, 0.025));
+        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 20.0, 16, 0.45, 0.0, 4.0, 12, 0.025));
         itemtypelist.add(superrocketlauncher);
 
         ItemAttribute superpistol = new ItemAttribute("Super Pistol");

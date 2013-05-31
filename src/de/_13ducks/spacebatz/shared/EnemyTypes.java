@@ -44,7 +44,7 @@ public class EnemyTypes implements java.io.Serializable {
         smallShooter.picture = (0);
         smallShooter.speed = (0.1f);
         smallShooter.sightrange = (5);
-        smallShooter.enemylevel = (2);
+        smallShooter.enemylevel = (1);
 
         EnemyTypeStats bigShooter = new EnemyTypeStats();
         enemytypelist.add(bigShooter);
@@ -65,7 +65,7 @@ public class EnemyTypes implements java.io.Serializable {
         bigShooter.picture = (24);
         bigShooter.speed = (0.1f);
         bigShooter.sightrange = (5);
-        bigShooter.enemylevel = (3);
+        bigShooter.enemylevel = (2);
 
         EnemyTypeStats spectator = new EnemyTypeStats();
         enemytypelist.add(spectator);
@@ -108,8 +108,8 @@ public class EnemyTypes implements java.io.Serializable {
         kamikaze.damage = (60);
         kamikaze.picture = (48);
         kamikaze.speed = (0.1f);
-        kamikaze.sightrange = (5);
-        kamikaze.enemylevel = (2);
+        kamikaze.sightrange = (10);
+        kamikaze.enemylevel = (1);
 
         EnemyTypeStats lurker = new EnemyTypeStats();
         enemytypelist.add(lurker);
@@ -129,7 +129,7 @@ public class EnemyTypes implements java.io.Serializable {
         lurker.damage = (40);
         lurker.picture = (56);
         lurker.speed = (0.1f);
-        lurker.sightrange = (5);
+        lurker.sightrange = (8);
         lurker.enemylevel = (2);
 
         EnemyTypeStats boss = new EnemyTypeStats();
@@ -172,7 +172,7 @@ public class EnemyTypes implements java.io.Serializable {
         kiter.picture = (12);
         kiter.speed = (0.16f);
         kiter.sightrange = (10);
-        kiter.enemylevel = (5);
+        kiter.enemylevel = (3);
 
         EnemyTypeStats summoner = new EnemyTypeStats();
         enemytypelist.add(summoner);
@@ -182,7 +182,7 @@ public class EnemyTypes implements java.io.Serializable {
         summoner.picture = (20);
         summoner.speed = (0.1f);
         summoner.sightrange = (10);
-        summoner.enemylevel = (5);
+        summoner.enemylevel = (3);
 
         EnemyTypeStats drake = new EnemyTypeStats();
         enemytypelist.add(drake);
@@ -203,7 +203,7 @@ public class EnemyTypes implements java.io.Serializable {
         drake.picture = (28);
         drake.speed = (0.1f);
         drake.sightrange = (10);
-        drake.enemylevel = (2);
+        drake.enemylevel = (3);
 
     }
 

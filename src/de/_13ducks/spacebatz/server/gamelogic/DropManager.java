@@ -83,8 +83,8 @@ public class DropManager {
             STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
 
             // Testcode:
-            int money_amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
-            dropMaterial(0, money_amount);
+            //int money_amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
+            dropMaterial(0, 1);
 
         }
     }
