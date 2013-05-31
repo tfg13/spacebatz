@@ -24,7 +24,7 @@ public class LegacyShaderLoader {
         int[] shaders = new int[2];
         try {
             linkSingleFragmentShader(shaders, 0, createShader("shaders/legacy/shadow.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
-            linkShaders(shaders, 1, createShader("shaders/legacy/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
+            linkShaders(shaders, 1, createShader("shaders/legacy/blend.vert", ARBVertexShader.GL_VERTEX_SHADER_ARB), createShader("shaders/legacy/blend.frag", ARBFragmentShader.GL_FRAGMENT_SHADER_ARB));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
