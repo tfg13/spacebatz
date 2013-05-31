@@ -27,7 +27,7 @@ public class ItemTypes {
     public ItemTypes() {
         itemtypelist = new ArrayList<>();
 
-        ItemAttribute testarmor1 = new ItemAttribute("3");
+        ItemAttribute testarmor1 = new ItemAttribute("Shield");
         testarmor1.setPic(9);
         testarmor1.setItemClass(3);
         testarmor1.setQuality(1);
@@ -36,7 +36,7 @@ public class ItemTypes {
         testarmor1.bonusStats.setMovespeedMultiplicatorBonus(-0.15f);
         itemtypelist.add(testarmor1);
 
-        ItemAttribute testarmor2 = new ItemAttribute("4");
+        ItemAttribute testarmor2 = new ItemAttribute("Wheel");
         testarmor2.setPic(8);
         testarmor2.setItemClass(4);
         testarmor2.setQuality(1);
@@ -44,7 +44,7 @@ public class ItemTypes {
         testarmor2.bonusStats.setMovespeedMultiplicatorBonus(0.15f);
         itemtypelist.add(testarmor2);
 
-        ItemAttribute testarmor3 = new ItemAttribute("5");
+        ItemAttribute testarmor3 = new ItemAttribute("?");
         testarmor3.setPic(0);
         testarmor3.setItemClass(5);
         testarmor3.setQuality(1);
@@ -110,7 +110,7 @@ public class ItemTypes {
         superlaser.setQuality(1);
         superlaser.setAmount(0);
         superlaser.getWeaponStats().setAttackOffset(1.2);
-        superlaser.setWeaponAbility(new FireBulletAbility(25, 5, 0.04, 20.0, 2, 0.75, 0.02, 0.0, 5, 0.015));
+        superlaser.setWeaponAbility(new FireBulletAbility(25, 5, 0.04, 23.0, 2, 0.75, 0.02, 0.0, 5, 0.015));
         itemtypelist.add(superlaser);
 
         ItemAttribute rocketlauncher = new ItemAttribute("Rocket Launcher");
