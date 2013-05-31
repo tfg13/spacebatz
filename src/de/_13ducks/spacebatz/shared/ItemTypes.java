@@ -32,7 +32,7 @@ public class ItemTypes {
         testarmor1.setItemClass(3);
         testarmor1.setQuality(1);
         testarmor1.setAmount(0);
-        testarmor1.bonusStats.setArmor(4);
+        testarmor1.bonusStats.setArmor(30);
         testarmor1.bonusStats.setMovespeedMultiplicatorBonus(-0.15f);
         itemtypelist.add(testarmor1);
 
@@ -49,7 +49,7 @@ public class ItemTypes {
         testarmor3.setItemClass(5);
         testarmor3.setQuality(1);
         testarmor3.setAmount(0);
-        testarmor3.bonusStats.setArmor(1);
+        testarmor3.bonusStats.setArmor(5);
         itemtypelist.add(testarmor3);
 
         ItemAttribute hat = new ItemAttribute("Hat");
@@ -57,7 +57,7 @@ public class ItemTypes {
         hat.setItemClass(2);
         hat.setQuality(1);
         hat.setAmount(0);
-        hat.bonusStats.setArmor(2);
+        hat.bonusStats.setArmor(10);
         itemtypelist.add(hat);
 
         ItemAttribute betterhat = new ItemAttribute("Better Hat");
@@ -65,7 +65,7 @@ public class ItemTypes {
         betterhat.setItemClass(2);
         betterhat.setQuality(3);
         betterhat.setAmount(0);
-        betterhat.bonusStats.setArmor(3);
+        betterhat.bonusStats.setArmor(15);
         itemtypelist.add(betterhat);
 
         ItemAttribute pistol = new ItemAttribute("Pistol");

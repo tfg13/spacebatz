@@ -60,6 +60,14 @@ public abstract class Char extends Entity {
      * Gibt an ob der Char tot ist.
      */
     public boolean dead = false;
+    /**
+     * Die Rüstung des Chars
+     */
+    private int armorResult;
+    /**
+     * Die Schadensreduzierung der Rüstung, 1 = nimmt vollen Schaden
+     */
+    private double damageReductionFactor = 1.0;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -88,6 +96,8 @@ public abstract class Char extends Entity {
     final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
         setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
+        armorResult = (int) (properties.getArmor() * (properties.getArmorMultiplicatorBonus() + 1));
+        damageReductionFactor = 100.0 / (armorResult + 100);
     }
 
     /**
@@ -98,6 +108,8 @@ public abstract class Char extends Entity {
     final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
         setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
+        armorResult = (int) (properties.getArmor() * (properties.getArmorMultiplicatorBonus() + 1));
+        damageReductionFactor = 100.0 / (armorResult + 100);
     }
 
     /**
@@ -149,9 +161,7 @@ public abstract class Char extends Entity {
      * @param damage
      */
     public void decreaseHitpoints(int damage) {
-        double armor = getProperties().getArmor() * (1 + getProperties().getArmorMultiplicatorBonus());
-        double damred = armor / (armor + 10);
-        int newdamage = (int) Math.ceil(damage * (1 - damred));
+        int newdamage = (int) Math.ceil(damage * damageReductionFactor);
         properties.setHitpoints(properties.getHitpoints() - newdamage);
         STC_CHAR_HIT.sendCharHit(netID, newdamage);
         if (properties.getHitpoints() <= 0) {

@@ -71,7 +71,7 @@ public class ItemAttributeTypes {
             evenMoreAttackSpeed.setIsWeaponAttribute(true);
             attributelist.add(evenMoreAttackSpeed);
 
-            double r_morearmor = randomValue(0.2, 0.3, 1);
+            double r_morearmor = randomValue(0.1, 0.2, 1);
             ItemAttribute evenMoreArmor = new ItemAttribute("+" + (r_morearmor * 100) + " % More Armor");
             evenMoreArmor.setQuality(2);
             evenMoreArmor.bonusStats.setArmorMultiplicatorBonus(r_morearmor);
@@ -119,7 +119,7 @@ public class ItemAttributeTypes {
             moreReduceOverheat.setIsWeaponAttribute(true);
             attributelist.add(moreReduceOverheat);
 
-            int r_morearmor = (int) randomValue(1, 2, 0);
+            int r_morearmor = (int) randomValue(5, 10, 0);
             ItemAttribute moreArmor = new ItemAttribute("+" + r_morearmor + " Armor");
             moreArmor.setQuality(1);
             moreArmor.bonusStats.setArmor(r_morearmor);
