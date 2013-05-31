@@ -37,7 +37,7 @@ public class ItemAttributeTypes {
             mostAtackspeed.setIsWeaponAttribute(true);
             attributelist.add(mostAtackspeed);
 
-            double r_evenMoreHpReg = randomValue(0.6, 1.0, 1);
+            double r_evenMoreHpReg = randomValue(0.5, 0.7, 1);
             ItemAttribute moreHpReg = new ItemAttribute("+" + r_evenMoreHpReg + " HP Regeneration");
             moreHpReg.setQuality(3);
             moreHpReg.bonusStats.setHitpointRegeneration(r_evenMoreHpReg);
@@ -131,7 +131,7 @@ public class ItemAttributeTypes {
             moreHP.bonusStats.setMaxHitpoints(r_morehp);
             attributelist.add(moreHP);
 
-            double r_moreHpReg = randomValue(0.2, 0.5, 1);
+            double r_moreHpReg = randomValue(0.2, 0.4, 1);
             ItemAttribute moreHpReg = new ItemAttribute("+" + r_moreHpReg + " HP Regeneration");
             moreHpReg.setQuality(1);
             moreHpReg.bonusStats.setHitpointRegeneration(r_moreHpReg);

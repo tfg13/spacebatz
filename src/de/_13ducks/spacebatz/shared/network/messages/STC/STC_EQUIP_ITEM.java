@@ -16,7 +16,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
 
     public STC_EQUIP_ITEM() {
-        super(13);
+        super(17);
     }
 
     @Override
@@ -26,6 +26,7 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
         byte selslot = data[4];
         int clientID4 = Bits.getInt(data, 5); // clientID des Spielers
         float newspeed = Bits.getFloat(data, 9);
+        int newarmor = Bits.getInt(data, 13);
 
         if (clientID4 == GameClient.getClientID()) {
             // Item ind Equipslot tun,  aus Inventar entfernen
@@ -35,8 +36,9 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
             
             GameClient.player.setHealthpointsmax(GameClient.player.getHealthpointsmax() + item.getBonusProperties().getMaxHitpoints());
             GameClient.player.setHitpointRegeneration(GameClient.player.getHitpointRegeneration() + item.getBonusProperties().getHitpointRegeneration());
-            
+            GameClient.player.setArmor(newarmor);
         }
+        
         GameClient.players.get(clientID4).getPlayer().setPrediction_speed(newspeed);
         GameClient.players.get(clientID4).getPlayer().setMovement_speed(newspeed);
     }
@@ -45,13 +47,14 @@ public class STC_EQUIP_ITEM extends FixedSizeSTCCommand {
      * Item wird von Client angelegt
      * @param newspeed (evtl geänderte) Bewegungsgeschwindigkeit muss mitgesendet werden
      */
-    public static void sendItemEquip(int inventoryslot, byte selslot, int clientID, float newspeed) {
+    public static void sendItemEquip(int inventoryslot, byte selslot, int clientID, float newspeed, int newarmor) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[13];
+            byte[] b = new byte[17];
             Bits.putInt(b, 0, inventoryslot);
             b[4] = selslot;
             Bits.putInt(b, 5, clientID);
             Bits.putFloat(b, 9, newspeed);
+            Bits.putInt(b, 13, newarmor);
             //Server.serverNetwork.sendTcpData(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, b, c);
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, b), c);
         }

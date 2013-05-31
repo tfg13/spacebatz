@@ -387,9 +387,9 @@ public class Inventory implements Control {
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
         textWriter.renderText("HP:    " + (GameClient.logicPlayer.isDead() ? 0 : GameClient.player.getHealthpoints()) + " / " + GameClient.player.getHealthpointsmax(), x03 + 0.09f * camera.getTilesX(), ya + 0.45f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("HP Regeneration:    " + GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Armor:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Damage Reduction:    ?", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("HP Regeneration:    " + (float) GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Armor:    " + GameClient.player.getArmor(), x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Damage Reduction:    " + (float) (100 - 10000.0 / (GameClient.player.getArmor() + 100)) + "%", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
         textWriter.renderText("Movement Speed:    " + (float) GameClient.player.getMovement_speed(), x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
         
         
@@ -494,6 +494,7 @@ public class Inventory implements Control {
                     float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
                     //System.out.println("x " + x + ",y " + y);
 
+                    float x01 = 0.815125f;
                     float x02 = 0.655125f;
                     float x03 = 0.335125f;
                     float ya = 0.48f;
@@ -578,8 +579,8 @@ public class Inventory implements Control {
                     }
 
                     //Müll-Slot
-                    if (x > 0.815125f && x < 0.895125f) {
-                        if (y > 0.53 && y < 0.63) {
+                    if (x > x01 && x < x01 + 0.08f) {
+                        if (y > ya && y < ya + 0.1f) {
                             CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
                             selecteditemslot = -1;
                         }

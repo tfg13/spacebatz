@@ -97,7 +97,7 @@ public abstract class Char extends Entity {
         properties.addProperties(otherProperties);
         setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
         armorResult = (int) (properties.getArmor() * (properties.getArmorMultiplicatorBonus() + 1));
-        damageReductionFactor = 100.0 / (armorResult + 100);
+        damageReductionFactor = 100.0 / (getArmorResult() + 100);
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class Char extends Entity {
         properties.removeProperties(otherProperties);
         setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
         armorResult = (int) (properties.getArmor() * (properties.getArmorMultiplicatorBonus() + 1));
-        damageReductionFactor = 100.0 / (armorResult + 100);
+        damageReductionFactor = 100.0 / (getArmorResult() + 100);
     }
 
     /**
@@ -206,5 +206,9 @@ public abstract class Char extends Entity {
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
         Bits.putChar(b, super.byteArraySize() + offset, (isInvisible() ? '1' : '0'));
+    }
+
+    public int getArmorResult() {
+        return armorResult;
     }
 }

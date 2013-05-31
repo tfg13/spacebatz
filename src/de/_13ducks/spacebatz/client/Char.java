@@ -44,6 +44,10 @@ public class Char {
      */
     private double hpRegCarryover;
     /**
+     * Die Rüstung des Chars
+     */
+    protected int armor;
+    /**
      * Die netID.
      */
     public final int netID;
@@ -336,5 +340,19 @@ public class Char {
      */
     public void setHitpointRegeneration(double hitpointRegeneration) {
         this.hitpointRegeneration = hitpointRegeneration;
+    }
+
+    /**
+     * @return the armor
+     */
+    public int getArmor() {
+        return armor;
+    }
+
+    /**
+     * @param armor the armor to set
+     */
+    public void setArmor(int armor) {
+        this.armor = armor;
     }
 }
