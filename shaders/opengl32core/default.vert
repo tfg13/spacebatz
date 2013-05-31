@@ -12,7 +12,7 @@ out vec2 pass_TextureCoord;
 
 void main() {
 
-    gl_Position = projectionView * modelM * in_Position;
+    gl_Position = projectionViewM * modelM * in_Position;
 
     pass_TextureCoord = in_TextureCoord;
 

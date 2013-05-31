@@ -3,7 +3,7 @@
 uniform sampler2D texture;
 
 in vec4 pass_Color;
-in vec4 pass_TextureCoord;
+in vec2 pass_TextureCoord;
 
 out vec4 out_Color;
 
