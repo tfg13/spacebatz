@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.ExplosionDamageEffect;
-import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
+import de._13ducks.spacebatz.server.data.effects.StandardDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Bullet;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
@@ -78,7 +78,7 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             if (explosionradius > 0) {
                 bullet.addEffect(new ExplosionDamageEffect(damage, explosionradius));
             }
-            bullet.addEffect(new TrueDamageEffect(damage));
+            bullet.addEffect(new StandardDamageEffect(damage));
 
             Server.game.getEntityManager().addEntity(bullet.netID, bullet);
         }

@@ -144,7 +144,7 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Char wird ein bestimmte Anzahl HP abgezogen
+     * Char wird ein bestimmte Anzahl HP abgezogen, diese wird durch Rüstung des Chars verringert
      *
      * @param damage
      */
