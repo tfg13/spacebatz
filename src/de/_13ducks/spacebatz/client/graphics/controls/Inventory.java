@@ -300,6 +300,57 @@ public class Inventory implements Control {
             }
         }
 
+        // Wenn ein Item ausgewählt ist, Rahmen um passende Equipslots zeichnen
+        if (selecteditemslot != -1) {
+            Item item2 = GameClient.getItems()[selecteditemslot];
+            if (item2 != null) {
+                glDisable(GL_TEXTURE_2D);
+                glColor3f(0.2f, 0.0f, 1.0f);
+                glLineWidth(4.0f);
+
+                float width = 0.08f * camera.getTilesX();
+                float height = 0.1f * camera.getTilesY();
+
+                if (item2.getItemClass() == 1) {
+                    for (int j = 0; j <= 2; j++) {
+                        glBegin(GL_LINE_LOOP);
+                        glVertex3f(x02, ya + j * height, 0.0f);
+                        glVertex3f(x02 + width, ya + j * height, 0.0f);
+                        glVertex3f(x02 + width, ya + (j + 1) * height, 0.0f);
+                        glVertex3f(x02, ya + (j + 1) * height, 0.0f);
+                        glEnd();
+                    }
+                } else if (item2.getItemClass() == 2) {
+                    for (int j = 0; j <= 1; j++) {
+                        glBegin(GL_LINE_LOOP);
+                        glVertex3f(x03, ya + j * height, 0.0f);
+                        glVertex3f(x03 + width, ya + j * height, 0.0f);
+                        glVertex3f(x03 + width, ya + (j + 1) * height, 0.0f);
+                        glVertex3f(x03, ya + (j + 1) * height, 0.0f);
+                        glEnd();
+                    }
+                } else if (item2.getItemClass() >= 3 && item2.getItemClass() <= 5) {
+                    int j = item2.getItemClass() - 1;
+                    glBegin(GL_LINE_LOOP);
+                    glVertex3f(x03, ya + j * height, 0.0f);
+                    glVertex3f(x03 + width, ya + j * height, 0.0f);
+                    glVertex3f(x03 + width, ya + (j + 1) * height, 0.0f);
+                    glVertex3f(x03, ya + (j + 1) * height, 0.0f);
+                    glEnd();
+                } else if (item2.getItemClass() == 6 || item2.getItemClass() == 7) {
+                    int j = item2.getItemClass() - 3;
+                    glBegin(GL_LINE_LOOP);
+                    glVertex3f(x02, ya + j * height, 0.0f);
+                    glVertex3f(x02 + width, ya + j * height, 0.0f);
+                    glVertex3f(x02 + width, ya + (j + 1) * height, 0.0f);
+                    glVertex3f(x02, ya + (j + 1) * height, 0.0f);
+                    glEnd();
+                }
+            }
+        }
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glLineWidth(1.0f);
+        glEnable(GL_TEXTURE_2D);
 
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
