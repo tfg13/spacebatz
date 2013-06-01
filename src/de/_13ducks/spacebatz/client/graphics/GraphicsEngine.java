@@ -336,8 +336,12 @@ public class GraphicsEngine {
      * @param y Y-Koordinate
      */
     public void setMouseXY(double x, double y) {
-        if (legacyRenderer != null) {
-            legacyRenderer.setMouseXY(x, y);
+        coreRenderer.setMouseXY(x, y);
+    }
+
+    public void levelChanged(int chunksX, int chunksY) {
+        if (coreRenderer instanceof OpenGL32CoreRenderer) {
+            ((OpenGL32CoreRenderer) coreRenderer).setLevelSize(chunksX, chunksY);
         }
     }
 }

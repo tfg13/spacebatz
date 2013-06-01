@@ -20,6 +20,9 @@ public class STC_CHANGE_LEVEL extends STCCommand {
     @Override
     public void execute(byte[] data) {
         GameClient.currentLevel = new Level(Bits.getInt(data, 0), Bits.getInt(data, 4));
+        if (GameClient.getEngine() != null) {
+            GameClient.getEngine().getGraphics().levelChanged(Bits.getInt(data, 0), Bits.getInt(data, 4));
+        }
     }
 
     @Override
