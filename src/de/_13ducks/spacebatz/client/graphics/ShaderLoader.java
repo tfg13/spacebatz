@@ -48,6 +48,9 @@ public class ShaderLoader {
             System.err.println(getLogInfoP(shaders[index]));
         }
 
+        GL20.glBindAttribLocation(shaders[index], 0, "in_Position");
+        GL20.glBindAttribLocation(shaders[index], 1, "in_TextureCoord");
+
         GL20.glValidateProgram(shaders[index]);
         if (GL20.glGetProgrami(shaders[index], GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {
             System.err.println(getLogInfoP(shaders[index]));
