@@ -3,9 +3,11 @@ package de._13ducks.spacebatz.client.graphics.renderer.impl;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.ShaderLoader;
+import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.util.FloatBufferBuilder;
+import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
@@ -324,6 +326,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             vmBuffer.flip();
             GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW], false, vmBuffer);
         }
+        // Turret zeigt auf Maus
+        GameClient.player.setTurretDir(GeoTools.toAngle(GameInput.getLogicMouseX() - GameClient.player.getX(), GameInput.getLogicMouseY() - GameClient.player.getY()));
     }
 
     public void chunkReceived(int chunkX, int chunkY) {
@@ -339,5 +343,15 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             // Neu berechnen (nur top)
             createTopChunk(x / 8, y / 8);
         }
+    }
+
+    @Override
+    public double getPanX() {
+        return viewMatrix.m30;
+    }
+
+    @Override
+    public double getPanY() {
+        return viewMatrix.m31;
     }
 }

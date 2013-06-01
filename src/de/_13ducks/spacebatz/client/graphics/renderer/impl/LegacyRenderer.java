@@ -10,8 +10,8 @@ import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
-import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.LegacyShaderLoader;
+import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
@@ -68,9 +68,8 @@ public class LegacyRenderer extends CoreRenderer {
     private final int DAMAGENUMBER_LIFETIME = 1000;
     /**
      * Scrollen auf der Map, in Feldern.
-     * TODO: Change public static to private, after Overlays switched to absolute rendering
      */
-    public static float panX, panY;
+    private float panX, panY;
     /**
      * Anzahl Tiles auf dem Bildschrim, in Feldern.
      * TODO: Change public static to private, after Overlays switched to absolute rendering
@@ -923,11 +922,22 @@ public class LegacyRenderer extends CoreRenderer {
      * @param x X-Koordinate
      * @param y Y-Koordinate
      */
+    @Override
     public void setMouseXY(double x, double y) {
         mouseX = x;
         mouseY = y;
         // Maus updaten:
         logicMouseX = (1f * x / Display.getWidth() * tilesX) - panX;
         logicMouseY = (1f * y / Display.getHeight() * tilesY) - panY;
+    }
+
+    @Override
+    public double getPanX() {
+        return panX;
+    }
+
+    @Override
+    public double getPanY() {
+        return panY;
     }
 }

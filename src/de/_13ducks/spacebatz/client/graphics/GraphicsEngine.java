@@ -137,7 +137,7 @@ public class GraphicsEngine {
                 coreRenderer = new OpenGL32CoreRenderer();
             }
 
-            
+
             coreRenderer.setupShaders();
 
 
@@ -331,7 +331,7 @@ public class GraphicsEngine {
     public Input getInput() {
         return input;
     }
-    
+
     /**
      * Setzt die Mausposition, notwendig, weil sich die Ansicht der Maus anpasst.
      *
@@ -358,5 +358,13 @@ public class GraphicsEngine {
         if (coreRenderer instanceof OpenGL32CoreRenderer) {
             ((OpenGL32CoreRenderer) coreRenderer).minorTopChange(x, y);
         }
+    }
+
+    public double getPanX() {
+        return coreRenderer.getPanX();
+    }
+
+    public double getPanY() {
+        return coreRenderer.getPanY();
     }
 }

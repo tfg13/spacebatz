@@ -2,10 +2,6 @@ package de._13ducks.spacebatz.client.graphics.input.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.InputMode;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.panX;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.panY;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.tilesX;
-import static de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer.tilesY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
@@ -86,8 +82,8 @@ public class GameInput extends InputMode {
 
     @Override
     public void mouseMovement() {
-        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * tilesX) - panX;
-        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * tilesY) - panY;
+        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * (Display.getWidth() / Display.getHeight() * 20)) - GameClient.getEngine().getGraphics().getPanX();
+        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * 20) - GameClient.getEngine().getGraphics().getPanY();
         GameClient.getEngine().getGraphics().setMouseXY(Mouse.getX(), Mouse.getY());
     }
 
