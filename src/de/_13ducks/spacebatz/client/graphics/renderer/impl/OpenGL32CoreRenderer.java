@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
+import de._13ducks.spacebatz.util.FloatBufferBuilder;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
@@ -48,7 +49,12 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      * Speichert die zu den Chunks gehörenden VAOs.
      * Arrays: X Y {vao, vbo}
      */
-    private int[][][] chunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][2];
+    private int[][][] groundChunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][2];
+    /**
+     * Speichert die zu den Chunks gehörenden VAOs.
+     * Arrays: X Y {vao, vbo, numberoftriangles}
+     */
+    private int[][][] topChunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][3];
 
     @Override
     public void setupShaders() {
@@ -87,33 +93,52 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     @Override
     public void render() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-        RenderUtils.getTextureByName("ground.png").bind();
 
         int playerX = (int) (GameClient.player.getX()) / 8;
         int playerY = (int) (GameClient.player.getY()) / 8;
+
+        // Ground
+        RenderUtils.getTextureByName("ground.png").bind();
         for (int x = playerX - 4; x <= playerX + 4; x++) {
-            if (x < 0 || x >= chunkVAOs.length) {
+            if (x < 0 || x >= groundChunkVAOs.length) {
                 continue;
             }
             for (int y = playerY - 2; y <= playerY + 2; y++) {
-                if (y < 0 || y >= chunkVAOs[0].length) {
+                if (y < 0 || y >= groundChunkVAOs[0].length) {
                     continue;
                 }
-                if (chunkVAOs[x][y][0] == 0) {
-                    createChunk(x, y);
+                if (groundChunkVAOs[x][y][0] == 0) {
+                    createGroundChunk(x, y);
                 }
-                renderChunk(chunkVAOs[x][y][0]);
+                renderChunk(groundChunkVAOs[x][y][0], 6 * 8 * 8);
+            }
+        }
+
+        // Top
+        RenderUtils.getTextureByName("top.png").bind();
+        for (int x = playerX - 4; x <= playerX + 4; x++) {
+            if (x < 0 || x >= topChunkVAOs.length) {
+                continue;
+            }
+            for (int y = playerY - 2; y <= playerY + 2; y++) {
+                if (y < 0 || y >= topChunkVAOs[0].length) {
+                    continue;
+                }
+                if (topChunkVAOs[x][y][0] == 0) {
+                    createTopChunk(x, y);
+                }
+                renderChunk(topChunkVAOs[x][y][0], topChunkVAOs[x][y][2]);
             }
         }
     }
 
-    private void renderChunk(int chunkVAOAdr) {
+    private void renderChunk(int chunkVAOAdr, int numberOfTriangles) {
         // Render
         GL30.glBindVertexArray(chunkVAOAdr);
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         // Zeichnen
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6 * 8 * 8);
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, numberOfTriangles);
         // Aufräumen
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
@@ -127,17 +152,10 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      * @param chunkX X-Koordinate
      * @param chunkY Y-Koordinate
      */
-    private void createChunk(int chunkX, int chunkY) {
-        System.out.println("(Re-)creating chunk for " + chunkX + " " + chunkY);
-        if (chunkVAOs[chunkX][chunkY][0] != 0) {
-            // VAO und enthaltenenen VBO löschen
-            GL30.glBindVertexArray(chunkVAOs[chunkX][chunkY][0]);
-            GL20.glDisableVertexAttribArray(0);
-            GL20.glDisableVertexAttribArray(1);
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-            GL15.glDeleteBuffers(chunkVAOs[chunkX][chunkY][1]);
-            GL30.glBindVertexArray(0);
-            GL30.glDeleteVertexArrays(chunkVAOs[chunkX][chunkY][0]);
+    private void createGroundChunk(int chunkX, int chunkY) {
+        System.out.println("(Re-)creating ground chunk for " + chunkX + " " + chunkY);
+        if (groundChunkVAOs[chunkX][chunkY][0] != 0) {
+            removeChunkVAO(groundChunkVAOs, chunkX, chunkY);
         }
         // Daten für neuen VBO:
         FloatBuffer vtBuffer = BufferUtils.createFloatBuffer((18 + 12) * 8 * 8);
@@ -187,8 +205,87 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL30.glBindVertexArray(0);
 
         // Speichern:
-        chunkVAOs[chunkX][chunkY][0] = vao;
-        chunkVAOs[chunkX][chunkY][1] = vbo;
+        groundChunkVAOs[chunkX][chunkY][0] = vao;
+        groundChunkVAOs[chunkX][chunkY][1] = vbo;
+    }
+
+    /**
+     * Baut einen VAO/VBO für einen Chunk.
+     * Falls es schon einen gibt, wird der alte gelöscht und ein neuer gebaut.
+     *
+     * @param chunkX X-Koordinate
+     * @param chunkY Y-Koordinate
+     */
+    private void createTopChunk(int chunkX, int chunkY) {
+        System.out.println("(Re-)creating top chunk for " + chunkX + " " + chunkY);
+        if (topChunkVAOs[chunkX][chunkY][0] != 0) {
+            removeChunkVAO(topChunkVAOs, chunkX, chunkY);
+        }
+        // Daten für neuen VBO:
+        FloatBufferBuilder vtData = new FloatBufferBuilder((18 + 12) * 8 * 8);
+        // Vertex-Koordinaten
+        for (int x = 0; x < 8; x++) {
+            int rx = chunkX * 8 + x;
+            for (int y = 0; y < 8; y++) {
+                int ry = chunkY * 8 + y;
+                if (realTexAt(GameClient.currentLevel.top, GameClient.currentLevel.top_randomize, rx, ry) != 0) { // Luft, nichts malen
+                    vtData.put(rx).put(ry).put(0);
+                    vtData.put(rx).put(ry + 1).put(0);
+                    vtData.put(rx + 1).put(ry).put(0);
+                    vtData.put(rx).put(ry + 1).put(0);
+                    vtData.put(rx + 1).put(ry).put(0);
+                    vtData.put(rx + 1).put(ry + 1).put(0);
+                }
+            }
+        }
+        // Textur-Koordinaten
+        for (int x = 0; x < 8; x++) {
+            int rx = chunkX * 8 + x;
+            for (int y = 0; y < 8; y++) {
+                int ry = chunkY * 8 + y;
+                int tex = realTexAt(GameClient.currentLevel.top, GameClient.currentLevel.top_randomize, rx, ry);
+                if (tex != 0) { // Luft, nichts malen
+                    int texX = tex % 16;
+                    int texY = tex / 16;
+                    vtData.put(texX * 0.0625f + 0.001953125f).put(texY * 0.0625f + 0.060546875f);
+                    vtData.put(texX * 0.0625f + 0.001953125f).put(texY * 0.0625f + 0.001953125f);
+                    vtData.put(texX * 0.0625f + 0.060546875f).put(texY * 0.0625f + 0.060546875f);
+                    vtData.put(texX * 0.0625f + 0.001953125f).put(texY * 0.0625f + 0.001953125f);
+                    vtData.put(texX * 0.0625f + 0.060546875f).put(texY * 0.0625f + 0.060546875f);
+                    vtData.put(texX * 0.0625f + 0.060546875f).put(texY * 0.0625f + 0.001953125f);
+                }
+            }
+        }
+        // VAO erstellen und mit VBO verbinden
+        int vao = GL30.glGenVertexArrays();
+        GL30.glBindVertexArray(vao);
+
+        // VBO erstellen
+        int vbo = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vtData.toBuffer(), GL15.GL_STATIC_DRAW);
+        // Daten-Links setzen
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, ((vtData.size() / (18 + 12)) * 18) << 2);
+
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL30.glBindVertexArray(0);
+
+        // Speichern:
+        topChunkVAOs[chunkX][chunkY][0] = vao;
+        topChunkVAOs[chunkX][chunkY][1] = vbo;
+        topChunkVAOs[chunkX][chunkY][2] = vtData.size();
+    }
+
+    private void removeChunkVAO(int[][][] chunkList, int chunkX, int chunkY) {
+        // VAO und enthaltenenen VBO löschen
+        GL30.glBindVertexArray(chunkList[chunkX][chunkY][0]);
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL15.glDeleteBuffers(chunkList[chunkX][chunkY][1]);
+        GL30.glBindVertexArray(0);
+        GL30.glDeleteVertexArrays(chunkList[chunkX][chunkY][0]);
     }
 
     private static int realTexAt(int[][] layer, byte[][] random, int x, int y) {
@@ -200,7 +297,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     }
 
     public void setLevelSize(int chunksX, int chunksY) {
-        chunkVAOs = new int[chunksX][chunksY][2];
+        groundChunkVAOs = new int[chunksX][chunksY][2];
     }
 
     @Override
