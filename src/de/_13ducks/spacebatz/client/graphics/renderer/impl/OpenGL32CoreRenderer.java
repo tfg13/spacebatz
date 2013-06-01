@@ -89,24 +89,35 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         RenderUtils.getTextureByName("ground.png").bind();
 
-        int drawChunkX = 0, drawChunkY = 8;
-
-        if (chunkVAOs[drawChunkX][drawChunkY][0] == 0) {
-            createChunk(drawChunkX, drawChunkY);
+        int playerX = (int) (GameClient.player.getX()) / 8;
+        int playerY = (int) (GameClient.player.getY()) / 8;
+        for (int x = playerX - 4; x <= playerX + 4; x++) {
+            if (x < 0 || x >= chunkVAOs.length) {
+                continue;
+            }
+            for (int y = playerY - 2; y <= playerY + 2; y++) {
+                if (y < 0 || y >= chunkVAOs[0].length) {
+                    continue;
+                }
+                if (chunkVAOs[x][y][0] == 0) {
+                    createChunk(x, y);
+                }
+                renderChunk(chunkVAOs[x][y][0]);
+            }
         }
+    }
+
+    private void renderChunk(int chunkVAOAdr) {
         // Render
-        GL30.glBindVertexArray(chunkVAOs[drawChunkX][drawChunkY][0]);
+        GL30.glBindVertexArray(chunkVAOAdr);
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-
         // Zeichnen
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6 * 8 * 8);
-
         // Aufräumen
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
-
     }
 
     /**
