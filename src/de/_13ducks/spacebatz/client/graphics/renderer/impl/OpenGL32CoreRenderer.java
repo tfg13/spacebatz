@@ -5,8 +5,10 @@ import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
+import de._13ducks.spacebatz.util.geo.Vector;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -22,10 +24,26 @@ import org.lwjgl.util.vector.Matrix4f;
 public class OpenGL32CoreRenderer extends CoreRenderer {
 
     /**
+     * Index der Adresse der Projections/ViewMatrix im Array mit Uniformadressen.
+     */
+    private static final int INDEX_VERT_PROJECTIONVIEW = 0;
+    /**
      * Enthält die ProgramIDs aller verwendeten Shader.
      * Diese sind bereits fertig gelinkt etc. und können direkt verwendet werden.
      */
     private int[] shader;
+    /**
+     * Adressen der Uniforms.
+     */
+    private int[] shaderUniformAdr = new int[1];
+    /**
+     * Projektions-Matrix, bleibt normalerweise immer gleich.
+     */
+    private Matrix4f projectionMatrix;
+    /**
+     * View-Matrix, beschreibt Position und Orientierung der Kamera.
+     */
+    private Matrix4f viewMatrix;
     /**
      * Speichert die zu den Chunks gehörenden VAOs.
      * Arrays: X Y {vao, vbo}
@@ -40,25 +58,25 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         //GL11.glViewport(0, 0, DefaultSettings.CLIENT_GFX_RES_X, DefaultSettings.CLIENT_GFX_RES_Y);
         GL11.glClearColor(.4f, .6f, .9f, 0f);
         // Ortho-Projektionsmatrix aufmachen:
-        Matrix4f projection = new Matrix4f();
-        projection.m00 = (1f * DefaultSettings.CLIENT_GFX_RES_Y / DefaultSettings.CLIENT_GFX_RES_X) / 10f;
-        projection.m30 = -1f;
-        projection.m11 = 1f / 10f;
-        projection.m31 = -1f;
-        projection.m22 = -1f;
+        projectionMatrix = new Matrix4f();
+        projectionMatrix.m00 = (1f * DefaultSettings.CLIENT_GFX_RES_Y / DefaultSettings.CLIENT_GFX_RES_X) / 10f;
+        projectionMatrix.m30 = -1f;
+        projectionMatrix.m11 = 1f / 10f;
+        projectionMatrix.m31 = -1f;
+        projectionMatrix.m22 = -1f;
         // View und Model erstmal Identity
-        Matrix4f view = new Matrix4f();
+        viewMatrix = new Matrix4f();
         Matrix4f model = new Matrix4f();
         // Projection und View ändern sich selten (und nicht während eines Frames), vormultiplizieren um dem Shader Zeit zu sparen.
         Matrix4f projectionView = new Matrix4f();
-        Matrix4f.mul(projection, view, projectionView);
+        Matrix4f.mul(projectionMatrix, viewMatrix, projectionView);
         // Daten zum Shader hochladen
         FloatBuffer matrix44Buffer = BufferUtils.createFloatBuffer(16);
         // ProjectionView
         projectionView.store(matrix44Buffer);
         matrix44Buffer.flip();
-        int pvmloc = GL20.glGetUniformLocation(shader[0], "projectionViewM");
-        GL20.glUniformMatrix4(pvmloc, false, matrix44Buffer);
+        shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW] = GL20.glGetUniformLocation(shader[0], "projectionViewM");
+        GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW], false, matrix44Buffer);
         // Model
         model.store(matrix44Buffer);
         matrix44Buffer.flip();
@@ -71,7 +89,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         RenderUtils.getTextureByName("ground.png").bind();
 
-        int drawChunkX = 0, drawChunkY = 0;
+        int drawChunkX = 0, drawChunkY = 8;
 
         if (chunkVAOs[drawChunkX][drawChunkY][0] == 0) {
             createChunk(drawChunkX, drawChunkY);
@@ -175,6 +193,20 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     }
 
     @Override
-    public void setMouseXY(double x, double y) {
+    public void setMouseXY(double mouseX, double mouseY) {
+        // Neuen Sichtmittelpunkt bestimmen:
+        Vector vec = new Vector(mouseX - Display.getWidth() / 2, mouseY - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
+        float panX = ((float) (-GameClient.player.getX() + (Display.getWidth() / Display.getHeight() * 20) / 2.0f + vec.x));
+        float panY = ((float) (-GameClient.player.getY() + 20 / 2.0f + vec.y));
+        if (viewMatrix.m30 != panX || viewMatrix.m31 != panY) {
+            // View-Matrix updaten:
+            viewMatrix.m30 = panX;
+            viewMatrix.m31 = panY;
+            // Zur Grafikkarte hochladen:
+            FloatBuffer vmBuffer = BufferUtils.createFloatBuffer(16);
+            Matrix4f.mul(projectionMatrix, viewMatrix, null).store(vmBuffer);
+            vmBuffer.flip();
+            GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW], false, vmBuffer);
+        }
     }
 }

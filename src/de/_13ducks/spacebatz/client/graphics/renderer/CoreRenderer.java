@@ -30,9 +30,9 @@ public abstract class CoreRenderer {
     /**
      * Setzt die Mausposition.
      * Notwendig, weil die Grafik sich der Mausposition anpassen will.
-     * @param x Maus-X in Pixeln
-     * @param y Maus-Y in Pixeln
+     * @param mouseX Maus-X in Pixeln
+     * @param mouseY Maus-Y in Pixeln
      */
-    public abstract void setMouseXY(double x, double y);
+    public abstract void setMouseXY(double mouseX, double mouseY);
 
 }
