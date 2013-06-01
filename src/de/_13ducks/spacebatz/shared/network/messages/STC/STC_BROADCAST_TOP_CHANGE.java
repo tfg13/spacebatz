@@ -25,6 +25,7 @@ public class STC_BROADCAST_TOP_CHANGE extends FixedSizeSTCCommand {
         int y = Bits.getInt(data, 4);
         int newTop = Bits.getInt(data, 8);
         GameClient.currentLevel.top[x][y] = newTop;
+        GameClient.getEngine().getGraphics().minorTopChange(x, y);
     }
 
     /**

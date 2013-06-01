@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.util.Bits;
 
 /**
  * Transferiert einen Chunk des Levels zum Client
+ *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
 public class STC_TRANSFER_CHUNK extends STCCommand {
@@ -59,6 +60,9 @@ public class STC_TRANSFER_CHUNK extends STCCommand {
                 shadow[startX + x][startY + y] = data[dataIndex++];
             }
         }
+        if (GameClient.getEngine() != null) {
+            GameClient.getEngine().getGraphics().chunkReceived(Bits.getInt(data, 0), Bits.getInt(data, 4));
+        }
     }
 
     @Override
@@ -69,7 +73,6 @@ public class STC_TRANSFER_CHUNK extends STCCommand {
     @Override
     public int getSize(byte sizeData) {
         // Zwei mal Koordinaten, 2 * 64 ints texturen, 2 * texturrandoms, 8 byte kollisionsdaten
-        return 8 * 8 * 4 * 2  + 2 * 8 * 8 + 8 + 8;
+        return 8 * 8 * 4 * 2 + 2 * 8 * 8 + 8 + 8;
     }
-    
 }

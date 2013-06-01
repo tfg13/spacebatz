@@ -228,7 +228,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             int rx = chunkX * 8 + x;
             for (int y = 0; y < 8; y++) {
                 int ry = chunkY * 8 + y;
-                if (realTexAt(GameClient.currentLevel.top, GameClient.currentLevel.top_randomize, rx, ry) != 0) { // Luft, nichts malen
+                if (baseTexAt(GameClient.currentLevel.top, rx, ry) != 0) { // Luft, nichts malen
                     vtData.put(rx).put(ry).put(0);
                     vtData.put(rx).put(ry + 1).put(0);
                     vtData.put(rx + 1).put(ry).put(0);
@@ -243,8 +243,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             int rx = chunkX * 8 + x;
             for (int y = 0; y < 8; y++) {
                 int ry = chunkY * 8 + y;
-                int tex = realTexAt(GameClient.currentLevel.top, GameClient.currentLevel.top_randomize, rx, ry);
-                if (tex != 0) { // Luft, nichts malen
+                if (baseTexAt(GameClient.currentLevel.top, rx, ry) != 0) { // Luft, nichts malen
+                    int tex = realTexAt(GameClient.currentLevel.top, GameClient.currentLevel.top_randomize, rx, ry);
                     int texX = tex % 16;
                     int texY = tex / 16;
                     vtData.put(texX * 0.0625f + 0.001953125f).put(texY * 0.0625f + 0.060546875f);
@@ -296,6 +296,14 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         }
     }
 
+    private static int baseTexAt(int[][] layer, int x, int y) {
+        if (x < 0 || y < 0 || x >= layer.length || y >= layer[0].length) {
+            return 1;
+        } else {
+            return layer[x][y];
+        }
+    }
+
     public void setLevelSize(int chunksX, int chunksY) {
         groundChunkVAOs = new int[chunksX][chunksY][2];
     }
@@ -315,6 +323,21 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             Matrix4f.mul(projectionMatrix, viewMatrix, null).store(vmBuffer);
             vmBuffer.flip();
             GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW], false, vmBuffer);
+        }
+    }
+
+    public void chunkReceived(int chunkX, int chunkY) {
+        if (groundChunkVAOs[chunkX][chunkY][0] != 0) {
+            // Neu berechnen (komplett)
+            createGroundChunk(chunkX, chunkY);
+            createTopChunk(chunkX, chunkY);
+        }
+    }
+
+    public void minorTopChange(int x, int y) {
+        if (topChunkVAOs[x / 8][y / 8][0] != 0) {
+            // Neu berechnen (nur top)
+            createTopChunk(x / 8, y / 8);
         }
     }
 }

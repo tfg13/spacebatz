@@ -347,4 +347,16 @@ public class GraphicsEngine {
             ((OpenGL32CoreRenderer) coreRenderer).setLevelSize(chunksX, chunksY);
         }
     }
+
+    public void chunkReceived(int chunkX, int chunkY) {
+        if (coreRenderer instanceof OpenGL32CoreRenderer) {
+            ((OpenGL32CoreRenderer) coreRenderer).chunkReceived(chunkX, chunkY);
+        }
+    }
+
+    public void minorTopChange(int x, int y) {
+        if (coreRenderer instanceof OpenGL32CoreRenderer) {
+            ((OpenGL32CoreRenderer) coreRenderer).minorTopChange(x, y);
+        }
+    }
 }
