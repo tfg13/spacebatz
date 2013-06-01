@@ -180,6 +180,9 @@ public class GraphicsEngine {
 //        questControl.render(renderer);
         long ns2 = System.nanoTime();
         timing.push((int) (ns2 - ns));
+        if (GameClient.frozenGametick % 60 == 0) {
+            System.out.println("AFT: " + timing.getNiceAvg());
+        }
 
         // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
         input.syncInput();
