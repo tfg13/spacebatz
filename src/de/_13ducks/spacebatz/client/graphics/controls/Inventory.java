@@ -352,6 +352,20 @@ public class Inventory implements Control {
         glLineWidth(1.0f);
         glEnable(GL_TEXTURE_2D);
 
+
+        // Spieler-Stats rendern:
+        glDisable(GL_TEXTURE_2D);
+        glColor4f(0.05f, 0.05f, 0.05f, 0.9f);
+        glRectf(x03 + 0.08f * camera.getTilesX(), ya, x02, ya + 0.5f * camera.getTilesY());
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+        textWriter.renderText("HP:    " + (GameClient.logicPlayer.isDead() ? 0 : GameClient.player.getHealthpoints()) + " / " + GameClient.player.getHealthpointsmax(), x03 + 0.09f * camera.getTilesX(), ya + 0.45f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("HP Regeneration:    " + (float) GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Armor:    " + GameClient.player.getArmor(), x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Damage Reduction:    " + (float) (100 - 10000.0 / (GameClient.player.getArmor() + 100)) + "%", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        textWriter.renderText("Movement Speed:    " + (float) GameClient.player.getMovement_speed(), x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+        
+        
         // selected Item zum Mauszeiger zeichnen
         if (selecteditemslot != -1) {
             Item item2 = GameClient.getItems()[selecteditemslot];
@@ -378,19 +392,6 @@ public class Inventory implements Control {
                 glEnd(); // Zeichnen des QUADs fertig } }
             }
         }
-
-
-        // Spieler-Stats rendern:
-        glDisable(GL_TEXTURE_2D);
-        glColor4f(0.05f, 0.05f, 0.05f, 0.9f);
-        glRectf(x03 + 0.08f * camera.getTilesX(), ya, x02, ya + 0.5f * camera.getTilesY());
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        glEnable(GL_TEXTURE_2D);
-        textWriter.renderText("HP:    " + (GameClient.logicPlayer.isDead() ? 0 : GameClient.player.getHealthpoints()) + " / " + GameClient.player.getHealthpointsmax(), x03 + 0.09f * camera.getTilesX(), ya + 0.45f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("HP Regeneration:    " + (float) GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Armor:    " + GameClient.player.getArmor(), x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Damage Reduction:    " + (float) (100 - 10000.0 / (GameClient.player.getArmor() + 100)) + "%", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
-        textWriter.renderText("Movement Speed:    " + (float) GameClient.player.getMovement_speed(), x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
         
         
         // Mousehover über Item zeichnen:
