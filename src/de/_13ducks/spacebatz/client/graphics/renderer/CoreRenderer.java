@@ -17,8 +17,10 @@ public abstract class CoreRenderer {
      *
      * Das Rendermodul soll hier Vertex- und Fragmentshader so einstellen, wie es sie braucht.
      * Die Grafikengine garantiert, dass die hier gesetzten Shader immer aktiv sind, wenn render() aufgerufen wird.
+     *
+     * @param shader Alle geladenene Shader
      */
-    public abstract void setupShaders();
+    public abstract void setupShaders(int[] shader);
 
     /**
      * Wird aufgerufen, um die Shader dieses CoreRenderers wieder aktivieren zu lassen.

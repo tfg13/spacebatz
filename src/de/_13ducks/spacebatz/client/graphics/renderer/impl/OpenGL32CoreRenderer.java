@@ -1,8 +1,8 @@
 package de._13ducks.spacebatz.client.graphics.renderer.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.ShaderLoader;
 import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
@@ -59,10 +59,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     private int[][][] topChunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][3];
 
     @Override
-    public void setupShaders() {
-        // Shader laden, compilen, linken
-        shader = ShaderLoader.load();
-        GL20.glUseProgram(shader[0]);
+    public void setupShaders(int[] shader) {
+        this.shader = shader;
+        GL20.glUseProgram(shader[GraphicsEngine.SHADER_INDEX_GAME]);
         //GL11.glViewport(0, 0, DefaultSettings.CLIENT_GFX_RES_X, DefaultSettings.CLIENT_GFX_RES_Y);
         GL11.glClearColor(.4f, .6f, .9f, 0f);
         // Ortho-Projektionsmatrix aufmachen:
@@ -83,19 +82,17 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         // ProjectionView
         projectionView.store(matrix44Buffer);
         matrix44Buffer.flip();
-        shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW] = GL20.glGetUniformLocation(shader[0], "projectionViewM");
+        shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW] = GL20.glGetUniformLocation(shader[GraphicsEngine.SHADER_INDEX_GAME], "projectionViewM");
         GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW], false, matrix44Buffer);
         // Model
         model.store(matrix44Buffer);
         matrix44Buffer.flip();
-        int mmloc = GL20.glGetUniformLocation(shader[0], "modelM");
+        int mmloc = GL20.glGetUniformLocation(shader[GraphicsEngine.SHADER_INDEX_GAME], "modelM");
         GL20.glUniformMatrix4(mmloc, false, matrix44Buffer);
     }
 
     @Override
     public void render() {
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-
         int playerX = (int) (GameClient.player.getX()) / 8;
         int playerY = (int) (GameClient.player.getY()) / 8;
 
@@ -357,6 +354,6 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
 
     @Override
     public void reEnableShader() {
-        GL20.glUseProgram(shader[0]);
+        GL20.glUseProgram(shader[GraphicsEngine.SHADER_INDEX_GAME]);
     }
 }

@@ -6,19 +6,24 @@ import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
 import java.lang.reflect.Field;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  * Die GrafikEngine. Rendert das Spiel (Map, Entities, Bullets...) und genau ein Menü (z.B. Inventar, Hauptmenü, ...).
@@ -41,6 +46,14 @@ public class GraphicsEngine {
         }
     }
     /**
+     * Index des Game-Shaders im Shader-Array.
+     */
+    public static final int SHADER_INDEX_GAME = 0;
+    /**
+     * Index des Overlay-Shaders im Shader-Array.
+     */
+    public static final int SHADER_INDEX_OVERLAYS = 1;
+    /**
      * Das derzeit aktive Kern-Rendermodul.
      */
     private CoreRenderer coreRenderer;
@@ -52,6 +65,10 @@ public class GraphicsEngine {
      * Die Liste mit den aktiven Overlays.
      */
     private List<Overlay> overlays = new ArrayList<>();
+    /**
+     * Alle Shaderadressen.
+     */
+    private int[] shader;
     /**
      * Der Skilltree.
      */
@@ -102,7 +119,14 @@ public class GraphicsEngine {
 //                TextWriter.initialize();
 
             coreRenderer = new OpenGL32CoreRenderer();
-            coreRenderer.setupShaders();
+
+            // Shader setup
+            shader = ShaderLoader.load();
+
+            coreRenderer.setupShaders(shader);
+
+            // Shader für Overlays bauen:
+            setupOverlayShader();
 
 
         } catch (Exception ex) {
@@ -128,11 +152,15 @@ public class GraphicsEngine {
 
         // Bild löschen, neu malen
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // Zeitmessung
         long ns = System.nanoTime();
 
         // Haupt-Renderer:
         coreRenderer.render();
 
+        // Overlay-Shader:
+        GL20.glUseProgram(shader[SHADER_INDEX_OVERLAYS]);
 
         // Alle aktiven Overlays:
         for (int i = 0; i < overlays.size(); i++) {
@@ -140,8 +168,10 @@ public class GraphicsEngine {
             overlay.render();
         }
 
-//        hudControl.render(renderer);
-//        questControl.render(renderer);
+        // Overlay-Shader abschalten
+        coreRenderer.reEnableShader();
+
+        // Timing-Messung
         long ns2 = System.nanoTime();
         timing.push((int) (ns2 - ns));
         if (GameClient.frozenGametick % 60 == 0) {
@@ -330,5 +360,29 @@ public class GraphicsEngine {
 
     public void setShowNickNames(int i) {
         System.out.println("AddMe: Re-implement nicknames");
+    }
+
+    private void setupOverlayShader() {
+        GL20.glUseProgram(shader[SHADER_INDEX_OVERLAYS]);
+        // Projection-Matrix erstellen, auf Pixel mappen
+        Matrix4f projection = new Matrix4f();
+        projection.m30 = -1f;
+        projection.m31 = -1f;
+        projection.m00 = 2f / DefaultSettings.CLIENT_GFX_RES_X;
+        projection.m11 = 2f / DefaultSettings.CLIENT_GFX_RES_Y;
+        projection.m22 = -1;
+        // In Buffer packen
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        projection.store(buffer);
+        buffer.flip();
+        // Zur Grafikkarte hochladen
+        int projectionUniformAdr = GL20.glGetUniformLocation(shader[SHADER_INDEX_OVERLAYS], "projectionM");
+        GL20.glUniformMatrix4(projectionUniformAdr, false, buffer);
+        // Model-Matrix bauen und hochladen (Identität)
+        Matrix4f model = new Matrix4f();
+        model.store(buffer);
+        buffer.flip();
+        int modelUniformAdr = GL20.glGetUniformLocation(shader[SHADER_INDEX_OVERLAYS], "modelM");
+        GL20.glUniformMatrix4(modelUniformAdr, false, buffer);
     }
 }

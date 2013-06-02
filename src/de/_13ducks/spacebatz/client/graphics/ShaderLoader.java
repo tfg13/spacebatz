@@ -19,9 +19,10 @@ public class ShaderLoader {
      * @return Links auf die Shader
      */
     public static int[] load() {
-        int[] shaders = new int[1];
+        int[] shaders = new int[2];
         try {
-            linkShaders(shaders, 0, createShader("shaders/opengl32core/default.vert", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/default.frag", GL20.GL_FRAGMENT_SHADER));
+            linkShaders(shaders, GraphicsEngine.SHADER_INDEX_GAME, createShader("shaders/opengl32core/game.vert", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/game.frag", GL20.GL_FRAGMENT_SHADER), "in_Position", "in_TextureCoord");
+            linkShaders(shaders, GraphicsEngine.SHADER_INDEX_OVERLAYS, createShader("shaders/opengl32core/overlays.vert", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/overlays.frag", GL20.GL_FRAGMENT_SHADER), "in_Position", "in_TextureCoord");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -34,8 +35,9 @@ public class ShaderLoader {
      * @param shaders Die Shader-Liste
      * @param index Position des neuen Shaders
      * @param shader Der geladenene, compilierte Shader
+     * @param attributes String-Namen der Attribute, in der richtigen Reihenfolge (0,1,2...)
      */
-    private static void linkShaders(int[] shaders, int index, int vertexShader, int fragmentShader) {
+    private static void linkShaders(int[] shaders, int index, int vertexShader, int fragmentShader, String... attributes) {
         shaders[index] = GL20.glCreateProgram();
         if (shaders[index] == 0) {
             throw new RuntimeException("Error creating shader!");
@@ -48,8 +50,9 @@ public class ShaderLoader {
             System.err.println(getLogInfoP(shaders[index]));
         }
 
-        GL20.glBindAttribLocation(shaders[index], 0, "in_Position");
-        GL20.glBindAttribLocation(shaders[index], 1, "in_TextureCoord");
+        for (int i = 0; i < attributes.length; i++) {
+            GL20.glBindAttribLocation(shaders[index], i, attributes[i]);
+        }
 
         GL20.glValidateProgram(shaders[index]);
         if (GL20.glGetProgrami(shaders[index], GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {
