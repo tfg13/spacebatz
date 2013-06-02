@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.graphics;
 
-import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -8,7 +7,6 @@ import java.io.InputStream;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.util.ResourceLoader;
 
@@ -77,7 +75,7 @@ public class TextWriter {
      * @param y PositionY (unten)
      */
     public static void renderTextXCentered(String text, float x, float y) {
-        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * LegacyRenderer.tilesX), y, false);
+//        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * LegacyRenderer.tilesX), y, false);
     }
 
     /**
@@ -92,11 +90,11 @@ public class TextWriter {
      * @param mono Monospace-Font und (!) klein?
      */
     public static void renderText(String text, float x, float y, boolean mono) {
-        GL11.glPushMatrix();
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / LegacyRenderer.tilesX * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, Color.black);
-        GL11.glPopMatrix();
+//        GL11.glPushMatrix();
+//        GL11.glLoadIdentity();
+//        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
+//        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / LegacyRenderer.tilesX * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, Color.black);
+//        GL11.glPopMatrix();
     }
 
     /**
@@ -131,30 +129,10 @@ public class TextWriter {
      * @param green_color Textfarbe Alpha-anteil
      */
     public static void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color, float alpha_color) {
-        GL11.glPushMatrix();
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-        fonts[mono ? 1 : 0].drawString(x / LegacyRenderer.tilesX * Display.getWidth(), (1f - ((y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
-        GL11.glPopMatrix();
-    }
-
-    /**
-     * Rundet die gegebene X-Koordinate auf ganze X-Pixel
-     *
-     * @param f X-Koordinate
-     * @return gerundete Koordinate
-     */
-    private static float snapToXRaster(float f) {
-        return Math.round(f / LegacyRenderer.tilesX * Display.getWidth()) * LegacyRenderer.tilesX / Display.getWidth();
-    }
-
-    /**
-     * Rundet die gegebene Y-Koordinate auf ganze Y-Pixel
-     *
-     * @param f Y-Koordinate
-     * @return gerundete Koordinate
-     */
-    private static float snapToYRaster(float f) {
-        return Math.round(f / LegacyRenderer.tilesY * Display.getHeight()) * LegacyRenderer.tilesY / Display.getHeight();
+//        GL11.glPushMatrix();
+//        GL11.glLoadIdentity();
+//        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
+//        fonts[mono ? 1 : 0].drawString(x / LegacyRenderer.tilesX * Display.getWidth(), (1f - ((y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
+//        GL11.glPopMatrix();
     }
 }

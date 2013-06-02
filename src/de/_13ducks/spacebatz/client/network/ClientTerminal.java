@@ -129,19 +129,6 @@ public class ClientTerminal {
                                 outln("rcon: request sent");
                             }
                             break;
-                        case "zoom":
-                            if (words.length == 2) {
-                                try {
-                                    float fact = Float.parseFloat(words[1]);
-                                    if (fact > 0) {
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setZoomFact(fact);
-                                        break;
-                                    }
-                                } catch (NumberFormatException ex) {
-                                }
-                            }
-                            outln("usage: zoom (>0)");
-                            break;
                         case "mobmaster":
                             try {
                                 int count = Integer.parseInt(words[1]);
@@ -200,98 +187,17 @@ public class ClientTerminal {
                                 outln("usage: lerp [int] (sets client-lerp (in serverticks) to given value)");
                             }
                             break;
-                        case "lookahead":
-                            if (words.length == 2) {
-                                switch (words[1]) {
-                                    case "off":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setLookAhead(false);
-                                        break OUTER;
-                                    case "on":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setLookAhead(true);
-                                        break OUTER;
-                                }
-                            }
-                            outln("usage: lookahead on|off");
-                            break;
-                        case "shadow":
-                            if (words.length == 2) {
-                                switch (words[1]) {
-                                    case "off":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(0);
-                                        break OUTER;
-                                    case "block":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(1);
-                                        break OUTER;
-                                    case "smooth":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(2);
-                                        break OUTER;
-                                    case "shader":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(3);
-                                        break OUTER;
-                                }
-                            }
-                            outln("usage: shadow off|block|smooth|shader");
-                            break;
-                        case "ground":
-                            if (words.length == 2) {
-                                switch (words[1]) {
-                                    case "block":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setSmoothGround(false);
-                                        break OUTER;
-                                    case "shader":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setSmoothGround(true);
-                                        break OUTER;
-                                }
-                            }
-                            outln("usage: ground block|shader");
-                            break;
-                        case "top":
-                            if (words.length == 2) {
-                                switch (words[1]) {
-                                    case "block":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setFancyTop(false);
-                                        break OUTER;
-                                    case "fancy":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setFancyTop(true);
-                                        break OUTER;
-                                }
-                            }
-                            outln("usage: top block|fancy");
-                            break;
-                        case "vbo":
-                            if (words.length == 2) {
-                                switch (words[1]) {
-                                    case "on":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setUseVBOs(true);
-                                        break OUTER;
-                                    case "off":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setUseVBOs(false);
-                                        break OUTER;
-                                }
-                            }
-                            outln("usage: vbo on|off");
-                            break;
-                        case "maxfps":
-                            GameClient.getEngine().getGraphics().defactoRenderer().setFancyTop(false);
-                            GameClient.getEngine().getGraphics().defactoRenderer().setSmoothGround(false);
-                            GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(1);
-                            break;
-                        case "maxfancy":
-                            GameClient.getEngine().getGraphics().defactoRenderer().setFancyTop(true);
-                            GameClient.getEngine().getGraphics().defactoRenderer().setSmoothGround(true);
-                            GameClient.getEngine().getGraphics().defactoRenderer().setShadowLevel(3);
-                            break;
                         case "nicknames":
                             if (words.length == 2) {
                                 switch (words[1]) {
                                     case "off":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShowNickNames(0);
+                                        GameClient.getEngine().getGraphics().setShowNickNames(0);
                                         break OUTER;
                                     case "hover":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShowNickNames(1);
+                                        GameClient.getEngine().getGraphics().setShowNickNames(1);
                                         break OUTER;
                                     case "on":
-                                        GameClient.getEngine().getGraphics().defactoRenderer().setShowNickNames(2);
+                                        GameClient.getEngine().getGraphics().setShowNickNames(2);
                                         break OUTER;
                                 }
                             }
@@ -310,18 +216,12 @@ public class ClientTerminal {
                             outln("-------------------");
                             outln("about");
                             outln("clear");
-                            outln("ground");
                             outln("help");
                             outln("lerp");
-                            outln("maxfps");
-                            outln("maxfancy");
                             outln("net_graph");
                             outln("nicknames");
                             outln("rcon");
                             outln("sendsevens");
-                            outln("shadow");
-                            outln("top");
-                            outln("zoom");
                             outln("-------------------");
                             break;
                         default:

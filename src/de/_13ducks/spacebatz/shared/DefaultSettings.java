@@ -51,47 +51,12 @@ public class DefaultSettings {
      */
     public static boolean CLIENT_GFX_VSYNC = true;
     /**
-     * Die Einstellung für die Schatten. Es gibt 0 - aus (Cheat!), 1 - block, 2 - smooth, 3 - shader.
-     * Die höchste Zahl bietet die beste Qualität, kostet aber am meisten Leistung.
-     * Mindestens 2 ist empfohlen.
-     */
-    public static int CLIENT_GFX_SHADOWLEVEL = 3;
-    /**
-     * Die Einstellungen für das Zeichnen der Berge.
-     * Wenn true, werden diese am Rand abgerundet und mit einer Kontur versehen.
-     * Empfohlen.
-     */
-    public static boolean CLIENT_GFX_TOP_FANCY = true;
-    /**
-     * Die Einstellung für das Zeichen von Übergängen auf dem Boden.
-     * Wenn true, wird an Texturgrenzen übergeblendet (alpha-blending).
-     * Empfohlen.
-     */
-    public static boolean CLIENT_GFX_GROUND_SMOOTH = true;
-    /**
-     * Die Einstellung für den Lookahead-Sichtmodus.
-     * Bei diesem ist die Einheit nicht immer in der Mitte, sondern die Position ist abhängig von der Maus.
-     * Muss jeder ausprobieren, ob er das mag.
-     * Alles ist in diesem Modus stärker reingezoomt, man sieht also insbesondere bei kleinen Auflösungen mehr Details.
-     */
-    public static boolean CLIENT_GFX_LOOKAHEAD = true;
-    /**
      * Die Einstellung für das Anzeigen von Spielernamen.
      * 0 - Aus (keine Namen anzeigen)
      * 1 - Hover (anzeigen beim drüberfahren mit der Maus)
      * 2 - Immer (permanent einblenden)
      */
     public static int CLIENT_GFX_SHOW_NICKNAMES = 1;
-    /**
-     * Die Einstellung, ob die Grafik VertexBufferObjects zum Rendern verwenden darf.
-     * Diese sind normalerweise deutlich schneller, funktionieren aber eventuell auf einigen alten Karten nicht.
-     */
-    public static boolean CLIENT_GFX_USE_VBOS = false;
-    /**
-     * Die Einstellung, ob der neue, bessere, schnellere OpenGL 3.2 Core Renderer verwendet werden soll.
-     * Nicht mit Systemen kompatibel, die kein OpenGL 3.2 beherrschen.
-     */
-    public static boolean CLIENT_GFX_OPENGL_32_CORE = true;
     /**
      * Sound (zum schnelleren Testen) komplett abschalten.
      * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.

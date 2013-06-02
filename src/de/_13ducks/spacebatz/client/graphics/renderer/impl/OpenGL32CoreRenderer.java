@@ -354,4 +354,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     public double getPanY() {
         return viewMatrix.m31;
     }
+
+    @Override
+    public void reEnableShader() {
+        GL20.glUseProgram(shader[0]);
+    }
 }

@@ -21,9 +21,15 @@ public abstract class CoreRenderer {
     public abstract void setupShaders();
 
     /**
+     * Wird aufgerufen, um die Shader dieses CoreRenderers wieder aktivieren zu lassen.
+     * Wird aufgerufen, falls die Shader seit dem letzten Aufruf von render() geändert wurden.
+     */
+    public abstract void reEnableShader();
+
+    /**
      * Rendert den Inhalt.
      * Muss alle notwendigen Renderbefehle an die Grafikkarte senden.
-     * Es ist garantiert, dass die Vertex- und Fragmentshader wieder aktiv sind, die es nach dem Aufruf von setupShaders() waren.
+     * Es ist garantiert (durch Aufrufe auf reEnableShader()), dass die Vertex- und Fragmentshader wieder aktiv sind, die es nach dem Aufruf von setupShaders() waren.
      */
     public abstract void render();
 
