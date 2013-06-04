@@ -32,7 +32,8 @@ import de._13ducks.spacebatz.util.geo.Vector;
 public class Enemy extends Char implements EntityLinearTargetObserver, PathRequester {
 
     /**
-     * Das Bewegungssystem dieses Gegeners. Gegner werden immer vom Server gesteuert, verwenden deshalb InterpolatedMover
+     * Das Bewegungssystem dieses Gegeners. Gegner werden immer vom Server
+     * gesteuert, verwenden deshalb InterpolatedMover
      */
     public final InterpolatedMover move;
     ;
@@ -115,7 +116,9 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     }
 
     /**
-     * Lässt den Gegner einen Pfad entlang laufen. Der Gegner geht davon aus das die erste Position im Pfad seine aktuelle Posiiton ist, er wird also direkt die 2. ansteuern.
+     * Lässt den Gegner einen Pfad entlang laufen. Der Gegner geht davon aus das
+     * die erste Position im Pfad seine aktuelle Posiiton ist, er wird also
+     * direkt die 2. ansteuern.
      *
      * @param path der Pfad dem der Gegner folgen soll.
      */
@@ -390,7 +393,8 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     }
 
     /**
-     * Lässt diesen Gegner immer auf das angegebene Ziel schauen, egal wie er sich bewegt.
+     * Lässt diesen Gegner immer auf das angegebene Ziel schauen, egal wie er
+     * sich bewegt.
      *
      * @param target
      */
@@ -407,5 +411,10 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void stopFacingTarget() {
         isFacingTarget = false;
         STC_SET_FACING_TARGET.sendSetFacingTarget(isFacingTarget, this.netID, facingTargetNetId);
+    }
+
+    public void setAttackTarget(Player target) {
+        target.hunters.add(this);
+        behaviour = behaviour.onAttackTarget(target);
     }
 }
