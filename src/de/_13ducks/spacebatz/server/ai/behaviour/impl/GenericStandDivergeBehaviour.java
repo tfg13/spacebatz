@@ -39,6 +39,8 @@ public class GenericStandDivergeBehaviour extends Behaviour {
             if (div.speed != 0) {
                 owner.move.setVector(div.direction.x, div.direction.y);
                 owner.setSpeed(div.speed);
+            } else {
+                owner.move.stopMovement();
             }
         }
         return this;
@@ -61,8 +63,8 @@ public class GenericStandDivergeBehaviour extends Behaviour {
             if (e instanceof Char && e != owner) {
                 double distance = GeoTools.getDistance(owner.getX(), owner.getY(), e.getX(), e.getY());
                 double maxDistance = owner.getSize() + e.getSize();
-                double divergationFactor = Math.pow(1-(distance / maxDistance), 3);
-                if (divergationFactor <= 1) {
+                double divergationFactor = Math.pow(1 - (distance / maxDistance), 3);
+                if (divergationFactor <= 0.6) {
                     Vector singleDivergation = new Vector(owner.getX() - e.getX(), owner.getY() - e.getY());
                     speed = Math.max(speed, owner.maxSpeed * divergationFactor);
                     direction = direction.add(singleDivergation.multiply(divergationFactor));
