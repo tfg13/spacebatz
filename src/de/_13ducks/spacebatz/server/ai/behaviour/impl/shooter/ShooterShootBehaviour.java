@@ -10,7 +10,7 @@ class ShooterShootBehaviour extends GenericWatchTargetBehaviour {
     private Player target;
 
     public ShooterShootBehaviour(Enemy owner, Player target) {
-        super(owner, target, 4, 5);
+        super(owner, target, 4, 9);
         this.target = target;
     }
 

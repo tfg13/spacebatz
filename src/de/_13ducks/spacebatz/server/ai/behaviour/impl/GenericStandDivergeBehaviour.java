@@ -61,7 +61,7 @@ public class GenericStandDivergeBehaviour extends Behaviour {
             if (e instanceof Char && e != owner) {
                 double distance = GeoTools.getDistance(owner.getX(), owner.getY(), e.getX(), e.getY());
                 double maxDistance = owner.getSize() + e.getSize();
-                double divergationFactor = Math.pow(1-(distance / maxDistance), 2);
+                double divergationFactor = Math.pow(1-(distance / maxDistance), 3);
                 if (divergationFactor <= 1) {
                     Vector singleDivergation = new Vector(owner.getX() - e.getX(), owner.getY() - e.getY());
                     speed = Math.max(speed, owner.maxSpeed * divergationFactor);

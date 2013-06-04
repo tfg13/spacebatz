@@ -12,7 +12,7 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 public class KiterAproachDirectBehaviour extends GenericDirectPursuitBehaviour {
 
     public KiterAproachDirectBehaviour(Enemy owner, Player target) {
-        super(owner, target, 4);
+        super(owner, target, 5);
     }
 
     @Override
