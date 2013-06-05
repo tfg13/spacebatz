@@ -23,6 +23,7 @@ public class LurkerLurkBehaviour extends GenericLurkBehaviour {
     @Override
     public Behaviour targetSpotted(Player target) {
         target.hunters.add(owner);
+        owner.target = target;
         owner.setInvisible(false);
         return new LurkerAttackBehaviour(owner, target);
     }

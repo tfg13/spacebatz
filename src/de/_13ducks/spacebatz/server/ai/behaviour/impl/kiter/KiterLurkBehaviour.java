@@ -20,6 +20,7 @@ public class KiterLurkBehaviour extends GenericLurkBehaviour {
     @Override
     public Behaviour targetSpotted(Player target) {
         target.hunters.add(owner);
+        owner.target = target;
         return new KiterApproachIndirectBehaviour(owner, target);
     }
 

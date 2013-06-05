@@ -36,7 +36,6 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * gesteuert, verwenden deshalb InterpolatedMover
      */
     public final InterpolatedMover move;
-    ;
     /**
      * ID des Gegnertyps.
      */
@@ -72,6 +71,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public double maxSpeed;
     private boolean isFacingTarget;
     private int facingTargetNetId;
+    public Player target;
 
     /**
      * Erzeugt einen neuen Gegner
@@ -94,12 +94,12 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         maxSpeed = estats.speed;
         this.enemylevel = estats.enemylevel;
     }
-
+    
     @Override
     public int byteArraySize() {
         return super.byteArraySize() + 9;
     }
-
+    
     @Override
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
@@ -130,7 +130,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         if (followingPath) {
             stopFollowingPath();
         }
-
+        
         for (int i = 0; i < path.length; i++) {
             for (int x = (int) (path[i].x - (getSize() / 2)); x <= (int) (path[i].x + (getSize() / 2)); x++) {
                 for (int y = (int) (path[i].y - (getSize() / 2)); y <= (int) (path[i].y + (getSize() / 2)); y++) {
@@ -154,7 +154,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         followingPath = true;
         this.path = path;
         move.setLinearTarget(path[currentPathTarget].x, path[currentPathTarget].y, this);
-
+        
     }
 
     /**
@@ -179,17 +179,18 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public boolean isFollowingPath() {
         return followingPath;
     }
-
+    
     @Override
     public void decreaseHitpoints(int damage) {
         super.decreaseHitpoints(damage);
         if (properties.getHitpoints() <= 0) {
             dead = true;
             Server.game.getEntityManager().removeEntity(netID);
+            target.hunters.remove(this);
             DropManager.dropItem(getX(), getY(), enemylevel);
         }
     }
-
+    
     @Override
     public void targetReached() {
         if (followingPath) {
@@ -200,19 +201,19 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         } else {
             behaviour = behaviour.getTargetReachedBehaviour();
         }
-
+        
     }
-
+    
     @Override
     public void movementBlocked() {
         behaviour = behaviour.getMovementBlockedBehaviour();
     }
-
+    
     @Override
     public void movementAborted() {
         behaviour = behaviour.getMovementAbortedBehaviour();
     }
-
+    
     @Override
     public void onCollision(Entity other) {
         behaviour = behaviour.onCollision(other);
@@ -269,14 +270,14 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
 
                     // das kleinere d wählen:
                     d = Math.min(d1, d2);
-
+                    
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
 
                     // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
                     double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
-
+                    
                     if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -312,13 +313,13 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
                     d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
                     // Das kleinere d wählen:
                     d = Math.min(d1, d2);
-
+                    
                     if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
                         d = 0;
                     }
-
+                    
                     double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-
+                    
                     if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
                         // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
                         // Also wenn die Kollision näher ist als die anderen speichern:
@@ -346,14 +347,14 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         } else {
             return true;
         }
-
+        
     }
-
+    
     @Override
     public void pathComputed(Vector[] path) {
         behaviour = behaviour.pathComputed(path);
     }
-
+    
     @Override
     public void tick(int gametick) {
         super.tick(gametick);
@@ -387,7 +388,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void setLastSightContact(int lastSightContact) {
         this.lastSightContact = lastSightContact;
     }
-
+    
     public void targetDied() {
         this.behaviour = behaviour.onTargetDeath();
         stopFacingTarget();
@@ -403,7 +404,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
         isFacingTarget = true;
         facingTargetNetId = target.netID;
         STC_SET_FACING_TARGET.sendSetFacingTarget(isFacingTarget, this.netID, facingTargetNetId);
-
+        
     }
 
     /**
@@ -412,7 +413,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
     public void stopFacingTarget() {
         STC_SET_FACING_TARGET.sendSetFacingTarget(false, this.netID, -1);
     }
-
+    
     public void setAttackTarget(Player target) {
         target.hunters.add(this);
         behaviour = behaviour.onAttackTarget(target);
