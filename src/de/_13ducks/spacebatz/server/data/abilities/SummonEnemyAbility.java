@@ -15,13 +15,19 @@ import de._13ducks.spacebatz.server.gamelogic.EnemyFactory;
  */
 public class SummonEnemyAbility extends Ability {
 
+    private Enemy lastSummonedEnemy;
+
     public SummonEnemyAbility() {
         setCooldown(300);
     }
 
     @Override
     public void useOnPosition(Char user, double x, double y) {
-        Enemy enemy = EnemyFactory.createEnemy(x, y, Server.game.newNetID(), 1);
-        Server.game.getEntityManager().addEntity(enemy.netID, enemy);
+        lastSummonedEnemy = EnemyFactory.createEnemy(x, y, Server.game.newNetID(), 1);
+        Server.game.getEntityManager().addEntity(lastSummonedEnemy.netID, lastSummonedEnemy);
+    }
+
+    public Enemy getLastSummEnemy() {
+        return lastSummonedEnemy;
     }
 }

@@ -19,4 +19,9 @@ public class KamikazeLurkBehaviour extends GenericLurkBehaviour {
         target.hunters.add(owner);
         return new KamikazeApproachTargetBehaviour(owner, target);
     }
+
+    @Override
+    public Behaviour onAttackTarget(Player target) {
+        return new KamikazeApproachTargetBehaviour(owner, target);
+    }
 }

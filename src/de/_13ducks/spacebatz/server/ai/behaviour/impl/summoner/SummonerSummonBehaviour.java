@@ -1,16 +1,17 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.summoner;
 
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
+import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericWatchTargetBehaviour;
+import de._13ducks.spacebatz.server.data.abilities.SummonEnemyAbility;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Player;
-import de._13ducks.spacebatz.util.geo.GeoTools;
 
-class SummonerSummonBehaviour extends Behaviour {
+class SummonerSummonBehaviour extends GenericWatchTargetBehaviour {
 
     private Player target;
 
     public SummonerSummonBehaviour(Enemy owner, Player target) {
-        super(owner);
+        super(owner, target, 7, 10);
         this.target = target;
     }
 
@@ -18,24 +19,36 @@ class SummonerSummonBehaviour extends Behaviour {
     public Behaviour tick(int gameTick) {
         // schießen wenn möglich:
         owner.getShootAbility().tryUseOnPosition(owner, owner.getX(), owner.getY());
-        double distance = GeoTools.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY());
-        if (distance < 5) {
-            // Zu nah dran, wegrennen
-            double dx = (owner.getX() - target.getX());
-            double dy = (owner.getY() - target.getY());
-            owner.move.setVector(dx, dy);
-            return this;
-        } else if (distance > 10) {
-            // Zu weit weg, hinrennen
-            return new SummonerApproachIndirectBehaviour(owner, target);
-        } else {
-            // Genau ruchtig, stehenbleiben
-            return this;
+        Enemy summonedEnemy = ((SummonEnemyAbility) owner.getShootAbility()).getLastSummEnemy();
+        if (summonedEnemy != null) {
+            summonedEnemy.setAttackTarget(target);
         }
+
+        return super.tick(gameTick);
     }
 
     @Override
     public Behaviour onTargetDeath() {
+        return new SummonerLurkBehaviour(owner);
+    }
+
+    @Override
+    public Behaviour toCloseToTarget(Enemy owner, Player target) {
+        // Zu nah dran, wegrennen
+        owner.setSpeed(owner.maxSpeed);
+        double dx = (owner.getX() - target.getX());
+        double dy = (owner.getY() - target.getY());
+        owner.move.setVector(dx, dy);
+        return this;
+    }
+
+    @Override
+    public Behaviour toFarFromTarget(Enemy owner, Player target) {
+        return new SummonerAproachDirectBehaviour(owner, target);
+    }
+
+    @Override
+    public Behaviour lostSightContact(Enemy owner, Player target) {
         return new SummonerLurkBehaviour(owner);
     }
 }

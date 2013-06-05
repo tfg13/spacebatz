@@ -46,6 +46,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_U
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_QUEST_RESULT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CLIENT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_FACING_TARGET;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SHADOW_CHANGE;
@@ -111,6 +112,7 @@ public class MessageRegister {
         loadSTC(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
         loadSTC(MessageIDs.NET_TCP_CMD_INV_ITEM_DELETE, new STC_DELETE_ITEM());
         loadSTC(MessageIDs.NET_STC_SET_CHAR_INVISIBILITY, new STC_SET_CHAR_INVISIBILITY());
+        loadSTC(MessageIDs.STC_SET_FACING_TARGET, new STC_SET_FACING_TARGET());
     }
 
     /**

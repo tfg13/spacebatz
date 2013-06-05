@@ -2,13 +2,14 @@ package de._13ducks.spacebatz.server.ai.behaviour;
 
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
+import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
- * A Behaviour for an enemy.
- * Behaviours can react to the events given by their owner.
- * Each event function returns a behaviour, whom the next events will be given.
- * By returning a new / other Behaviour than self, the behavioutr of an enemy can be changed.
+ * A Behaviour for an enemy. Behaviours can react to the events given by their
+ * owner. Each event function returns a behaviour, whom the next events will be
+ * given. By returning a new / other Behaviour than self, the behavioutr of an
+ * enemy can be changed.
  *
  * @author michael
  */
@@ -83,6 +84,10 @@ public class Behaviour {
      * @return
      */
     public Behaviour onTargetDeath() {
+        return this;
+    }
+
+    public Behaviour onAttackTarget(Player target) {
         return this;
     }
 }

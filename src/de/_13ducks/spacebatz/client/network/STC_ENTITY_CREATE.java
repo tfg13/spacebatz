@@ -43,6 +43,10 @@ public class STC_ENTITY_CREATE extends STCCommand {
             case 3:
                 Enemy en = new Enemy(netID, size, Bits.getInt(data, 12));
                 en.setInvisible(Bits.getChar(data, 10) == '1');
+                if (Bits.getChar(data, 16) == '1') {
+                    int facingTargetNetId = Bits.getInt(data, 20);
+                    en.setFacing(facingTargetNetId);
+                }
                 GameClient.netIDMap.put(en.netID, en);
                 break;
             case 4:

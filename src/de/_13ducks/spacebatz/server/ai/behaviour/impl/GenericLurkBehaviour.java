@@ -14,7 +14,7 @@ import de._13ducks.spacebatz.util.geo.GeoTools;
  *
  * @author michael
  */
-public abstract class GenericLurkBehaviour extends Behaviour {
+public abstract class GenericLurkBehaviour extends GenericStandDivergeBehaviour {
 
     public GenericLurkBehaviour(Enemy enemy) {
         super(enemy);
