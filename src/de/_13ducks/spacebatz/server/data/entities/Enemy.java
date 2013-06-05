@@ -390,6 +390,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
 
     public void targetDied() {
         this.behaviour = behaviour.onTargetDeath();
+        stopFacingTarget();
     }
 
     /**
@@ -409,8 +410,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * Lässt den Gegner wieder normal schauen.
      */
     public void stopFacingTarget() {
-        isFacingTarget = false;
-        STC_SET_FACING_TARGET.sendSetFacingTarget(isFacingTarget, this.netID, facingTargetNetId);
+        STC_SET_FACING_TARGET.sendSetFacingTarget(false, this.netID, -1);
     }
 
     public void setAttackTarget(Player target) {
