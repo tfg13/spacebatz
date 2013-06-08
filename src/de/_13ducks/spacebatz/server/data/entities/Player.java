@@ -26,6 +26,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TOGGLE_BUILDMODE;
 
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
@@ -70,6 +71,10 @@ public class Player extends ItemCarrier {
      * In wieviel Ticks die Turret-Drehung das nächste mal versendet wird.
      */
     private int ticksUntilNextSend = 1;
+    /**
+     * Ob sich der Spieler gerade im Baumodus befindet
+     */
+    private boolean buildmode;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -220,5 +225,20 @@ public class Player extends ItemCarrier {
             ticksUntilNextSend = DefaultSettings.TURRET_DIR_UPDATE_INTERVAL;
             STC_PLAYER_TURRET_DIR_UPDATE.broadcastTurretDir(netID, (float) turretDir);
         }
+    }
+
+    /**
+     * @return the buildmode
+     */
+    public boolean isBuildmode() {
+        return buildmode;
+    }
+
+    /**
+     * @param buildmode the buildmode to set
+     */
+    public void setBuildmode(boolean buildmode) {
+        this.buildmode = buildmode;
+        STC_TOGGLE_BUILDMODE.sendToggleBuildmode(buildmode, this.client.clientID);
     }
 }

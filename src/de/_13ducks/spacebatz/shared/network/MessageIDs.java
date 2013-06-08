@@ -270,4 +270,12 @@ public class MessageIDs {
      * Server setzt Unsichtbarkeits-Flag.
      */
     public static final byte NET_STC_SET_CHAR_INVISIBILITY = 67;
+    /**
+     * Client will in Bau-modus wechseln
+     */
+    public static final byte NET_TCP_CMD_TOGGLE_BUILDMODE = 69;
+    /**
+     * Client will in Bau-modus wechseln
+     */
+    public static final byte NET_STC_TOGGLE_BUILDMODE = 70;
 }

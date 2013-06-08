@@ -77,6 +77,10 @@ public class PlayerCharacter extends Char {
      * Der Tick, bei dem zuletzt eine Prediction stattgefunden hat.
      */
     private double lastPredictionTick;
+    /**
+     * Im Baumodus
+     */
+    private boolean buildmode;
 
     public PlayerCharacter(int netID, float size) {
         super(netID, size, new RenderObject(new Animation(0, 4, 4, 1, 1)));
@@ -453,5 +457,19 @@ public class PlayerCharacter extends Char {
      */
     public void setMovement_speed(double movement_speed) {
         this.movement_speed = movement_speed;
+    }
+
+    /**
+     * @return the buildmode
+     */
+    public boolean isBuildmode() {
+        return buildmode;
+    }
+
+    /**
+     * @param buildmode the buildmode to set
+     */
+    public void setBuildmode(boolean buildmode) {
+        this.buildmode = buildmode;
     }
 }

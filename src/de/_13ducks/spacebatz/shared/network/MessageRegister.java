@@ -27,6 +27,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_TOGGLE_BUILDMODE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_BROADCAST_TOP_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_COLLISION;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
@@ -51,6 +52,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SHADOW_CHANGE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TOGGLE_BUILDMODE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_UPDATE_SKILLTREE;
 
@@ -83,6 +85,7 @@ public class MessageRegister {
         loadCTS(MessageIDs.NET_CTS_INVEST_SKILLPOINT, new CTS_INVEST_SKILLPOINT());
         loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_MOVE, new CTS_REQUEST_INV_ITEM_MOVE());
         loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_DELETE, new CTS_DELETE_ITEM());
+        loadCTS(MessageIDs.NET_TCP_CMD_TOGGLE_BUILDMODE, new CTS_TOGGLE_BUILDMODE());
         // STC
         loadSTC(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         loadSTC(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
@@ -111,6 +114,7 @@ public class MessageRegister {
         loadSTC(MessageIDs.NET_STC_DEL_CLIENT, new STC_DEL_CLIENT());
         loadSTC(MessageIDs.NET_TCP_CMD_INV_ITEM_DELETE, new STC_DELETE_ITEM());
         loadSTC(MessageIDs.NET_STC_SET_CHAR_INVISIBILITY, new STC_SET_CHAR_INVISIBILITY());
+        loadSTC(MessageIDs.NET_STC_TOGGLE_BUILDMODE, new STC_TOGGLE_BUILDMODE());
     }
 
     /**
