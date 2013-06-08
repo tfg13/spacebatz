@@ -229,7 +229,6 @@ public class ItemCarrier extends Char {
 //        }
 //        return item;
 //    }
-
     /**
      * Wählt gerade aktive Waffe aus
      *
@@ -262,8 +261,16 @@ public class ItemCarrier extends Char {
     }
 
     /**
-     * Tauscht 2 Items im Inventar
-     * 2. Slot mus kein Item enthalten, dann wird nur 1. Item verschoben
+     * Gibt die gerade ausgewählte Waffe zurück
+     *
+     * @return ein Weapon
+     */
+    public Item getActiveTool() {
+        return equipslots[6][0];
+    }
+
+    /**
+     * Tauscht 2 Items im Inventar 2. Slot mus kein Item enthalten, dann wird nur 1. Item verschoben
      *
      * @param inventoryslot1 erster Inventarplatz
      * @param inventoryslot2 zweiter Inventarplatz

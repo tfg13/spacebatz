@@ -38,8 +38,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_TOGGLE_BUILDMODE;
 public class Player extends ItemCarrier {
 
     /**
-     * Bewegungssystem des Spielers.
-     * Immer DiscreteMover, denn der Client muss die genaue Position vorhersagen können.
+     * Bewegungssystem des Spielers. Immer DiscreteMover, denn der Client muss die genaue Position vorhersagen können.
      */
     public final DiscreteMover move;
     /**
@@ -127,22 +126,29 @@ public class Player extends ItemCarrier {
     public void playerShoot(double tx, double ty) {
         if (!dead) {
             if (Server.game.getTick() >= attackCooldownTick) {
+                if (!buildmode) {
+                    // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
+                    double aspeed = standardAttack.getWeaponStats().getAttackspeed();
+                    if (getActiveWeapon() != null) {
+                        aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
+                    }
 
-                // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
-                double aspeed = standardAttack.getWeaponStats().getAttackspeed();
-                if (getActiveWeapon() != null) {
-                    aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
-                }
-
-                if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
-                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                    standardAttack.tryUseOnPosition(this, tx, ty);
-                } else {
-                    int maxOverheat = (int) (getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
-                    if (getActiveWeapon().getOverheat() + 1 <= maxOverheat || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
+                    if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
                         attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                        getActiveWeapon().increaseOverheat(1);
-                        getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
+                        standardAttack.tryUseOnPosition(this, tx, ty);
+                    } else {
+                        int maxOverheat = (int) (getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
+                        if (getActiveWeapon().getOverheat() + 1 <= maxOverheat || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
+                            attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                            getActiveWeapon().increaseOverheat(1);
+                            getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
+                        }
+                    }
+                } else {
+                    if (getActiveTool() != null) {
+                        double aspeed = getActiveTool().getWeaponAbility().getWeaponStats().getAttackspeed();
+                        attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                        getActiveTool().getWeaponAbility().tryUseOnPosition(this, tx, ty);
                     }
                 }
             }

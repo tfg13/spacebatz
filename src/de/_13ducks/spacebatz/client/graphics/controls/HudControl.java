@@ -50,7 +50,7 @@ public class HudControl implements Control {
         glEnd(); // Zeichnen des QUADs fertig } }
 
         // HUD-Bild bei Waffen
-        if (GameClient.player.isBuildmode()) {
+        if (!GameClient.player.isBuildmode()) {
             float height2 = 0.42f * camera.getTilesY();
             float height3 = 0.77f * camera.getTilesY();
             float width2 = width1 * 0.234f;
@@ -94,83 +94,85 @@ public class HudControl implements Control {
         glEnable(GL_TEXTURE_2D);
 
         // angelegte Waffen in Hud zeichnen
-        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+        if (!GameClient.player.isBuildmode()) {
+            for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
 
-            Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
+                Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
 
-            if (item != null) {
-                float x = 0.016f;
-                float y = 0.705f - 0.1f * j;
-                float width = 0.05f / 16.0f * 9.0f;
-                float height = 0.05f;
+                if (item != null) {
+                    float x = 0.016f;
+                    float y = 0.705f - 0.1f * j;
+                    float width = 0.05f / 16.0f * 9.0f;
+                    float height = 0.05f;
 
-                renderer.setTilemap(itemTiles);
-                renderer.setTileSize(32, 32);
-                renderer.setScreenMapping(0, 1, 0, 1);
-                renderer.drawTile(item.getPic(), x, y, width, height);
-                renderer.restoreScreenMapping();
-            }
-        }
-
-        // Rahmen um angelegte Waffen in Hud zeichnen
-        glDisable(GL_TEXTURE_2D);
-        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
-
-            glColor3f(0.0f, 0.0f, 0.0f);
-
-            float x1 = 0.014f * camera.getTilesX();
-            float y1 = (0.705f - 0.1f * j) * camera.getTilesY();
-            float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * camera.getTilesX();
-            float y2 = (0.7505f - 0.1f * j) * camera.getTilesY();
-
-            glBegin(GL_LINE_LOOP);
-            glVertex2d(x1, y1);
-            glVertex2d(x2, y1);
-            glVertex2d(x2, y2);
-            glVertex2d(x1, y2);
-
-            glEnd();
-        }
-
-        // Waffen-Overheat in Hud zeichnen
-        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
-            float height = 0.69f - 0.1f * j;
-
-            Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
-            int maxOverheat = 0;
-            if (item != null) {
-                maxOverheat = (int) (item.getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + item.getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
+                    renderer.setTilemap(itemTiles);
+                    renderer.setTileSize(32, 32);
+                    renderer.setScreenMapping(0, 1, 0, 1);
+                    renderer.drawTile(item.getPic(), x, y, width, height);
+                    renderer.restoreScreenMapping();
+                }
             }
 
-            if (item != null && maxOverheat > 0) {
+            // Rahmen um angelegte Waffen in Hud zeichnen
+            glDisable(GL_TEXTURE_2D);
+            for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
 
-                float overheatpermax = (float) (item.getOverheat() / maxOverheat);
-                if (overheatpermax > 1) {
-                    overheatpermax = 1.0f;
-                } else if (overheatpermax < 0) {
-                    overheatpermax = 0.0f;
+                glColor3f(0.0f, 0.0f, 0.0f);
+
+                float x1 = 0.014f * camera.getTilesX();
+                float y1 = (0.705f - 0.1f * j) * camera.getTilesY();
+                float x2 = (0.018f + 0.05f / 16.0f * 9.0f) * camera.getTilesX();
+                float y2 = (0.7505f - 0.1f * j) * camera.getTilesY();
+
+                glBegin(GL_LINE_LOOP);
+                glVertex2d(x1, y1);
+                glVertex2d(x2, y1);
+                glVertex2d(x2, y2);
+                glVertex2d(x1, y2);
+
+                glEnd();
+            }
+
+            // Waffen-Overheat in Hud zeichnen
+            for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+                float height = 0.69f - 0.1f * j;
+
+                Item item = GameClient.getEquippedItems().getEquipslots()[1][j];
+                int maxOverheat = 0;
+                if (item != null) {
+                    maxOverheat = (int) (item.getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + item.getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
                 }
 
-                // weißer Hintergrund
-                glColor3f(1.0f, 1.0f, 1.0f);
-                glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
-                // roter Overheat-Balken
-                glColor3f(0.7f, 0.0f, 0.0f);
-                glRectf(0.007f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.007f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
-            } else {
-                // grauer Hintergrund
-                glColor3f(0.6f, 0.6f, 0.6f);
-                glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                if (item != null && maxOverheat > 0) {
+
+                    float overheatpermax = (float) (item.getOverheat() / maxOverheat);
+                    if (overheatpermax > 1) {
+                        overheatpermax = 1.0f;
+                    } else if (overheatpermax < 0) {
+                        overheatpermax = 0.0f;
+                    }
+
+                    // weißer Hintergrund
+                    glColor3f(1.0f, 1.0f, 1.0f);
+                    glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                    // roter Overheat-Balken
+                    glColor3f(0.7f, 0.0f, 0.0f);
+                    glRectf(0.007f * camera.getTilesX(), (height + 0.002f) * camera.getTilesY(), (0.007f + 0.046f * overheatpermax) * camera.getTilesX(), (height + 0.008f) * camera.getTilesY());
+                } else {
+                    // grauer Hintergrund
+                    glColor3f(0.6f, 0.6f, 0.6f);
+                    glRectf(0.005f * camera.getTilesX(), height * camera.getTilesY(), 0.055f * camera.getTilesX(), (height + 0.01f) * camera.getTilesY());
+                }
+                glColor3f(1f, 1f, 1f);
             }
+
+            // Markierung an angelegte Waffe:
+            glColor3f(0.7f, 0.0f, 0.0f);
+            float height = 0.7f - 0.1f * GameClient.player.getSelectedattack();
+            glRectf(0.0f * camera.getTilesX(), height * camera.getTilesY(), 0.005f * camera.getTilesX(), (height + 0.05f) * camera.getTilesY());
+            glEnable(GL_TEXTURE_2D);
             glColor3f(1f, 1f, 1f);
         }
-
-        // Markierung an angelegte Waffe:
-        glColor3f(0.7f, 0.0f, 0.0f);
-        float height = 0.7f - 0.1f * GameClient.player.getSelectedattack();
-        glRectf(0.0f * camera.getTilesX(), height * camera.getTilesY(), 0.005f * camera.getTilesX(), (height + 0.05f) * camera.getTilesY());
-        glEnable(GL_TEXTURE_2D);
-        glColor3f(1f, 1f, 1f);
     }
 
     @Override

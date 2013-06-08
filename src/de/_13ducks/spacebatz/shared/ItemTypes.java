@@ -136,7 +136,7 @@ public class ItemTypes {
         superrocketlauncher.setQuality(3);
         superrocketlauncher.setAmount(0);
         superrocketlauncher.getWeaponStats().setAttackOffset(1.0);
-        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.08, 20.0, 16, 0.45, 0.0, 4.0, 12, 0.025));
+        superrocketlauncher.setWeaponAbility(new FireBulletAbility(12, 0, 0.06, 20.0, 16, 0.45, 0.0, 4.0, 12, 0.025));
         itemtypelist.add(superrocketlauncher);
 
         ItemAttribute superpistol = new ItemAttribute("Super Pistol");
@@ -145,7 +145,7 @@ public class ItemTypes {
         superpistol.setQuality(3);
         superpistol.setAmount(0);
         superpistol.getWeaponStats().setAttackOffset(1.0);
-        superpistol.setWeaponAbility(new FireBulletAbility(12, 10, 0.1, 16.0, 1, 0.45, 0.02, 0.0, 0, 0));
+        superpistol.setWeaponAbility(new FireBulletAbility(11, 10, 0.07, 16.0, 1, 0.45, 0.02, 0.0, 0, 0));
         itemtypelist.add(superpistol);
 
         ItemAttribute drill = new ItemAttribute("Drill");
@@ -153,7 +153,7 @@ public class ItemTypes {
         drill.setItemClass(6);
         drill.setQuality(1);
         drill.setAmount(0);
-        drill.setWeaponAbility(new HitscanAbility(10, 5, 0.1, 4.0, 0, 0));
+        drill.setWeaponAbility(new HitscanAbility(8, 4, 0.1, 4.0, 0, 0));
         itemtypelist.add(drill);
         
         ItemAttribute superdrill = new ItemAttribute("Super Drill");
@@ -161,7 +161,7 @@ public class ItemTypes {
         superdrill.setItemClass(6);
         superdrill.setQuality(3);
         superdrill.setAmount(0);
-        superdrill.setWeaponAbility(new HitscanAbility(20, 10, 0.12, 4.0, 0, 0));
+        superdrill.setWeaponAbility(new HitscanAbility(12, 6, 0.12, 4.0, 0, 0));
         itemtypelist.add(superdrill);
 
     }

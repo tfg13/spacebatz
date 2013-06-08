@@ -5,6 +5,8 @@
 package de._13ducks.spacebatz.shared.network.messages.STC;
 
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.client.network.FixedSizeSTCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
@@ -25,6 +27,7 @@ public class STC_TOGGLE_BUILDMODE extends FixedSizeSTCCommand {
     public void execute(byte[] data) {
         boolean mode = data[0] == 1 ? true : false;
         GameClient.players.get((int) data[1]).getPlayer().setBuildmode(mode);
+        GameClient.players.get((int) data[1]).getPlayer().setTurretRenderObject(new RenderObject(new Animation(mode ? 8 : 4, 4, 4, 1, 1)));
     }
 
     public static void sendToggleBuildmode(boolean mode, byte clientid) {

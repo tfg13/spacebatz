@@ -18,12 +18,10 @@ import de._13ducks.spacebatz.shared.Item;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
- * Repräsentiert einen Spieler auf dem Client.
- * Hält eine Spieler-spezifische Daten wie angelegte Waffe und Turret-Richtung.
+ * Repräsentiert einen Spieler auf dem Client. Hält eine Spieler-spezifische Daten wie angelegte Waffe und Turret-Richtung.
  *
- * Hauptsächlich aber für die Prediction der Spielfigur zuständig.
- * Speichert dafür eine zusätzliche PredictedPosition,
- * die er mit den Bewegungsanfragen an den Server und der bekannten Geschwindigkeit selber aktualisiert.
+ * Hauptsächlich aber für die Prediction der Spielfigur zuständig. Speichert dafür eine zusätzliche PredictedPosition, die er mit den Bewegungsanfragen an den Server und der bekannten Geschwindigkeit
+ * selber aktualisiert.
  *
  * Wenn diese Position nicht zu arg von der korrekten, synchronisierten abweicht, wird sie für jegliche Grafikausgabe verwendet.
  *
@@ -65,8 +63,7 @@ public class PlayerCharacter extends Char {
      */
     private double prediction_speed = CompileTimeParameters.BASE_MOVESPEED;
     /**
-     * Vom Client vorhergesagte Position.
-     * Kopiert die richtige Server-Position, wenn die Einheit steht oder Probleme mit der Prediction auftreten.
+     * Vom Client vorhergesagte Position. Kopiert die richtige Server-Position, wenn die Einheit steht oder Probleme mit der Prediction auftreten.
      */
     private double predictedX, predictedY;
     /**
@@ -139,6 +136,10 @@ public class PlayerCharacter extends Char {
         return turretRenderObject;
     }
 
+    public void setTurretRenderObject(RenderObject turretRenderObject) {
+        this.turretRenderObject = turretRenderObject;
+    }
+
     /**
      * Liefert die Richtung, in die das Turret gerade schaut.
      *
@@ -153,8 +154,7 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Setzt die Einheitengeschwindigkeit für die Prediction neu.
-     * Nur relevant, wenn die Prediction aktiviert ist, hat erstmal nichts mit der normalen Einheitengeschwindigkeit zu tun.
+     * Setzt die Einheitengeschwindigkeit für die Prediction neu. Nur relevant, wenn die Prediction aktiviert ist, hat erstmal nichts mit der normalen Einheitengeschwindigkeit zu tun.
      *
      * @param prediction_speed the Geschwindigkeit in Feldern pro Tick
      */
@@ -181,9 +181,8 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Muss jeden Tick aufgerufen werden, sonst funktioniert die Prediction nicht.
-     * Es müssen die WASD-Tastendrücke codiert übergeben werden.
-     * Die oberen 4 Bits des übergebenen Bytes entsprechen den Buttons in der Reihenfolge WASD.
+     * Muss jeden Tick aufgerufen werden, sonst funktioniert die Prediction nicht. Es müssen die WASD-Tastendrücke codiert übergeben werden. Die oberen 4 Bits des übergebenen Bytes entsprechen den
+     * Buttons in der Reihenfolge WASD.
      *
      * @param buttons WASD0000, bitweise codiert
      */
@@ -211,8 +210,7 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Berechnet die Bewegungs-Vorhersage.
-     * Verschiebt die Einheit und führt eine Kollisionsberechnung durch.
+     * Berechnet die Bewegungs-Vorhersage. Verschiebt die Einheit und führt eine Kollisionsberechnung durch.
      */
     private void computePrediction(int tick) {
         if (predictMovements && !paralyzed) {
@@ -432,9 +430,8 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Liefert einen Vektor der den aktuellen Unterschied zwischen Serverposition und Prediction beschreibt.
-     * Darf nicht aufgerufen werden, wenn die Einheit gar nicht predicted wird.
-     * Der Vektor zeigt von der öffentlichen, vorhergesagten Position zur Serverposition.
+     * Liefert einen Vektor der den aktuellen Unterschied zwischen Serverposition und Prediction beschreibt. Darf nicht aufgerufen werden, wenn die Einheit gar nicht predicted wird. Der Vektor zeigt
+     * von der öffentlichen, vorhergesagten Position zur Serverposition.
      *
      * @return Delta-Vektor
      */
