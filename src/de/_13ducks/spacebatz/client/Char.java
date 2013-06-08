@@ -56,11 +56,13 @@ public class Char {
      */
     private double x, y;
     /**
-     * Die Richtung, in die dieser Char schaut. Die übliche PI-Einheitskreis-Zählweise
+     * Die Richtung, in die dieser Char schaut. Die übliche
+     * PI-Einheitskreis-Zählweise
      */
     private double dir = 0;
     /**
-     * Die Richtung, in die dieser Char schauen soll. Er dreht sich in jedem Tick etwas in diese Richtung.
+     * Die Richtung, in die dieser Char schauen soll. Er dreht sich in jedem
+     * Tick etwas in diese Richtung.
      */
     private double target_dir = 0;
     /**
@@ -91,6 +93,15 @@ public class Char {
      * Ob dieser Char gerade unsichtbar ist.
      */
     private boolean invisible = false;
+    /**
+     * Gibt an, ob die Blickrichtung dieses Chars auf einen anderen Char fixiert
+     * ist.
+     */
+    private boolean isFacingTarget;
+    /**
+     * Die netId des Chars, auf den die Blickrichtung dieses Chars fixiert ist.
+     */
+    private int facingTargetNetId;
 
     public Char(int netID, float size, RenderObject renderObject) {
         this.netID = netID;
@@ -105,7 +116,8 @@ public class Char {
     }
 
     /**
-     * Liefert den aktuellen X-Wert zurück Bewegungen sind hier schon eingerechnet.
+     * Liefert den aktuellen X-Wert zurück Bewegungen sind hier schon
+     * eingerechnet.
      *
      * @return die aktuelle X-Position
      */
@@ -114,7 +126,8 @@ public class Char {
     }
 
     /**
-     * Liefert den aktuellen Y-Wert zurück Bewegungen sind hier schon eingerechnet.
+     * Liefert den aktuellen Y-Wert zurück Bewegungen sind hier schon
+     * eingerechnet.
      *
      * @return die aktuelle Y-Position
      */
@@ -123,7 +136,8 @@ public class Char {
     }
 
     /**
-     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und
+     * deshalb garantiert nicht mit der Prediction in Konflikt gerät.
      *
      * @return die aktuelle X-Position, Bewegungen eingerechnet
      */
@@ -132,7 +146,8 @@ public class Char {
     }
 
     /**
-     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und
+     * deshalb garantiert nicht mit der Prediction in Konflikt gerät.
      *
      * @return die aktuelle Y-Position, Bewegungen eingerechnet
      */
@@ -184,7 +199,7 @@ public class Char {
             this.vY = m.vecY;
         }
         // Nicht drehen beim Stehenbleiben
-        if (startTick != -1) {
+        if (startTick != -1 && !isFacingTarget) {
             this.target_dir = Math.atan2(vY, vX);
         }
 
@@ -244,14 +259,28 @@ public class Char {
      * @param gameTick
      */
     public void tick(int gameTick) {
+        if (isFacingTarget) {
+            // Blickrichtung an Ziel anpassen:
+            Char target = GameClient.netIDMap.get(facingTargetNetId);
+            if (target != null) {
+                double dx = target.getX() - getX();
+                double dy = target.getY() - getY();
+                target_dir = Math.atan2(dy, dx);
+            } else {
+                target_dir = 0;
+            }
+        }
         if (target_Char != null) {
             // Einheit verschieben:
             Vector stepDirection = new Vector(target_Char.internalGetX() - x, target_Char.internalGetY() - y).normalize().multiply(speed);
             x += stepDirection.x;
             y += stepDirection.y;
-            vX = stepDirection.x;
-            vY = stepDirection.y;
-            target_dir = Math.atan2(vY, vX);
+            if (!isFacingTarget) {
+                // Blickrichtung an Bewegung anpassen:
+                vX = stepDirection.x;
+                vY = stepDirection.y;
+                target_dir = Math.atan2(vY, vX);
+            }
             startTick = gameTick;
         }
         // Etwas in Richtung target_dir drehen:
@@ -305,6 +334,7 @@ public class Char {
             }
             hpRegCarryover = bla - (int) bla;
         }
+
     }
 
     /**
@@ -354,5 +384,22 @@ public class Char {
      */
     public void setArmor(int armor) {
         this.armor = armor;
+    }
+
+    /**
+     * Fixiert die Blickrichtung dieses Chars auf einen anderen Char.
+     *
+     * @param targetNetId
+     */
+    public void setFacing(int targetNetId) {
+        isFacingTarget = true;
+        facingTargetNetId = targetNetId;
+    }
+
+    /**
+     * Deaktiviert die Fixierung der Blickrichtung dieses Chars auf sein Ziel.
+     */
+    public void stopFacing() {
+        isFacingTarget = false;
     }
 }

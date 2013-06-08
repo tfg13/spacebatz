@@ -21,6 +21,7 @@ public class SummonerLurkBehaviour extends GenericLurkBehaviour {
     @Override
     public Behaviour targetSpotted(Player target) {
         target.hunters.add(owner);
+        owner.target = target;
         return new SummonerApproachIndirectBehaviour(owner, target);
     }
 }

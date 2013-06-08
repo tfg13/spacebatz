@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.kiter;
 
-import de._13ducks.spacebatz.server.ai.behaviour.impl.shooter.*;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericDirectPursuitBehaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;

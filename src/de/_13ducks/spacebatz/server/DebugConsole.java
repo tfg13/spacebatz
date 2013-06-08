@@ -11,13 +11,13 @@
 package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
-import de._13ducks.spacebatz.server.ai.behaviour.impl.standardenemy.StandardEnemyBehaviour;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
+import de._13ducks.spacebatz.server.gamelogic.EnemyFactory;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.*;
 import java.util.ArrayList;
@@ -252,8 +252,7 @@ public class DebugConsole {
                         break;
                     case "spawnenemy":
                         for (Client c : Server.game.clients.values()) {
-                            Enemy e1 = new Enemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1, Team.MOBS);
-                            e1.setBehaviour(new StandardEnemyBehaviour(e1));
+                            Enemy e1 = EnemyFactory.createEnemy(c.getPlayer().getX(), c.getPlayer().getY(), Server.game.newNetID(), 1);
                             Server.game.getEntityManager().addEntity(e1.netID, e1);
                         }
                         break;

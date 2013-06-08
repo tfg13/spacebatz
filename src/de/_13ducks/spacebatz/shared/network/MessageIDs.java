@@ -35,6 +35,10 @@ public class MessageIDs {
      */
     public static final byte NET_CTS_INVEST_SKILLPOINT = 51;
     /**
+     * Setzt den Blickrichtungsmodus eines Gegners
+     */
+    public static final byte STC_SET_FACING_TARGET = 124;
+    /**
      * Teilt dem Spieler mit welchen Char er kontrolliert
      */
     public static final byte NET_STC_SET_PLAYER = 21;

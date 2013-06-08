@@ -42,6 +42,7 @@ public abstract class GenericDirectPursuitBehaviour extends Behaviour {
             return reachedDesiredDistance(target, owner);
         } else {
             if (!owner.move.isFollowingTarget(target)) {
+                owner.setSpeed(owner.maxSpeed);
                 owner.move.setFollowTarget(target);
             }
             // Läuft schon, machen lassen.

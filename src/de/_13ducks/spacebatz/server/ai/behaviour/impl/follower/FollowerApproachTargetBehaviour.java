@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.server.ai.behaviour.impl.follower;
 
-import de._13ducks.spacebatz.server.ai.behaviour.impl.spectator.*;
 import de._13ducks.spacebatz.server.ai.behaviour.Behaviour;
 import de._13ducks.spacebatz.server.ai.behaviour.impl.GenericIndirectPursuitBehaviour;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
