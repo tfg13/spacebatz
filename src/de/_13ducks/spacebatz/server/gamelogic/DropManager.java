@@ -89,6 +89,42 @@ public class DropManager {
         }
     }
 
+    // TESTCODE
+    public static void dropStartItems(Client c) {
+
+        ArrayList<ItemAttribute> dropableitems = new ArrayList<>();
+        for (int i = 0; i < itemtypelist.size(); i++) {
+            String itemname = itemtypelist.get(i).getName();
+            //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
+            if (itemname.equals("Drill")) {
+                dropableitems.add(itemtypelist.get(i));
+            }
+        }
+        ItemAttribute stats = dropableitems.get(0);
+        Item item = new Item(stats.getName(), stats, Server.game.newNetID());
+
+        //Server.game.getItemMap().put(item.getNetID(), item);
+
+        byte[] serializedItem = null;
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        ObjectOutputStream os;
+        try {
+            os = new ObjectOutputStream(bs);
+            os.writeObject(item);
+            os.flush();
+            bs.flush();
+            bs.close();
+            os.close();
+            serializedItem = bs.toByteArray();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        c.getPlayer().putItem(item.getNetID(), item);
+        STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
+    }
+
     /**
      * Dem übergebenen Item zufällige Attribute hinzufügen
      *
