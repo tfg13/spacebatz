@@ -127,7 +127,7 @@ public class ItemTypes {
         saw.setItemClass(1);
         saw.setQuality(1);
         saw.setAmount(0);
-        saw.setWeaponAbility(new HitscanAbility(20, 4, 0.08, 4.0, 10, 0.04));
+        saw.setWeaponAbility(new HitscanAbility(20, 4, 0.1, 4.0, 10, 0.08));
         itemtypelist.add(saw);
 
         ItemAttribute superrocketlauncher = new ItemAttribute("Super Rocket Launcher");

@@ -35,7 +35,7 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
         if (charid == GameClient.player.netID) {
             int weaponnumber = GameClient.player.getSelectedattack();
             Item item = GameClient.getEquippedItems().getEquipslots()[1][weaponnumber];
-            if (item != null) {
+            if (item != null && !GameClient.player.isBuildmode()) {
                 GameClient.getEquippedItems().getEquipslots()[1][weaponnumber].increaseOverheat(1);
                 double aspeed = item.getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + item.getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
                 GameClient.player.attackCooldownTick = GameClient.frozenGametick + (int) Math.ceil(1 / aspeed);
