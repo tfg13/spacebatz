@@ -147,22 +147,18 @@ public class DropManager {
         }
 
         Random random = new Random();
-        int rand = random.nextInt(21);
+        int rand = random.nextInt(80);
 
         // Anzahl Attribute, die das Item kriegt (bis zu)
-        int maxatt;
-        if (rand < 6) {
-            maxatt = 0;
-        } else if (rand < 11) {
-            maxatt = 1;
-        } else if (rand < 15) {
-            maxatt = 2;
-        } else if (rand < 18) {
-            maxatt = 3;
-        } else if (rand < 20) {
+        int maxatt = 0;
+        if (rand > 72) {
             maxatt = 4;
-        } else {
-            maxatt = 5;
+        } else if (rand > 62) {
+            maxatt = 3;
+        } else if (rand > 47) {
+            maxatt = 2;
+        } else if (rand > 30) {
+            maxatt = 1;
         }
 
         for (int i = 0; i < maxatt; i++) {

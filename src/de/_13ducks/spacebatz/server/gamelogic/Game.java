@@ -212,6 +212,8 @@ public class Game {
             STC_START_ENGINE.sendStartGame(newClient);
             // Dem Client alle aktiven Quests schicken
             Server.game.questManager.newClient(newClient);
+            // Dem Client Startitems geben
+            DropManager.dropStartItems(newClient);
         } else {
             System.out.println("WARNING: Client connected, but Server is full!");
         }
