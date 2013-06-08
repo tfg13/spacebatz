@@ -94,6 +94,8 @@ public class GraphicsEngine {
             contextAttributes.withProfileCore(true); // Alte Befehle verbieten
             Display.create(pixelFormat, contextAttributes);
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
+            glEnable(GL_BLEND); // Transparenz in Texturen erlauben
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
             // Hat die Platform alles was wir brauchen?
             // Erst nach dem Fenster-erzeugen, manche Tests brauchen einen aktiven OpenGL-Context
             checkCapabilities();

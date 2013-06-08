@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.client.graphics.renderer.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.PlayerCharacter;
+import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
@@ -57,6 +59,11 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      * Arrays: X Y {vao, vbo, numberoftriangles}
      */
     private int[][][] topChunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][3];
+    /**
+     * VAO und VBO für Gegner.
+     * Mit Color und Drehung.
+     */
+    private int[] testPlayer;
 
     @Override
     public void setupShaders(int[] shader) {
@@ -129,6 +136,28 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
                 renderChunk(topChunkVAOs[x][y][0], topChunkVAOs[x][y][2]);
             }
         }
+
+        if (testPlayer == null) {
+            createPlayerVBO(GameClient.player.netID);
+        }
+        // Enemys
+        updateVBOs();
+        RenderUtils.getTextureByName("player.png").bind();
+        renderPlayer(testPlayer[0]);
+
+    }
+
+    private void renderPlayer(int playerVAOAdr) {
+        // Render
+        GL30.glBindVertexArray(playerVAOAdr);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        // Zeichnen
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
+        // Aufräumen
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL30.glBindVertexArray(0);
     }
 
     private void renderChunk(int chunkVAOAdr, int numberOfTriangles) {
@@ -142,6 +171,60 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
+    }
+
+    private void createPlayerVBO(int netID) {
+        PlayerCharacter pl = (PlayerCharacter) GameClient.netIDMap.get(netID);
+        Animation anim = pl.getRenderObject().getBaseAnim();
+        FloatBuffer tv = BufferUtils.createFloatBuffer(18 + 12);
+        // Vertex-Koordinaten:
+        float rx = (float) pl.getX();
+        float ry = (float) pl.getY();
+        float sx = 1;
+        float sy = 1;
+        tv.put(rx - sx).put(ry - sy).put(0);
+        tv.put(rx - sx).put(ry + sy).put(0);
+        tv.put(rx + sx).put(ry - sy).put(0);
+        tv.put(rx - sx).put(ry + sy).put(0);
+        tv.put(rx + sx).put(ry - sy).put(0);
+        tv.put(rx + sx).put(ry + sy).put(0);
+        // Textur-Koordinaten:
+        float picsizex = 0.0625f * anim.getPicsizex();
+        float picsizey = 0.0625f * anim.getPicsizey();
+        int currentpic = (GameClient.frozenGametick / anim.getPicduration()) % anim.getNumberofpics();
+        currentpic += anim.getStartpic();
+        float v = (currentpic % (16 / anim.getPicsizex())) * picsizex;
+        float w = (currentpic / (16 / anim.getPicsizey())) * picsizey;
+        float onepixel = 1.0f / 256; // einen pixel vom Bild in jede Richtung abschneiden
+        System.out.println("Pic: " + currentpic + " psx: " + picsizex + " onepx: " + onepixel + " v: " + v);
+        tv.put(v + onepixel).put((w + picsizey) + onepixel);
+        tv.put(v + onepixel).put(w + onepixel);
+        tv.put((v + picsizex) + onepixel).put((w + picsizey) + onepixel);
+        tv.put(v + onepixel).put(w + onepixel);
+        tv.put((v + picsizex) + onepixel).put((w + picsizey) + onepixel);
+        tv.put((v + picsizex) + onepixel).put(w + onepixel);
+
+        tv.flip();
+
+        // VAO erstellen und mit VBO verbinden
+        int vao = GL30.glGenVertexArrays();
+        GL30.glBindVertexArray(vao);
+
+        // VBO erstellen
+        int vbo = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tv, GL15.GL_STATIC_DRAW);
+        // Daten-Links setzen
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 18 << 2);
+
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL30.glBindVertexArray(0);
+
+        // Speichern:
+        testPlayer = new int[2];
+        testPlayer[0] = vao;
+        testPlayer[1] = vbo;
     }
 
     /**
@@ -355,5 +438,25 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     @Override
     public void reEnableShader() {
         GL20.glUseProgram(shader[GraphicsEngine.SHADER_INDEX_GAME]);
+    }
+
+    private void updateVBOs() {
+        PlayerCharacter pl = GameClient.player;
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, testPlayer[1]);
+        FloatBuffer vr = BufferUtils.createFloatBuffer(18);
+        float rx = (float) pl.getX();
+        float ry = (float) pl.getY();
+        float sx = 1;
+        float sy = 1;
+        // Vertex
+        vr.put(rx - sx).put(ry - sy).put(0);
+        vr.put(rx - sx).put(ry + sy).put(0);
+        vr.put(rx + sx).put(ry - sy).put(0);
+        vr.put(rx - sx).put(ry + sy).put(0);
+        vr.put(rx + sx).put(ry - sy).put(0);
+        vr.put(rx + sx).put(ry + sy).put(0);
+        vr.flip();
+        GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, vr);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 }
