@@ -36,11 +36,13 @@ public class GenericStandDivergeBehaviour extends Behaviour {
         if (Server.game.getTick() % DIVERGE_TIMEOUT_TICKS == randomTick) {
 
             Divergation div = computeDivergationVector();
-            if (div.speed != 0) {
+            if (div.speed > 0 && (div.direction.x != 0 || div.direction.y != 0)) {
                 owner.move.setVector(div.direction.x, div.direction.y);
                 owner.setSpeed(div.speed);
             } else {
-                owner.move.stopMovement();
+                if (owner.move.isMoving()) {
+                    owner.move.stopMovement();
+                }
             }
         }
         return this;
@@ -62,12 +64,14 @@ public class GenericStandDivergeBehaviour extends Behaviour {
         for (Entity e : Server.entityMap.getEntitiesAroundPoint(owner.getX(), owner.getY(), 5)) {
             if (e instanceof Char && e != owner) {
                 double distance = GeoTools.getDistance(owner.getX(), owner.getY(), e.getX(), e.getY());
-                double maxDistance = owner.getSize() + e.getSize();
-                double divergationFactor = Math.pow(1 - (distance / maxDistance), 3);
-                if (divergationFactor <= 0.6) {
-                    Vector singleDivergation = new Vector(owner.getX() - e.getX(), owner.getY() - e.getY());
-                    speed = Math.max(speed, owner.maxSpeed * divergationFactor);
-                    direction = direction.add(singleDivergation.multiply(divergationFactor));
+                double maxDistance = (owner.getSize() + e.getSize()) / 2;
+                if (distance < maxDistance) {
+                    double divergationFactor = 1 - (distance / maxDistance);
+                    if (divergationFactor <= 1.0) {
+                        Vector singleDivergation = new Vector(owner.getX() - e.getX(), owner.getY() - e.getY());
+                        speed = Math.max(speed, owner.maxSpeed * divergationFactor);
+                        direction = direction.add(singleDivergation.multiply(divergationFactor));
+                    }
                 }
             }
         }
