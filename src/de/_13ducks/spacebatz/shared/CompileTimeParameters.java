@@ -53,7 +53,7 @@ public final class CompileTimeParameters {
     /**
      * Die HP der Chars
      */
-    public static final int CHARHEALTH = 900;
+    public static final int CHARHEALTH = 100;
     /**
      * Die HP-Regeneration der Player (pro Sekunde)
      */
@@ -69,7 +69,7 @@ public final class CompileTimeParameters {
     /**
      * Zeit, bis Spieler nach seinem Tod respawnt, in Ticks
      */
-    public static final int RESPAWNTIME = 300;
+    public static final int RESPAWNTIME = 130;
     /**
      * Wie viele Materialen es gibt.
      */
