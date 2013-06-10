@@ -33,10 +33,7 @@ public class STC_SET_FACING_TARGET extends FixedSizeSTCCommand {
             } else {
                 enemy.stopFacing();
             }
-        } else {
-            System.out.println("CLIENT: Received setFacing command for unknown entity!");
         }
-
     }
 
     public static void sendSetFacingTarget(boolean isFacing, int facerNetId, int targetNetId) {
@@ -45,7 +42,7 @@ public class STC_SET_FACING_TARGET extends FixedSizeSTCCommand {
         encoder.writeInt(facerNetId);
         encoder.writeInt(targetNetId);
         for (Client c : Server.game.clients.values()) {
-            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.STC_SET_FACING_TARGET, encoder.getBytes()), c);
+            Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_STC_SET_FACING_TARGET, encoder.getBytes()), c);
         }
     }
 }

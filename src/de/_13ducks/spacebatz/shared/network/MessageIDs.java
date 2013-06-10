@@ -37,7 +37,11 @@ public class MessageIDs {
     /**
      * Setzt den Blickrichtungsmodus eines Gegners
      */
-    public static final byte STC_SET_FACING_TARGET = 124;
+    public static final byte NET_STC_SET_FACING_TARGET = 124;
+    /**
+     * Steuert, ob ein Gegner in Bewegungsrichtung schaut.
+     */
+    public static final byte NET_STC_SET_LOOK_IN_MOVING_DIRECTION = 11;
     /**
      * Teilt dem Spieler mit welchen Char er kontrolliert
      */

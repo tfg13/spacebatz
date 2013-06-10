@@ -8,8 +8,8 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
- * Calculates a path and follows that path untill the target is in direct sightline.
- * Recalculates the path regularly.
+ * Calculates a path and follows that path untill the target is in direct
+ * sightline. Recalculates the path regularly.
  *
  * @author michael
  */
@@ -42,15 +42,18 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
         super(enemy);
         this.target = target;
         myTick = (int) Math.random() * RECALC_WAY_INTERVALL;
+        owner.setLookInMovingDirection(true);
     }
 
     @Override
     public Behaviour tick(int gameTick) {
         if (owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
             owner.setLastSightContact(Server.game.getTick());
+            owner.setLookInMovingDirection(false);
             return targetInSight(owner, target);
         } else {
             if (Server.game.getTick() - owner.getLastSightContact() > MAX_PURSUIT_TIME) {
+                owner.setLookInMovingDirection(false);
                 return targetLost();
             }
             if (gameTick % RECALC_WAY_INTERVALL == myTick) {
@@ -81,7 +84,8 @@ public abstract class GenericIndirectPursuitBehaviour extends Behaviour implemen
     }
 
     /**
-     * Wird aufgerufen, wenn das Ziel länger als MAX_PURSUIT_TIME nicht in Sicht war.
+     * Wird aufgerufen, wenn das Ziel länger als MAX_PURSUIT_TIME nicht in Sicht
+     * war.
      *
      * @return Das Verhalten, zu dem gewechselt werden soll
      */

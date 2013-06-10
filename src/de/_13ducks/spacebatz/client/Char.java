@@ -102,6 +102,10 @@ public class Char {
      * Die netId des Chars, auf den die Blickrichtung dieses Chars fixiert ist.
      */
     private int facingTargetNetId;
+    /**
+     * Gibt an ob dieser Char automatisch in Bewegungsrichtung schaut.
+     */
+    public boolean lookInMovingDirection;
 
     public Char(int netID, float size, RenderObject renderObject) {
         this.netID = netID;
@@ -199,7 +203,7 @@ public class Char {
             this.vY = m.vecY;
         }
         // Nicht drehen beim Stehenbleiben
-        if (startTick != -1 && !isFacingTarget) {
+        if (startTick != -1 && !isFacingTarget && lookInMovingDirection) {
             this.target_dir = Math.atan2(vY, vX);
         }
 

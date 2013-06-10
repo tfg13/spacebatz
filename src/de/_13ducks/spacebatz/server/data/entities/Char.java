@@ -17,12 +17,14 @@ import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_LOOK_IN_MOVING_DIRECTION;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann von Effekten beeinflusst werden.
+ * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann von Effekten
+ * beeinflusst werden.
  *
  * @author michael
  */
@@ -68,6 +70,10 @@ public abstract class Char extends Entity {
      * Die Schadensreduzierung der Rüstung, 1 = nimmt vollen Schaden
      */
     private double damageReductionFactor = 1.0;
+    /**
+     * Gibt an, ob dieser Char in Bewegungsrichtung schaut.
+     */
+    private boolean lookInMovingDirection = false;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -89,7 +95,8 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Addiert alle Eigenschaften der angegebenen Properties zu den Properties des Chars.
+     * Addiert alle Eigenschaften der angegebenen Properties zu den Properties
+     * des Chars.
      *
      * @param otherProperties die Properties, die addiert werden sollen
      */
@@ -101,7 +108,8 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Zieht alle Eigenschaften der angegebenen Properties von den Eigenschaften dieses Chars ab.
+     * Zieht alle Eigenschaften der angegebenen Properties von den Eigenschaften
+     * dieses Chars ab.
      *
      * @param otherProperties die Properties, die subtrahiert werden sollen
      */
@@ -156,7 +164,8 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Char wird ein bestimmte Anzahl HP abgezogen, diese wird durch Rüstung des Chars verringert
+     * Char wird ein bestimmte Anzahl HP abgezogen, diese wird durch Rüstung des
+     * Chars verringert
      *
      * @param damage
      */
@@ -210,5 +219,26 @@ public abstract class Char extends Entity {
 
     public int getArmorResult() {
         return armorResult;
+    }
+
+    /**
+     * Gibt an, ob dieser Char in Bewegungsrichtung schaut.
+     *
+     * @return the lookInMovingDirection
+     */
+    public boolean isLookingInMovingDirection() {
+        return lookInMovingDirection;
+    }
+
+    /**
+     * Steuert, ob dieser Char immer in Bewegungsrichtung schaut.
+     *
+     * @param lookInMovingDirection the lookInMovingDirection to set
+     */
+    public void setLookInMovingDirection(boolean lookInMovingDirection) {
+        if (lookInMovingDirection != this.lookInMovingDirection) {
+            STC_SET_LOOK_IN_MOVING_DIRECTION.sendSetLookInMovingDirection(this.netID, lookInMovingDirection);
+        }
+        this.lookInMovingDirection = lookInMovingDirection;
     }
 }
