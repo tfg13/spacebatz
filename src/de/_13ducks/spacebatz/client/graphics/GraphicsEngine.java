@@ -158,6 +158,9 @@ public class GraphicsEngine {
         // Zeitmessung
         long ns = System.nanoTime();
 
+        // Input
+        input.syncInput();
+
         // Haupt-Renderer:
         coreRenderer.render();
 
@@ -179,9 +182,6 @@ public class GraphicsEngine {
         if (GameClient.frozenGametick % 60 == 0) {
             System.out.println("AFT: " + timing.getNiceAvg());
         }
-
-        // Wenn ein Menü aktiv ist wird es gerendert und bekommt die Eingaben, wenn nicht bekommt das GodControl die Eingaben:
-        input.syncInput();
 
         // Fertig, Puffer swappen:
         Display.update();
