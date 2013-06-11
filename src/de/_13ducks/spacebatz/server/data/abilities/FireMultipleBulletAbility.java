@@ -74,7 +74,7 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             //Vector newTarget = new Vector(user.getX(), user.getY()).add(new Vector(newangle).multiply(GeoTools.getDistance(x, y, user.getX(), user.getY())));
             double dist = new Vector(x - spawnX, y - spawnY).length();
 
-            Vector newTarget = new Vector(spawnX, spawnY).add(new Vector(angle).multiply(dist));
+            Vector newTarget = new Vector(spawnX, spawnY).add(new Vector(newangle).multiply(dist));
 
             Bullet bullet = new Bullet(lifetime, spawnX, spawnY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
