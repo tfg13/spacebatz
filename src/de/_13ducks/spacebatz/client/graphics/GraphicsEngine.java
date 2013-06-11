@@ -158,6 +158,9 @@ public class GraphicsEngine {
         // Zeitmessung
         long ns = System.nanoTime();
 
+        // Subtick einfrieren
+        SubTick.freezeSubTick();
+
         // Input
         input.syncInput();
 
@@ -386,5 +389,17 @@ public class GraphicsEngine {
         buffer.flip();
         int modelUniformAdr = GL20.glGetUniformLocation(shader[SHADER_INDEX_OVERLAYS], "modelM");
         GL20.glUniformMatrix4(modelUniformAdr, false, buffer);
+    }
+
+    public static class SubTick {
+
+        public static double frozenSubTick = 0;
+
+        private SubTick() {
+        }
+
+        private static void freezeSubTick() {
+            frozenSubTick = GameClient.getNetwork2().getSubTick();
+        }
     }
 }

@@ -97,6 +97,11 @@ public class ClientNetwork2 {
      */
     private int serverTick;
     /**
+     * Der Zeitpunkt in Nanosekunden, wann der serverTick das letzte Mal erhört wurde.
+     * Wird verwendet, um sehr präzise Subticks für das Grafiksystem berechnen zu können.
+     */
+    private long tickIncNanoTime;
+    /**
      * Die Tickrate des Servers.
      * Wie üblich gemessen in ms Abstand zwischen Ticks.
      * 15 bedeutet also etwa 66 Ticks.
@@ -230,6 +235,7 @@ public class ClientNetwork2 {
                         @Override
                         public void run() {
                             serverTick++;
+                            tickIncNanoTime = System.nanoTime();
                         }
                     }, ansData[7], ansData[7]);
                     lastInIndex = (short) (packID - 1);
@@ -563,6 +569,23 @@ public class ClientNetwork2 {
         }
         packetsDelayed = true;
         return lastInPackLogicTick;
+    }
+
+    /**
+     * Liefert den aktuellen Sub-Tick zurück.
+     * Das ist ein Wert zwischen 0 und 1, der die Zeitspanne zwischen bis zum nächsten Tick genauer beschreibt.
+     * Wenn der Wert (nahe an) 0 ist, war die letzte Tick-Erhöhung gerade erst, wenn der Wert nahe an 1 ist, steht sie unmittelbar bevor.
+     * Kann verwendet werden, wenn die Zeitauflösung der Logikticks nicht ausreicht, z.B. für die Grafikengine.
+     *
+     * Funktioniert nicht bei Lags, wenn also die interne Zählung beim letzten Tick nicht zuverlässig war, dann gibt diese Methode immer 0 aus.
+     *
+     * @return Subtick zwischen 0 und 1 (kann auch mal größer als 1 werden, wenn der Tick sich verspätet)
+     */
+    public double getSubTick() {
+        if (packetsDelayed) {
+            return 0;
+        }
+        return (double) (System.nanoTime() - tickIncNanoTime) / (serverTickRate * 1000000l);
     }
 
     /**

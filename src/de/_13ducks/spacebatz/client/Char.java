@@ -137,6 +137,42 @@ public class Char {
     }
 
     /**
+     * Liefert im Prinzip das Selbe wie getX(), interpoliert aber den aktuellen Subtick auch noch mit rein.
+     * Eine so hohe zeitliche Auflösung ist vor allem für die Grafik interessant, die damit noch flüssigere Animationen erreicht.
+     *
+     * @param subTick der zu verwendende SubTick im üblichen 0..1+ Format
+     * @return die sehr präzise X-Position
+     */
+    public double getSubtickedX(double subTick) {
+        return internalGetSubtickedX(subTick);
+    }
+
+    /**
+     * Liefert im Prinzip das Selbe wie getY(), interpoliert aber den aktuellen Subtick auch noch mit rein.
+     * Eine so hohe zeitliche Auflösung ist vor allem für die Grafik interessant, die damit noch flüssigere Animationen erreicht.
+     *
+     * @param subTick der zu verwendende SubTick im üblichen 0..1+ Format
+     * @return die sehr präzise Y-Position
+     */
+    public double getSubtickedY(double subTick) {
+        return internalGetSubtickedY(subTick);
+    }
+
+    /**
+     * Interne Wegberechnungsmethode, die nicht überschrieben werden kann und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     */
+    private double internalGetSubtickedX(double subTick) {
+        return x + (((GameClient.frozenGametick - startTick) + subTick) * speed * vX);
+    }
+
+    /**
+     * Interne Wegberechnungsmethode, die nicht überschrieben werden kann und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     */
+    private double internalGetSubtickedY(double subTick) {
+        return y + (((GameClient.frozenGametick - startTick) + subTick) * speed * vY);
+    }
+
+    /**
      * @return the dir
      */
     public double getDir() {

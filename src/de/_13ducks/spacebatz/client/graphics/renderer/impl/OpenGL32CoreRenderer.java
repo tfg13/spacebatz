@@ -392,10 +392,12 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
 
     @Override
     public void setMouseXY(double mouseX, double mouseY) {
+        double playerX = GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
+        double playerY = GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
         // Neuen Sichtmittelpunkt bestimmen:
         Vector vec = new Vector(mouseX - Display.getWidth() / 2, mouseY - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
-        float panX = ((float) (-GameClient.player.getX() + (Display.getWidth() / Display.getHeight() * 20) / 2.0f + vec.x));
-        float panY = ((float) (-GameClient.player.getY() + 20 / 2.0f + vec.y));
+        float panX = ((float) (-playerX + (Display.getWidth() / Display.getHeight() * 20) / 2.0f + vec.x));
+        float panY = ((float) (-playerY + 20 / 2.0f + vec.y));
         if (viewMatrix.m30 != panX || viewMatrix.m31 != panY) {
             // View-Matrix updaten:
             viewMatrix.m30 = panX;
@@ -444,8 +446,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         PlayerCharacter pl = GameClient.player;
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, testPlayer[1]);
         FloatBuffer vr = BufferUtils.createFloatBuffer(18);
-        float rx = (float) pl.getX();
-        float ry = (float) pl.getY();
+        float rx = (float) pl.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
+        float ry = (float) pl.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
         float sx = 1;
         float sy = 1;
         // Vertex

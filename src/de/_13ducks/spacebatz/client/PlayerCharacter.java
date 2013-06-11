@@ -66,6 +66,10 @@ public class PlayerCharacter extends Char {
      */
     private double predictedX, predictedY;
     /**
+     * Letzte Richtung der Prediction.
+     */
+    private Vector lastPredictionVector = Vector.ZERO;
+    /**
      * Prediction-Drehungen funktionieren genau wie die normalen.
      */
     private double predictedDir, predictedTargetDir;
@@ -73,6 +77,10 @@ public class PlayerCharacter extends Char {
      * Der Tick, bei dem zuletzt eine Prediction stattgefunden hat.
      */
     private double lastPredictionTick;
+    /**
+     * Der letzte Subtick, bei dem eine hochpräzise Prediction durchgeführt wurde.
+     */
+    private double lastPredictionSubTick;
 
     public PlayerCharacter(int netID, float size) {
         super(netID, size, new RenderObject(new Animation(0, 4, 4, 1, 1)));
@@ -189,6 +197,7 @@ public class PlayerCharacter extends Char {
             Vector newDir = new Vector(((buttons & 0x40) != 0 ? -1 : 0) + ((buttons & 0x10) != 0 ? 1 : 0), ((buttons & 0x80) != 0 ? 1 : 0) + ((buttons & 0x20) != 0 ? -1 : 0)).normalize();
             // Sollen wir uns überhaupt bewegen?
             if (!newDir.equals(Vector.ZERO)) {
+                lastPredictionVector = newDir;
                 newDir = newDir.multiply(prediction_speed);
                 // Jetzt verschieben:
                 double oldX = predictedX;
@@ -198,8 +207,44 @@ public class PlayerCharacter extends Char {
                 lastPredictionTick = GameClient.frozenGametick;
                 computeCollision(oldX, oldY, predictedX, predictedY);
                 predictedTargetDir = Math.atan2(newDir.y, newDir.x);
+            } else {
+                lastPredictionVector = Vector.ZERO;
             }
         }
+    }
+
+    /**
+     * Rechnet zur letzten Prediction noch anteilig den Subtick drauf (falls die Kollision das erlaubt).
+     * Darf nur aufgerufen werden, wenn die Prediction derzeit aktiv ist.
+     */
+    private double subtickPredictionX(double subtick) {
+        if (!lastPredictionVector.equals(Vector.ZERO)) {
+            Vector newDir = new Vector(lastPredictionVector.x, lastPredictionVector.y);
+            newDir = newDir.multiply(subtick).multiply(prediction_speed);
+            if (computeVirtualCollision(predictedX, predictedY, predictedX + newDir.x, predictedY + newDir.y)) {
+                return predictedX + newDir.x;
+            } else {
+                return predictedX;
+            }
+        }
+        return predictedX;
+    }
+
+    /**
+     * Rechnet zur letzten Prediction noch anteilig den Subtick drauf (falls die Kollision das erlaubt).
+     * Darf nur aufgerufen werden, wenn die Prediction derzeit aktiv ist.
+     */
+    private double subtickPredictionY(double subtick) {
+        if (!lastPredictionVector.equals(Vector.ZERO)) {
+            Vector newDir = new Vector(lastPredictionVector.x, lastPredictionVector.y);
+            newDir = newDir.multiply(subtick).multiply(prediction_speed);
+            if (computeVirtualCollision(predictedX, predictedY, predictedX + newDir.x, predictedY + newDir.y)) {
+                return predictedY + newDir.y;
+            } else {
+                return predictedY;
+            }
+        }
+        return predictedY;
     }
 
     /**
@@ -287,6 +332,26 @@ public class PlayerCharacter extends Char {
         }
 
         return predictedY;
+    }
+
+    @Override
+    public double getSubtickedX(double subTick) {
+        // Liefert vorhergesagte Werte, falls die Prediction an ist.
+        if (!predictMovements && !paralyzed) {
+            return super.getSubtickedX(subTick);
+        }
+
+        return subtickPredictionX(subTick);
+    }
+
+    @Override
+    public double getSubtickedY(double subTick) {
+        // Liefert vorhergesagte Werte, falls die Prediction an ist.
+        if (!predictMovements && !paralyzed) {
+            return super.getSubtickedY(subTick);
+        }
+
+        return subtickPredictionY(subTick);
     }
 
     @Override
@@ -417,6 +482,129 @@ public class PlayerCharacter extends Char {
         if (!Double.isNaN(sy)) {
             predictedY = sy;
         }
+    }
+
+    /**
+     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können.
+     * Für Subtick-Berechnungen, nimmt keine Änderungen vor.
+     *
+     * @param fromX Startpunkt X (muss frei sein)
+     * @param fromY Startpunkt Y (muss frei sein)
+     * @param toX Zielpunkt X
+     * @param toY Zielpunkt Y
+     */
+    private boolean computeVirtualCollision(double fromX, double fromY, double toX, double toY) {
+        // Der Vektor der Bewegung:
+        double deltaX = toX - fromX;
+        double deltaY = toY - fromY;
+        // Anfangs- und Ziel-X des Gebiets das gescannt wird
+        int moveAreaStartX = (int) (Math.min(fromX, toX) - getSize() / 2);
+        int moveAreaEndX = (int) (Math.max(fromX, toX) + getSize() / 2) + 1;
+        // Anfangs- und Ziel-Y des Gebiets das gescannt wird
+        int moveAreaStartY = (int) (Math.min(fromY, toY) - getSize() / 2);
+        int moveAreaEndY = (int) (Math.max(fromY, toY) + getSize() / 2) + 1;
+
+
+        // Gesucht ist der Block, mit dem wir als erstes kollidieren
+        // der Faktor für die weiteste Position auf die wir ohne Kolision vorrücken können: start + d * vector
+        double d;
+        // das kleinste gefundene d
+        double smallestD = Double.MAX_VALUE;
+        // Variablen, die wir in jedem Schleifendurchlauf brauchen:
+        double blockMidX, blockMidY, d1, d2;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int searchX = moveAreaStartX; searchX < moveAreaEndX; searchX++) {
+            for (int searchY = moveAreaStartY; searchY < moveAreaEndY; searchY++) {
+                if (GameClient.currentLevel.getCollisionMap()[searchX][searchY] == true) {
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = searchX + 0.5;
+                    blockMidY = searchY + 0.5;
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidX + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+                    d2 = ((blockMidX - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
+
+                    // das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
+                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
+
+                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                    }
+                }
+            }
+        }
+        double sx = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
+            sx = fromX + smallestD * deltaX;
+        }
+
+        // Für die Y-Berechung die Werte zurücksetzten, für die Block-Berechung aber behalten!
+        double globalsmallestD = smallestD;
+        smallestD = Double.MAX_VALUE;
+        // Jetzt alle Blöcke im angegebenen Gebiet checken:
+        for (int searchX = moveAreaStartX; searchX < moveAreaEndX; searchX++) {
+            for (int searchY = moveAreaStartY; searchY < moveAreaEndY; searchY++) {
+                if (GameClient.currentLevel.getCollisionMap()[searchX][searchY] == true) {
+
+
+                    // Der Mittelpunkt des Blocks
+                    blockMidX = searchX + 0.5;
+                    blockMidY = searchY + 0.5;
+                    // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
+                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
+                    d1 = ((blockMidY + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
+                    // Das kleinere d wählen:
+                    d = Math.min(d1, d2);
+
+                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
+                        d = 0;
+                    }
+
+                    double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
+
+                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
+                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
+                        // Also wenn die Kollision näher ist als die anderen speichern:
+                        if (d < smallestD) {
+                            smallestD = d;
+                        }
+                        // Näher als die von X?
+                        if (d < globalsmallestD) {
+                            globalsmallestD = d;
+                        }
+                    }
+                }
+            }
+        }
+        double sy = Double.NaN;
+        // Hier haben wir mit smallestD und xCollision alle relevanten infos
+        if (smallestD < Double.MAX_VALUE) {
+            // Die Koordinaten der Position die noch erreicht werden kann
+            sy = fromY + smallestD * deltaY;
+        }
+
+        // Bewegung koorigieren?
+        if (!Double.isNaN(sx)) {
+            return false;
+        }
+        if (!Double.isNaN(sy)) {
+            return false;
+        }
+        return true;
     }
 
     public void setParalyzed(boolean paralyzed) {
