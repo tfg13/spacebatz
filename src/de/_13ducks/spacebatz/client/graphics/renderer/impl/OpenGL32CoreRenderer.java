@@ -182,12 +182,12 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         float ry = (float) pl.getY();
         float sx = 1;
         float sy = 1;
-        tv.put(rx - sx).put(ry - sy).put(0);
-        tv.put(rx - sx).put(ry + sy).put(0);
-        tv.put(rx + sx).put(ry - sy).put(0);
-        tv.put(rx - sx).put(ry + sy).put(0);
-        tv.put(rx + sx).put(ry - sy).put(0);
-        tv.put(rx + sx).put(ry + sy).put(0);
+        tv.put(rx - sx).put(ry - sy);
+        tv.put(rx - sx).put(ry + sy);
+        tv.put(rx + sx).put(ry - sy);
+        tv.put(rx - sx).put(ry + sy);
+        tv.put(rx + sx).put(ry - sy);
+        tv.put(rx + sx).put(ry + sy);
         // Textur-Koordinaten:
         float picsizex = 0.0625f * anim.getPicsizex();
         float picsizey = 0.0625f * anim.getPicsizey();
@@ -215,8 +215,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tv, GL15.GL_STATIC_DRAW);
         // Daten-Links setzen
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 18 << 2);
+        GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 12 << 2);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
@@ -240,18 +240,18 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             removeChunkVAO(groundChunkVAOs, chunkX, chunkY);
         }
         // Daten für neuen VBO:
-        FloatBuffer vtBuffer = BufferUtils.createFloatBuffer((18 + 12) * 8 * 8);
+        FloatBuffer vtBuffer = BufferUtils.createFloatBuffer((12 + 12) * 8 * 8);
         // Vertex-Koordinaten
         for (int x = 0; x < 8; x++) {
             int rx = chunkX * 8 + x;
             for (int y = 0; y < 8; y++) {
                 int ry = chunkY * 8 + y;
-                vtBuffer.put(rx).put(ry).put(0);
-                vtBuffer.put(rx).put(ry + 1).put(0);
-                vtBuffer.put(rx + 1).put(ry).put(0);
-                vtBuffer.put(rx).put(ry + 1).put(0);
-                vtBuffer.put(rx + 1).put(ry).put(0);
-                vtBuffer.put(rx + 1).put(ry + 1).put(0);
+                vtBuffer.put(rx).put(ry);
+                vtBuffer.put(rx).put(ry + 1);
+                vtBuffer.put(rx + 1).put(ry);
+                vtBuffer.put(rx).put(ry + 1);
+                vtBuffer.put(rx + 1).put(ry);
+                vtBuffer.put(rx + 1).put(ry + 1);
             }
         }
         // Textur-Koordinaten
@@ -280,8 +280,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vtBuffer, GL15.GL_STATIC_DRAW);
         // Daten-Links setzen
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, (18 * 8 * 8) << 2);
+        GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, (12 * 8 * 8) << 2);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
@@ -304,19 +304,19 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             removeChunkVAO(topChunkVAOs, chunkX, chunkY);
         }
         // Daten für neuen VBO:
-        FloatBufferBuilder vtData = new FloatBufferBuilder((18 + 12) * 8 * 8);
+        FloatBufferBuilder vtData = new FloatBufferBuilder((12 + 12) * 8 * 8);
         // Vertex-Koordinaten
         for (int x = 0; x < 8; x++) {
             int rx = chunkX * 8 + x;
             for (int y = 0; y < 8; y++) {
                 int ry = chunkY * 8 + y;
                 if (baseTexAt(GameClient.currentLevel.top, rx, ry) != 0) { // Luft, nichts malen
-                    vtData.put(rx).put(ry).put(0);
-                    vtData.put(rx).put(ry + 1).put(0);
-                    vtData.put(rx + 1).put(ry).put(0);
-                    vtData.put(rx).put(ry + 1).put(0);
-                    vtData.put(rx + 1).put(ry).put(0);
-                    vtData.put(rx + 1).put(ry + 1).put(0);
+                    vtData.put(rx).put(ry);
+                    vtData.put(rx).put(ry + 1);
+                    vtData.put(rx + 1).put(ry);
+                    vtData.put(rx).put(ry + 1);
+                    vtData.put(rx + 1).put(ry);
+                    vtData.put(rx + 1).put(ry + 1);
                 }
             }
         }
@@ -347,8 +347,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vtData.toBuffer(), GL15.GL_STATIC_DRAW);
         // Daten-Links setzen
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, ((vtData.size() / (18 + 12)) * 18) << 2);
+        GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, ((vtData.size() / (12 + 12)) * 12) << 2);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
@@ -451,12 +451,12 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         float sx = 1;
         float sy = 1;
         // Vertex
-        vr.put(rx - sx).put(ry - sy).put(0);
-        vr.put(rx - sx).put(ry + sy).put(0);
-        vr.put(rx + sx).put(ry - sy).put(0);
-        vr.put(rx - sx).put(ry + sy).put(0);
-        vr.put(rx + sx).put(ry - sy).put(0);
-        vr.put(rx + sx).put(ry + sy).put(0);
+        vr.put(rx - sx).put(ry - sy);
+        vr.put(rx - sx).put(ry + sy);
+        vr.put(rx + sx).put(ry - sy);
+        vr.put(rx - sx).put(ry + sy);
+        vr.put(rx + sx).put(ry - sy);
+        vr.put(rx + sx).put(ry + sy);
         vr.flip();
         GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, vr);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
