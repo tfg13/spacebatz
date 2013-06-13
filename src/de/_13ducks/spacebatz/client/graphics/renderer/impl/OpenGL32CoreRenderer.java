@@ -7,6 +7,8 @@ import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
+import de._13ducks.spacebatz.client.graphics.vao.VAO;
+import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.util.FloatBufferBuilder;
 import de._13ducks.spacebatz.util.geo.GeoTools;
@@ -63,7 +65,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      * VAO und VBO für Gegner.
      * Mit Color und Drehung.
      */
-    private int[] testPlayer;
+    private VAO testPlayer;
 
     @Override
     public void setupShaders(int[] shader) {
@@ -143,7 +145,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         // Enemys
         updateVBOs();
         RenderUtils.getTextureByName("player.png").bind();
-        renderPlayer(testPlayer[0]);
+        testPlayer.render();
 
     }
 
@@ -176,19 +178,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     private void createPlayerVBO(int netID) {
         PlayerCharacter pl = (PlayerCharacter) GameClient.netIDMap.get(netID);
         Animation anim = pl.getRenderObject().getBaseAnim();
-        FloatBuffer tv = BufferUtils.createFloatBuffer(18 + 12);
-        // Vertex-Koordinaten:
-        float rx = (float) pl.getX();
-        float ry = (float) pl.getY();
-        float sx = 1;
-        float sy = 1;
-        tv.put(rx - sx).put(ry - sy);
-        tv.put(rx - sx).put(ry + sy);
-        tv.put(rx + sx).put(ry - sy);
-        tv.put(rx - sx).put(ry + sy);
-        tv.put(rx + sx).put(ry - sy);
-        tv.put(rx + sx).put(ry + sy);
-        // Textur-Koordinaten:
+
+        testPlayer = VAOFactory.createDynamicTexturedRectVAO();
+
         float picsizex = 0.0625f * anim.getPicsizex();
         float picsizey = 0.0625f * anim.getPicsizey();
         int currentpic = (GameClient.frozenGametick / anim.getPicduration()) % anim.getNumberofpics();
@@ -196,35 +188,10 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         float v = (currentpic % (16 / anim.getPicsizex())) * picsizex;
         float w = (currentpic / (16 / anim.getPicsizey())) * picsizey;
         float onepixel = 1.0f / 256; // einen pixel vom Bild in jede Richtung abschneiden
-        System.out.println("Pic: " + currentpic + " psx: " + picsizex + " onepx: " + onepixel + " v: " + v);
-        tv.put(v + onepixel).put((w + picsizey) + onepixel);
-        tv.put(v + onepixel).put(w + onepixel);
-        tv.put((v + picsizex) + onepixel).put((w + picsizey) + onepixel);
-        tv.put(v + onepixel).put(w + onepixel);
-        tv.put((v + picsizex) + onepixel).put((w + picsizey) + onepixel);
-        tv.put((v + picsizex) + onepixel).put(w + onepixel);
 
-        tv.flip();
+        testPlayer.pushRectT((float) pl.getX() - 1, (float) pl.getY() - 1, 2, 2, v + onepixel, w + onepixel, picsizex, picsizey);
 
-        // VAO erstellen und mit VBO verbinden
-        int vao = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vao);
-
-        // VBO erstellen
-        int vbo = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tv, GL15.GL_STATIC_DRAW);
-        // Daten-Links setzen
-        GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 12 << 2);
-
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        GL30.glBindVertexArray(0);
-
-        // Speichern:
-        testPlayer = new int[2];
-        testPlayer[0] = vao;
-        testPlayer[1] = vbo;
+        testPlayer.upload();
     }
 
     /**
@@ -444,21 +411,18 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
 
     private void updateVBOs() {
         PlayerCharacter pl = GameClient.player;
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, testPlayer[1]);
-        FloatBuffer vr = BufferUtils.createFloatBuffer(18);
-        float rx = (float) pl.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
-        float ry = (float) pl.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
-        float sx = 1;
-        float sy = 1;
-        // Vertex
-        vr.put(rx - sx).put(ry - sy);
-        vr.put(rx - sx).put(ry + sy);
-        vr.put(rx + sx).put(ry - sy);
-        vr.put(rx - sx).put(ry + sy);
-        vr.put(rx + sx).put(ry - sy);
-        vr.put(rx + sx).put(ry + sy);
-        vr.flip();
-        GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, vr);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        Animation anim = pl.getRenderObject().getBaseAnim();
+
+        float picsizex = 0.0625f * anim.getPicsizex();
+        float picsizey = 0.0625f * anim.getPicsizey();
+        int currentpic = (GameClient.frozenGametick / anim.getPicduration()) % anim.getNumberofpics();
+        currentpic += anim.getStartpic();
+        float v = (currentpic % (16 / anim.getPicsizex())) * picsizex;
+        float w = (currentpic / (16 / anim.getPicsizey())) * picsizey;
+        float onepixel = 1.0f / 256; // einen pixel vom Bild in jede Richtung abschneiden
+
+        testPlayer.resetData();
+        testPlayer.pushRectT((float) pl.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick) - 1, (float) pl.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick) - 1, 2, 2, v + onepixel, w + onepixel, picsizex - (2 * onepixel), picsizey - 2 * (onepixel));
+        testPlayer.upload();
     }
 }
