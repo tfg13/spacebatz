@@ -82,6 +82,7 @@ public class PlayerCharacter extends Char {
      * Der letzte Subtick, bei dem eine hochpräzise Prediction durchgeführt wurde.
      */
     private double lastPredictionSubTick;
+    /*
      * Im Baumodus
      */
     private boolean buildmode;
