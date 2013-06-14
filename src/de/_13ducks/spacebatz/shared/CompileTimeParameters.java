@@ -53,7 +53,7 @@ public final class CompileTimeParameters {
     /**
      * Die HP der Chars
      */
-    public static final int CHARHEALTH = 100;
+    public static final int CHARHEALTH = 900;
     /**
      * Die HP-Regeneration der Player (pro Sekunde)
      */

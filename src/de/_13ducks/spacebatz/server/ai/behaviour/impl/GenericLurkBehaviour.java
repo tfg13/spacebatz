@@ -9,17 +9,19 @@ import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 
 /**
- * Wartet bis ein Spieler in Sichtweite ist oder auf uns schießt.
- * Die tick()-Methode *muss* aufgerufen werden, sonst findet keine Überprüfung auf Spieler in Sichtweite statt.
+ * Wartet bis ein Spieler in Sichtweite ist oder auf uns schießt. Die
+ * tick()-Methode *muss* aufgerufen werden, sonst findet keine Überprüfung auf
+ * Spieler in Sichtweite statt.
  *
  * @author michael
  */
-public abstract class GenericLurkBehaviour extends Behaviour {
-
+public abstract class GenericLurkBehaviour extends GenericStandDivergeBehaviour {
+    
     public GenericLurkBehaviour(Enemy enemy) {
         super(enemy);
+        owner.setLookInMovingDirection(false);
     }
-
+    
     @Override
     public Behaviour tick(int gameTick) {
         for (Entity target : Server.entityMap.getEntitiesAroundPoint(owner.getX(), owner.getY(), owner.getProperties().getSightrange())) {
@@ -29,7 +31,7 @@ public abstract class GenericLurkBehaviour extends Behaviour {
         }
         return super.tick(gameTick);
     }
-
+    
     @Override
     public Behaviour onCollision(Entity other) {
         if (other instanceof Bullet) {

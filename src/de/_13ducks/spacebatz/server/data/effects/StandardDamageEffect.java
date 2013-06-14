@@ -3,18 +3,18 @@ package de._13ducks.spacebatz.server.data.effects;
 import de._13ducks.spacebatz.server.data.entities.Char;
 
 /**
- * Richtet Truedamage an, dh der Schaden wird ohne berücksichtigung von Rüstung angewandt.
+ * Richtet normalen Damage an
  *
  * @author michael
  */
-public class TrueDamageEffect extends Effect {
+public class StandardDamageEffect extends Effect {
 
     /**
-     * Erzeugt einen neuen TrueDamageEffect
+     * Erzeugt einen neuen StandardDamageEffect
      *
      * @param damage der Schaden, der angerichtet wird
      */
-    public TrueDamageEffect(int damage) {
+    public StandardDamageEffect(int damage) {
         this.damage = damage;
     }
     /**

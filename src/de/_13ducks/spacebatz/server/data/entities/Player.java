@@ -26,6 +26,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_TOGGLE_BUILDMODE;
 
 /**
  * Der Spielercharakter. Verwaltet die Interaktion des Clients mit der Spielwelt.
@@ -37,8 +38,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 public class Player extends ItemCarrier {
 
     /**
-     * Bewegungssystem des Spielers.
-     * Immer DiscreteMover, denn der Client muss die genaue Position vorhersagen können.
+     * Bewegungssystem des Spielers. Immer DiscreteMover, denn der Client muss die genaue Position vorhersagen können.
      */
     public final DiscreteMover move;
     /**
@@ -70,6 +70,10 @@ public class Player extends ItemCarrier {
      * In wieviel Ticks die Turret-Drehung das nächste mal versendet wird.
      */
     private int ticksUntilNextSend = 1;
+    /**
+     * Ob sich der Spieler gerade im Baumodus befindet
+     */
+    private boolean buildmode;
 
     /**
      * Erzeugt einen neuen Player für den angegebenen Client. Dieser Player wird auch beim Client registriert. Es kann nur einen Player pro Client geben.
@@ -122,22 +126,29 @@ public class Player extends ItemCarrier {
     public void playerShoot(double tx, double ty) {
         if (!dead) {
             if (Server.game.getTick() >= attackCooldownTick) {
+                if (!buildmode) {
+                    // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
+                    double aspeed = standardAttack.getWeaponStats().getAttackspeed();
+                    if (getActiveWeapon() != null) {
+                        aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
+                    }
 
-                // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
-                double aspeed = standardAttack.getWeaponStats().getAttackspeed();
-                if (getActiveWeapon() != null) {
-                    aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
-                }
-
-                if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
-                    attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                    standardAttack.tryUseOnPosition(this, tx, ty);
-                } else {
-                    int maxOverheat = (int) (getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
-                    if (getActiveWeapon().getOverheat() + 1 <= maxOverheat || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
+                    if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
                         attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                        getActiveWeapon().increaseOverheat(1);
-                        getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
+                        standardAttack.tryUseOnPosition(this, tx, ty);
+                    } else {
+                        int maxOverheat = (int) (getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
+                        if (getActiveWeapon().getOverheat() + 1 <= maxOverheat || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
+                            attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                            getActiveWeapon().increaseOverheat(1);
+                            getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
+                        }
+                    }
+                } else {
+                    if (getActiveTool() != null) {
+                        double aspeed = getActiveTool().getWeaponAbility().getWeaponStats().getAttackspeed();
+                        attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
+                        getActiveTool().getWeaponAbility().tryUseOnPosition(this, tx, ty);
                     }
                 }
             }
@@ -162,7 +173,7 @@ public class Player extends ItemCarrier {
         if (freeInventorySlot()) {
             // Item ins Inventar tun:
             if (dequipItemToInventar(slottype, selectedslot)) {
-                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, getClient().clientID);
+                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, getClient().clientID, (float) getSpeed(), getArmorResult());
             }
         }
     }
@@ -220,5 +231,20 @@ public class Player extends ItemCarrier {
             ticksUntilNextSend = DefaultSettings.TURRET_DIR_UPDATE_INTERVAL;
             STC_PLAYER_TURRET_DIR_UPDATE.broadcastTurretDir(netID, (float) turretDir);
         }
+    }
+
+    /**
+     * @return the buildmode
+     */
+    public boolean isBuildmode() {
+        return buildmode;
+    }
+
+    /**
+     * @param buildmode the buildmode to set
+     */
+    public void setBuildmode(boolean buildmode) {
+        this.buildmode = buildmode;
+        STC_TOGGLE_BUILDMODE.sendToggleBuildmode(buildmode, this.client.clientID);
     }
 }

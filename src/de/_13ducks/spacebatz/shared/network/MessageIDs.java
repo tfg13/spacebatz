@@ -35,6 +35,14 @@ public class MessageIDs {
      */
     public static final byte NET_CTS_INVEST_SKILLPOINT = 51;
     /**
+     * Setzt den Blickrichtungsmodus eines Gegners
+     */
+    public static final byte NET_STC_SET_FACING_TARGET = 124;
+    /**
+     * Steuert, ob ein Gegner in Bewegungsrichtung schaut.
+     */
+    public static final byte NET_STC_SET_LOOK_IN_MOVING_DIRECTION = 11;
+    /**
      * Teilt dem Spieler mit welchen Char er kontrolliert
      */
     public static final byte NET_STC_SET_PLAYER = 21;
@@ -270,4 +278,12 @@ public class MessageIDs {
      * Server setzt Unsichtbarkeits-Flag.
      */
     public static final byte NET_STC_SET_CHAR_INVISIBILITY = 67;
+    /**
+     * Client will in Bau-modus wechseln
+     */
+    public static final byte NET_TCP_CMD_TOGGLE_BUILDMODE = 69;
+    /**
+     * Client will in Bau-modus wechseln
+     */
+    public static final byte NET_STC_TOGGLE_BUILDMODE = 70;
 }

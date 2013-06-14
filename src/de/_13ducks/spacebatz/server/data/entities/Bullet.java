@@ -161,9 +161,9 @@ public class Bullet extends Entity {
     @Override
     public void onWallCollision(int[] collidingBlock) {
         super.onWallCollision(collidingBlock);
-        if (Server.game.getLevel().isBlockDestroyable(collidingBlock[0], collidingBlock[1])) {
-            Server.game.getLevel().destroyBlock(collidingBlock[0], collidingBlock[1]);
-        }
+//        if (Server.game.getLevel().isBlockDestroyable(collidingBlock[0], collidingBlock[1])) {
+//            Server.game.getLevel().destroyBlock(collidingBlock[0], collidingBlock[1]);
+//        }
         // Flächenschaden machen
         hitGround(getX(), getY());
         // Immer löschen, wenn Wand getroffen

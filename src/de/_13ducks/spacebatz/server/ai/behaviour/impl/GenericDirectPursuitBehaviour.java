@@ -26,22 +26,27 @@ public abstract class GenericDirectPursuitBehaviour extends Behaviour {
      *
      * @param owner der Gegner, der dieses Behaviour ausführt
      * @param target das Ziel, an das der Besitzer sich nähern soll
-     * @param desiredDistance die gewünschte Distanz zum Ziel, bei der reachedDesiredDistance() zurückgegeben wird
+     * @param desiredDistance die gewünschte Distanz zum Ziel, bei der
+     * reachedDesiredDistance() zurückgegeben wird
      */
     public GenericDirectPursuitBehaviour(Enemy owner, Player target, int desiredDistance) {
         super(owner);
         this.target = target;
         this.desiredDistance = desiredDistance;
+        owner.setLookInMovingDirection(true);
     }
-
+    
     @Override
     public Behaviour tick(int gameTick) {
         if (!owner.lineOfSight(owner.getX(), owner.getY(), target.getX(), target.getY())) {
+            owner.setLookInMovingDirection(false);
             return lostSight(target, owner);
         } else if (GeoTools.getDistance(owner.getX(), owner.getY(), target.getX(), target.getY()) < desiredDistance) {
+            owner.setLookInMovingDirection(false);
             return reachedDesiredDistance(target, owner);
         } else {
             if (!owner.move.isFollowingTarget(target)) {
+                owner.setSpeed(owner.maxSpeed);
                 owner.move.setFollowTarget(target);
             }
             // Läuft schon, machen lassen.

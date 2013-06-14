@@ -17,12 +17,14 @@ import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_CHAR_INVISIBILITY;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_LOOK_IN_MOVING_DIRECTION;
 import de._13ducks.spacebatz.util.Bits;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann von Effekten beeinflusst werden.
+ * Charakter. Hat Eigenschaften (HP, Rüstung, ..) und kann von Effekten
+ * beeinflusst werden.
  *
  * @author michael
  */
@@ -60,6 +62,18 @@ public abstract class Char extends Entity {
      * Gibt an ob der Char tot ist.
      */
     public boolean dead = false;
+    /**
+     * Die Rüstung des Chars
+     */
+    private int armorResult;
+    /**
+     * Die Schadensreduzierung der Rüstung, 1 = nimmt vollen Schaden
+     */
+    private double damageReductionFactor = 1.0;
+    /**
+     * Gibt an, ob dieser Char in Bewegungsrichtung schaut.
+     */
+    private boolean lookInMovingDirection = false;
 
     /**
      * Konstruktor, erstellt einen neuen Char
@@ -81,23 +95,29 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Addiert alle Eigenschaften der angegebenen Properties zu den Properties des Chars.
+     * Addiert alle Eigenschaften der angegebenen Properties zu den Properties
+     * des Chars.
      *
      * @param otherProperties die Properties, die addiert werden sollen
      */
     final public void addProperties(PropertyList otherProperties) {
         properties.addProperties(otherProperties);
         setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
+        armorResult = (int) (properties.getArmor() * (properties.getArmorMultiplicatorBonus() + 1));
+        damageReductionFactor = 100.0 / (getArmorResult() + 100);
     }
 
     /**
-     * Zieht alle Eigenschaften der angegebenen Properties von den Eigenschaften dieses Chars ab.
+     * Zieht alle Eigenschaften der angegebenen Properties von den Eigenschaften
+     * dieses Chars ab.
      *
      * @param otherProperties die Properties, die subtrahiert werden sollen
      */
     final public void removeProperties(PropertyList otherProperties) {
         properties.removeProperties(otherProperties);
         setSpeed(CompileTimeParameters.BASE_MOVESPEED * (properties.getMovespeedMultiplicatorBonus() + 1)); // Speed muss manuel gesetzt werden
+        armorResult = (int) (properties.getArmor() * (properties.getArmorMultiplicatorBonus() + 1));
+        damageReductionFactor = 100.0 / (getArmorResult() + 100);
     }
 
     /**
@@ -144,13 +164,15 @@ public abstract class Char extends Entity {
     }
 
     /**
-     * Char wird ein bestimmte Anzahl HP abgezogen
+     * Char wird ein bestimmte Anzahl HP abgezogen, diese wird durch Rüstung des
+     * Chars verringert
      *
      * @param damage
      */
     public void decreaseHitpoints(int damage) {
-        properties.setHitpoints(properties.getHitpoints() - damage);
-        STC_CHAR_HIT.sendCharHit(netID, damage);
+        int newdamage = (int) Math.ceil(damage * damageReductionFactor);
+        properties.setHitpoints(properties.getHitpoints() - newdamage);
+        STC_CHAR_HIT.sendCharHit(netID, newdamage);
         if (properties.getHitpoints() <= 0) {
             dead = true;
         }
@@ -193,5 +215,30 @@ public abstract class Char extends Entity {
     public void netPack(byte[] b, int offset) {
         super.netPack(b, offset);
         Bits.putChar(b, super.byteArraySize() + offset, (isInvisible() ? '1' : '0'));
+    }
+
+    public int getArmorResult() {
+        return armorResult;
+    }
+
+    /**
+     * Gibt an, ob dieser Char in Bewegungsrichtung schaut.
+     *
+     * @return the lookInMovingDirection
+     */
+    public boolean isLookingInMovingDirection() {
+        return lookInMovingDirection;
+    }
+
+    /**
+     * Steuert, ob dieser Char immer in Bewegungsrichtung schaut.
+     *
+     * @param lookInMovingDirection the lookInMovingDirection to set
+     */
+    public void setLookInMovingDirection(boolean lookInMovingDirection) {
+        if (lookInMovingDirection != this.lookInMovingDirection) {
+            STC_SET_LOOK_IN_MOVING_DIRECTION.sendSetLookInMovingDirection(this.netID, lookInMovingDirection);
+        }
+        this.lookInMovingDirection = lookInMovingDirection;
     }
 }

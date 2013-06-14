@@ -36,22 +36,26 @@ public class Inventory extends TriggeredOverlay {
 
     @Override
     protected void triggeredRender() {
+//        Camera camera = renderer.getCamera();
+//        TextWriter textWriter = renderer.getTextWriter();
+//
+//
 //        // dunkler Hintergrund
 ////        glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
-////        glRectf(0, 0, GodControl.tilesX, GodControl.tilesY);
+////        glRectf(0, 0, camera.getTilesX(), camera.getTilesY());
 //
 //        // Koordinaten für waagrechte Linien
-//        float x1 = 0.095125f * LegacyRenderer.tilesX;
-//        float x2 = 0.895125f * LegacyRenderer.tilesX;
-//        float bottom1 = 0.07f * LegacyRenderer.tilesY;
+//        float x1 = 0.095125f * camera.getTilesX();
+//        float x2 = 0.895125f * camera.getTilesX();
+//        float bottom1 = 0.07f * camera.getTilesY();
 //
 //        // Koordinaten für senkrechte Linien
-//        float y1 = 0.17f * LegacyRenderer.tilesY;
-//        float y2 = 0.47f * LegacyRenderer.tilesY;
-//        float left1 = 0.095125f * LegacyRenderer.tilesY;
+//        float y1 = 0.17f * camera.getTilesY();
+//        float y2 = 0.47f * camera.getTilesY();
+//        float left1 = 0.095125f * camera.getTilesX();
 //
 //        glDisable(GL_TEXTURE_2D);
-//        // HintergrunGod  für Inventar-Items zeichnen
+//        // Hintergrund  für Inventar-Items zeichnen
 //        glColor3f(0.243f, 0.243f, 0.243f);
 //        glRectf(x1, y1, x2, y2);
 //
@@ -62,10 +66,10 @@ public class Inventory extends TriggeredOverlay {
 //        // Bild für die Inventar-Slots
 //        for (int i = 0; i <= 9; i++) {
 //            for (int j = 0; j <= 2; j++) {
-//                float xa = x1 + i * 0.08f * LegacyRenderer.tilesX;
-//                float xb = x1 + (i + 1) * 0.08f * LegacyRenderer.tilesX;
-//                float ya = y1 + j * 0.1f * LegacyRenderer.tilesY;
-//                float yb = y1 + (j + 1) * 0.1f * LegacyRenderer.tilesY;
+//                float xa = x1 + i * 0.08f * camera.getTilesX();
+//                float xb = x1 + (i + 1) * 0.08f * camera.getTilesX();
+//                float ya = y1 + j * 0.1f * camera.getTilesY();
+//                float yb = y1 + (j + 1) * 0.1f * camera.getTilesY();
 //
 //                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
 //                glTexCoord2f(273.0f / 512, 307.0f / 512);
@@ -80,59 +84,72 @@ public class Inventory extends TriggeredOverlay {
 //            }
 //        }
 //
-//        float x01 = 0.815125f * LegacyRenderer.tilesX;
-//        float x02 = 0.895125f * LegacyRenderer.tilesX;
-//        float ya = 0.53f * LegacyRenderer.tilesY;
-//        float yb = ya + 0.1f * LegacyRenderer.tilesY;
+//        float x01 = 0.815125f * camera.getTilesX();
+//        float x02 = 0.655125f * camera.getTilesX();
+//        float x03 = 0.335125f * camera.getTilesX();
+//        float ya = 0.48f * camera.getTilesY();
+//        float yb = ya + 0.1f * camera.getTilesY();
 //
 //        // Bild für Mülleimer
 //        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
 //        glTexCoord2f(125.0f / 512, 101.0f / 512);
 //        glVertex3f(x01, ya, 0.0f);
 //        glTexCoord2f(271.0f / 512, 101.0f / 512);
-//        glVertex3f(x02, ya, 0.0f);
+//        glVertex3f(x01 + 0.08f * camera.getTilesX(), ya, 0.0f);
 //        glTexCoord2f(271.0f / 512, 0.0f / 512);
-//        glVertex3f(x02, yb, 0.0f);
+//        glVertex3f(x01 + 0.08f * camera.getTilesX(), yb, 0.0f);
 //        glTexCoord2f(125.0f / 512, 0.0f / 512);
 //        glVertex3f(x01, yb, 0.0f);
 //        glEnd(); // Zeichnen des QUADs fertig } }
 //
-//        // Hut-Slot:
-//        float xa = x1;
-//        float xb = x1 + 0.08f * LegacyRenderer.tilesX;
-//        glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-//        glTexCoord2f(125.0f / 512, 307.0f / 512);
-//        glVertex3f(xa, ya, 0.0f);
-//        glTexCoord2f(271.0f / 512, 307.0f / 512);
-//        glVertex3f(xb, ya, 0.0f);
-//        glTexCoord2f(271.0f / 512, 206.0f / 512);
-//        glVertex3f(xb, yb, 0.0f);
-//        glTexCoord2f(125.0f / 512, 206.0f / 512);
-//        glVertex3f(xa, yb, 0.0f);
-//        glEnd(); // Zeichnen des QUADs fertig } }
+//        // Armor-Slots:
+//        for (int i = 0; i <= 4; i++) {
+//            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+//            glTexCoord2f(125.0f / 512, 307.0f / 512);
+//            glVertex3f(x03, ya + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glTexCoord2f(271.0f / 512, 307.0f / 512);
+//            glVertex3f(x03 + 0.08f * camera.getTilesX(), ya + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glTexCoord2f(271.0f / 512, 206.0f / 512);
+//            glVertex3f(x03 + 0.08f * camera.getTilesX(), yb + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glTexCoord2f(125.0f / 512, 206.0f / 512);
+//            glVertex3f(x03, yb + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glEnd(); // Zeichnen des QUADs fertig } }
+//        }
 //
 //        // Waffen-Slots:
 //        for (int i = 0; i <= 2; i++) {
-//            float xw1 = x1 + (0.1f * i + 0.15f) * LegacyRenderer.tilesX;
-//            float xw2 = xw1 + 0.08f * LegacyRenderer.tilesX;
 //            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
 //            glTexCoord2f(125.0f / 512, 204.0f / 512);
-//            glVertex3f(xw1, ya, 0.0f);
+//            glVertex3f(x02, ya + 0.1f * camera.getTilesY() * i, 0.0f);
 //            glTexCoord2f(271.0f / 512, 204.0f / 512);
-//            glVertex3f(xw2, ya, 0.0f);
+//            glVertex3f(x02 + 0.08f * camera.getTilesX(), ya + 0.1f * camera.getTilesY() * i, 0.0f);
 //            glTexCoord2f(271.0f / 512, 103.0f / 512);
-//            glVertex3f(xw2, yb, 0.0f);
+//            glVertex3f(x02 + 0.08f * camera.getTilesX(), yb + 0.1f * camera.getTilesY() * i, 0.0f);
 //            glTexCoord2f(125.0f / 512, 103.0f / 512);
-//            glVertex3f(xw1, yb, 0.0f);
+//            glVertex3f(x02, yb + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glEnd(); // Zeichnen des QUADs fertig } }
+//        }
+//
+//        // Werkzeug-Slots:
+//        for (int i = 3; i <= 4; i++) {
+//            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+//            glTexCoord2f(125.0f / 512, 204.0f / 512);
+//            glVertex3f(x02, ya + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glTexCoord2f(271.0f / 512, 204.0f / 512);
+//            glVertex3f(x02 + 0.08f * camera.getTilesX(), ya + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glTexCoord2f(271.0f / 512, 103.0f / 512);
+//            glVertex3f(x02 + 0.08f * camera.getTilesX(), yb + 0.1f * camera.getTilesY() * i, 0.0f);
+//            glTexCoord2f(125.0f / 512, 103.0f / 512);
+//            glVertex3f(x02, yb + 0.1f * camera.getTilesY() * i, 0.0f);
 //            glEnd(); // Zeichnen des QUADs fertig } }
 //        }
 //
 //
 //        // Items im Inventory zeichnen
 //        // Anzahl der Materialien:
-//        TextWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.6f * LegacyRenderer.tilesX, 0.64f * LegacyRenderer.tilesY);
-//        TextWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.6f * LegacyRenderer.tilesX, 0.59f * LegacyRenderer.tilesY);
-//        TextWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.6f * LegacyRenderer.tilesX, 0.54f * LegacyRenderer.tilesY);
+//        textWriter.renderText(String.valueOf(GameClient.getMaterial(0)), 0.2f * camera.getTilesX(), 0.64f * camera.getTilesY());
+//        textWriter.renderText(String.valueOf(GameClient.getMaterial(1)), 0.2f * camera.getTilesX(), 0.59f * camera.getTilesY());
+//        textWriter.renderText(String.valueOf(GameClient.getMaterial(2)), 0.2f * camera.getTilesX(), 0.54f * camera.getTilesY());
 //        glColor4f(1f, 1f, 1f, 1f);
 //
 //        itemTiles.bind();
@@ -145,22 +162,22 @@ public class Inventory extends TriggeredOverlay {
 //
 //            Item item = GameClient.getItems()[i];
 //
-//            float x = (0.107f + 0.08f * (i % 10)) * LegacyRenderer.tilesX;
+//            float x = (0.107f + 0.08f * (i % 10)) * camera.getTilesX();
 //
 //            float y;
 //            if (i < 10) {
-//                y = 0.37f * LegacyRenderer.tilesY;
+//                y = 0.37f * camera.getTilesY();
 //            } else if (i < 20) {
-//                y = 0.27f * LegacyRenderer.tilesY;
+//                y = 0.27f * camera.getTilesY();
 //            } else {
-//                y = 0.17f * LegacyRenderer.tilesY;
+//                y = 0.17f * camera.getTilesY();
 //            }
 //
-//            float width = (0.1f / 16.0f * 9.0f) * LegacyRenderer.tilesX;
-//            float height = 0.1f * LegacyRenderer.tilesY;
+//            float width = (0.1f / 16.0f * 9.0f) * camera.getTilesX();
+//            float height = 0.1f * camera.getTilesY();
 //
-//            float v = 0.0625f * item.getPic();
-//            float w = 0.0625f * (item.getPic() / 16);
+//            float v = 0.0625f * (int) item.getPic();
+//            float w = 0.0625f * ((int) item.getPic() / 16);
 //
 //            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
 //            glTexCoord2f(v, w + 0.0625f);
@@ -179,59 +196,170 @@ public class Inventory extends TriggeredOverlay {
 //        // angelegte Items in ihre Slots im Inventar zeichnen
 //        itemTiles.bind();
 //
-//        // Hut:
-//        Item itemx = GameClient.getEquippedItems().getEquipslots()[2][0];
-//        if (itemx != null) {
-//            // Item zeichnen;
-//            float x = 0.11f * LegacyRenderer.tilesX;
-//            float y = 0.53f * LegacyRenderer.tilesY;
+//        // Armor:
+//        for (int i = 0; i <= 1; i++) {
+//            Item itemx = GameClient.getEquippedItems().getEquipslots()[2][i];
+//            if (itemx != null) {
+//                // Item zeichnen;
 //
-//            float width = 0.1f / 16 * 9 * LegacyRenderer.tilesX;
-//            float height = 0.1f * LegacyRenderer.tilesY;
+//                float width = 0.1f / 16 * 9 * camera.getTilesX();
+//                float height = 0.1f * camera.getTilesY();
 //
-//            float v = 0.0625f * itemx.getPic();
-//            float w = 0.0625f * (itemx.getPic() / 16);
+//                float v = 0.0625f * (int) itemx.getPic();
+//                float w = 0.0625f * ((int) itemx.getPic() / 16);
 //
-//            glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
-//            glTexCoord2f(v, w + 0.0625f);
-//            glVertex3f(x, y, 0.0f);
-//            glTexCoord2f(v + 0.0625f, w + 0.0625f);
-//            glVertex3f(x + width, y, 0.0f);
-//            glTexCoord2f(v + 0.0625f, w);
-//            glVertex3f(x + width, y + height, 0.0f);
-//            glTexCoord2f(v, w);
-//            glVertex3f(x, y + height, 0.0f);
-//            glEnd(); // Zeichnen des QUADs fertig } }
+//                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+//                glTexCoord2f(v, w + 0.0625f);
+//                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+//                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+//                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+//                glTexCoord2f(v + 0.0625f, w);
+//                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+//                glTexCoord2f(v, w);
+//                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+//                glEnd(); // Zeichnen des QUADs fertig } }
+//            }
+//        }
+//
+//        for (int i = 2; i <= 4; i++) {
+//            Item itemx = GameClient.getEquippedItems().getEquipslots()[i + 1][0];
+//            if (itemx != null) {
+//                // Item zeichnen;
+//
+//                float width = 0.1f / 16 * 9 * camera.getTilesX();
+//                float height = 0.1f * camera.getTilesY();
+//
+//                float v = 0.0625f * (int) itemx.getPic();
+//                float w = 0.0625f * ((int) itemx.getPic() / 16);
+//
+//                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+//                glTexCoord2f(v, w + 0.0625f);
+//                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+//                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+//                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + i * height, 0.0f);
+//                glTexCoord2f(v + 0.0625f, w);
+//                glVertex3f(x03 + width + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+//                glTexCoord2f(v, w);
+//                glVertex3f(x03 + 0.011875f * camera.getTilesX(), ya + (i + 1) * height, 0.0f);
+//                glEnd(); // Zeichnen des QUADs fertig } }
+//            }
 //        }
 //
 //
 //        // Waffen:
-//        for (int j = 0; j < GameClient.getEquippedItems().getEquipslots()[1].length; j++) {
+//        for (int j = 0; j <= 2; j++) {
 //            Item item1 = GameClient.getEquippedItems().getEquipslots()[1][j];
 //            if (item1 != null) {
 //                // Item zeichnen;
-//                float x = (0.26f + 0.1f * j) * LegacyRenderer.tilesX;
-//                float y = 0.53f * LegacyRenderer.tilesY;
 //
-//                float width = 0.1f / 16 * 9 * LegacyRenderer.tilesX;
-//                float height = 0.1f * LegacyRenderer.tilesY;
+//                float width = 0.1f / 16 * 9 * camera.getTilesX();
+//                float height = 0.1f * camera.getTilesY();
 //
-//                float v = 0.0625f * item1.getPic();
-//                float w = 0.0625f * (item1.getPic() / 16);
+//                float v = 0.0625f * (int) item1.getPic();
+//                float w = 0.0625f * ((int) item1.getPic() / 16);
 //
 //                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
 //                glTexCoord2f(v, w + 0.0625f);
-//                glVertex3f(x, y, 0.0f);
+//                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
 //                glTexCoord2f(v + 0.0625f, w + 0.0625f);
-//                glVertex3f(x + width, y, 0.0f);
+//                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
 //                glTexCoord2f(v + 0.0625f, w);
-//                glVertex3f(x + width, y + height, 0.0f);
+//                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
 //                glTexCoord2f(v, w);
-//                glVertex3f(x, y + height, 0.0f);
+//                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
 //                glEnd(); // Zeichnen des QUADs fertig } }
 //            }
-//
 //        }
+//
+//        // Werkzeug
+//        for (int j = 3; j <= 4; j++) {
+//            Item item1 = GameClient.getEquippedItems().getEquipslots()[j + 3][0];
+//            if (item1 != null) {
+//                // Item zeichnen;
+//
+//                float width = 0.1f / 16 * 9 * camera.getTilesX();
+//                float height = 0.1f * camera.getTilesY();
+//
+//                float v = 0.0625f * (int) item1.getPic();
+//                float w = 0.0625f * ((int) item1.getPic() / 16);
+//
+//                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
+//                glTexCoord2f(v, w + 0.0625f);
+//                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
+//                glTexCoord2f(v + 0.0625f, w + 0.0625f);
+//                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + j * height, 0.0f);
+//                glTexCoord2f(v + 0.0625f, w);
+//                glVertex3f(x02 + width + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
+//                glTexCoord2f(v, w);
+//                glVertex3f(x02 + 0.011875f * camera.getTilesX(), ya + (j + 1) * height, 0.0f);
+//                glEnd(); // Zeichnen des QUADs fertig } }
+//            }
+//        }
+//
+//        // Wenn ein Item ausgewählt ist, Rahmen um passende Equipslots zeichnen
+//        if (selecteditemslot != -1) {
+//            Item item2 = GameClient.getItems()[selecteditemslot];
+//            if (item2 != null) {
+//                glDisable(GL_TEXTURE_2D);
+//                glColor3f(0.0f, 0.3f, 1.0f);
+//                glLineWidth(4.0f);
+//
+//                float width = 0.08f * camera.getTilesX();
+//                float height = 0.1f * camera.getTilesY();
+//
+//                if (item2.getItemClass() == 1) {
+//                    for (int j = 0; j <= 2; j++) {
+//                        glBegin(GL_LINE_LOOP);
+//                        glVertex3f(x02, ya + j * height, 0.0f);
+//                        glVertex3f(x02 + width, ya + j * height, 0.0f);
+//                        glVertex3f(x02 + width, ya + (j + 1) * height, 0.0f);
+//                        glVertex3f(x02, ya + (j + 1) * height, 0.0f);
+//                        glEnd();
+//                    }
+//                } else if (item2.getItemClass() == 2) {
+//                    for (int j = 0; j <= 1; j++) {
+//                        glBegin(GL_LINE_LOOP);
+//                        glVertex3f(x03, ya + j * height, 0.0f);
+//                        glVertex3f(x03 + width, ya + j * height, 0.0f);
+//                        glVertex3f(x03 + width, ya + (j + 1) * height, 0.0f);
+//                        glVertex3f(x03, ya + (j + 1) * height, 0.0f);
+//                        glEnd();
+//                    }
+//                } else if (item2.getItemClass() >= 3 && item2.getItemClass() <= 5) {
+//                    int j = item2.getItemClass() - 1;
+//                    glBegin(GL_LINE_LOOP);
+//                    glVertex3f(x03, ya + j * height, 0.0f);
+//                    glVertex3f(x03 + width, ya + j * height, 0.0f);
+//                    glVertex3f(x03 + width, ya + (j + 1) * height, 0.0f);
+//                    glVertex3f(x03, ya + (j + 1) * height, 0.0f);
+//                    glEnd();
+//                } else if (item2.getItemClass() == 6 || item2.getItemClass() == 7) {
+//                    int j = item2.getItemClass() - 3;
+//                    glBegin(GL_LINE_LOOP);
+//                    glVertex3f(x02, ya + j * height, 0.0f);
+//                    glVertex3f(x02 + width, ya + j * height, 0.0f);
+//                    glVertex3f(x02 + width, ya + (j + 1) * height, 0.0f);
+//                    glVertex3f(x02, ya + (j + 1) * height, 0.0f);
+//                    glEnd();
+//                }
+//            }
+//        }
+//        glColor3f(1.0f, 1.0f, 1.0f);
+//        glLineWidth(1.0f);
+//        glEnable(GL_TEXTURE_2D);
+//
+//
+//        // Spieler-Stats rendern:
+//        glDisable(GL_TEXTURE_2D);
+//        glColor4f(0.05f, 0.05f, 0.05f, 0.9f);
+//        glRectf(x03 + 0.08f * camera.getTilesX(), ya, x02, ya + 0.5f * camera.getTilesY());
+//        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+//        glEnable(GL_TEXTURE_2D);
+//        textWriter.renderText("HP:    " + (GameClient.logicPlayer.isDead() ? 0 : GameClient.player.getHealthpoints()) + " / " + GameClient.player.getHealthpointsmax(), x03 + 0.09f * camera.getTilesX(), ya + 0.45f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+//        textWriter.renderText("HP Regeneration:    " + (float) GameClient.player.getHitpointRegeneration(), x03 + 0.09f * camera.getTilesX(), ya + 0.42f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+//        textWriter.renderText("Armor:    " + GameClient.player.getArmor(), x03 + 0.09f * camera.getTilesX(), ya + 0.39f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+//        textWriter.renderText("Damage Reduction:    " + (float) (100 - 10000.0 / (GameClient.player.getArmor() + 100)) + "%", x03 + 0.09f * camera.getTilesX(), ya + 0.36f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
+//        textWriter.renderText("Movement Speed:    " + (float) GameClient.player.getMovement_speed(), x03 + 0.09f * camera.getTilesX(), ya + 0.33f * camera.getTilesY(), 1.0f, 1.0f, 1.0f, 1.0f);
 //
 //
 //        // selected Item zum Mauszeiger zeichnen
@@ -240,28 +368,29 @@ public class Inventory extends TriggeredOverlay {
 //            if (item2 != null) {
 //                itemTiles.bind();
 //
-//                float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * LegacyRenderer.tilesX;
-//                float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * LegacyRenderer.tilesY;
+//                float x = (float) Mouse.getX() / CLIENT_GFX_RES_X * camera.getTilesX();
+//                float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y * camera.getTilesY();
 //
 //                float size = 0.08f;
 //
-//                float v = 0.0625f * item2.getPic();
-//                float w = 0.0625f * (item2.getPic() / 16);
+//                float v = 0.0625f * (int) item2.getPic();
+//                float w = 0.0625f * ((int) item2.getPic() / 16);
 //
 //                glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
 //                glTexCoord2f(v, w + 0.0625f);
-//                glVertex3f(x - LegacyRenderer.tilesX * size / 2, y - LegacyRenderer.tilesX * size / 2, 0.0f);
+//                glVertex3f(x - camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
 //                glTexCoord2f(v + 0.0625f, w + 0.0625f);
-//                glVertex3f(x + LegacyRenderer.tilesX * size / 2, y - LegacyRenderer.tilesX * size / 2, 0.0f);
+//                glVertex3f(x + camera.getTilesX() * size / 2, y - camera.getTilesX() * size / 2, 0.0f);
 //                glTexCoord2f(v + 0.0625f, w);
-//                glVertex3f(x + LegacyRenderer.tilesX * size / 2, y + LegacyRenderer.tilesX * size / 2, 0.0f);
+//                glVertex3f(x + camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
 //                glTexCoord2f(v, w);
-//                glVertex3f(x - LegacyRenderer.tilesX * size / 2, y + LegacyRenderer.tilesX * size / 2, 0.0f);
+//                glVertex3f(x - camera.getTilesX() * size / 2, y + camera.getTilesX() * size / 2, 0.0f);
 //                glEnd(); // Zeichnen des QUADs fertig } }
 //            }
 //        }
 //
-//        // Mousehover über Item zeichnen
+//
+//        // Mousehover über Item zeichnen:
 //
 //        float x = (float) Mouse.getX() / CLIENT_GFX_RES_X;
 //        float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
@@ -294,25 +423,41 @@ public class Inventory extends TriggeredOverlay {
 //            }
 //        }
 //
+//        float x02b = 0.655125f;
+//        float x03b = 0.335125f;
+//        float yab = 0.48f;
+//
 //        Item item = null;
 //        if (slothovered != -1 && slothovered != selecteditemslot) {
 //            if (GameClient.getItems()[slothovered] != null) {
 //                item = GameClient.getItems()[slothovered];
 //            }
 //            // Einer der Ausrüstungsslots?
-//        } else if (x > 0.095125f && x < 0.175125f) {
-//            if (y > 0.53 && y < 0.63) {
-//                // Hutslot
+//        } else if (x > x03b && x < x03b + 0.08f) {
+//            // Armor
+//            if (y > yab && y < yab + 0.1f) {
 //                item = GameClient.getEquippedItems().getEquipslots()[2][0];
+//            } else if (y > yab + 0.1f && y < yab + 0.2f) {
+//                item = GameClient.getEquippedItems().getEquipslots()[2][1];
+//            } else if (y > yab + 0.2f && y < yab + 0.3f) {
+//                item = GameClient.getEquippedItems().getEquipslots()[3][0];
+//            } else if (y > yab + 0.3f && y < yab + 0.4f) {
+//                item = GameClient.getEquippedItems().getEquipslots()[4][0];
+//            } else if (y > yab + 0.4f && y < yab + 0.5f) {
+//                item = GameClient.getEquippedItems().getEquipslots()[5][0];
 //            }
-//        } else if (y > 0.53 && y < 0.63) {
-//            // ein Waffenslot?
-//            if (x > 0.245125f && x < 0.325125f) {
+//        } else if (x > x02b && x < x02b + 0.08f) {
+//            // ein Waffen- / Werkzeugslot
+//            if (y > yab && y < yab + 0.1f) {
 //                item = GameClient.getEquippedItems().getEquipslots()[1][0];
-//            } else if (x > 0.345125f && x < 0.425125f) {
+//            } else if (y > yab + 0.1f && y < yab + 0.2f) {
 //                item = GameClient.getEquippedItems().getEquipslots()[1][1];
-//            } else if (x > 0.445125f && x < 0.525125f) {
+//            } else if (y > yab + 0.2f && y < yab + 0.3f) {
 //                item = GameClient.getEquippedItems().getEquipslots()[1][2];
+//            } else if (y > yab + 0.3f && y < yab + 0.4f) {
+//                item = GameClient.getEquippedItems().getEquipslots()[6][0];
+//            } else if (y > yab + 0.4f && y < yab + 0.5f) {
+//                item = GameClient.getEquippedItems().getEquipslots()[7][0];
 //            }
 //        }
 //
@@ -320,13 +465,13 @@ public class Inventory extends TriggeredOverlay {
 //            // Item gefunden, jetzt Mousehover rendern
 //            glDisable(GL_TEXTURE_2D);
 //            glColor3f(0.9f, 0.9f, 0.9f);
-//            glRectf((x - 0.01f) * LegacyRenderer.tilesX, (y - 0.01f) * LegacyRenderer.tilesY, (x + 0.3f) * LegacyRenderer.tilesX, (y - 0.015f + 0.05f * item.getItemAttributes().size()) * LegacyRenderer.tilesY);
+//            glRectf((x - 0.01f) * camera.getTilesX(), (y - 0.01f) * camera.getTilesY(), (x + 0.3f) * camera.getTilesX(), (y - 0.015f + 0.05f * item.getItemAttributes().size()) * camera.getTilesY());
 //            glColor3f(1f, 1f, 1f);
 //            glEnable(GL_TEXTURE_2D);
 //            // Namen von Item und Itemattributen, umgekehrte Reihenfolge damit Name oben ist
 //            float yadd = 0.0f;
 //            for (int i = item.getItemAttributes().size() - 1; i >= 0; i--) {
-//                TextWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * LegacyRenderer.tilesX, (y + yadd) * LegacyRenderer.tilesY);
+//                textWriter.renderText(String.valueOf(item.getItemAttributes().get(i).getName()), x * camera.getTilesX(), (y + yadd) * camera.getTilesY());
 //                yadd += 0.05f;
 //            }
 //        }
@@ -367,38 +512,56 @@ public class Inventory extends TriggeredOverlay {
             float y = (float) Mouse.getY() / CLIENT_GFX_RES_Y;
             //System.out.println("x " + x + ",y " + y);
 
+            float x01 = 0.815125f;
+            float x02 = 0.655125f;
+            float x03 = 0.335125f;
+            float ya = 0.48f;
 
             // Hut-Slot
-            if (x > 0.095125f && x < 0.175125f) {
-                if (y > 0.53 && y < 0.63) {
-                    if (selecteditemslot != -1) {
-                        Item selecteditem = GameClient.getItems()[selecteditemslot];
-                        if (selecteditem.getItemClass() == 2) {
-                            CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // 2 = Hut-Slot
+            if (x > x03 && x < x03 + 0.08f) {
+                for (int i = 1; i <= 5; i++) {
+                    if (y > ya + (i - 1) * 0.1f && y < ya + i * 0.1f) {
+                        if (selecteditemslot != -1) {
+                            Item selecteditem = GameClient.getItems()[selecteditemslot];
+                            if (i != 1 && (int) selecteditem.getItemClass() == i) {
+                                CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (i == 2) ? (byte) 1 : (byte) 0);
+                            } else if (i == 1 && (int) selecteditem.getItemClass() == 2) {
+                                CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0);
+                            }
                             selecteditemslot = -1;
-                        }
-                    } else {
-                        if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
-                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0); // 2 = Hut-Slot
+                        } else {
+                            if (i > 2) {
+                                if (GameClient.getEquippedItems().getEquipslots()[i][0] != null) {
+                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(i, (byte) 0);
+                                }
+                            } else if (i == 2) {
+                                if (GameClient.getEquippedItems().getEquipslots()[2][1] != null) {
+                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 1);
+                                }
+                            } else if (i == 1) {
+                                if (GameClient.getEquippedItems().getEquipslots()[2][0] != null) {
+                                    CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(2, (byte) 0);
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            if (y > 0.53 && y < 0.63) {
+            // Waffenslot
+            if (x > x02 && x < x02 + 0.08f) {
                 byte weaponslot = -1;
-                if (x > 0.245125f && x < 0.325125f) {
+                if (y > ya && y < ya + 0.1f) {
                     weaponslot = 0;
-                } else if (x > 0.345125f && x < 0.425125f) {
+                } else if (y > ya + 0.1f && y < ya + 0.2f) {
                     weaponslot = 1;
-                } else if (x > 0.445125f && x < 0.525125f) {
+                } else if (y > ya + 0.2f && y < ya + 0.3f) {
                     weaponslot = 2;
                 }
                 if (weaponslot != -1) {
-                    // Waffenslot
                     if (selecteditemslot != -1) {
                         Item selecteditem = GameClient.getItems()[selecteditemslot];
-                        if (selecteditem.getItemClass() == 1) {
+                        if ((int) selecteditem.getItemClass() == 1) {
                             CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, weaponslot); // Slotnummer, zum Auseinanderhalten von den 3 Waffenslots
                             selecteditemslot = -1;
                         }
@@ -410,9 +573,32 @@ public class Inventory extends TriggeredOverlay {
                 }
             }
 
+            // Werkzeugslot
+            if (x > x02 && x < x02 + 0.08f) {
+                byte toolslot = -1;
+                if (y > ya + 0.3f && y < ya + 0.4f) {
+                    toolslot = 6;
+                } else if (y > ya + 0.4f && y < ya + 0.5f) {
+                    toolslot = 7;
+                }
+                if (toolslot != -1) {
+                    if (selecteditemslot != -1) {
+                        Item selecteditem = GameClient.getItems()[selecteditemslot];
+                        if ((int) selecteditem.getItemClass() == toolslot) {
+                            CTS_EQUIP_ITEM.sendEquipItem(selecteditemslot, (byte) 0); // Slotnummer, zum Auseinanderhalten von den Slots
+                            selecteditemslot = -1;
+                        }
+                    } else {
+                        if (GameClient.getEquippedItems().getEquipslots()[toolslot][0] != null) {
+                            CTS_REQUEST_ITEM_DEQUIP.sendDequipItem(toolslot, (byte) 0);
+                        }
+                    }
+                }
+            }
+
             //Müll-Slot
-            if (x > 0.815125f && x < 0.895125f) {
-                if (y > 0.53 && y < 0.63) {
+            if (x > x01 && x < x01 + 0.08f) {
+                if (y > ya && y < ya + 0.1f) {
                     CTS_DELETE_ITEM.sendDeleteItem(selecteditemslot);
                     selecteditemslot = -1;
                 }

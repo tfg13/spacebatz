@@ -83,10 +83,46 @@ public class DropManager {
             STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
 
             // Testcode:
-            int money_amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
-            dropMaterial(0, money_amount);
+            //int money_amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
+            dropMaterial(0, 1);
 
         }
+    }
+
+    // TESTCODE
+    public static void dropStartItems(Client c) {
+
+        ArrayList<ItemAttribute> dropableitems = new ArrayList<>();
+        for (int i = 0; i < itemtypelist.size(); i++) {
+            String itemname = itemtypelist.get(i).getName();
+            //Itemquality muss niedriger/gleich Gegnerlevel und ungleich 0 sein
+            if (itemname.equals("Drill")) {
+                dropableitems.add(itemtypelist.get(i));
+            }
+        }
+        ItemAttribute stats = dropableitems.get(0);
+        Item item = new Item(stats.getName(), stats, Server.game.newNetID());
+
+        //Server.game.getItemMap().put(item.getNetID(), item);
+
+        byte[] serializedItem = null;
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        ObjectOutputStream os;
+        try {
+            os = new ObjectOutputStream(bs);
+            os.writeObject(item);
+            os.flush();
+            bs.flush();
+            bs.close();
+            os.close();
+            serializedItem = bs.toByteArray();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        c.getPlayer().putItem(item.getNetID(), item);
+        STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
     }
 
     /**
@@ -111,22 +147,18 @@ public class DropManager {
         }
 
         Random random = new Random();
-        int rand = random.nextInt(21);
+        int rand = random.nextInt(80);
 
         // Anzahl Attribute, die das Item kriegt (bis zu)
-        int maxatt;
-        if (rand < 6) {
-            maxatt = 0;
-        } else if (rand < 11) {
-            maxatt = 1;
-        } else if (rand < 15) {
-            maxatt = 2;
-        } else if (rand < 18) {
-            maxatt = 3;
-        } else if (rand < 20) {
+        int maxatt = 0;
+        if (rand > 72) {
             maxatt = 4;
-        } else {
-            maxatt = 5;
+        } else if (rand > 62) {
+            maxatt = 3;
+        } else if (rand > 47) {
+            maxatt = 2;
+        } else if (rand > 30) {
+            maxatt = 1;
         }
 
         for (int i = 0; i < maxatt; i++) {

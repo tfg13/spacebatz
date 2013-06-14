@@ -20,14 +20,24 @@ public class EquippedItems {
     /**
      * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
      */
-    private Item[][] equipslots = new Item[3][];
+    private Item[][] equipslots = new Item[8][];
     
     public EquippedItems() {
-        Item[] wslot = new Item[3];
-        Item[] aslot = new Item[1];
-        
-        equipslots[1] = wslot;
-        equipslots[2] = aslot;
+        Item[] weaponslot = new Item[3];
+        Item[] armorslot2 = new Item[2];
+        Item[] armorslot3 = new Item[1];
+        Item[] armorslot4 = new Item[1];
+        Item[] armorslot5 = new Item[1];
+        Item[] toolslot1 = new Item[1];
+        Item[] toolslot2 = new Item[1];
+
+        equipslots[1] = weaponslot;
+        equipslots[2] = armorslot2;
+        equipslots[3] = armorslot3;
+        equipslots[4] = armorslot4;
+        equipslots[5] = armorslot5;
+        equipslots[6] = toolslot1;
+        equipslots[7] = toolslot2;
     }
 
     public Item[][] getEquipslots() {

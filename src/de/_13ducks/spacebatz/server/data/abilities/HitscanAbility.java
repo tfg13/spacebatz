@@ -2,7 +2,7 @@ package de._13ducks.spacebatz.server.data.abilities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.effects.Effect;
-import de._13ducks.spacebatz.server.data.effects.TrueDamageEffect;
+import de._13ducks.spacebatz.server.data.effects.StandardDamageEffect;
 import de._13ducks.spacebatz.server.data.entities.Char;
 import de._13ducks.spacebatz.server.gamelogic.CollisionManager;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
@@ -42,7 +42,9 @@ public class HitscanAbility extends WeaponAbility {
         // Schaden an Gegnern
         ArrayList<Char> charsHit = CollisionManager.computeHitscanOnChars(user, angle, range, this);
 
-        TrueDamageEffect damageeff = new TrueDamageEffect((int) ((getWeaponStats().getDamage() + getWeaponStats().getDamagespread() * 2 * (Math.random() - 0.5)) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus())));
+        int damagespread = (int) ((getWeaponStats().getDamagespread() * 2 + 2) * Math.random() - getWeaponStats().getDamagespread() - 1);
+        int damage = (int) ((getWeaponStats().getDamage() + damagespread) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus()));
+        StandardDamageEffect damageeff = new StandardDamageEffect(damage);
         effects.clear();
         effects.add(damageeff);
 

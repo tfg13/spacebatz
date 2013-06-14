@@ -16,7 +16,7 @@ import de._13ducks.spacebatz.util.Bits;
 public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
 
     public STC_ITEM_DEQUIP() {
-        super(9);
+        super(17);
     }
 
     @Override
@@ -25,25 +25,34 @@ public class STC_ITEM_DEQUIP extends FixedSizeSTCCommand {
         int slottype = Bits.getInt(data, 0); // netID des  Items
         byte selslot2 = data[4];
         int clientID2 = Bits.getInt(data, 5); // clientID des Spielers
+        float newspeed = Bits.getFloat(data, 9);
+        int newarmor = Bits.getInt(data, 13);
+
         if (clientID2 == GameClient.getClientID()) {
             Item item = GameClient.getEquippedItems().getEquipslots()[slottype][selslot2];
             GameClient.getEquippedItems().getEquipslots()[slottype][selslot2] = null;
             GameClient.addToInventory(item);
-            
+
             GameClient.player.setHealthpointsmax(GameClient.player.getHealthpointsmax() - item.getBonusProperties().getMaxHitpoints());
             GameClient.player.setHitpointRegeneration(GameClient.player.getHitpointRegeneration() - item.getBonusProperties().getHitpointRegeneration());
+            GameClient.player.setArmor(newarmor);
         }
+
+        GameClient.players.get(clientID2).getPlayer().setPrediction_speed(newspeed);
+        GameClient.players.get(clientID2).getPlayer().setMovement_speed(newspeed);
     }
 
     /**
      * Item wird von Client abgelegt (zurück ins Inventar)
      */
-    public static void sendItemDequip(int slottype, byte selslot, int clientID) {
+    public static void sendItemDequip(int slottype, byte selslot, int clientID, float newspeed, int newarmor) {
         for (Client c : Server.game.clients.values()) {
-            byte[] b = new byte[9];
+            byte[] b = new byte[17];
             Bits.putInt(b, 0, slottype);
             b[4] = selslot;
             Bits.putInt(b, 5, clientID);
+            Bits.putFloat(b, 9, newspeed);
+            Bits.putInt(b, 13, newarmor);
             //Server.serverNetwork.sendTcpData(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, b, c);
             Server.serverNetwork2.queueOutgoingCommand(new OutgoingCommand(MessageIDs.NET_TCP_CMD_DEQUIP_ITEM, b), c);
         }

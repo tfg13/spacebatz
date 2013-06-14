@@ -28,7 +28,7 @@ public class ItemCarrier extends Char {
     /**
      * Enthält einzelne Slotarten, z.B. die Waffenslots, Armorslots
      */
-    private Item[][] equipslots = new Item[3][];
+    private Item[][] equipslots = new Item[8][];
     /**
      * aktuell ausgewählte Waffe
      */
@@ -48,11 +48,21 @@ public class ItemCarrier extends Char {
      */
     public ItemCarrier(int netId, byte typeId, Mover mover, Team team) {
         super(netId, typeId, mover, team);
-        Item[] wslot = new Item[3];
-        Item[] aslot = new Item[1];
+        Item[] weaponslot = new Item[3];
+        Item[] armorslot2 = new Item[2];
+        Item[] armorslot3 = new Item[1];
+        Item[] armorslot4 = new Item[1];
+        Item[] armorslot5 = new Item[1];
+        Item[] toolslot1 = new Item[1];
+        Item[] toolslot2 = new Item[1];
 
-        equipslots[1] = wslot;
-        equipslots[2] = aslot;
+        equipslots[1] = weaponslot;
+        equipslots[2] = armorslot2;
+        equipslots[3] = armorslot3;
+        equipslots[4] = armorslot4;
+        equipslots[5] = armorslot5;
+        equipslots[6] = toolslot1;
+        equipslots[7] = toolslot2;
 
     }
 
@@ -128,7 +138,7 @@ public class ItemCarrier extends Char {
 //            }
 
             // Item-Anleg-Befehl zum Client senden
-            STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID, (float) getSpeed());
+            STC_EQUIP_ITEM.sendItemEquip(inventoryslot, equipslot, ((Player) this).getClient().clientID, (float) getSpeed(), getArmorResult());
         }
     }
 
@@ -200,26 +210,25 @@ public class ItemCarrier extends Char {
      * @param slottype Slotart (Waffe, Hut, ...)
      * @param selectedslot Nr. des Slots dieser Art
      */
-    public Item dequipItemToGround(int slottype, byte selectedslot) {
-        Item item = null;
-        if (getEquipslots()[slottype] != null) {
-            if (getEquipslots()[slottype][selectedslot] != null) {
-                item = getEquipslots()[slottype][selectedslot];
-                getEquipslots()[slottype][selectedslot] = null;
-                removeProperties(item.getBonusProperties());
-//
-//                if (getActiveWeapon() != null) {
-//                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
-//                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
-//                } else {
-//                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
-//                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
-//                }
-            }
-        }
-        return item;
-    }
-
+//    public Item dequipItemToGround(int slottype, byte selectedslot) {
+//        Item item = null;
+//        if (getEquipslots()[slottype] != null) {
+//            if (getEquipslots()[slottype][selectedslot] != null) {
+//                item = getEquipslots()[slottype][selectedslot];
+//                getEquipslots()[slottype][selectedslot] = null;
+//                removeProperties(item.getBonusProperties());
+////
+////                if (getActiveWeapon() != null) {
+////                    // Waffenfähigkeit wechseln, falls im ausgewählten slot eine Waffe ist
+////                    setAbility(ACTIVEWEAPONABILITY, getActiveWeapon().getAbility(), this);
+////                } else {
+////                    // Wenn nicht dann Aktive Fähigkeit auf den Standardangriff seten:
+////                    setAbility(ACTIVEWEAPONABILITY, defaultAttackAbility, this);
+////                }
+//            }
+//        }
+//        return item;
+//    }
     /**
      * Wählt gerade aktive Waffe aus
      *
@@ -252,8 +261,16 @@ public class ItemCarrier extends Char {
     }
 
     /**
-     * Tauscht 2 Items im Inventar
-     * 2. Slot mus kein Item enthalten, dann wird nur 1. Item verschoben
+     * Gibt die gerade ausgewählte Waffe zurück
+     *
+     * @return ein Weapon
+     */
+    public Item getActiveTool() {
+        return equipslots[6][0];
+    }
+
+    /**
+     * Tauscht 2 Items im Inventar 2. Slot mus kein Item enthalten, dann wird nur 1. Item verschoben
      *
      * @param inventoryslot1 erster Inventarplatz
      * @param inventoryslot2 zweiter Inventarplatz

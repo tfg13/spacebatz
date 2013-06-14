@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_SHOOT;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_TOGGLE_BUILDMODE;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -47,6 +48,9 @@ public class GameInput extends InputMode {
                     if (GameClient.player.getSelectedattack() != 2) {
                         CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
                     }
+                    break;
+                case Keyboard.KEY_Q:
+                    CTS_TOGGLE_BUILDMODE.sendToggleBuildmode(!GameClient.player.isBuildmode());
                     break;
             }
         }
