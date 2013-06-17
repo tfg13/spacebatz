@@ -21,8 +21,8 @@ public class ShaderLoader {
     public static int[] load() {
         int[] shaders = new int[2];
         try {
-            linkShaders(shaders, GraphicsEngine.SHADER_INDEX_GAME, createShader("shaders/opengl32core/game.vert", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/game.frag", GL20.GL_FRAGMENT_SHADER), "in_Position", "in_TextureCoord");
-            linkShaders(shaders, GraphicsEngine.SHADER_INDEX_OVERLAYS, createShader("shaders/opengl32core/overlays.vert", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/overlays.frag", GL20.GL_FRAGMENT_SHADER), "in_Position", "in_TextureCoord");
+            linkShaders(shaders, GraphicsEngine.SHADER_INDEX_GAME, createShader("shaders/opengl32core/game.vert.glsl", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/game.frag.glsl", GL20.GL_FRAGMENT_SHADER), "in_Position", "in_TextureCoord");
+            linkShaders(shaders, GraphicsEngine.SHADER_INDEX_OVERLAYS, createShader("shaders/opengl32core/overlays.vert.glsl", GL20.GL_VERTEX_SHADER), createShader("shaders/opengl32core/overlays.frag.glsl", GL20.GL_FRAGMENT_SHADER), "in_Position", "in_TextureCoord", "in_Color");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
