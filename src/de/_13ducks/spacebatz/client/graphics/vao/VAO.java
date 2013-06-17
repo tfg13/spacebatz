@@ -83,8 +83,17 @@ public class VAO {
      * Zeichenmodus (im Wesentlichen TRIANGLE oder LINE).
      */
     private final int drawMode;
+    /**
+     * Ungleich 0, falls dieses VAO mit einem Shader arbeitet, den man zwischen Col, Tex und TexCol umschalten muss.
+     * Hält dann die Adresse des Steuerungs-Uniforms.
+     */
+    private int shaderColorTexModeAdr;
+    /**
+     * In welchem Modus der Shader gerade ist.
+     */
+    private static int lastShaderColorTexMode = 1;
 
-    VAO(int numberOfVertices, boolean useTexture, boolean useColor, int bufferUsage, int drawMode) {
+    VAO(int numberOfVertices, boolean useTexture, boolean useColor, int bufferUsage, int drawMode, int shaderColorTexModeAdr) {
         if (!useTexture && !useColor) {
             throw new IllegalArgumentException("Cannot create VAO without texture and color");
         }
@@ -101,6 +110,7 @@ public class VAO {
         }
         this.glmode = bufferUsage;
         this.drawMode = drawMode;
+        this.shaderColorTexModeAdr = shaderColorTexModeAdr;
     }
 
     /**
@@ -391,6 +401,7 @@ public class VAO {
         if (modified) {
             throw new IllegalStateException("Illegal: VAO usage: Cannot render, data was modified but not re-uploaded");
         }
+        checkShaderMode();
         enable();
         GL11.glDrawArrays(drawMode, 0, vertices.length / 2);
         disable();
@@ -419,6 +430,22 @@ public class VAO {
         GL30.glBindVertexArray(0);
         GL30.glDeleteVertexArrays(vaoID);
         created = false;
+    }
+
+    private void checkShaderMode() {
+        if (shaderColorTexModeAdr != -1) {
+            int targetMode = 0;
+            if (texCoords != null && colors == null) {
+                targetMode = 1;
+            } else if (texCoords != null && colors != null) {
+                targetMode = 2;
+            }
+            if (lastShaderColorTexMode != targetMode) {
+                // Umschalten
+                GL20.glUniform1i(shaderColorTexModeAdr, targetMode);
+                lastShaderColorTexMode = targetMode;
+            }
+        }
     }
 
     private void create() {

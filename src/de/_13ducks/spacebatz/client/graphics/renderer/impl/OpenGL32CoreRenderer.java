@@ -179,7 +179,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         PlayerCharacter pl = (PlayerCharacter) GameClient.netIDMap.get(netID);
         Animation anim = pl.getRenderObject().getBaseAnim();
 
+        VAOFactory.setBlockShaderModifications(true);
         testPlayer = VAOFactory.createDynamicTexturedRectVAO();
+        VAOFactory.setBlockShaderModifications(false);
 
         float picsizex = 0.0625f * anim.getPicsizex();
         float picsizey = 0.0625f * anim.getPicsizey();

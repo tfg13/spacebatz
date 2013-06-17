@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
+import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import static de._13ducks.spacebatz.shared.DefaultSettings.*;
 import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
@@ -103,6 +104,10 @@ public class GraphicsEngine {
             // Tastatureingaben einstallen:
             Keyboard.enableRepeatEvents(true);
 
+            // Shader setup
+            shader = ShaderLoader.load();
+            VAOFactory.init(GL20.glGetUniformLocation(shader[SHADER_INDEX_OVERLAYS], "colorTexMode"));
+
             // Komponenten erzeugen:
             input = new Input();
 
@@ -121,9 +126,6 @@ public class GraphicsEngine {
 //                TextWriter.initialize();
 
             coreRenderer = new OpenGL32CoreRenderer();
-
-            // Shader setup
-            shader = ShaderLoader.load();
 
             coreRenderer.setupShaders(shader);
 
