@@ -95,7 +95,7 @@ public class VAO {
             texCoords = null;
         }
         if (useColor) {
-            colors = new float[numberOfVertices * 1];
+            colors = new float[numberOfVertices * 4];
         } else {
             colors = null;
         }
@@ -113,7 +113,7 @@ public class VAO {
      * @param w W-Koordinate
      * @param c Farbe
      */
-    private void pushVertexTC(float x, float y, float v, float w, float c) {
+    private void pushVertexTC(float x, float y, float v, float w, float[] c) {
         if (texCoords == null || colors == null) {
             throw new IllegalArgumentException("Illegal VAO usage: Cannot push texture and color to non-textured or non-colored VAO");
         }
@@ -125,7 +125,10 @@ public class VAO {
         vertices[vertexIndex * 2 + 1] = y;
         texCoords[vertexIndex * 2] = v;
         texCoords[vertexIndex * 2 + 1] = w;
-        colors[vertexIndex] = c;
+        colors[vertexIndex * 4] = c[0];
+        colors[vertexIndex * 4 + 1] = c[1];
+        colors[vertexIndex * 4 + 2] = c[2];
+        colors[vertexIndex * 4 + 3] = c[3];
         vertexIndex++;
         modified = true;
     }
@@ -163,7 +166,7 @@ public class VAO {
      * @param y Y-Koordinate
      * @param c Farbe
      */
-    private void pushVertexC(float x, float y, float c) {
+    private void pushVertexC(float x, float y, float[] c) {
         if (colors == null) {
             throw new IllegalArgumentException("Illegal VAO usage: Cannot push color to non-colored VAO");
         }
@@ -173,6 +176,10 @@ public class VAO {
 
         vertices[vertexIndex * 2] = x;
         vertices[vertexIndex * 2 + 1] = y;
+        colors[vertexIndex * 4] = c[0];
+        colors[vertexIndex * 4 + 1] = c[1];
+        colors[vertexIndex * 4 + 2] = c[2];
+        colors[vertexIndex * 4 + 3] = c[3];
         vertexIndex++;
         modified = true;
     }
@@ -193,7 +200,7 @@ public class VAO {
      * @param c10 Farbe rechts unten
      * @param c11 Farbe rechts oben
      */
-    public void pushRectTC(float x, float y, float sx, float sy, float v, float w, float sv, float sw, float c00, float c01, float c10, float c11) {
+    public void pushRectTC(float x, float y, float sx, float sy, float v, float w, float sv, float sw, float[] c00, float[] c01, float[] c10, float[] c11) {
         // Das sind 6 Vertices:
         pushVertexTC(x, y, v, w + sw, c00);
         pushVertexTC(x, y + sy, v, w, c01);
@@ -237,7 +244,7 @@ public class VAO {
      * @param c10 Farbe rechts unten
      * @param c11 Farbe rechts oben
      */
-    public void pushRectC(float x, float y, float sx, float sy, float c00, float c01, float c10, float c11) {
+    public void pushRectC(float x, float y, float sx, float sy, float[] c00, float[] c01, float[] c10, float[] c11) {
         // Das sind 6 Vertices:
         pushVertexC(x, y, c00);
         pushVertexC(x, y + sy, c01);
@@ -257,7 +264,7 @@ public class VAO {
      * @param c1 Farbe, Endpunkt 1
      * @param c2 Farbe, Endpunkt 2
      */
-    public void pushLineC(float x1, float y1, float x2, float y2, float c1, float c2) {
+    public void pushLineC(float x1, float y1, float x2, float y2, float[] c1, float[] c2) {
         // Das sind 2 Vertices:
         pushVertexC(x1, y1, c1);
         pushVertexC(x2, y2, c2);
@@ -282,7 +289,7 @@ public class VAO {
      * @param c2 Farbe Eckpunkt 2
      * @param c3 Farbe Eckpunkt 3
      */
-    public void pushTriagleTC(float x1, float y1, float x2, float y2, float x3, float y3, float v1, float w1, float v2, float w2, float v3, float w3, float c1, float c2, float c3) {
+    public void pushTriagleTC(float x1, float y1, float x2, float y2, float x3, float y3, float v1, float w1, float v2, float w2, float v3, float w3, float[] c1, float[] c2, float[] c3) {
         // Das sind 3 Vertices:
         pushVertexTC(x1, y1, v1, w1, c1);
         pushVertexTC(x2, y2, v2, w2, c2);
@@ -325,7 +332,7 @@ public class VAO {
      * @param c2 Farbe Eckpunkt 2
      * @param c3 Farbe Eckpunkt 3
      */
-    public void pushTriagleTC(float x1, float y1, float x2, float y2, float x3, float y3, float c1, float c2, float c3) {
+    public void pushTriagleTC(float x1, float y1, float x2, float y2, float x3, float y3, float[] c1, float[] c2, float[] c3) {
         // Das sind 3 Vertices:
         pushVertexC(x1, y1, c1);
         pushVertexC(x2, y2, c2);
@@ -428,9 +435,9 @@ public class VAO {
         }
         if (colors != null) {
             if (texCoords != null) {
-                GL20.glVertexAttribPointer(2, 1, GL11.GL_FLOAT, false, 0, (vertices.length + texCoords.length) << 2);
+                GL20.glVertexAttribPointer(2, 4, GL11.GL_FLOAT, false, 0, (vertices.length + texCoords.length) << 2);
             } else {
-                GL20.glVertexAttribPointer(2, 1, GL11.GL_FLOAT, false, 0, vertices.length << 2);
+                GL20.glVertexAttribPointer(2, 4, GL11.GL_FLOAT, false, 0, vertices.length << 2);
             }
         }
         GL30.glBindVertexArray(0);

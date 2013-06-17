@@ -130,6 +130,8 @@ public class GraphicsEngine {
             // Shader für Overlays bauen:
             setupOverlayShader();
 
+            coreRenderer.reEnableShader();
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -375,7 +377,7 @@ public class GraphicsEngine {
         projection.m31 = -1f;
         projection.m00 = 2f / DefaultSettings.CLIENT_GFX_RES_X;
         projection.m11 = 2f / DefaultSettings.CLIENT_GFX_RES_Y;
-        projection.m22 = -1;
+        projection.m22 = -1f;
         // In Buffer packen
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         projection.store(buffer);
