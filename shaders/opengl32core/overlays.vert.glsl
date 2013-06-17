@@ -17,5 +17,5 @@ void main() {
     //gl_Position = in_Position;
 
     pass_TextureCoord = in_TextureCoord;
-    pass_Color = vec4(1 - in_Color.r, 1 - in_Color.g, 1 - in_Color.b, in_Color.a);
+    pass_Color = in_Color;
 }
