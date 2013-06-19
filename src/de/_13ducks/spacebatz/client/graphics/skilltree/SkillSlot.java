@@ -1,18 +1,17 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.client.graphics.ControlElement;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
+import de._13ducks.spacebatz.client.graphics.util.Button;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- * Zeigt den Skill an der auf eine bestimmte Taste gelegt wurde. Kann Skills per
- * Drag and Drop aufnehmen, um sie auf diese Taste zu legen.
+ * Zeigt den Skill an der auf eine bestimmte Taste gelegt wurde. Kann Skills per Drag and Drop aufnehmen, um sie auf diese Taste zu legen.
  *
  * @author michael
  */
-public class SkillSlot extends ControlElement {
+public class SkillSlot extends Button {
 
     /**
      * Die Taste die den Skill anspricht.
@@ -25,12 +24,11 @@ public class SkillSlot extends ControlElement {
     /**
      * Erzeugt einen neuen Skillbutton.
      *
-     * @param tile die Tile auf der skilltree.png, die dieser Button rendern
-     * soll.
+     * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
      * @param renderer
      */
-    public SkillSlot(int tile, SkillTreeOverlay skilltree, byte key) {
-        super();
+    public SkillSlot(int tile, SkillTreeOverlay skilltree, byte key, int x, int y, int width, int height) {
+        super(x, y, width, height);
         this.tile = tile;
         targetKey = key;
         this.skilltree = skilltree;
@@ -45,12 +43,12 @@ public class SkillSlot extends ControlElement {
     }
 
     @Override
-    public void render() {
-        RenderUtils.setTilemap(texture);
-        RenderUtils.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
-        RenderUtils.setTileSize(32, 32);
-        RenderUtils.drawTile(tile, getX(), getY(), getWidth(), getHeight());
-        RenderUtils.restoreScreenMapping();
+    public void renderElement() {
+//        RenderUtils.setTilemap(texture);
+//        RenderUtils.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
+//        RenderUtils.setTileSize(32, 32);
+//        RenderUtils.drawTile(tile, getX(), getY(), getWidth(), getHeight());
+//        RenderUtils.restoreScreenMapping();
     }
 
     @Override
@@ -67,5 +65,9 @@ public class SkillSlot extends ControlElement {
 
     @Override
     public void onClick() {
+    }
+
+    @Override
+    public void keyboardInput(int key, boolean down) {
     }
 }

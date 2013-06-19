@@ -27,8 +27,7 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
- * Die GrafikEngine. Rendert das Spiel (Map, Entities, Bullets...) und genau ein Menü (z.B. Inventar, Hauptmenü, ...).
- * Wenn ein Menü aktiv ist bekommt es Alle Eingaben.
+ * Die GrafikEngine. Rendert das Spiel (Map, Entities, Bullets...) und genau ein Menü (z.B. Inventar, Hauptmenü, ...). Wenn ein Menü aktiv ist bekommt es Alle Eingaben.
  *
  * @author michael
  */
@@ -111,11 +110,11 @@ public class GraphicsEngine {
             // Komponenten erzeugen:
             input = new Input();
 
-//                skilltree = new SkillTreeOverlay();
-//                skilltree.init(new int[]{Keyboard.KEY_T}, true);
+            skilltree = new SkillTreeOverlay();
+            skilltree.init(new int[]{Keyboard.KEY_T}, true);
+            overlays.add(skilltree);
 //                overlays.add(new HudOverlay());
 //                overlays.add(new QuestControl());
-//                overlays.add(skilltree);
 //                Inventory inventory = new Inventory();
 //                inventory.init(new int[]{Keyboard.KEY_I}, true);
 //                overlays.add(inventory);
