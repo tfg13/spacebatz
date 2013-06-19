@@ -10,7 +10,7 @@ public abstract class Button extends VisibleGUIElement {
     /**
      * Position und Maße in Pixeln.
      */
-    private int posX, posY, width, height;
+    public int posX, posY, width, height;
     /**
      * Gibt an, ob die linke Maustaste über diesem Element gedrückt wurde. Nur gültig wenn isMouseButtonDown gesetzt ist.
      */
@@ -68,7 +68,7 @@ public abstract class Button extends VisibleGUIElement {
      * @param mouseY Y-Koordinate der Maus (von 0.0f bis 1.0f)
      * @return
      */
-    private boolean isMouseOver(float mouseX, float mouseY) {
+    public boolean isMouseOver(float mouseX, float mouseY) {
         return posX < mouseX && mouseX < (posX + width) && posY < mouseY && mouseY < (posY + height);
     }
 

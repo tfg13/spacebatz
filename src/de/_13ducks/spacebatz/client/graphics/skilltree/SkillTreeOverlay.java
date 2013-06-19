@@ -10,10 +10,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
 
 /**
- * Zeigt den Skilltree an. Der Skilltree zeigt den Status an, den der Server
- * übermittelt und schickt Anfragen an den Server wenn ein Skill verbessert
- * werden soll. Ob das Skillen oder Skill-Mapping geklappt hat erfährt er über
- * die Antworten des Servers.
+ * Zeigt den Skilltree an. Der Skilltree zeigt den Status an, den der Server übermittelt und schickt Anfragen an den Server wenn ein Skill verbessert werden soll. Ob das Skillen
+ * oder Skill-Mapping geklappt hat erfährt er über die Antworten des Servers.
  *
  * @author michael
  */
