@@ -2,8 +2,8 @@ package de._13ducks.spacebatz.client.graphics.skilltree;
 
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.util.Button;
-import de._13ducks.spacebatz.shared.DefaultSettings;
-import org.lwjgl.input.Mouse;
+import de._13ducks.spacebatz.client.graphics.vao.VAO;
+import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import org.newdawn.slick.opengl.Texture;
 
 /**
@@ -20,6 +20,7 @@ public class SkillSlot extends Button {
     private int tile;
     private SkillTreeOverlay skilltree;
     private Texture texture;
+    VAO image;
 
     /**
      * Erzeugt einen neuen Skillbutton.
@@ -33,6 +34,7 @@ public class SkillSlot extends Button {
         targetKey = key;
         this.skilltree = skilltree;
         texture = RenderUtils.getTextureByName("skilltree.png");
+        image = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "skilltree.png", tile, 32, 32);
     }
 
     /**
@@ -40,24 +42,28 @@ public class SkillSlot extends Button {
      */
     public void setTile(int tile) {
         this.tile = tile;
+        image.resetData();
+        float sourceX = RenderUtils.getSourceXForTile(texture, tile, 32);
+        float sourceY = RenderUtils.getSourceYForTile(texture, tile, 32);
+        float sourceWidth = RenderUtils.getSourceWidthForTile(texture, tile, 32);
+        float sourceHeight = RenderUtils.getSourceHeightForTile(texture, tile, 32);
+        image.pushRectT(posX, posY, width, height, sourceX, sourceY, sourceWidth, sourceHeight);
+        image.upload();
     }
 
     @Override
     public void renderElement() {
-//        RenderUtils.setTilemap(texture);
-//        RenderUtils.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
-//        RenderUtils.setTileSize(32, 32);
-//        RenderUtils.drawTile(tile, getX(), getY(), getWidth(), getHeight());
-//        RenderUtils.restoreScreenMapping();
+        RenderUtils.setTilemap(texture);
+        image.render();
     }
 
     @Override
-    public void onMouseButtonPressed() {
+    public void onMouseButtonPressed(float x, float y, int button) {
     }
 
     @Override
-    public void onMouseButtonReleased() {
-        if (isMouseOver((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y)) {
+    public void onMouseButtonReleased(float x, float y, int button) {
+        if (isMouseOver(x, y)) {
             skilltree.stopDrag(targetKey);
 
         }

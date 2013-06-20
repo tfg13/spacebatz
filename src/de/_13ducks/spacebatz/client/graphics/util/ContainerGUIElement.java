@@ -30,9 +30,9 @@ public class ContainerGUIElement extends GUIElement {
     }
 
     @Override
-    public void mouseMove(int mx, int my, int button) {
+    public void mouseMove(int mx, int my) {
         for (GUIElement child : children) {
-            child.mouseMove(mx, my, button);
+            child.mouseMove(mx, my);
         }
     }
 

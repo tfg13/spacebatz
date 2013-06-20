@@ -24,12 +24,12 @@ public abstract class Button extends VisibleGUIElement {
     }
 
     @Override
-    public void mouseMove(int mx, int my, int button) {
+    public void mouseMove(int mx, int my) {
     }
 
     @Override
     public final void mousePressed(float x, float y, int button) {
-        onMouseButtonPressed();
+        onMouseButtonPressed(x, y, button);
         if (isMouseOver(x, y)) {
             wasMousePressedOverThis = true;
         } else {
@@ -39,7 +39,7 @@ public abstract class Button extends VisibleGUIElement {
 
     @Override
     public final void mouseReleased(float x, float y, int button) {
-        onMouseButtonReleased();
+        onMouseButtonReleased(x, y, button);
         if (wasMousePressedOverThis && isMouseOver(x, y)) {
             onClick();
             wasMousePressedOverThis = false;
@@ -49,12 +49,12 @@ public abstract class Button extends VisibleGUIElement {
     /**
      * Wird immer aufgeruden wenn die Maustaste irgendwo gedrückt wurde.
      */
-    public abstract void onMouseButtonPressed();
+    public abstract void onMouseButtonPressed(float x, float y, int button);
 
     /**
      * Wird immer aufgerufen wenn die linke Maustaste irgendwo losgelassen wurde.
      */
-    public abstract void onMouseButtonReleased();
+    public abstract void onMouseButtonReleased(float x, float y, int button);
 
     /**
      * Wird aufgerufen, wenn die linke Maustaste über diesem Controlelement gedrückt und wieder losgelassen wurde.

@@ -1,6 +1,8 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
 import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
+import de._13ducks.spacebatz.client.graphics.util.ContainerGUIElement;
+import de._13ducks.spacebatz.client.graphics.util.Rectangle;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
@@ -23,11 +25,12 @@ public class SkillTreeOverlay extends TriggeredOverlay {
      * Die Liste dewr Slots, in die man Skills droppen kann.
      */
     private HashMap<Byte, SkillSlot> skillSlots;
-    private SkillTreeContainer skilltree;
+    private ContainerGUIElement skilltree;
     private boolean dragging;
     private int dragTile;
     private String draggedSkill;
     private static Color backgroundColor = new Color((byte) 100, (byte) 100, (byte) 100);
+    DraggedImage draggedImage;
 
     /**
      * Initialisiert das SkilltreeControl.
@@ -38,10 +41,23 @@ public class SkillTreeOverlay extends TriggeredOverlay {
         skills = new HashMap<>();
         skillSlots = new HashMap<>();
 
-        skilltree = new SkillTreeContainer();
-
-        // Summon:
+        skilltree = new ContainerGUIElement();
         int x, y, width, height;
+
+        // Hintergrund:
+        x = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.2f);
+        y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.2f);
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.6f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.6f);
+        Rectangle background = new Rectangle(x, y, width, height, new float[]{0.42f, 0.42f, 0.42f, 1});
+        skilltree.addChild(background);
+
+        // Das Bild, das bei drag+drop angezeigt wird:
+        draggedImage = new DraggedImage((int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f), (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f), "skilltree.png", dragTile, 32, 32);
+        skilltree.addChild(draggedImage);
+
+
+        // Summon-Fähigkeit:
         x = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.4f);
         y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.4f);
         width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f);
@@ -61,7 +77,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
         skills.put("masssummon", masssummon);
         skilltree.addChild(masssummon);
 
-        // Leertastenzauber:
+        // Leertastenzauberslot:
         x = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.6f);
         y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.5f);
         width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f);
@@ -129,6 +145,8 @@ public class SkillTreeOverlay extends TriggeredOverlay {
      */
     public void startDrag(String skillname, int tile) {
         dragging = true;
+        draggedImage.setDragging(true);
+        draggedImage.setTile(tile);
         dragTile = tile;
         draggedSkill = skillname;
     }
@@ -142,6 +160,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
         if (dragging) {
             CTS_REQUEST_MAP_ABILITY.sendMapAbility(targetKey, draggedSkill);
             dragging = false;
+            draggedImage.setDragging(false);
             dragTile = -1;
             draggedSkill = null;
         }
@@ -170,6 +189,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
 //    }
     @Override
     protected void mouseMove(int mx, int my) {
+        skilltree.mouseMove(mx, my);
     }
 
     @Override
@@ -181,6 +201,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
     protected void mouseReleased(int mx, int my, int button) {
         skilltree.mouseReleased(mx, my, button);
         dragging = false;
+        draggedImage.setDragging(false);
         dragTile = -1;
         draggedSkill = null;
     }

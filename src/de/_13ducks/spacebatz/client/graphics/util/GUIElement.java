@@ -26,7 +26,7 @@ public abstract class GUIElement {
      */
     public abstract void renderElement();
 
-    public abstract void mouseMove(int mx, int my, int button);
+    public abstract void mouseMove(int mx, int my);
 
     public abstract void mousePressed(float x, float y, int button);
 

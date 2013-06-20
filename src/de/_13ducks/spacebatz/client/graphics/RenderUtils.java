@@ -45,13 +45,9 @@ public class RenderUtils {
     }
 
     /**
-     * Stellt ein welche Fläche auf dem Bildschirm abgebildet wird.
-     * Sichert die vorherige Abbildungsfläche, so dass sie mit restoreScreenMapping wieder hergestellt werden kann.
+     * Stellt ein welche Fläche auf dem Bildschirm abgebildet wird. Sichert die vorherige Abbildungsfläche, so dass sie mit restoreScreenMapping wieder hergestellt werden kann.
      *
-     * Nach dem Aufruf von setScreenMapping(0,100,0,100) gilt folgendes:
-     * (0,0) ist die linke untere Ecke
-     * (50,50) ist die Mitte
-     * (100,100) ist die rechte obere Ecke
+     * Nach dem Aufruf von setScreenMapping(0,100,0,100) gilt folgendes: (0,0) ist die linke untere Ecke (50,50) ist die Mitte (100,100) ist die rechte obere Ecke
      *
      * @param x X-Startkoordinate
      * @param x2 X-Endkoordinate
@@ -107,9 +103,8 @@ public class RenderUtils {
     }
 
     /**
-     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur eingefärbt auf den Bildschirm.
-     * Die Größe der Bilder wird mit setTileSize() eingestellt.
-     * Die Koordinaten werden auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
+     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur eingefärbt auf den Bildschirm. Die Größe der Bilder wird mit setTileSize() eingestellt. Die Koordinaten werden
+     * auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
      *
      * @param index das wievielte Bild der Textur (in Leserichtung) gezeichnet wird.
      * @param x X-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
@@ -174,9 +169,8 @@ public class RenderUtils {
     }
 
     /**
-     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm.
-     * Die Größe der Bilder wird mit setTileSize() eingestellt.
-     * Die Koordinaten werden auf den Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
+     * Zeichnet das X-te Bild (in Leserichtung) der aktuellen Textur auf den Bildschirm. Die Größe der Bilder wird mit setTileSize() eingestellt. Die Koordinaten werden auf den
+     * Bereich abgebilder, der mit setScreenMapping() eingestellt wurde.
      *
      * @param index das wievielte Bild der Textur (in Leserichtung) gezeichnet wird.
      * @param x X-Koordinate des Bildschirms an die gezeichnet wird (in Prozent)
@@ -189,8 +183,7 @@ public class RenderUtils {
     }
 
     /**
-     * Zeichnet ein gefärbtes ausgefülltes Rechteck auf den Bildschirm.
-     * Die Farbe kann mit setColor gesetzt werden.
+     * Zeichnet ein gefärbtes ausgefülltes Rechteck auf den Bildschirm. Die Farbe kann mit setColor gesetzt werden.
      *
      * @param x die X-Koordinate der linken oberen Ecke
      * @param y die Y-Koordinate der linken oberen Ecke
@@ -215,6 +208,22 @@ public class RenderUtils {
 
         glEnd(); // Zeichnen des QUADs fertig
         glPopMatrix();// wieder die ursprüngliche Transformationsmatrix herstellen
+    }
+
+    public static float getSourceXForTile(Texture texture, int tile, int tileSize) {
+        return (float) tileSize * ((float) tile % ((float) texture.getImageWidth() / (float) tileSize)) / (float) texture.getImageWidth();
+    }
+
+    public static float getSourceYForTile(Texture texture, int tile, int tileSize) {
+        return tileSize * (tile / (texture.getImageHeight() / tileSize)) / texture.getImageHeight();
+    }
+
+    public static float getSourceWidthForTile(Texture texture, int tile, int tileSize) {
+        return (float) tileSize / (float) texture.getImageWidth();
+    }
+
+    public static float getSourceHeightForTile(Texture texture, int tile, int tileSize) {
+        return (float) tileSize / (float) texture.getImageHeight();
     }
 
     private RenderUtils() {
