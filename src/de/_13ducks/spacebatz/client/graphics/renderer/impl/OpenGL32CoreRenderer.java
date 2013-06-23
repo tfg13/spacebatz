@@ -152,7 +152,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         updateVBOs();
         RenderUtils.getTextureByName("player.png").bind();
         // Drehen:
-        pushRotMatrix((float) GameClient.player.getDir());
+        pushRotMatrix((float) GameClient.player.getDir(), (float) GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), (float) GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick));
         testPlayer.render();
         restoreRot();
 
@@ -167,11 +167,11 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      *
      * @param rotation rotation, in Bogenmaß, übliche zählweise
      */
-    private void pushRotMatrix(float rotation) {
+    private void pushRotMatrix(float rotation, float centerx, float centery) {
         // Rotationszentrum verschieben:
         Matrix4f trans = new Matrix4f();
-        trans.m30 = (float) GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
-        trans.m31 = (float) GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
+        trans.m30 = centerx;
+        trans.m31 = centery;
         // XY-Rotationsmatrix bauen
         Matrix4f rot = new Matrix4f();
         rot.m00 = (float) Math.cos(rotation);
@@ -498,7 +498,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         for (Char c : GameClient.netIDMap.values()) {
             // Hässliches instanceof, sollte weg
             if (c instanceof Enemy) {
+                pushRotMatrix((float) c.getDir(), (float) c.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), (float) c.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick));
                 c.getRenderObject().getVao().render();
+                restoreRot();
             }
         }
     }
