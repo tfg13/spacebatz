@@ -47,15 +47,15 @@ public class VAOFactory {
     }
 
     public static VAO createDynamicColoredRectVAO() {
-        return new VAO(6, false, true, GL15.GL_DYNAMIC_DRAW, GL11.GL_TRIANGLES, blockShaderModifications ? -1 : setShaderColTexModeAdr);
+        return new BufferedVAO(6, false, true, GL11.GL_TRIANGLES, blockShaderModifications ? -1 : setShaderColTexModeAdr);
     }
 
     public static VAO createDynamicTexturedRectVAO() {
-        return new VAO(6, true, false, GL15.GL_DYNAMIC_DRAW, GL11.GL_TRIANGLES, blockShaderModifications ? -1 : setShaderColTexModeAdr);
+        return new BufferedVAO(6, true, false, GL11.GL_TRIANGLES, blockShaderModifications ? -1 : setShaderColTexModeAdr);
     }
 
     public static VAO createDynamicTexturedColoredRectVAO() {
-        return new VAO(6, true, true, GL15.GL_DYNAMIC_DRAW, GL11.GL_TRIANGLES, blockShaderModifications ? -1 : setShaderColTexModeAdr);
+        return new BufferedVAO(6, true, true, GL11.GL_TRIANGLES, blockShaderModifications ? -1 : setShaderColTexModeAdr);
     }
 
     public static VAO createStaticColoredLineVAO(int numberOfLines) {

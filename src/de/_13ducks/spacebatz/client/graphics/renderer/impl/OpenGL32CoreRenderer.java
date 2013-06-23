@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.renderer.impl;
 
+import de._13ducks.spacebatz.client.Char;
+import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
@@ -146,7 +148,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         if (testPlayer == null) {
             createPlayerVBO(GameClient.player.netID);
         }
-        // Enemys
+        // Player
         updateVBOs();
         RenderUtils.getTextureByName("player.png").bind();
         // Drehen:
@@ -154,6 +156,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         testPlayer.render();
         restoreRot();
 
+        // Enemys
+        updateEnemyVAOs();
     }
 
     /**
@@ -460,5 +464,13 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         testPlayer.resetData();
         testPlayer.pushRectT((float) pl.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick) - 1, (float) pl.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick) - 1, 2, 2, v + onepixel, w + onepixel, picsizex - (2 * onepixel), picsizey - 2 * (onepixel));
         testPlayer.upload();
+    }
+
+    private void updateEnemyVAOs() {
+        for (Char c : GameClient.netIDMap.values()) {
+            // Hässliches instanceof, sollte weg
+            if (c instanceof Enemy) {
+            }
+        }
     }
 }
