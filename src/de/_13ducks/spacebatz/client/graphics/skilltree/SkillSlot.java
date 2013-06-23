@@ -46,11 +46,6 @@ public class SkillSlot extends ControlElement {
 
     @Override
     public void render() {
-        RenderUtils.setTilemap(texture);
-        RenderUtils.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
-        RenderUtils.setTileSize(32, 32);
-        RenderUtils.drawTile(tile, getX(), getY(), getWidth(), getHeight());
-        RenderUtils.restoreScreenMapping();
     }
 
     @Override

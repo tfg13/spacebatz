@@ -2,7 +2,6 @@ package de._13ducks.spacebatz.client.graphics.skilltree;
 
 import de._13ducks.spacebatz.client.graphics.ControlElement;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
@@ -43,13 +42,6 @@ public class SkillButton extends ControlElement {
 
     @Override
     public void render() {
-        RenderUtils.setTilemap(texture);
-        RenderUtils.setScreenMapping(0.0f, 1.0f, 0.0f, 1.0f);
-        RenderUtils.setTileSize(32, 32);
-        RenderUtils.drawTileColored(tile, getX(), getY(), getWidth(), getHeight(), filter);
-        RenderUtils.restoreScreenMapping();
-        TextWriter.renderText(String.valueOf(level), getX() + 0.05f, getY());
-
     }
 
     @Override

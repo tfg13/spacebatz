@@ -1,6 +1,5 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
@@ -88,23 +87,6 @@ public class SkillTreeOverlay extends TriggeredOverlay {
 
     @Override
     public void triggeredRender() {
-        RenderUtils.setTileSize(32, 32);
-        RenderUtils.drawRectangle(0.3f, 0.3f, 0.4f, 0.4f, backgroundColor);
-
-        // Skillbuttons rendern:
-        for (SkillButton item : skills.values()) {
-            item.render();
-        }
-        // SkillSlots rendern:
-        for (SkillSlot slot : skillSlots.values()) {
-            slot.render();
-        }
-        // Den gedraggten Skill rendern:
-        if (dragging) {
-            RenderUtils.setScreenMapping(0, 1, 0, 1);
-            RenderUtils.drawTile(dragTile, (float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y, 0.05f, 0.05f);
-            RenderUtils.restoreScreenMapping();
-        }
     }
 
     /**
