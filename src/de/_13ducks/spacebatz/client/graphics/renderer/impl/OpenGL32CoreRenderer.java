@@ -157,7 +157,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         restoreRot();
 
         // Enemys
+        RenderUtils.getTextureByName("enemy00.png").bind();
         updateEnemyVAOs();
+        renderEnemyVAOs();
     }
 
     /**
@@ -470,6 +472,33 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         for (Char c : GameClient.netIDMap.values()) {
             // Hässliches instanceof, sollte weg
             if (c instanceof Enemy) {
+                if (c.getRenderObject().getVao() == null) {
+                    c.getRenderObject().setVao(VAOFactory.createDynamicTexturedRectVAO());
+                }
+                VAO vao = c.getRenderObject().getVao();
+                Animation animation = c.getRenderObject().getBaseAnim();
+                vao.resetData();
+                float picsizex = 0.0625f * animation.getPicsizex();
+                float picsizey = 0.0625f * animation.getPicsizey();
+
+                int currentpic = ((GameClient.frozenGametick) / animation.getPicduration()) % animation.getNumberofpics();
+                currentpic += animation.getStartpic();
+
+                float v = (currentpic % (16 / animation.getPicsizex())) * picsizex;
+                float w = (currentpic / (16 / animation.getPicsizey())) * picsizey;
+                float onepixel = 1.0f / 512; // einen pixel vom Bild in jede Richtung abschneiden
+
+                vao.pushRectT((float) c.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick) - 1, (float) c.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick) - 1, 2f, 2f, v + onepixel, w + onepixel, picsizex - (2 * onepixel), picsizey - (2 * onepixel));
+                vao.upload();
+            }
+        }
+    }
+
+    private void renderEnemyVAOs() {
+        for (Char c : GameClient.netIDMap.values()) {
+            // Hässliches instanceof, sollte weg
+            if (c instanceof Enemy) {
+                c.getRenderObject().getVao().render();
             }
         }
     }
