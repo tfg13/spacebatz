@@ -1,7 +1,6 @@
-package de._13ducks.spacebatz.client.graphics.skilltree;
+package de._13ducks.spacebatz.client.graphics.util;
 
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.util.VisibleGUIElement;
 import de._13ducks.spacebatz.client.graphics.vao.VAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import org.newdawn.slick.opengl.Texture;
@@ -13,7 +12,6 @@ import org.newdawn.slick.opengl.Texture;
 public class DraggedImage extends VisibleGUIElement {
 
     private VAO vao;
-    private boolean dragging = false;
     private int width, height;
     Texture texture;
     int tile;
@@ -30,6 +28,7 @@ public class DraggedImage extends VisibleGUIElement {
         sourceHeight = RenderUtils.getSourceHeightForTile(texture, tile, 32);
         this.width = width;
         this.height = height;
+        isVisible = false;
 
     }
 
@@ -41,13 +40,11 @@ public class DraggedImage extends VisibleGUIElement {
 
     @Override
     public void renderElement() {
-        if (dragging) {
-            RenderUtils.setTilemap(texture);
-            vao.resetData();
-            vao.pushRectT(mouseX, mouseY, width, height, sourceX, sourceY, sourceWidth, sourceHeight);
-            vao.upload();
-            vao.render();
-        }
+        RenderUtils.setTilemap(texture);
+        vao.resetData();
+        vao.pushRectT(mouseX, mouseY, width, height, sourceX, sourceY, sourceWidth, sourceHeight);
+        vao.upload();
+        vao.render();
     }
 
     @Override
@@ -60,10 +57,6 @@ public class DraggedImage extends VisibleGUIElement {
 
     @Override
     public void keyboardInput(int key, boolean down) {
-    }
-
-    public void setDragging(boolean dragging) {
-        this.dragging = dragging;
     }
 
     public void setTile(int tile) {

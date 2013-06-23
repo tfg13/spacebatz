@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics.skilltree;
 
 import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
 import de._13ducks.spacebatz.client.graphics.util.ContainerGUIElement;
+import de._13ducks.spacebatz.client.graphics.util.DraggedImage;
 import de._13ducks.spacebatz.client.graphics.util.Rectangle;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
@@ -145,7 +146,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
      */
     public void startDrag(String skillname, int tile) {
         dragging = true;
-        draggedImage.setDragging(true);
+        draggedImage.isVisible = true;
         draggedImage.setTile(tile);
         dragTile = tile;
         draggedSkill = skillname;
@@ -160,7 +161,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
         if (dragging) {
             CTS_REQUEST_MAP_ABILITY.sendMapAbility(targetKey, draggedSkill);
             dragging = false;
-            draggedImage.setDragging(false);
+            draggedImage.isVisible = false;
             dragTile = -1;
             draggedSkill = null;
         }
@@ -201,7 +202,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
     protected void mouseReleased(int mx, int my, int button) {
         skilltree.mouseReleased(mx, my, button);
         dragging = false;
-        draggedImage.setDragging(false);
+        draggedImage.isVisible = false;
         dragTile = -1;
         draggedSkill = null;
     }
