@@ -1,25 +1,25 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.client.graphics.ControlElement;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.shared.DefaultSettings;
-import org.lwjgl.input.Mouse;
+import de._13ducks.spacebatz.client.graphics.util.Button;
+import de._13ducks.spacebatz.client.graphics.vao.VAO;
+import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import org.lwjgl.util.Color;
 import org.newdawn.slick.opengl.Texture;
 
 /**
- * Ein Button der einen Skill anzeigt. Kann angelkcickt werden, um den Skill zu
- * verbessern. Kann per Drag and Drop gezogen werden.
+ * Ein Button der einen Skill anzeigt. Kann angelkcickt werden, um den Skill zu verbessern. Kann per Drag and Drop gezogen werden.
  *
  * @author michael
  */
-public class SkillButton extends ControlElement {
+public class SkillButton extends Button {
 
     private byte level;
     private String skillName;
     private int tile;
     private SkillTreeOverlay skilltree;
     private Texture texture;
+    VAO buttonImage;
     private Color filter;
     private static Color red = new Color((byte) 100, (byte) 0, (byte) 0);
     private static Color white = new Color((byte) 255, (byte) 255, (byte) 255);
@@ -27,32 +27,35 @@ public class SkillButton extends ControlElement {
     /**
      * Erzeugt einen neuen Skillbutton.
      *
-     * @param tile die Tile auf der skilltree.png, die dieser Button rendern
-     * soll.
+     * @param tile die Tile auf der skilltree.png, die dieser Button rendern soll.
      * @param renderer
      */
-    public SkillButton(String name, int tile, SkillTreeOverlay skilltree) {
-        super();
+    public SkillButton(String name, int tile, SkillTreeOverlay skilltree, int x, int y, int width, int height) {
+        super(x, y, width, height);
         this.skillName = name;
         this.level = 0;
         this.tile = tile;
         this.skilltree = skilltree;
         texture = RenderUtils.getTextureByName("skilltree.png");
+        buttonImage = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "skilltree.png", tile, 32, 32);
     }
 
     @Override
-    public void render() {
+    public void renderElement() {
+        RenderUtils.setTilemap(texture);
+        buttonImage.render();
+//        TextWriter.renderText(String.valueOf(level), getX() + 0.05f, getY());
     }
 
     @Override
-    public void onMouseButtonPressed() {
-        if (isMouseOver((float) Mouse.getX() / DefaultSettings.CLIENT_GFX_RES_X, (float) Mouse.getY() / DefaultSettings.CLIENT_GFX_RES_Y)) {
+    public void onMouseButtonPressed(float x, float y, int button) {
+        if (isMouseOver(x, y)) {
             skilltree.startDrag(skillName, tile);
         }
     }
 
     @Override
-    public void onMouseButtonReleased() {
+    public void onMouseButtonReleased(float x, float y, int button) {
     }
 
     @Override
@@ -78,5 +81,9 @@ public class SkillButton extends ControlElement {
         } else {
             filter = red;
         }
+    }
+
+    @Override
+    public void keyboardInput(int key, boolean down) {
     }
 }
