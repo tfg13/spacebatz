@@ -12,6 +12,7 @@ package de._13ducks.spacebatz.server.data.entities;
 
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
+import de._13ducks.spacebatz.server.data.ServerInventory;
 import de._13ducks.spacebatz.server.data.SpellBook;
 import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.abilities.FireBulletAbility;
@@ -21,7 +22,7 @@ import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CORRECT_INVENTORY;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
@@ -92,6 +93,7 @@ public class Player extends ItemCarrier {
         skillTree = new MarsroverSkilltree();
         abilities = new SpellBook();
         properties.setHitpointRegeneration(CompileTimeParameters.PLAYERHEALTH_REGENERATION);
+        inventory = new ServerInventory();
     }
 
     /**
@@ -164,29 +166,14 @@ public class Player extends ItemCarrier {
     }
 
     /**
-     * Item ablegen
-     *
-     * @param slottype Slotart (Waffe, Hut, ...)
-     * @param selectedslot Nr. des Slots dieser Art
-     */
-    public void clientDequipItem(int slottype, byte selectedslot) {
-        if (freeInventorySlot()) {
-            // Item ins Inventar tun:
-            if (dequipItemToInventar(slottype, selectedslot)) {
-                STC_ITEM_DEQUIP.sendItemDequip(slottype, selectedslot, getClient().clientID, (float) getSpeed(), getArmorResult());
-            }
-        }
-    }
-
-    /**
      * Wählt gerade aktive Waffe aus
      *
      * @param selectedslot aktiver Waffenslot (0 bis 2)
      */
     public void clientSelectWeapon(byte selectedslot) {
-        if (setSelectedweapon(selectedslot)) {
-            STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
-        }
+        setSelectedweapon(selectedslot);
+        STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
+
     }
 
     public void useAbility(byte ability, double x, double y) {
@@ -246,5 +233,29 @@ public class Player extends ItemCarrier {
     public void setBuildmode(boolean buildmode) {
         this.buildmode = buildmode;
         STC_TOGGLE_BUILDMODE.sendToggleBuildmode(buildmode, this.client.clientID);
+    }
+
+    /**
+     * Versucht, ein Item zu bewegen. Wenn die Bewegung ungültig ist, wird die aktuell gültige Inventarbelegung neu an den Client geschickt. Wenn beide Slots voll sind wird
+     * versucht die Items zu tauschen.
+     *
+     * @param from Der slot von dem das Item kommt
+     * @param to der slot in den es soll
+     */
+    public void tryMoveItem(int from, int to) {
+        if (!inventory.tryMoveItem(from, to, this.getProperties())) {
+            STC_CORRECT_INVENTORY.sendCorrectInventory(inventory.getInventoryMapping(), this);
+        }
+    }
+
+    /**
+     * Versucht ein Item zu löschen. Wenn das Löschen ungültig ist, wird die aktuell gültige Inventarbelegung neu an den Client geschickt.
+     *
+     * @param slot der Slot dessen Item gelöscht werden soll.
+     */
+    public void tryDropItem(int slot) {
+        if (!inventory.tryDeleteItem(slot, this.getProperties())) {
+            STC_CORRECT_INVENTORY.sendCorrectInventory(inventory.getInventoryMapping(), this);
+        }
     }
 }

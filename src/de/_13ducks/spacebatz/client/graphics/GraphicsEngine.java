@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.inventory.InventoryOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
@@ -73,6 +74,10 @@ public class GraphicsEngine {
      * Der Skilltree.
      */
     private SkillTreeOverlay skilltree;
+    /**
+     * Das Inventar
+     */
+    private InventoryOverlay inventory;
     private ShadowAnimator shadowAnimator = new ShadowAnimator();
     //DEBUG
     public static StatisticRingBuffer timing = new StatisticRingBuffer(60);
@@ -113,6 +118,11 @@ public class GraphicsEngine {
             skilltree = new SkillTreeOverlay();
             skilltree.init(new int[]{Keyboard.KEY_T}, true);
             overlays.add(skilltree);
+
+            inventory = new InventoryOverlay();
+            overlays.add(getInventory());
+
+
 //                overlays.add(new HudOverlay());
 //                overlays.add(new QuestControl());
 //                Inventory inventory = new Inventory();
@@ -392,6 +402,13 @@ public class GraphicsEngine {
         buffer.flip();
         int modelUniformAdr = GL20.glGetUniformLocation(shader[SHADER_INDEX_OVERLAYS], "modelM");
         GL20.glUniformMatrix4(modelUniformAdr, false, buffer);
+    }
+
+    /**
+     * @return the inventory
+     */
+    public InventoryOverlay getInventory() {
+        return inventory;
     }
 
     public static class SubTick {

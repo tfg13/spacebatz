@@ -15,13 +15,14 @@ import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.util.geo.Vector;
 
 /**
  * Repräsentiert einen Spieler auf dem Client. Hält eine Spieler-spezifische Daten wie angelegte Waffe und Turret-Richtung.
  *
- * Hauptsächlich aber für die Prediction der Spielfigur zuständig. Speichert dafür eine zusätzliche PredictedPosition, die er mit den Bewegungsanfragen an den Server und der bekannten Geschwindigkeit
- * selber aktualisiert.
+ * Hauptsächlich aber für die Prediction der Spielfigur zuständig. Speichert dafür eine zusätzliche PredictedPosition, die er mit den Bewegungsanfragen an den Server und der
+ * bekannten Geschwindigkeit selber aktualisiert.
  *
  * Wenn diese Position nicht zu arg von der korrekten, synchronisierten abweicht, wird sie für jegliche Grafikausgabe verwendet.
  *
@@ -30,6 +31,7 @@ import de._13ducks.spacebatz.util.geo.Vector;
  */
 public class PlayerCharacter extends Char {
 
+    public PropertyList properties;
     /**
      * Die gerade ausgewählte Waffe
      */
@@ -94,6 +96,7 @@ public class PlayerCharacter extends Char {
         healthpoints = CompileTimeParameters.CHARHEALTH;
         healthpointsmax = CompileTimeParameters.CHARHEALTH;
         hitpointRegeneration = CompileTimeParameters.PLAYERHEALTH_REGENERATION;
+        properties = new PropertyList();
     }
 
     /**
@@ -162,7 +165,8 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Setzt die Einheitengeschwindigkeit für die Prediction neu. Nur relevant, wenn die Prediction aktiviert ist, hat erstmal nichts mit der normalen Einheitengeschwindigkeit zu tun.
+     * Setzt die Einheitengeschwindigkeit für die Prediction neu. Nur relevant, wenn die Prediction aktiviert ist, hat erstmal nichts mit der normalen Einheitengeschwindigkeit zu
+     * tun.
      *
      * @param prediction_speed the Geschwindigkeit in Feldern pro Tick
      */
@@ -189,8 +193,8 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Muss jeden Tick aufgerufen werden, sonst funktioniert die Prediction nicht. Es müssen die WASD-Tastendrücke codiert übergeben werden. Die oberen 4 Bits des übergebenen Bytes entsprechen den
-     * Buttons in der Reihenfolge WASD.
+     * Muss jeden Tick aufgerufen werden, sonst funktioniert die Prediction nicht. Es müssen die WASD-Tastendrücke codiert übergeben werden. Die oberen 4 Bits des übergebenen Bytes
+     * entsprechen den Buttons in der Reihenfolge WASD.
      *
      * @param buttons WASD0000, bitweise codiert
      */
@@ -221,8 +225,7 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Rechnet zur letzten Prediction noch anteilig den Subtick drauf (falls die Kollision das erlaubt).
-     * Darf nur aufgerufen werden, wenn die Prediction derzeit aktiv ist.
+     * Rechnet zur letzten Prediction noch anteilig den Subtick drauf (falls die Kollision das erlaubt). Darf nur aufgerufen werden, wenn die Prediction derzeit aktiv ist.
      */
     private double subtickPredictionX(double subtick) {
         if (!lastPredictionVector.equals(Vector.ZERO)) {
@@ -238,8 +241,7 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Rechnet zur letzten Prediction noch anteilig den Subtick drauf (falls die Kollision das erlaubt).
-     * Darf nur aufgerufen werden, wenn die Prediction derzeit aktiv ist.
+     * Rechnet zur letzten Prediction noch anteilig den Subtick drauf (falls die Kollision das erlaubt). Darf nur aufgerufen werden, wenn die Prediction derzeit aktiv ist.
      */
     private double subtickPredictionY(double subtick) {
         if (!lastPredictionVector.equals(Vector.ZERO)) {
@@ -369,8 +371,8 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können. Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen an der aktuellen
-     * Bewegung vor.
+     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können. Geht davon aus, das wir uns bereits bewegen - nimmt sofort Korrekturen
+     * an der aktuellen Bewegung vor.
      *
      * @param fromX Startpunkt X (muss frei sein)
      * @param fromY Startpunkt Y (muss frei sein)
@@ -491,8 +493,7 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können.
-     * Für Subtick-Berechnungen, nimmt keine Änderungen vor.
+     * Berechnet, ob wir uns vom angegebenen Startpunkt gefahrlos zum angegebenen Zielpunkt bewegen können. Für Subtick-Berechnungen, nimmt keine Änderungen vor.
      *
      * @param fromX Startpunkt X (muss frei sein)
      * @param fromY Startpunkt Y (muss frei sein)
@@ -618,8 +619,8 @@ public class PlayerCharacter extends Char {
     }
 
     /**
-     * Liefert einen Vektor der den aktuellen Unterschied zwischen Serverposition und Prediction beschreibt. Darf nicht aufgerufen werden, wenn die Einheit gar nicht predicted wird. Der Vektor zeigt
-     * von der öffentlichen, vorhergesagten Position zur Serverposition.
+     * Liefert einen Vektor der den aktuellen Unterschied zwischen Serverposition und Prediction beschreibt. Darf nicht aufgerufen werden, wenn die Einheit gar nicht predicted
+     * wird. Der Vektor zeigt von der öffentlichen, vorhergesagten Position zur Serverposition.
      *
      * @return Delta-Vektor
      */

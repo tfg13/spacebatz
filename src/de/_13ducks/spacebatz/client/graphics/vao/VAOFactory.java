@@ -15,11 +15,15 @@ public class VAOFactory {
     /**
      * Die Adresse, die an die VAOs gegeben wird. An dieser Adresse können die VAOs den Textur/Färbemodus des Shaders umschalten.
      */
-    private static int setShaderColTexModeAdr = 0;
+    protected static int setShaderColTexModeAdr = 0;
     /**
      * Wenn true, wird keine Uniformadresse an die VAOs gegeben, diese ändern dann auch keine Shader.
      */
-    private static boolean blockShaderModifications = false;
+    protected static boolean blockShaderModifications = false;
+
+    public static DynamicTexturedRectangleVAO createDynamicTexturedRectangleVAO(int x, int y, int width, int height, String textureName, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
+        return new DynamicTexturedRectangleVAO(x, y, width, height, textureName, sourceX, sourceY, sourceWidth, sourceHeight);
+    }
 
     private VAOFactory() {
         // private, Utility-Class
@@ -100,20 +104,11 @@ public class VAOFactory {
      * @param height Höhe
      * @param textureName Name der Textur die gerendert werden soll ( "item.png" oder "player.png" )
      * @param tile Die Tile die gerendert werden soll
-     * @param tileWidth Die Breite der Tiles auf der Textur in Pixel
-     * @param tileHeight Die Höhe der Tiles auf der Textur in Pixel
+     * @param tileSize Die Breite der Tiles auf der Textur in Pixel
      * @return eine fertig initialisierete VAO die direkt gerendert werden kann.
      */
-    public static VAO IOnlyWantToDrawATile(int x, int y, int width, int height, String textureName, int tile, int tileWidth, int tileHeight) {
-        VAO vao = createDynamicTexturedRectVAO();
-        Texture texture = RenderUtils.getTextureByName(textureName);
-        float fromX = RenderUtils.getSourceXForTile(texture, tile, tileWidth);
-        float fromY = RenderUtils.getSourceYForTile(texture, tile, tileHeight);
-        float textureWidth = RenderUtils.getSourceWidthForTile(texture, tile, tileWidth);
-        float textureHeight = RenderUtils.getSourceHeightForTile(texture, tile, tileWidth);
-        vao.pushRectT(x, y, width, height, fromX, fromY, textureWidth, textureHeight);
-        vao.upload();
-        return vao;
+    public static DynamicTileVAO IOnlyWantToDrawATile(int x, int y, int width, int height, String textureName, int tile, int tileSize) {
+        return new DynamicTileVAO(x, y, width, height, textureName, tile, tileSize);
     }
 
     /**
@@ -140,6 +135,20 @@ public class VAOFactory {
         vao.pushRectT(targetX, targetY, targetWidth, targetHeight, sourceX, sourceY, sourceWidth, sourceHeight);
         vao.upload();
         return vao;
+    }
+
+    /**
+     * Erzeugt ein bewegbares, farbiges Rechteck.
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param f
+     * @return
+     */
+    public static DynamicRectangleVAO createDynamicRectangleVAO(int x, int y, int width, int height, float[] f) {
+        return new DynamicRectangleVAO(x, y, width, height, f);
     }
 
     /**

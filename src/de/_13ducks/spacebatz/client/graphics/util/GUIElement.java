@@ -24,7 +24,7 @@ public abstract class GUIElement {
     /**
      * Wird aufgerufen wenn dieses Element sichtbar ist und gerendert werden soll. Wird von Unterklassen überschrieben, wenn sie etwas render wollen.
      */
-    public abstract void renderElement();
+    protected abstract void renderElement();
 
     public abstract void mouseMove(int mx, int my);
 

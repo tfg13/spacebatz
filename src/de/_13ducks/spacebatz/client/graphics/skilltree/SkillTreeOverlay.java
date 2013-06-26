@@ -54,7 +54,7 @@ public class SkillTreeOverlay extends TriggeredOverlay {
         skilltree.addChild(background);
 
         // Das Bild, das bei drag+drop angezeigt wird:
-        draggedImage = new DraggedImage((int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f), (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f), "skilltree.png", dragTile, 32, 32);
+        draggedImage = new DraggedImage((int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f), (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.05f), "skilltree.png", dragTile, 32);
         skilltree.addChild(draggedImage);
 
 

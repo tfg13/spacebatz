@@ -286,4 +286,20 @@ public class MessageIDs {
      * Client will in Bau-modus wechseln
      */
     public static final byte NET_STC_TOGGLE_BUILDMODE = 70;
+    /**
+     * Client will ein Item bewegen
+     */
+    public static final byte NET_CTS_MOVE_ITEM = 79;
+    /**
+     * Client will ein Item löschen
+     */
+    public static final byte NET_CTS_DROP_ITEM = 80;
+    /**
+     * Server sendet Inventarbelegung and den Client
+     */
+    public static final byte NET_STC_CORRECT_INVENTORY = 88;
+    /**
+     * Server sendet Item an einen Client
+     */
+    public static byte NET_STC_CREATE_ITEM = 90;
 }

@@ -1,11 +1,9 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.util.Button;
-import de._13ducks.spacebatz.client.graphics.vao.VAO;
+import de._13ducks.spacebatz.client.graphics.vao.DynamicTileVAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import org.lwjgl.util.Color;
-import org.newdawn.slick.opengl.Texture;
 
 /**
  * Ein Button der einen Skill anzeigt. Kann angelkcickt werden, um den Skill zu verbessern. Kann per Drag and Drop gezogen werden.
@@ -18,8 +16,7 @@ public class SkillButton extends Button {
     private String skillName;
     private int tile;
     private SkillTreeOverlay skilltree;
-    private Texture texture;
-    VAO buttonImage;
+    DynamicTileVAO buttonImage;
     private Color filter;
     private static Color red = new Color((byte) 100, (byte) 0, (byte) 0);
     private static Color white = new Color((byte) 255, (byte) 255, (byte) 255);
@@ -36,13 +33,11 @@ public class SkillButton extends Button {
         this.level = 0;
         this.tile = tile;
         this.skilltree = skilltree;
-        texture = RenderUtils.getTextureByName("skilltree.png");
-        buttonImage = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "skilltree.png", tile, 32, 32);
+        buttonImage = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "skilltree.png", tile, 32);
     }
 
     @Override
     public void renderElement() {
-        RenderUtils.setTilemap(texture);
         buttonImage.render();
 //        TextWriter.renderText(String.valueOf(level), getX() + 0.05f, getY());
     }

@@ -17,7 +17,7 @@ import de._13ducks.spacebatz.shared.ItemAttribute;
 import de._13ducks.spacebatz.shared.ItemAttributeTypes;
 import de._13ducks.spacebatz.shared.ItemTypes;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_ITEM_DROP;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CREATE_ITEM;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -79,8 +79,16 @@ public class DropManager {
                 ex.printStackTrace();
             }
 
-            c.getPlayer().putItem(item.getNetID(), item);
-            STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
+//            c.getPlayer().putItem(item.getNetID(), item);
+//            STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
+
+            // Versucht, dem Spieler das Item zu geben.
+            int slot = c.getPlayer().inventory.tryCreateItem(item, c.getPlayer());
+            if (slot != -1) {
+                STC_CREATE_ITEM.sendCreateItem(item, slot, c);
+            } else {
+                System.out.println("Kann Item nicht in Inventar einfügen!");
+            }
 
             // Testcode:
             //int money_amount = random.nextInt((int) Math.ceil(Math.pow(droplevel, 1.5) * 3 / 4)) + (int) Math.ceil(Math.pow(droplevel, 1.5) / 4);
@@ -121,8 +129,16 @@ public class DropManager {
             ex.printStackTrace();
         }
 
-        c.getPlayer().putItem(item.getNetID(), item);
-        STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
+//        c.getPlayer().putItem(item.getNetID(), item);
+//        STC_ITEM_DROP.sendItemDrop(serializedItem, c.clientID);
+
+        // Versucht, dem Spieler das Item zu geben.
+        int slot = c.getPlayer().inventory.tryCreateItem(item, c.getPlayer());
+        if (slot != -1) {
+            STC_CREATE_ITEM.sendCreateItem(item, slot, c);
+        } else {
+            System.out.println("Kann Item nicht in Inventar einfügen!");
+        }
     }
 
     /**

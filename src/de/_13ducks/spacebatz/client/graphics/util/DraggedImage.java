@@ -1,7 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.util;
 
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.vao.VAO;
+import de._13ducks.spacebatz.client.graphics.vao.DynamicTileVAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
 import org.newdawn.slick.opengl.Texture;
 
@@ -11,23 +11,16 @@ import org.newdawn.slick.opengl.Texture;
  */
 public class DraggedImage extends VisibleGUIElement {
 
-    private VAO vao;
-    private int width, height;
+    private DynamicTileVAO vao;
     Texture texture;
     int tile;
-    float sourceX, sourceY, sourceWidth, sourceHeight;
     int mouseX, mouseY;
 
-    public DraggedImage(int width, int height, String textureName, int tile, int tileWidth, int tileHeight) {
-        vao = VAOFactory.IOnlyWantToDrawATile(0, 0, 0, 0, textureName, tile, tileWidth, tileHeight);
+    public DraggedImage(int width, int height, String textureName, int tile, int tileWidth) {
+        vao = VAOFactory.IOnlyWantToDrawATile(0, 0, 0, 0, textureName, tile, tileWidth);
         texture = RenderUtils.getTextureByName("skilltree.png");
         this.tile = tile;
-        sourceX = RenderUtils.getSourceXForTile(texture, tile, 32);
-        sourceY = RenderUtils.getSourceYForTile(texture, tile, 32);
-        sourceWidth = RenderUtils.getSourceWidthForTile(texture, tile, 32);
-        sourceHeight = RenderUtils.getSourceHeightForTile(texture, tile, 32);
-        this.width = width;
-        this.height = height;
+        vao.setRenderSize(width, height);
         isVisible = false;
 
     }
@@ -41,9 +34,7 @@ public class DraggedImage extends VisibleGUIElement {
     @Override
     public void renderElement() {
         RenderUtils.setTilemap(texture);
-        vao.resetData();
-        vao.pushRectT(mouseX, mouseY, width, height, sourceX, sourceY, sourceWidth, sourceHeight);
-        vao.upload();
+        vao.setRenderPosition(mouseX, mouseY);
         vao.render();
     }
 
@@ -61,9 +52,6 @@ public class DraggedImage extends VisibleGUIElement {
 
     public void setTile(int tile) {
         this.tile = tile;
-        sourceX = RenderUtils.getSourceXForTile(texture, tile, 32);
-        sourceY = RenderUtils.getSourceYForTile(texture, tile, 32);
-        sourceWidth = RenderUtils.getSourceWidthForTile(texture, tile, 32);
-        sourceHeight = RenderUtils.getSourceHeightForTile(texture, tile, 32);
+        vao.setSourceTile(tile);
     }
 }

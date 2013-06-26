@@ -49,17 +49,17 @@ public abstract class Button extends VisibleGUIElement {
     /**
      * Wird immer aufgeruden wenn die Maustaste irgendwo gedrückt wurde.
      */
-    public abstract void onMouseButtonPressed(float x, float y, int button);
+    protected abstract void onMouseButtonPressed(float x, float y, int button);
 
     /**
      * Wird immer aufgerufen wenn die linke Maustaste irgendwo losgelassen wurde.
      */
-    public abstract void onMouseButtonReleased(float x, float y, int button);
+    protected abstract void onMouseButtonReleased(float x, float y, int button);
 
     /**
      * Wird aufgerufen, wenn die linke Maustaste über diesem Controlelement gedrückt und wieder losgelassen wurde.
      */
-    public abstract void onClick();
+    protected abstract void onClick();
 
     /**
      * Gibt an ob die Maus über diesem Controlelement ist.
@@ -68,7 +68,7 @@ public abstract class Button extends VisibleGUIElement {
      * @param mouseY Y-Koordinate der Maus (von 0.0f bis 1.0f)
      * @return
      */
-    public boolean isMouseOver(float mouseX, float mouseY) {
+    protected boolean isMouseOver(float mouseX, float mouseY) {
         return posX < mouseX && mouseX < (posX + width) && posY < mouseY && mouseY < (posY + height);
     }
 

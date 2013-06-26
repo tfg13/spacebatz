@@ -17,12 +17,10 @@ import de._13ducks.spacebatz.server.network.CTS_DEBUG;
 import de._13ducks.spacebatz.server.network.CTS_FRAGMENTED_MESSAGE;
 import de._13ducks.spacebatz.server.network.CTS_REQUEST_RCON;
 import de._13ducks.spacebatz.server.network.CTS_TICK_SYNC;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DELETE_ITEM;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_EQUIP_ITEM;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_DROP_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_INVEST_SKILLPOINT;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_INV_ITEM_MOVE;
-import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_ITEM_DEQUIP;
+import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_MAP_ABILITY;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
@@ -34,6 +32,8 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_MATERIAL_AMOUNT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_ATTACK;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHAR_HIT;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CORRECT_INVENTORY;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CREATE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_DELETE_ITEM;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_DEL_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_EQUIP_ITEM;
@@ -59,8 +59,7 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_UPDATE_SKILLTREE;
 
 /**
- * Speichert alle bekannten Netzwerkbefehle, sowohl STC als auch CTS. Hiervon
- * laden Server und Client alle Befehle, damit sie senden und empfangen können.
+ * Speichert alle bekannten Netzwerkbefehle, sowohl STC als auch CTS. Hiervon laden Server und Client alle Befehle, damit sie senden und empfangen können.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -78,16 +77,14 @@ public class MessageRegister {
         // CTS
         loadCTS(MessageIDs.NET_CTS_MOVE, new CTS_MOVE());
         loadCTS(MessageIDs.NET_CTS_SHOOT, new CTS_SHOOT());
-        loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_EQUIP, new CTS_EQUIP_ITEM());
-        loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_ITEM_DEQUIP, new CTS_REQUEST_ITEM_DEQUIP());
         loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_WEAPONSWITCH, new CTS_REQUEST_SWITCH_WEAPON());
         loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_RCON, new CTS_REQUEST_RCON());
         loadCTS(MessageIDs.NET_CTS_USE_ABILITY, new CTS_REQUEST_USE_ABILITY());
         loadCTS(MessageIDs.NET_CTS_MAP_ABILITY, new CTS_REQUEST_MAP_ABILITY());
         loadCTS(MessageIDs.NET_CTS_INVEST_SKILLPOINT, new CTS_INVEST_SKILLPOINT());
-        loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_MOVE, new CTS_REQUEST_INV_ITEM_MOVE());
-        loadCTS(MessageIDs.NET_TCP_CMD_REQUEST_INV_ITEM_DELETE, new CTS_DELETE_ITEM());
         loadCTS(MessageIDs.NET_TCP_CMD_TOGGLE_BUILDMODE, new CTS_TOGGLE_BUILDMODE());
+        loadCTS(MessageIDs.NET_CTS_DROP_ITEM, new CTS_DROP_ITEM());
+        loadCTS(MessageIDs.NET_CTS_MOVE_ITEM, new CTS_MOVE_ITEM());
         // STC
         loadSTC(MessageIDs.NET_TCP_CMD_CHAR_HIT, new STC_CHAR_HIT());
         loadSTC(MessageIDs.NET_TCP_CMD_EQUIP_ITEM, new STC_EQUIP_ITEM());
@@ -119,6 +116,8 @@ public class MessageRegister {
         loadSTC(MessageIDs.NET_STC_TOGGLE_BUILDMODE, new STC_TOGGLE_BUILDMODE());
         loadSTC(MessageIDs.NET_STC_SET_FACING_TARGET, new STC_SET_FACING_TARGET());
         loadSTC(MessageIDs.NET_STC_SET_LOOK_IN_MOVING_DIRECTION, new STC_SET_LOOK_IN_MOVING_DIRECTION());
+        loadSTC(MessageIDs.NET_STC_CREATE_ITEM, new STC_CREATE_ITEM());
+        loadSTC(MessageIDs.NET_STC_CORRECT_INVENTORY, new STC_CORRECT_INVENTORY());
     }
 
     /**
