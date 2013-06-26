@@ -20,6 +20,7 @@ public class InventoryItemSlot extends Button {
     public InventoryItemSlot(int x, int y, int width, int height, InventoryOverlay inventory, int slotID) {
         super(x, y, width, height);
         this.inventory = inventory;
+        this.slotID = slotID;
         image = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "item.png", 0, 32);
         background = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 273, 206, 180, 101);
     }

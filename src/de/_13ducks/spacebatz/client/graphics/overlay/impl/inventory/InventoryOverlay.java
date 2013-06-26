@@ -203,16 +203,17 @@ public class InventoryOverlay extends TriggeredOverlay {
         if (dragging) {
             dragging = false;
             draggedItem.isVisible = false;
-            if (inventory.tryMoveItem(dragStartSlot, dragEndSlot, null)) {
-                // Tiles vertauschen:
-                int tile1 = ((InventoryItemSlot) (slots.get(dragStartSlot))).getTile();
-                int tile2 = ((InventoryItemSlot) (slots.get(dragEndSlot))).getTile();
-                ((InventoryItemSlot) (slots.get(dragStartSlot))).setTile(tile2);
-                ((InventoryItemSlot) (slots.get(dragEndSlot))).setTile(tile1);
-                // Änderung an Client senden:
-                CTS_MOVE_ITEM.sendMoveItem(dragStartSlot, dragEndSlot);
+            if (dragStartSlot != dragEndSlot) {
+                if (inventory.tryMoveItem(dragStartSlot, dragEndSlot, GameClient.player.properties)) {
+                    // Tiles vertauschen:
+                    int tile1 = ((InventoryItemSlot) (slots.get(dragStartSlot))).getTile();
+                    int tile2 = ((InventoryItemSlot) (slots.get(dragEndSlot))).getTile();
+                    ((InventoryItemSlot) (slots.get(dragStartSlot))).setTile(tile2);
+                    ((InventoryItemSlot) (slots.get(dragEndSlot))).setTile(tile1);
+                    // Änderung an Client senden:
+                    CTS_MOVE_ITEM.sendMoveItem(dragStartSlot, dragEndSlot);
+                }
             }
-
         }
     }
 
@@ -223,7 +224,7 @@ public class InventoryOverlay extends TriggeredOverlay {
         if (dragging) {
             dragging = false;
             draggedItem.isVisible = false;
-            if (inventory.tryDeleteItem(dragStartSlot, null)) {
+            if (inventory.tryDeleteItem(dragStartSlot, GameClient.player.properties)) {
                 ((InventoryItemSlot) (slots.get(dragStartSlot))).setTile(-1);
                 CTS_DROP_ITEM.sendDropItem(dragStartSlot);
             }

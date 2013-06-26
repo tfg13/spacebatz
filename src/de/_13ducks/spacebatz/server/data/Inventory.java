@@ -43,21 +43,21 @@ public abstract class Inventory {
         slots.put(WEAPONSLOT3, new ItemSlot(new int[]{1}, true));
 
         // 2 Toolslots:
-        slots.put(TOOLSLOT1, new ItemSlot(new int[]{2}, true));
-        slots.put(TOOLSLOT2, new ItemSlot(new int[]{2}, true));
+        slots.put(TOOLSLOT1, new ItemSlot(new int[]{6}, true));
+        slots.put(TOOLSLOT2, new ItemSlot(new int[]{6}, true));
 
         // 2 Hüte:
-        slots.put(HATSLOT1, new ItemSlot(new int[]{3}, true));
-        slots.put(HATSLOT2, new ItemSlot(new int[]{3}, true));
+        slots.put(HATSLOT1, new ItemSlot(new int[]{2}, true));
+        slots.put(HATSLOT2, new ItemSlot(new int[]{2}, true));
 
         // Rüstung 1:
-        slots.put(ARMOR1SLOT, new ItemSlot(new int[]{4}, true));
+        slots.put(ARMOR1SLOT, new ItemSlot(new int[]{3}, true));
 
         // Rüstung 2:
-        slots.put(ARMOR2SLOT, new ItemSlot(new int[]{5}, true));
+        slots.put(ARMOR2SLOT, new ItemSlot(new int[]{4}, true));
 
         // Rüstung 3:
-        slots.put(ARMOR3SLOT, new ItemSlot(new int[]{6}, true));
+        slots.put(ARMOR3SLOT, new ItemSlot(new int[]{5}, true));
 
     }
 
@@ -85,6 +85,8 @@ public abstract class Inventory {
                     Item item2 = to.getItem();
                     // Passt das zweite Item in den slot des ersten?
                     if (from.canEquipClass(item2.getItemClass())) {
+                        to.removeItem(props);
+                        from.removeItem(props);
                         to.setItem(item, props);
                         from.setItem(item2, props);
                         return true;
