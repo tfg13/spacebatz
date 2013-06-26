@@ -196,7 +196,7 @@ public class GraphicsEngine {
         long ns2 = System.nanoTime();
         timing.push((int) (ns2 - ns));
         if (GameClient.frozenGametick % 60 == 0) {
-            System.out.println("AFT: " + timing.getNiceAvg());
+//            System.out.println("AFT: " + timing.getNiceAvg());
         }
 
         // Fertig, Puffer swappen:

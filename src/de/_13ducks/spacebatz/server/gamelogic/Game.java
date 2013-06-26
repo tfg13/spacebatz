@@ -23,7 +23,6 @@ import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CHANGE_LEVEL;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_NEW_CLIENT;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
 import de._13ducks.spacebatz.util.mapgen.MapGen;
 import de._13ducks.spacebatz.util.mapgen.MapParameters;
@@ -51,9 +50,8 @@ public class Game {
      */
     public HashMap<Byte, Client> clients;
     /**
-     * Die ClientID, die als nächstes vergeben wird.
-     * IDs dürfen zwar prinzipiell wiedervergeben werden, allerdings sollte etwas Zeit
-     * zwischen den Verwendungen liegen, sonst lassen sich Pakete eventuell nicht eindeutig zuordnen.
+     * Die ClientID, die als nächstes vergeben wird. IDs dürfen zwar prinzipiell wiedervergeben werden, allerdings sollte etwas Zeit zwischen den Verwendungen liegen, sonst lassen
+     * sich Pakete eventuell nicht eindeutig zuordnen.
      */
     private byte nextClientID = 0;
     /**
@@ -131,9 +129,7 @@ public class Game {
     }
 
     /**
-     * Läd das Level. List die Launchparameter aus, um herauszufinden, ob das
-     * gepeicherte, letzte Level geladen werden soll. Wenn ein neues angelegt
-     * wird, wird es gespeichert.
+     * Läd das Level. List die Launchparameter aus, um herauszufinden, ob das gepeicherte, letzte Level geladen werden soll. Wenn ein neues angelegt wird, wird es gespeichert.
      */
     public final void loadOrReloadLevel() {
         MapParameters map = null;
@@ -176,9 +172,7 @@ public class Game {
     }
 
     /**
-     * Kopiert die in der Map vorgegebenen Entities
-     * bei Laden in die Spiel-Datenstrukturen, so
-     * dass diese sofort nach dem Spielstart vorhanden sind.
+     * Kopiert die in der Map vorgegebenen Entities bei Laden in die Spiel-Datenstrukturen, so dass diese sofort nach dem Spielstart vorhanden sind.
      */
     public void initMapEntities() {
         for (Integer i : level.initNetMap.keySet()) {
@@ -209,7 +203,6 @@ public class Game {
             }
             // Einfügen und den Client das Spiel starten lassen
             clients.put(new Byte(newClient.clientID), newClient);
-            STC_START_ENGINE.sendStartGame(newClient);
             // Dem Client alle aktiven Quests schicken
             Server.game.questManager.newClient(newClient);
             // Dem Client Startitems geben
@@ -275,8 +268,7 @@ public class Game {
     }
 
     /**
-     * Vergibt eine neue ClientID.
-     * Liefert -1, falls keine vergeben werden kann.
+     * Vergibt eine neue ClientID. Liefert -1, falls keine vergeben werden kann.
      *
      * @return neue ClientID oder -1
      */
@@ -314,8 +306,7 @@ public class Game {
     }
 
     /**
-     * Löscht einen Client zügig, aber threadsicher, aus dem Spiel.
-     * Der Client ist spätestens einen Tick später weg.
+     * Löscht einen Client zügig, aber threadsicher, aus dem Spiel. Der Client ist spätestens einen Tick später weg.
      *
      * @param client der zu löschende Client.
      */

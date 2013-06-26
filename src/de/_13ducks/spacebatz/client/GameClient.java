@@ -26,8 +26,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 /**
- * Die Hauptklasse des Clients
- * enthält statische Referenzen auf alle Module des Clients (Grafik, Netzwerk, etc).
+ * Die Hauptklasse des Clients enthält statische Referenzen auf alle Module des Clients (Grafik, Netzwerk, etc).
  *
  * @author michael
  */
@@ -41,10 +40,6 @@ public class GameClient {
      * Das neue Netzwerksystem.
      */
     private static ClientNetwork2 network2;
-    /**
-     * Der Nachrichteninterpreter.
-     */
-    private static InitialMainloop initMainloop;
     /**
      * Die Grafikengine.
      */
@@ -62,8 +57,7 @@ public class GameClient {
      */
     public static final ClientQuestManager quests = new ClientQuestManager();
     /**
-     * Aktuell gültiger Gametick.
-     * Heißt frozen, weil er während der Grafikberechnung eingefroren wird.
+     * Aktuell gültiger Gametick. Heißt frozen, weil er während der Grafikberechnung eingefroren wird.
      */
     public static int frozenGametick;
     /**
@@ -112,15 +106,12 @@ public class GameClient {
     public static SoundProvider soundEngine;
 
     /**
-     * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden
-     * Der Client wird dies etwa eine Minute lang versuchen (etwa 60 Verbindungsversuche)
+     * Startet den Client und versucht, sich mit der angegebenen IP zu verbinden Der Client wird dies etwa eine Minute lang versuchen (etwa 60 Verbindungsversuche)
      *
      * @param ip die IP, zu der eine Verbindung aufgebaut werden soll
      */
-    public static void startClient(String ip) throws UnknownHostException {
+    public static void startClient(final String ip) throws UnknownHostException {
         network2 = new ClientNetwork2();
-        initMainloop = new InitialMainloop();
-        initMainloop.start();
         netIDMap = new HashMap<>();
         if (DefaultSettings.CLIENT_SFX_DISABLE_SOUND) {
             soundEngine = new SilentSoundEngine();
@@ -128,11 +119,24 @@ public class GameClient {
             soundEngine = new SoundEngine();
         }
         equippedItems = new EquippedItems();
-        // Immer weiter versuchen, sich zu connecten
-        int triesLeft = 60;
-        while (!network2.connect(InetAddress.getByName(ip), DefaultSettings.SERVER_UDPPORT2) && triesLeft-- > 0) {
-            System.out.println("Connecting failed. Retrying...");
-        }
+
+        Thread connectThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Immer weiter versuchen, sich zu connecten
+                int triesLeft = 60;
+                try {
+                    while (!network2.connect(InetAddress.getByName(ip), DefaultSettings.SERVER_UDPPORT2) && triesLeft-- > 0) {
+                        System.out.println("Connecting failed. Retrying...");
+                    }
+                } catch (Exception ex) {
+                }
+
+            }
+        });
+        connectThread.start();
+        engine = new Engine();
+        engine.start();
     }
 
     /**
@@ -142,15 +146,6 @@ public class GameClient {
      */
     public static LinkedList<Bullet> getBulletList() {
         return bulletList;
-    }
-
-    /**
-     * Gibt den MessageInterpreter zurück
-     *
-     * @return der MessageInterpreter
-     */
-    public static InitialMainloop getInitialMainloop() {
-        return initMainloop;
     }
 
     /**

@@ -52,7 +52,6 @@ import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_LOOK_IN_MOVING_
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_PLAYER;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_SKILL_MAPPING;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SHADOW_CHANGE;
-import de._13ducks.spacebatz.shared.network.messages.STC.STC_START_ENGINE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TOGGLE_BUILDMODE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_TRANSFER_ENEMYTYPES;
@@ -96,7 +95,6 @@ public class MessageRegister {
         loadSTC(MessageIDs.NET_TCP_CMD_TRANSFER_ENEMYTYPES, new STC_TRANSFER_ENEMYTYPES());
         loadSTC(MessageIDs.NET_STC_SET_CLIENT, new STC_SET_CLIENT());
         loadSTC(MessageIDs.NET_STC_SET_PLAYER, new STC_SET_PLAYER());
-        loadSTC(MessageIDs.NET_STC_START_ENGINE, new STC_START_ENGINE());
         loadSTC(MessageIDs.NET_TCP_CMD_ANSWER_RCON, new STC_ANSWER_RCON());
         loadSTC(MessageIDs.NET_CHANGE_LEVEL, new STC_CHANGE_LEVEL());
         loadSTC(MessageIDs.NET_TCP_CMD_CHANGE_MATERIAL_AMOUNT, new STC_CHANGE_MATERIAL_AMOUNT());

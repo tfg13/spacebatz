@@ -23,8 +23,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
- * Neuer Haupt-Renderer, arbeitet ausschließlich mit OpenGL >=3.2,
- * verwendet das Core-Profil ohne Abwärtskompatibilität
+ * Neuer Haupt-Renderer, arbeitet ausschließlich mit OpenGL >=3.2, verwendet das Core-Profil ohne Abwärtskompatibilität
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -35,8 +34,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      */
     private static final int INDEX_VERT_PROJECTIONVIEW = 0;
     /**
-     * Enthält die ProgramIDs aller verwendeten Shader.
-     * Diese sind bereits fertig gelinkt etc. und können direkt verwendet werden.
+     * Enthält die ProgramIDs aller verwendeten Shader. Diese sind bereits fertig gelinkt etc. und können direkt verwendet werden.
      */
     private int[] shader;
     /**
@@ -52,18 +50,15 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      */
     private Matrix4f viewMatrix;
     /**
-     * Speichert die zu den Chunks gehörenden VAOs.
-     * Arrays: X Y {vao, vbo}
+     * Speichert die zu den Chunks gehörenden VAOs. Arrays: X Y {vao, vbo}
      */
-    private int[][][] groundChunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][2];
+    private int[][][] groundChunkVAOs; // = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][2];
     /**
-     * Speichert die zu den Chunks gehörenden VAOs.
-     * Arrays: X Y {vao, vbo, numberoftriangles}
+     * Speichert die zu den Chunks gehörenden VAOs. Arrays: X Y {vao, vbo, numberoftriangles}
      */
-    private int[][][] topChunkVAOs = new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][3];
+    private int[][][] topChunkVAOs;//= new int[GameClient.currentLevel.getSizeX() / 8][GameClient.currentLevel.getSizeY() / 8][3];
     /**
-     * VAO und VBO für Gegner.
-     * Mit Color und Drehung.
+     * VAO und VBO für Gegner. Mit Color und Drehung.
      */
     private VAO testPlayer;
 
@@ -102,6 +97,10 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
 
     @Override
     public void render() {
+        if (GameClient.player == null || GameClient.currentLevel == null) {
+            // Level noch nicht geladen, abbruch
+            return;
+        }
         int playerX = (int) (GameClient.player.getX()) / 8;
         int playerY = (int) (GameClient.player.getY()) / 8;
 
@@ -197,8 +196,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     }
 
     /**
-     * Baut einen VAO/VBO für einen Chunk.
-     * Falls es schon einen gibt, wird der alte gelöscht und ein neuer gebaut.
+     * Baut einen VAO/VBO für einen Chunk. Falls es schon einen gibt, wird der alte gelöscht und ein neuer gebaut.
      *
      * @param chunkX X-Koordinate
      * @param chunkY Y-Koordinate
@@ -261,8 +259,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
     }
 
     /**
-     * Baut einen VAO/VBO für einen Chunk.
-     * Falls es schon einen gibt, wird der alte gelöscht und ein neuer gebaut.
+     * Baut einen VAO/VBO für einen Chunk. Falls es schon einen gibt, wird der alte gelöscht und ein neuer gebaut.
      *
      * @param chunkX X-Koordinate
      * @param chunkY Y-Koordinate
@@ -357,10 +354,16 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
 
     public void setLevelSize(int chunksX, int chunksY) {
         groundChunkVAOs = new int[chunksX][chunksY][2];
+        this.topChunkVAOs = new int[chunksX][chunksY][3];
+
     }
 
     @Override
     public void setMouseXY(double mouseX, double mouseY) {
+        if (GameClient.player == null) {
+            // Level noch nicht geladen, abbruch
+            return;
+        }
         double playerX = GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
         double playerY = GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
         // Neuen Sichtmittelpunkt bestimmen:

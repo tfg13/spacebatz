@@ -6,9 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Verwaltet Schatten und Schattenanimationen.
- * Neu ankommende Schattenänderungen werden hier zwischengecached und nach und nach angewendet.
- * Dadurch sieht es so aus, als würden sich Schatten kontinuierlich aufdecken.
+ * Verwaltet Schatten und Schattenanimationen. Neu ankommende Schattenänderungen werden hier zwischengecached und nach und nach angewendet. Dadurch sieht es so aus, als würden sich
+ * Schatten kontinuierlich aufdecken.
  *
  * Dazu wird eine Liste von Schatten-Chunks verwaltet, die bei den Ticks stückweise in die echten Daten kopiert wird.
  *
@@ -25,6 +24,10 @@ public class ShadowAnimator {
      * Muss einmal pro Client-Tick aufgerufen werden, verwaltet Schattendaten.
      */
     public void tick() {
+        if (GameClient.currentLevel == null) {
+            // Level noch nicht geladen, abbruch
+            return;
+        }
         byte[][] gameShadows = GameClient.currentLevel.shadow;
         // Alle durchgehen und die Game-Werte in jedem Tick annähern, bis alle erreicht sind.
         // Dann die Animation löschen
@@ -53,8 +56,7 @@ public class ShadowAnimator {
     }
 
     /**
-     * Aufrufen, um ein Chunk zur Animation einzufügen.
-     * Sollte dieser Chunk bereits animiert werden, werden die Animationen automatisch gemerged.
+     * Aufrufen, um ein Chunk zur Animation einzufügen. Sollte dieser Chunk bereits animiert werden, werden die Animationen automatisch gemerged.
      *
      * @param chunkX X-Koordinate des Chunks
      * @param chunkY Y-Koordinate des Chunks

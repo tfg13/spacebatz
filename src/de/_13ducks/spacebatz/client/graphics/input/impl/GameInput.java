@@ -58,6 +58,10 @@ public class GameInput extends InputMode {
 
     @Override
     public void permanentAsyncKeyboardInput(boolean mainInputActive) {
+        if (GameClient.player == null) {
+            // Level noch nicht geladen, abbruch
+            return;
+        }
         byte move = 0;
         if (mainInputActive) {
             if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
