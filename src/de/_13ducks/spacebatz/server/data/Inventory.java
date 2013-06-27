@@ -141,6 +141,9 @@ public abstract class Inventory {
         if (slot == Inventory.WEAPONSLOT1 || slot == Inventory.WEAPONSLOT2 || slot == Inventory.WEAPONSLOT3) {
             activeWeaponSlot = slot;
         }
+    }
 
+    public int getActiveWeaponSlot() {
+        return activeWeaponSlot;
     }
 }

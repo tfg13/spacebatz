@@ -1,8 +1,9 @@
 package de._13ducks.spacebatz.client.graphics.overlay.impl;
 
-import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
-import org.newdawn.slick.opengl.Texture;
+import de._13ducks.spacebatz.client.graphics.vao.DynamicTexturedRectangleVAO;
+import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
+import de._13ducks.spacebatz.shared.DefaultSettings;
 
 /**
  *
@@ -10,16 +11,27 @@ import org.newdawn.slick.opengl.Texture;
  */
 public class HudOverlay extends Overlay {
 
-    private Texture itemTiles;
-    private Texture hud1;
+    private DynamicTexturedRectangleVAO healthbarBackground;
+    private DynamicTexturedRectangleVAO weaposlotsBackground;
 
     public HudOverlay() {
-        itemTiles = RenderUtils.getTextureByName("item.png");
-        hud1 = RenderUtils.getTextureByName("hud1.png");
+        int x = 0;
+        int y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.42f);
+        int width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.07f);
+        int height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.42f);
+        healthbarBackground = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 0, 0, 118, 332);
+
+        x = 0;
+        y = 0;
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.2f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.1f);
+        weaposlotsBackground = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 0, 380, 396, 132);
     }
 
     @Override
     public void render() {
+        healthbarBackground.render();
+        weaposlotsBackground.render();
 //
 //        // HUD-Hintergrund:
 //        glColor3f(1.0f, 1.0f, 1.0f);

@@ -3,6 +3,7 @@ package de._13ducks.spacebatz.client.graphics;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.HudOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.inventory.InventoryOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
@@ -121,9 +122,9 @@ public class GraphicsEngine {
 
             inventory = new InventoryOverlay();
             overlays.add(getInventory());
+            overlays.add(new HudOverlay());
 
 
-//                overlays.add(new HudOverlay());
 //                overlays.add(new QuestControl());
 //                Inventory inventory = new Inventory();
 //                inventory.init(new int[]{Keyboard.KEY_I}, true);
