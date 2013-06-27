@@ -1,5 +1,7 @@
 package de._13ducks.spacebatz.client.graphics.renderer.impl;
 
+import de._13ducks.spacebatz.client.Char;
+import de._13ducks.spacebatz.client.Enemy;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
@@ -34,13 +36,18 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
      */
     private static final int INDEX_VERT_PROJECTIONVIEW = 0;
     /**
+     * Enthält die ProgramIDs aller verwendeten Shader. Diese sind bereits fertig gelinkt etc. und können direkt verwendet werden. Index der Adresse der Modelmatrix im Array mit
+     * Uniformadressen.
+     */
+    private static final int INDEX_VERT_MODEL = 1;
+    /**
      * Enthält die ProgramIDs aller verwendeten Shader. Diese sind bereits fertig gelinkt etc. und können direkt verwendet werden.
      */
     private int[] shader;
     /**
      * Adressen der Uniforms.
      */
-    private int[] shaderUniformAdr = new int[1];
+    private int[] shaderUniformAdr = new int[2];
     /**
      * Projektions-Matrix, bleibt normalerweise immer gleich.
      */
@@ -91,8 +98,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         // Model
         model.store(matrix44Buffer);
         matrix44Buffer.flip();
-        int mmloc = GL20.glGetUniformLocation(shader[GraphicsEngine.SHADER_INDEX_GAME], "modelM");
-        GL20.glUniformMatrix4(mmloc, false, matrix44Buffer);
+        shaderUniformAdr[INDEX_VERT_MODEL] = GL20.glGetUniformLocation(shader[GraphicsEngine.SHADER_INDEX_GAME], "modelM");
+        GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_MODEL], false, matrix44Buffer);
     }
 
     @Override
@@ -141,24 +148,58 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         if (testPlayer == null) {
             createPlayerVBO(GameClient.player.netID);
         }
-        // Enemys
+        // Player
         updateVBOs();
         RenderUtils.getTextureByName("player.png").bind();
+        // Drehen:
+        pushRotMatrix((float) GameClient.player.getDir(), (float) GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), (float) GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick));
         testPlayer.render();
+        restoreRot();
 
+        // Enemys
+        RenderUtils.getTextureByName("enemy00.png").bind();
+        updateEnemyVAOs();
+        renderEnemyVAOs();
     }
 
-    private void renderPlayer(int playerVAOAdr) {
-        // Render
-        GL30.glBindVertexArray(playerVAOAdr);
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        // Zeichnen
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
-        // Aufräumen
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL30.glBindVertexArray(0);
+    /**
+     * Schickt eine Rotationsmatrix an den Vertex-Shader.
+     *
+     * @param rotation rotation, in Bogenmaß, übliche zählweise
+     */
+    private void pushRotMatrix(float rotation, float centerx, float centery) {
+        // Rotationszentrum verschieben:
+        Matrix4f trans = new Matrix4f();
+        trans.m30 = centerx;
+        trans.m31 = centery;
+        // XY-Rotationsmatrix bauen
+        Matrix4f rot = new Matrix4f();
+        rot.m00 = (float) Math.cos(rotation);
+        rot.m11 = (float) Math.cos(rotation);
+        rot.m10 = (float) -Math.sin(rotation);
+        rot.m01 = (float) Math.sin(rotation);
+        // Multiplizieren
+        rot = Matrix4f.mul(trans, rot, null);
+        trans.m30 *= -1;
+        trans.m31 *= -1;
+        rot = Matrix4f.mul(rot, trans, null);
+        // Zur Grafikkarte hochladen:
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        rot.store(buffer);
+        buffer.flip();
+        GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_MODEL], false, buffer);
+    }
+
+    /**
+     * Setzt die Rotationsmatrix des Shaders zurück
+     */
+    private void restoreRot() {
+        // Identität laden:
+        Matrix4f identity = new Matrix4f();
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        identity.store(buffer);
+        buffer.flip();
+        GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_MODEL], false, buffer);
     }
 
     private void renderChunk(int chunkVAOAdr, int numberOfTriangles) {
@@ -429,5 +470,42 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         testPlayer.resetData();
         testPlayer.pushRectT((float) pl.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick) - 1, (float) pl.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick) - 1, 2, 2, v + onepixel, w + onepixel, picsizex - (2 * onepixel), picsizey - 2 * (onepixel));
         testPlayer.upload();
+    }
+
+    private void updateEnemyVAOs() {
+        for (Char c : GameClient.netIDMap.values()) {
+            // Hässliches instanceof, sollte weg
+            if (c instanceof Enemy) {
+                if (c.getRenderObject().getVao() == null) {
+                    c.getRenderObject().setVao(VAOFactory.createDynamicTexturedRectVAO());
+                }
+                VAO vao = c.getRenderObject().getVao();
+                Animation animation = c.getRenderObject().getBaseAnim();
+                vao.resetData();
+                float picsizex = 0.0625f * animation.getPicsizex();
+                float picsizey = 0.0625f * animation.getPicsizey();
+
+                int currentpic = ((GameClient.frozenGametick) / animation.getPicduration()) % animation.getNumberofpics();
+                currentpic += animation.getStartpic();
+
+                float v = (currentpic % (16 / animation.getPicsizex())) * picsizex;
+                float w = (currentpic / (16 / animation.getPicsizey())) * picsizey;
+                float onepixel = 1.0f / 512; // einen pixel vom Bild in jede Richtung abschneiden
+
+                vao.pushRectT((float) c.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick) - 1, (float) c.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick) - 1, 2f, 2f, v + onepixel, w + onepixel, picsizex - (2 * onepixel), picsizey - (2 * onepixel));
+                vao.upload();
+            }
+        }
+    }
+
+    private void renderEnemyVAOs() {
+        for (Char c : GameClient.netIDMap.values()) {
+            // Hässliches instanceof, sollte weg
+            if (c instanceof Enemy) {
+                pushRotMatrix((float) c.getDir(), (float) c.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), (float) c.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick));
+                c.getRenderObject().getVao().render();
+                restoreRot();
+            }
+        }
     }
 }

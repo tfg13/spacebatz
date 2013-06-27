@@ -36,17 +36,17 @@ public class VAO {
     /**
      * Array mit Vertexkoordinaten (x und y nacheinander).
      */
-    private final float[] vertices;
+    protected final float[] vertices;
     /**
      * Array mit Texturkoordinaten (x und y nacheinander).
      * Falls nicht verwendet null.
      */
-    private final float[] texCoords;
+    protected final float[] texCoords;
     /**
      * Array mit Farben.
      * Falls nicht verwendet null.
      */
-    private final float[] colors;
+    protected final float[] colors;
     /**
      * Index des nächsten, einzutragenden Vertex (diese Zahl mal 2 für das vertices-Array).
      */
@@ -55,7 +55,7 @@ public class VAO {
      * True, wenn Daten seit letzten Upload geändert wurden.
      * Bedeutungslos, wenn noch nie geuploaded.
      */
-    private boolean modified = true;
+    protected boolean modified = true;
     /**
      * True, wenn der Grafikkarte bekannt.
      * Nur dann sind auch die Ids unten definiert.
@@ -64,7 +64,7 @@ public class VAO {
     /**
      * True, wenn diese Daten zur Grafikkarte geladen wurden.
      */
-    private boolean uploaded = false;
+    protected boolean uploaded = false;
     /**
      * ID des VAO.
      * Nur definiert, wenn created true ist.
