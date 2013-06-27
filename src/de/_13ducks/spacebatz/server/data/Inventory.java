@@ -25,7 +25,14 @@ public abstract class Inventory {
     public static final int ARMOR1SLOT = CompileTimeParameters.INVENTORY_SIZE + 7;
     public static final int ARMOR2SLOT = CompileTimeParameters.INVENTORY_SIZE + 8;
     public static final int ARMOR3SLOT = CompileTimeParameters.INVENTORY_SIZE + 9;
+    /**
+     * Die Inventarslots
+     */
     protected HashMap<Integer, ItemSlot> slots;
+    /**
+     * Die aktive Waffe
+     */
+    private int activeWeaponSlot;
 
     public Inventory() {
         slots = new HashMap<>();
@@ -118,5 +125,22 @@ public abstract class Inventory {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return the activeWeapon
+     */
+    public Item getActiveWeapon() {
+        return slots.get(activeWeaponSlot).getItem();
+    }
+
+    /**
+     * @param activeWeapon the activeWeapon to set
+     */
+    public void setActiveWeapon(int slot) {
+        if (slot == Inventory.WEAPONSLOT1 || slot == Inventory.WEAPONSLOT2 || slot == Inventory.WEAPONSLOT3) {
+            activeWeaponSlot = slot;
+        }
+
     }
 }

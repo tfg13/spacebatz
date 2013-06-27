@@ -30,7 +30,7 @@ public class ItemCarrier extends Char {
     /**
      * Der gerade aktive ToolSlot
      */
-    private int activeToolSlot;
+    private int activeToolSlot = Inventory.TOOLSLOT1;
 
     /**
      * Erzeugt einen neuen ItemCarrier
@@ -72,7 +72,9 @@ public class ItemCarrier extends Char {
      * @param selectedweapon aktiver Waffenslot ( z.B. Inventory.WEAPONSLOT1 )
      */
     public void setSelectedweapon(int selectedweapon) {
-        activeWeaponSlot = selectedweapon;
+        inventory.setActiveWeapon(selectedweapon);
+        this.activeWeaponSlot = selectedweapon;
+        activeToolSlot = selectedweapon;
     }
 
     /**
@@ -81,7 +83,7 @@ public class ItemCarrier extends Char {
      * @return ein Weapon
      */
     public Item getActiveWeapon() {
-        return inventory.getItem(activeWeaponSlot);
+        return inventory.getActiveWeapon();
     }
 
     /**

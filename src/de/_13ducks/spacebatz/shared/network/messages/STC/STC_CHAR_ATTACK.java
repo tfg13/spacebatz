@@ -33,10 +33,9 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
 
         // Overheat der Waffe erhöhen:
         if (charid == GameClient.player.netID) {
-            int weaponnumber = GameClient.player.getSelectedattack();
-            Item item = GameClient.getEquippedItems().getEquipslots()[1][weaponnumber];
+            Item item = GameClient.player.inventory.getActiveWeapon();
             if (item != null && !GameClient.player.isBuildmode()) {
-                GameClient.getEquippedItems().getEquipslots()[1][weaponnumber].increaseOverheat(1);
+                item.increaseOverheat(1);
                 double aspeed = item.getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + item.getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
                 GameClient.player.attackCooldownTick = GameClient.frozenGametick + (int) Math.ceil(1 / aspeed);
             }
@@ -50,7 +49,7 @@ public class STC_CHAR_ATTACK extends FixedSizeSTCCommand {
             f.setOwner(GameClient.netIDMap.get(charid));
             GameClient.getEngine().getGraphics().addFx(f);
         }
-        
+
         GameClient.soundEngine.soundEffect("test.ogg");
     }
 

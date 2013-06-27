@@ -2,6 +2,7 @@ package de._13ducks.spacebatz.client.graphics.input.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.InputMode;
+import de._13ducks.spacebatz.server.data.Inventory;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_MOVE;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_SWITCH_WEAPON;
 import de._13ducks.spacebatz.shared.network.messages.CTS.CTS_REQUEST_USE_ABILITY;
@@ -36,17 +37,17 @@ public class GameInput extends InputMode {
             switch (key) {
                 case Keyboard.KEY_1:
                     if (GameClient.player.getSelectedattack() != 0) {
-                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 0);
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon(GameClient.player.isBuildmode() ? (byte) Inventory.TOOLSLOT1 : Inventory.WEAPONSLOT1);
                     }
                     break;
                 case Keyboard.KEY_2:
                     if (GameClient.player.getSelectedattack() != 1) {
-                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 1);
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon(GameClient.player.isBuildmode() ? (byte) Inventory.TOOLSLOT2 : Inventory.WEAPONSLOT2);
                     }
                     break;
                 case Keyboard.KEY_3:
                     if (GameClient.player.getSelectedattack() != 2) {
-                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) 2);
+                        CTS_REQUEST_SWITCH_WEAPON.sendSwitchWeapon((byte) Inventory.WEAPONSLOT3);
                     }
                     break;
                 case Keyboard.KEY_Q:

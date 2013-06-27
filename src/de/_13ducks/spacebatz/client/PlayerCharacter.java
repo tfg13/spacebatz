@@ -10,6 +10,7 @@
  */
 package de._13ducks.spacebatz.client;
 
+import de._13ducks.spacebatz.client.data.ClientInventory;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
@@ -88,6 +89,7 @@ public class PlayerCharacter extends Char {
      * Im Baumodus
      */
     private boolean buildmode;
+    public ClientInventory inventory;
 
     public PlayerCharacter(int netID, float size) {
         super(netID, size, new RenderObject(new Animation(0, 4, 4, 1, 1)));
@@ -97,6 +99,7 @@ public class PlayerCharacter extends Char {
         healthpointsmax = CompileTimeParameters.CHARHEALTH;
         hitpointRegeneration = CompileTimeParameters.PLAYERHEALTH_REGENERATION;
         properties = new PropertyList();
+        inventory = new ClientInventory();
     }
 
     /**
