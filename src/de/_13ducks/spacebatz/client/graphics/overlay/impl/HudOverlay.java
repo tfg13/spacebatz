@@ -1,9 +1,14 @@
 package de._13ducks.spacebatz.client.graphics.overlay.impl;
 
+import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.vao.DynamicRectangleVAO;
 import de._13ducks.spacebatz.client.graphics.vao.DynamicTexturedRectangleVAO;
+import de._13ducks.spacebatz.client.graphics.vao.DynamicTileVAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
+import de._13ducks.spacebatz.server.data.Inventory;
 import de._13ducks.spacebatz.shared.DefaultSettings;
+import de._13ducks.spacebatz.shared.Item;
 
 /**
  *
@@ -13,25 +18,78 @@ public class HudOverlay extends Overlay {
 
     private DynamicTexturedRectangleVAO healthbarBackground;
     private DynamicTexturedRectangleVAO weaposlotsBackground;
+    private DynamicTileVAO weapon1;
+    private DynamicTileVAO weapon2;
+    private DynamicTileVAO weapon3;
+    private DynamicRectangleVAO selectedWeaponBackground;
 
     public HudOverlay() {
-        int x = 0;
-        int y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.42f);
-        int width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.07f);
-        int height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.42f);
-        healthbarBackground = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 0, 0, 118, 332);
-
+        int x, y, width, height;
         x = 0;
         y = 0;
         width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.2f);
         height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.1f);
-        weaposlotsBackground = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 0, 380, 396, 132);
+        healthbarBackground = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 0, 380, 396, 132);
+
+        x = 0;
+        y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.42f);
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.09f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.42f);
+        weaposlotsBackground = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 0, 0, 118, 332);
+
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.08f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
+        selectedWeaponBackground = VAOFactory.createDynamicRectangleVAO(0, 0, width, height, new float[]{0.5f, 0.5f, 0.5f, 1f});
+
+
+        x = 0;
+        y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.72f);
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.08f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
+        weapon1 = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "item.png", 0, 32);
+
+        x = 0;
+        y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.60f);
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.08f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
+        weapon2 = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "item.png", 0, 32);
+
+        x = 0;
+        y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.48f);
+        width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.08f);
+        height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
+        weapon3 = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "item.png", 0, 32);
+
     }
 
     @Override
     public void render() {
+        if (GameClient.player == null) {
+            return;
+        }
+
+
         healthbarBackground.render();
         weaposlotsBackground.render();
+//        selectedWeaponBackground.setRenderPosition(0, (int) (DefaultSettings.CLIENT_GFX_RES_Y * (0.48f + (GameClient.player.inventory.getActiveWeaponSlot() - Inventory.WEAPONSLOT1) * 12)));
+        selectedWeaponBackground.setRenderPosition(-1, 0);
+        selectedWeaponBackground.render();
+
+        Item weapon = GameClient.player.inventory.getItem(Inventory.WEAPONSLOT1);
+        if (weapon != null) {
+            weapon1.setSourceTile(weapon.getPic());
+            weapon1.render();
+        }
+        weapon = GameClient.player.inventory.getItem(Inventory.WEAPONSLOT2);
+        if (weapon != null) {
+            weapon2.setSourceTile(weapon.getPic());
+            weapon2.render();
+        }
+        weapon = GameClient.player.inventory.getItem(Inventory.WEAPONSLOT3);
+        if (weapon != null) {
+            weapon3.setSourceTile(weapon.getPic());
+            weapon3.render();
+        }
 //
 //        // HUD-Hintergrund:
 //        glColor3f(1.0f, 1.0f, 1.0f);

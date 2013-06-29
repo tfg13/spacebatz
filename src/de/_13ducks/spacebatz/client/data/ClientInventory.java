@@ -61,4 +61,8 @@ public class ClientInventory extends de._13ducks.spacebatz.server.data.Inventory
             slots.get(slot).setItem(item, null);
         }
     }
+
+    public Item getItem(int slot) {
+        return slots.get(slot).getItem();
+    }
 }

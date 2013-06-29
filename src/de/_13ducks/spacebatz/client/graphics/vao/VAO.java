@@ -10,24 +10,15 @@ import org.lwjgl.opengl.GL30;
 /**
  * Hilfsklasse für VertexArrayObjects.
  *
- * Benutzungshinweise:
- * 1. Sich eines erstellen lassen, siehe dazu VAOFactory.
- * 2. Genau so viele Vertices/Lines/Quads reinpushen, wie bei der Erstellung angelegt.
- * 3. Auf Grafikkarte hochladen
- * 4. Nach belieben Zeichnen
+ * Benutzungshinweise: 1. Sich eines erstellen lassen, siehe dazu VAOFactory. 2. Genau so viele Vertices/Lines/Quads reinpushen, wie bei der Erstellung angelegt. 3. Auf Grafikkarte
+ * hochladen 4. Nach belieben Zeichnen
  *
- * --- optional
- * a. Datenpuffer reseten
- * b. Daten neu pushen (geändert)
- * c. Daten neu uploaden
- * d. Daten wieder nach belieben zeichnen
- * e. Nach belieben zu a. gehen
- * --- ende optional
+ * --- optional a. Datenpuffer reseten b. Daten neu pushen (geändert) c. Daten neu uploaden d. Daten wieder nach belieben zeichnen e. Nach belieben zu a. gehen --- ende optional
  *
  * 5. VAO löschen (destroy)
  *
- * destroy() muss immer dann aufgerufen werden, wenn der VAO nie wieder gezeichnet werden soll, und deshalb alle Pointer darauf genullt werden (oder einfach so verschwinden).
- * Die GC kann nicht auf die Grafikkarte zugreifen und deshalb auch nicht von alleine alles Aufräumen, das muss also manuell gemacht werden.
+ * destroy() muss immer dann aufgerufen werden, wenn der VAO nie wieder gezeichnet werden soll, und deshalb alle Pointer darauf genullt werden (oder einfach so verschwinden). Die
+ * GC kann nicht auf die Grafikkarte zugreifen und deshalb auch nicht von alleine alles Aufräumen, das muss also manuell gemacht werden.
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
@@ -38,13 +29,11 @@ public class VAO {
      */
     protected final float[] vertices;
     /**
-     * Array mit Texturkoordinaten (x und y nacheinander).
-     * Falls nicht verwendet null.
+     * Array mit Texturkoordinaten (x und y nacheinander). Falls nicht verwendet null.
      */
     protected final float[] texCoords;
     /**
-     * Array mit Farben.
-     * Falls nicht verwendet null.
+     * Array mit Farben. Falls nicht verwendet null.
      */
     protected final float[] colors;
     /**
@@ -52,13 +41,11 @@ public class VAO {
      */
     private int vertexIndex = 0;
     /**
-     * True, wenn Daten seit letzten Upload geändert wurden.
-     * Bedeutungslos, wenn noch nie geuploaded.
+     * True, wenn Daten seit letzten Upload geändert wurden. Bedeutungslos, wenn noch nie geuploaded.
      */
     protected boolean modified = true;
     /**
-     * True, wenn der Grafikkarte bekannt.
-     * Nur dann sind auch die Ids unten definiert.
+     * True, wenn der Grafikkarte bekannt. Nur dann sind auch die Ids unten definiert.
      */
     private boolean created = false;
     /**
@@ -66,13 +53,11 @@ public class VAO {
      */
     protected boolean uploaded = false;
     /**
-     * ID des VAO.
-     * Nur definiert, wenn created true ist.
+     * ID des VAO. Nur definiert, wenn created true ist.
      */
     private int vaoID;
     /**
-     * ID des primären VBO.
-     * Nur definiert, wenn created true ist.
+     * ID des primären VBO. Nur definiert, wenn created true ist.
      */
     private int vboID;
     /**
@@ -84,8 +69,7 @@ public class VAO {
      */
     private final int drawMode;
     /**
-     * Ungleich 0, falls dieses VAO mit einem Shader arbeitet, den man zwischen Col, Tex und TexCol umschalten muss.
-     * Hält dann die Adresse des Steuerungs-Uniforms.
+     * Ungleich 0, falls dieses VAO mit einem Shader arbeitet, den man zwischen Col, Tex und TexCol umschalten muss. Hält dann die Adresse des Steuerungs-Uniforms.
      */
     private int shaderColorTexModeAdr;
     /**
@@ -114,8 +98,7 @@ public class VAO {
     }
 
     /**
-     * Pusht die gegebenen Koordinaten als neuen Vertex in den Puffer.
-     * Nur beim ersten befüllen und nach einem Reset zu verwenden.
+     * Pusht die gegebenen Koordinaten als neuen Vertex in den Puffer. Nur beim ersten befüllen und nach einem Reset zu verwenden.
      *
      * @param x X-Koordinate
      * @param y Y-Koordinate
@@ -144,8 +127,7 @@ public class VAO {
     }
 
     /**
-     * Pusht die gegebenen Koordinaten als neuen Vertex in den Puffer.
-     * Nur beim ersten befüllen und nach einem Reset zu verwenden.
+     * Pusht die gegebenen Koordinaten als neuen Vertex in den Puffer. Nur beim ersten befüllen und nach einem Reset zu verwenden.
      *
      * @param x X-Koordinate
      * @param y Y-Koordinate
@@ -169,8 +151,7 @@ public class VAO {
     }
 
     /**
-     * Pusht die gegebenen Koordinaten als neuen Vertex in den Puffer.
-     * Nur beim ersten befüllen und nach einem Reset zu verwenden.
+     * Pusht die gegebenen Koordinaten als neuen Vertex in den Puffer. Nur beim ersten befüllen und nach einem Reset zu verwenden.
      *
      * @param x X-Koordinate
      * @param y Y-Koordinate
@@ -350,8 +331,7 @@ public class VAO {
     }
 
     /**
-     * Läd die Daten zur Grafikkarte hoch.
-     * Muss unbedingt vor dem Zeichnen aufgerufen werden.
+     * Läd die Daten zur Grafikkarte hoch. Muss unbedingt vor dem Zeichnen aufgerufen werden.
      */
     public void upload() {
         if (vertexIndex * 2 != vertices.length) {
@@ -391,8 +371,7 @@ public class VAO {
     }
 
     /**
-     * Rendert das VAO.
-     * Dazu muss es geuploaded und nicht modifiziert sein.
+     * Rendert das VAO. Dazu muss es geuploaded und nicht modifiziert sein.
      */
     public void render() {
         if (!uploaded) {
@@ -408,17 +387,15 @@ public class VAO {
     }
 
     /**
-     * Setzt die internen Puffer so zurück, damit sie wieder wie neu mit Daten gefüllt werden können.
-     * Es müssen unbedingt immer alle Vertices/Lines/Quads geupdated werden.
-     * Wenn fertig, mittels upload() neu hochladen.
+     * Setzt die internen Puffer so zurück, damit sie wieder wie neu mit Daten gefüllt werden können. Es müssen unbedingt immer alle Vertices/Lines/Quads geupdated werden. Wenn
+     * fertig, mittels upload() neu hochladen.
      */
     public void resetData() {
         vertexIndex = 0;
     }
 
     /**
-     * Löscht die Daten dieses VAOs von der Grafikkarte.
-     * Nach diesem Aufruf darf die Referenz verworfen werden, damit die GC die Reste frisst.
+     * Löscht die Daten dieses VAOs von der Grafikkarte. Nach diesem Aufruf darf die Referenz verworfen werden, damit die GC die Reste frisst.
      */
     public void destroy() {
         if (created) {

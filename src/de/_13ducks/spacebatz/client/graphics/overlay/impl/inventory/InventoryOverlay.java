@@ -1,7 +1,6 @@
 package de._13ducks.spacebatz.client.graphics.overlay.impl.inventory;
 
 import de._13ducks.spacebatz.client.GameClient;
-import de._13ducks.spacebatz.client.data.ClientInventory;
 import de._13ducks.spacebatz.client.graphics.overlay.TriggeredOverlay;
 import de._13ducks.spacebatz.client.graphics.util.ContainerGUIElement;
 import de._13ducks.spacebatz.client.graphics.util.DraggedImage;
@@ -32,10 +31,6 @@ public class InventoryOverlay extends TriggeredOverlay {
      * Gibt an, ob gerade drag and Drop ausgeführt wird.
      */
     private boolean dragging = false;
-    /**
-     * Das Inventar das die logischen Items verwaltet
-     */
-    private ClientInventory inventory;
     private ContainerGUIElement container;
     private HashMap<Integer, InventoryItemSlot> slots;
 
@@ -43,7 +38,6 @@ public class InventoryOverlay extends TriggeredOverlay {
      * Initialisiert das Overlay.
      */
     public InventoryOverlay() {
-        inventory = new ClientInventory();
         init(new int[]{Keyboard.KEY_I}, true);
         container = new ContainerGUIElement();
         slots = new HashMap<>();
@@ -204,7 +198,7 @@ public class InventoryOverlay extends TriggeredOverlay {
             dragging = false;
             draggedItem.isVisible = false;
             if (dragStartSlot != dragEndSlot) {
-                if (inventory.tryMoveItem(dragStartSlot, dragEndSlot, GameClient.player.properties)) {
+                if (GameClient.player.inventory.tryMoveItem(dragStartSlot, dragEndSlot, GameClient.player.properties)) {
                     // Tiles vertauschen:
                     int tile1 = ((InventoryItemSlot) (slots.get(dragStartSlot))).getTile();
                     int tile2 = ((InventoryItemSlot) (slots.get(dragEndSlot))).getTile();
@@ -224,7 +218,7 @@ public class InventoryOverlay extends TriggeredOverlay {
         if (dragging) {
             dragging = false;
             draggedItem.isVisible = false;
-            if (inventory.tryDeleteItem(dragStartSlot, GameClient.player.properties)) {
+            if (GameClient.player.inventory.tryDeleteItem(dragStartSlot, GameClient.player.properties)) {
                 ((InventoryItemSlot) (slots.get(dragStartSlot))).setTile(-1);
                 CTS_DROP_ITEM.sendDropItem(dragStartSlot);
             }
@@ -259,7 +253,7 @@ public class InventoryOverlay extends TriggeredOverlay {
     }
 
     public void createItem(int slot, Item item) {
-        if (inventory.tryCreateItem(item, GameClient.player.properties) != -1) {
+        if (GameClient.player.inventory.tryCreateItem(item, GameClient.player.properties) != -1) {
             slots.get(slot).setTile(item.getPic());
         }
 
@@ -271,6 +265,6 @@ public class InventoryOverlay extends TriggeredOverlay {
      * @param data
      */
     public void forceMapping(byte[] data) {
-        inventory.forceInventoryMapping(data);
+        GameClient.player.inventory.forceInventoryMapping(data);
     }
 }
