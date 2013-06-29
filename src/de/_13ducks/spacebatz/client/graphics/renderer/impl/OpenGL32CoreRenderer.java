@@ -477,7 +477,9 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             // Hässliches instanceof, sollte weg
             if (c instanceof Enemy) {
                 if (c.getRenderObject().getVao() == null) {
+                    VAOFactory.setBlockShaderModifications(true);
                     c.getRenderObject().setVao(VAOFactory.createDynamicTexturedRectVAO());
+                    VAOFactory.setBlockShaderModifications(false);
                 }
                 VAO vao = c.getRenderObject().getVao();
                 Animation animation = c.getRenderObject().getBaseAnim();
