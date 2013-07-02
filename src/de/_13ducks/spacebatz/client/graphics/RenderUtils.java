@@ -47,7 +47,7 @@ public class RenderUtils {
     }
 
     public static float getSourceYForTile(Texture texture, int tile, int tileSize) {
-        return tileSize * (tile / (texture.getImageHeight() / tileSize)) / texture.getImageHeight();
+        return (float) tileSize * (tile / (texture.getImageHeight() / tileSize)) / (float) texture.getImageHeight();
     }
 
     public static float getSourceWidthForTile(Texture texture, int tile, int tileSize) {
