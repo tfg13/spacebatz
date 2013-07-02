@@ -39,7 +39,7 @@ public class HudOverlay extends Overlay {
 
         width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.08f);
         height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
-        selectedWeaponBackground = VAOFactory.createDynamicRectangleVAO(0, 0, width, height, new float[]{0.5f, 0.5f, 0.5f, 1f});
+        selectedWeaponBackground = VAOFactory.createDynamicRectangleVAO(0, 0, width, height, new float[]{0.9f, 0.3f, 0.1f, 1f});
 
 
         x = 0;
@@ -71,8 +71,20 @@ public class HudOverlay extends Overlay {
 
         healthbarBackground.render();
         weaposlotsBackground.render();
-//        selectedWeaponBackground.setRenderPosition(0, (int) (DefaultSettings.CLIENT_GFX_RES_Y * (0.48f + (GameClient.player.inventory.getActiveWeaponSlot() - Inventory.WEAPONSLOT1) * 12)));
-        selectedWeaponBackground.setRenderPosition(-1, 0);
+
+        switch (GameClient.player.inventory.getActiveWeaponSlot()) {
+            case Inventory.WEAPONSLOT1:
+                selectedWeaponBackground.setRenderPosition(0, (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.72f));
+                break;
+            case Inventory.WEAPONSLOT2:
+                selectedWeaponBackground.setRenderPosition(0, (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.60f));
+                break;
+            case Inventory.WEAPONSLOT3:
+                selectedWeaponBackground.setRenderPosition(0, (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.48f));
+                break;
+            default:
+                selectedWeaponBackground.setRenderPosition(0, (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.72f));
+        }
         selectedWeaponBackground.render();
 
         Item weapon = GameClient.player.inventory.getItem(Inventory.WEAPONSLOT1);

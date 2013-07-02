@@ -114,6 +114,7 @@ public class PlayerCharacter extends Char {
      */
     public void setSelectedattack(int selectedattack) {
         this.selectedattack = selectedattack;
+        inventory.setActiveWeapon(selectedattack);
     }
 
     @Override
