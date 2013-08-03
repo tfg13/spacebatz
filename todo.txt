@@ -1,0 +1,18 @@
+Buddelmodus:
+  - Blöcke vernünftig auswählen
+  - Unterschiedlich schwer zu buddelnde Blöcke
+  - Wenn der Block sehr schwer zu buddeln ist, bekommen ihn billige Werkzeuge gar nicht weg (BlockHP und Difficulty und so)
+  - Materialen festlegen (zumindest die ersten paar und gescheite zähler dafür einbauen)
+  - Animation auf dem gebuddelten Block
+  - Wenn Bohrer "feuert" bohrt er beim aktiv gegen Wände fahren
+  - Interface/Eingabe mit Wechsel zwischen Kampf und Werkzeug bleibt
+
+Crafting:
+  - Crafting-Menü:
+    - Menübasiert, man bekommt mehr Rezepte zu sehen, als man bauen kann. (Man sieht grob die Rezepte der nächsten Techstufe=Metall)
+    - Kategorien für Übersicht
+    - Craften nur in der Basis (für den Anfang überall, solange es keine Basis gibt ;))
+    - Erstmals weder Geld Shops
+
+Ebenen: (nach Grafik)
+  - Engine aufmotzen, dass sie mehrere Ebenen/Level gleichzeitig berechnet
