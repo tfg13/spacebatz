@@ -97,7 +97,7 @@ public class GraphicsEngine {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             PixelFormat pixelFormat = new PixelFormat();
             ContextAttribs contextAttributes = new ContextAttribs(3, 2); // OpenGL 3.2
-            contextAttributes.withProfileCore(true); // Alte Befehle verbieten
+            contextAttributes.withProfileCore(false); // Alte Befehle verbieten
             Display.create(pixelFormat, contextAttributes);
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
             glEnable(GL_BLEND); // Transparenz in Texturen erlauben
@@ -197,7 +197,7 @@ public class GraphicsEngine {
         long ns2 = System.nanoTime();
         timing.push((int) (ns2 - ns));
         if (GameClient.frozenGametick % 60 == 0) {
-//            System.out.println("AFT: " + timing.getNiceAvg());
+            System.out.println("AFT: " + timing.getNiceAvg());
         }
 
         // Fertig, Puffer swappen:
