@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**
- * Der OpenGL 3.2+ Core Shaderloader
+ * Der Shaderloader
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
