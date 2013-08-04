@@ -58,6 +58,13 @@ public class DefaultSettings {
      */
     public static int CLIENT_GFX_SHOW_NICKNAMES = 1;
     /**
+     * Which OpenGL mode to use.
+     * 0 - autodetect
+     * 1 - force legacy mode (requires OpenGL 2.1)
+     * 2 - force advanced mode (requires OpenGL 3.2)
+     */
+    public static int CLIENT_GFX_OPENGL_MODE = 0;
+    /**
      * Sound (zum schnelleren Testen) komplett abschalten.
      * Sounds werden dann gar nicht erst geladen und alle Abspielversuche einfach ignoriert.
      */

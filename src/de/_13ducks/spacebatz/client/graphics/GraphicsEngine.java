@@ -82,6 +82,10 @@ public class GraphicsEngine {
     private ShadowAnimator shadowAnimator = new ShadowAnimator();
     //DEBUG
     public static StatisticRingBuffer timing = new StatisticRingBuffer(60);
+    /**
+     * Allow OpenGL 3+? (non-legacy requires 3.2)
+     */
+    private boolean legacyMode = false;
 
     /**
      * Initialisiert die GrafikEngine.
@@ -249,13 +253,6 @@ public class GraphicsEngine {
 
     private void checkCapabilities() {
         int cursorcap = Cursor.getCapabilities();
-        System.out.print("INFO: GFX: 1-Bit cursor transparency is ");
-        if ((cursorcap & Cursor.CURSOR_ONE_BIT_TRANSPARENCY) != 0) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
         System.out.print("INFO: GFX: 8-Bit cursor transparency is ");
         if ((cursorcap & Cursor.CURSOR_8_BIT_ALPHA) != 0) {
             System.out.println("SUPPORTED");
@@ -270,67 +267,26 @@ public class GraphicsEngine {
             System.out.println("NOT SUPPORTED");
         }
 
-        System.out.print("INFO: GFX: OpenGL 3.0 is ");
-        if (GLContext.getCapabilities().OpenGL30) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 3.1 is ");
-        if (GLContext.getCapabilities().OpenGL31) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 3.2 is ");
-        if (GLContext.getCapabilities().OpenGL32) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 3.3 is ");
-        if (GLContext.getCapabilities().OpenGL33) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 4.0 is ");
-        if (GLContext.getCapabilities().OpenGL40) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 4.1 is ");
-        if (GLContext.getCapabilities().OpenGL41) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 4.2 is ");
-        if (GLContext.getCapabilities().OpenGL42) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: OpenGL 4.3 is ");
-        if (GLContext.getCapabilities().OpenGL43) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
-        }
-
-        System.out.print("INFO: GFX: Vertex Buffer Objects (VBO) are ");
-        if (GLContext.getCapabilities().GL_ARB_vertex_buffer_object) {
-            System.out.println("SUPPORTED");
-        } else {
-            System.out.println("NOT SUPPORTED");
+        switch (DefaultSettings.CLIENT_GFX_OPENGL_MODE) {
+            case 0:
+                if (GLContext.getCapabilities().OpenGL32) {
+                    System.out.println("INFO: GFX: OpenGL 3.2 mode enabled.");
+                    legacyMode = false;
+                } else if (GLContext.getCapabilities().GL_ARB_vertex_buffer_object) {
+                    System.out.println("INFO: GFX: OpenGL 3.2 not available, launching in legacy mode.");
+                    legacyMode = true;
+                } else {
+                    System.out.println("ERROR: GFX: Missing support for OpenGL 2.1 and/or VertexBufferObjects (VBOs). Both are required. sorry.");
+                }
+                break;
+            case 1:
+                System.out.println("INFO: GFX: Legacy mode forced by config.");
+                legacyMode = true;
+                break;
+            case 2:
+                System.out.println("INFO: GFX: Advanced mode forced by config.");
+                legacyMode = false;
+                break;
         }
     }
 

@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
- * Neuer Haupt-Renderer, arbeitet ausschließlich mit OpenGL >=3.2, verwendet das Core-Profil ohne Abwärtskompatibilität
+ * Neuer Haupt-Renderer, verwendet Befehle von OpenGL >=3.2
  *
  * @author Tobias Fleig <tobifleig@googlemail.com>
  */
