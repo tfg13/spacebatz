@@ -6,6 +6,7 @@ import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.HudOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.inventory.InventoryOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.OpenGL32CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.skilltree.SkillTreeOverlay;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
@@ -19,7 +20,6 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
@@ -100,9 +100,7 @@ public class GraphicsEngine {
         try {
             Display.setDisplayMode(new DisplayMode(CLIENT_GFX_RES_X, CLIENT_GFX_RES_Y));
             PixelFormat pixelFormat = new PixelFormat();
-            ContextAttribs contextAttributes = new ContextAttribs(3, 2); // OpenGL 3.2
-            contextAttributes.withProfileCore(false); // Alte Befehle verbieten
-            Display.create(pixelFormat, contextAttributes);
+            Display.create(new PixelFormat(8, 8, 8)); // Die dritte acht erzeugt/aktiviert den Stencil-Buffer mit 8 Bits pro Pixel.
             Display.setVSyncEnabled(CLIENT_GFX_VSYNC);
             glEnable(GL_BLEND); // Transparenz in Texturen erlauben
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Transparenzmodus
@@ -139,7 +137,9 @@ public class GraphicsEngine {
 //                overlays.add(terminal);
 //                TextWriter.initialize();
 
-            coreRenderer = new OpenGL32CoreRenderer();
+            // maybe some day...
+            //coreRenderer = new OpenGL32CoreRenderer();
+            coreRenderer = new LegacyRenderer();
 
             coreRenderer.setupShaders(shader);
 
