@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.HudOverlay;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.TerminalOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.inventory.InventoryOverlay;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
@@ -132,10 +133,10 @@ public class GraphicsEngine {
 //                inventory.init(new int[]{Keyboard.KEY_I}, true);
 //                overlays.add(inventory);
 //                overlays.add(new NetGraph());
-//                TerminalOverlay terminal = new TerminalOverlay();
-//                terminal.init(new int[]{Keyboard.KEY_F1}, true);
-//                overlays.add(terminal);
-//                TextWriter.initialize();
+            TerminalOverlay terminal = new TerminalOverlay();
+            terminal.init(new int[]{Keyboard.KEY_F1}, true);
+            overlays.add(terminal);
+            TextWriter.initialize(shader[SHADER_INDEX_OVERLAYS]);
 
             // maybe some day...
             //coreRenderer = new OpenGL32CoreRenderer();

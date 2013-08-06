@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.shared.DefaultSettings;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -7,31 +8,36 @@ import java.io.InputStream;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.GL20;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.util.ResourceLoader;
 
 /**
  * Ein Hilfsmodul, das Text rendert.
- * 
+ *
  * Darf nur aufgerufen werden, wenn die Projektionsmatrix derzeit auf Pixel eingestellt ist.
  * (Also normalerweise nur aus Overlays)
  */
 public class TextWriter {
 
+    private static int shader;
     /**
      * Die geladenen Schriften.
      */
     @SuppressWarnings("deprecation")
     private static TrueTypeFont fonts[] = new TrueTypeFont[2];
-    
+
     private TextWriter() {
     }
 
     /**
      * Lädt die Schriften, muss aufgerufen werden, bevor der TextWriter zum ersten Mal verwendet wird.
      */
-    public static void initialize() {
+    public static void initialize(int shader) {
+        TextWriter.shader = shader;
         try {
+            GL20.glUseProgram(0);
             GL11.glPushMatrix();
             GL11.glLoadIdentity();
             GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
@@ -48,6 +54,7 @@ public class TextWriter {
             ex.printStackTrace();
         }
         glPopMatrix();
+        GL20.glUseProgram(shader);
     }
 
     /**
@@ -75,7 +82,7 @@ public class TextWriter {
      * @param y PositionY (unten)
      */
     public static void renderTextXCentered(String text, float x, float y) {
-//        renderText(text, x - ((fonts[0].getWidth(text) / 2f) / Display.getWidth() * LegacyRenderer.tilesX), y, false);
+        renderText(text, x - (fonts[0].getWidth(text) / 2f), y, false);
     }
 
     /**
@@ -90,11 +97,13 @@ public class TextWriter {
      * @param mono Monospace-Font und (!) klein?
      */
     public static void renderText(String text, float x, float y, boolean mono) {
-//        GL11.glPushMatrix();
-//        GL11.glLoadIdentity();
-//        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-//        fonts[mono ? 1 : 0].drawString(snapToXRaster(x) / LegacyRenderer.tilesX * Display.getWidth(), (1f - (snapToYRaster(y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, Color.black);
-//        GL11.glPopMatrix();
+        GL20.glUseProgram(0);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
+        fonts[mono ? 1 : 0].drawString(x, DefaultSettings.CLIENT_GFX_RES_Y - y, text, Color.black);
+        GL11.glPopMatrix();
+        GL20.glUseProgram(shader);
     }
 
     /**
@@ -120,8 +129,8 @@ public class TextWriter {
      * Setzt außerdem die aktuelle GL_COLOR.
      *
      * @param text Der zu zeichnende Text
-     * @param x Relative X-Position (0-1)
-     * @param y Relative Y-Position (0-1)
+     * @param x X-Position
+     * @param y Y-Position
      * @param mono Monospace-Font und (!) klein?
      * @param red_color Textfarbe Rotanteil
      * @param blue_color Textfarbe Blauanteil
@@ -129,10 +138,12 @@ public class TextWriter {
      * @param green_color Textfarbe Alpha-anteil
      */
     public static void renderText(String text, float x, float y, boolean mono, float red_color, float blue_color, float green_color, float alpha_color) {
-//        GL11.glPushMatrix();
-//        GL11.glLoadIdentity();
-//        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
-//        fonts[mono ? 1 : 0].drawString(x / LegacyRenderer.tilesX * Display.getWidth(), (1f - ((y + 0.5f) / LegacyRenderer.tilesY)) * Display.getHeight(), text, new Color(red_color, blue_color, green_color, alpha_color));
-//        GL11.glPopMatrix();
+        GL20.glUseProgram(0);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1.0, 1.0);
+        fonts[mono ? 1 : 0].drawString(x, DefaultSettings.CLIENT_GFX_RES_Y - y, text, new Color(red_color, blue_color, green_color, alpha_color));
+        GL11.glPopMatrix();
+        GL20.glUseProgram(shader);
     }
 }
