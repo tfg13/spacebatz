@@ -662,4 +662,14 @@ public class PlayerCharacter extends Char {
     public void setBuildmode(boolean buildmode) {
         this.buildmode = buildmode;
     }
+
+    @Override
+    public void applyMove(Movement m) {
+        super.applyMove(m);
+        if (m.startTick == -1 && predictedX == 0 && predictedY == 0) {
+            // Bei init-Set-Befehlen die Position in die Prediction übernehmen.
+            predictedX = m.startX;
+            predictedY = m.startY;
+        }
+    }
 }
