@@ -91,9 +91,9 @@ public class GameInput extends InputMode {
 
     @Override
     public void mouseMovement() {
-        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * (Display.getWidth() / Display.getHeight() * 20)) - GameClient.getEngine().getGraphics().getPanX();
-        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * 20) - GameClient.getEngine().getGraphics().getPanY();
         GameClient.getEngine().getGraphics().setMouseXY(Mouse.getX(), Mouse.getY());
+        logicMouseX = (1f * Mouse.getX() / Display.getWidth() * (1f * Display.getWidth() / Display.getHeight() * 20f)) - GameClient.getEngine().getGraphics().getPanX();
+        logicMouseY = (1f * Mouse.getY() / Display.getHeight() * 20f) - GameClient.getEngine().getGraphics().getPanY();
     }
 
     private void sendAbilityRequest(byte ability) {

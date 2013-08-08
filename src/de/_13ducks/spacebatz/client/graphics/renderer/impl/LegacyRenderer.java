@@ -10,7 +10,6 @@ import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.LegacyShaderLoader;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
@@ -200,8 +199,8 @@ public class LegacyRenderer extends CoreRenderer {
         for (LogicPlayer p : GameClient.players.values()) {
             PlayerCharacter player = p.getPlayer();
             if (player != null && inSight(player) && !p.isDead()) {
-                renderAnim(player.getRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getDir(), 0);
-                renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getX(), player.getY(), player.getTurretDir(), 0);
+                renderAnim(player.getRenderObject().getBaseAnim(), player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick), player.getDir(), 0);
+                renderAnim(player.getTurretRenderObject().getBaseAnim(), player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick), player.getTurretDir(), 0);
             }
         }
 
@@ -362,11 +361,11 @@ public class LegacyRenderer extends CoreRenderer {
         double playerX = GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
         double playerY = GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
         // Neuen Sichtmittelpunkt bestimmen:
-        Vector vec = new Vector(mouseX - Display.getWidth() / 2, mouseY - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
-        panX = ((float) (-playerX + (Display.getWidth() / Display.getHeight() * 20) / 2.0f + vec.x));
+        Vector vec = new Vector(mouseX - Display.getWidth() / 2f, mouseY - Display.getHeight() / 2f).invert().multiply(20f / Display.getHeight());
+        panX = ((float) (-playerX + (1f * Display.getWidth() / Display.getHeight() * 20f) / 2.0f + vec.x));
         panY = ((float) (-playerY + 20 / 2.0f + vec.y));
         // Turret zeigt auf Maus
-        GameClient.player.setTurretDir(GeoTools.toAngle(GameInput.getLogicMouseX() - GameClient.player.getX(), GameInput.getLogicMouseY() - GameClient.player.getY()));
+        GameClient.player.setTurretDir(GeoTools.toAngle(((1f * mouseX / Display.getWidth() * (1f * Display.getWidth() / Display.getHeight() * 20f)) - GameClient.getEngine().getGraphics().getPanX()) - GameClient.player.getX(), ((1f * mouseY / Display.getHeight() * 20f) - GameClient.getEngine().getGraphics().getPanY()) - GameClient.player.getY()));
     }
 
     @Override

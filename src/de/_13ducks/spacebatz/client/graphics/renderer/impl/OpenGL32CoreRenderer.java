@@ -7,7 +7,6 @@ import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.graphics.Animation;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
-import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
 import de._13ducks.spacebatz.client.graphics.vao.VAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
@@ -408,8 +407,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         double playerX = GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick);
         double playerY = GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick);
         // Neuen Sichtmittelpunkt bestimmen:
-        Vector vec = new Vector(mouseX - Display.getWidth() / 2, mouseY - Display.getHeight() / 2).invert().multiply(20f / Display.getHeight());
-        float panX = ((float) (-playerX + (Display.getWidth() / Display.getHeight() * 20) / 2.0f + vec.x));
+        Vector vec = new Vector(mouseX - Display.getWidth() / 2f, mouseY - Display.getHeight() / 2f).invert().multiply(20f / Display.getHeight());
+        float panX = ((float) (-playerX + (1f * Display.getWidth() / Display.getHeight() * 20f) / 2.0f + vec.x));
         float panY = ((float) (-playerY + 20 / 2.0f + vec.y));
         if (viewMatrix.m30 != panX || viewMatrix.m31 != panY) {
             // View-Matrix updaten:
@@ -422,7 +421,8 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
             GL20.glUniformMatrix4(shaderUniformAdr[INDEX_VERT_PROJECTIONVIEW], false, vmBuffer);
         }
         // Turret zeigt auf Maus
-        GameClient.player.setTurretDir(GeoTools.toAngle(GameInput.getLogicMouseX() - GameClient.player.getX(), GameInput.getLogicMouseY() - GameClient.player.getY()));
+        // Das ist hier so lang, weil zu diesem Zeitpunkt logicMouseXY noch nicht auf die aktuellen pan-Werte geupdated ist. Deshalb muss hier eine eigene Berechung der Mausposition durchgeführt werden.
+        GameClient.player.setTurretDir(GeoTools.toAngle(((1f * mouseX / Display.getWidth() * (1f * Display.getWidth() / Display.getHeight() * 20f)) - GameClient.getEngine().getGraphics().getPanX()) - GameClient.player.getX(), ((1f * mouseY / Display.getHeight() * 20f) - GameClient.getEngine().getGraphics().getPanY()) - GameClient.player.getY()));
     }
 
     public void chunkReceived(int chunkX, int chunkY) {
