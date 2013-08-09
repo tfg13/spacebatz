@@ -22,6 +22,7 @@ public class HudOverlay extends Overlay {
     private DynamicTileVAO weapon2;
     private DynamicTileVAO weapon3;
     private DynamicRectangleVAO selectedWeaponBackground;
+    private DynamicRectangleVAO healthbarRect;
 
     public HudOverlay() {
         int x, y, width, height;
@@ -41,6 +42,11 @@ public class HudOverlay extends Overlay {
         height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
         selectedWeaponBackground = VAOFactory.createDynamicRectangleVAO(0, 0, width, height, new float[]{0.9f, 0.3f, 0.1f, 1f});
 
+        x = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.0265f);
+        y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.049f);
+        width = 0;
+        height = 0;
+        healthbarRect = VAOFactory.createDynamicRectangleVAO(x, y, width, height, new float[]{0.7f, 0.0f, 0.0f, 1f});
 
         x = 0;
         y = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.72f);
@@ -102,7 +108,17 @@ public class HudOverlay extends Overlay {
             weapon3.setSourceTile(weapon.getPic());
             weapon3.render();
         }
-//
+
+        // Lebensenergie-Balken im HUD zeichnen
+        int maxhp = Math.max(1, GameClient.player.getHealthpointsmax());
+        int hp = Math.min(GameClient.player.getHealthpoints(), maxhp);
+        hp = Math.max(hp, 0);
+        if (GameClient.logicPlayer.isDead()) {
+            hp = 0;
+        }
+        healthbarRect.setRenderSize((int) (0.1645f * ((float) hp / maxhp) * DefaultSettings.CLIENT_GFX_RES_X), (int) (0.018f * DefaultSettings.CLIENT_GFX_RES_Y));
+        healthbarRect.render();
+
 //        // HUD-Hintergrund:
 //        glColor3f(1.0f, 1.0f, 1.0f);
 //        glEnable(GL_TEXTURE_2D);
