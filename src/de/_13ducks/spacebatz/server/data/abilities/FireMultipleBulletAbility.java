@@ -68,10 +68,13 @@ public class FireMultipleBulletAbility extends WeaponAbility {
             int damage = (int) ((getWeaponStats().getDamage() + damagespread) * (1 + user.getProperties().getDamageMultiplicatorBonus()) * (1 + getWeaponStats().getDamageMultiplicatorBonus()));
             double newangle = angle + (i - (amount + 1) / 2.0) * spread;
 
-            double spawnX = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(angle);
-            double spawnY = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(angle);
+            double spawnX = user.getX() + getWeaponStats().getAttackOffset() * Math.cos(newangle);
+            double spawnY = user.getY() + getWeaponStats().getAttackOffset() * Math.sin(newangle);
 
-            Vector newTarget = new Vector(user.getX(), user.getY()).add(new Vector(newangle).multiply(GeoTools.getDistance(x, y, user.getX(), user.getY())));
+            //Vector newTarget = new Vector(user.getX(), user.getY()).add(new Vector(newangle).multiply(GeoTools.getDistance(x, y, user.getX(), user.getY())));
+            double dist = new Vector(x - spawnX, y - spawnY).length();
+
+            Vector newTarget = new Vector(spawnX, spawnY).add(new Vector(newangle).multiply(dist));
 
             Bullet bullet = new Bullet(lifetime, spawnX, spawnY, newTarget.x, newTarget.y, bulletspeed, bulletpic, Server.game.newNetID(), user);
 
