@@ -22,7 +22,7 @@ public class InventoryItemSlot extends Button {
         this.inventory = inventory;
         this.slotID = slotID;
         image = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "item.png", 0, 32);
-        background = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 273, 206, 180, 101);
+        background = VAOFactory.createDynamicTexturedRectangleVAO(x, y, width, height, "hud1.png", 273, 206, 145, 101);
     }
 
     @Override
