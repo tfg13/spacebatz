@@ -74,7 +74,15 @@ public class ItemCarrier extends Char {
     public void setSelectedweapon(int selectedweapon) {
         inventory.setActiveWeapon(selectedweapon);
         this.activeWeaponSlot = selectedweapon;
-        activeToolSlot = selectedweapon;
+
+    }
+
+    /**
+     * Setzt das aktive Werkzeug.
+     *
+     */
+    public void setSelectedTool(int tool) {
+        activeToolSlot = tool;
     }
 
     /**

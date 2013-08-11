@@ -170,9 +170,13 @@ public class Player extends ItemCarrier {
      *
      * @param selectedslot aktiver Waffenslot (0 bis 2)
      */
-    public void clientSelectWeapon(byte selectedslot) {
-        setSelectedweapon(selectedslot);
-        STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
+    public void clientSetSelectedSlot(byte selectedslot) {
+        if (isBuildmode()) {
+            setSelectedTool(selectedslot);
+        } else {
+            setSelectedweapon(selectedslot);
+            STC_SWITCH_WEAPON.sendWeaponswitch(getClient(), selectedslot);
+        }
 
     }
 

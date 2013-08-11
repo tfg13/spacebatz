@@ -20,7 +20,7 @@ public class CTS_REQUEST_SWITCH_WEAPON extends FixedSizeCTSCommand {
     @Override
     public void execute(Client client, byte[] data) {
         byte selslot2 = data[0];
-        client.getPlayer().clientSelectWeapon(selslot2);
+        client.getPlayer().clientSetSelectedSlot(selslot2);
     }
 
     /**
