@@ -16,6 +16,7 @@ import de._13ducks.spacebatz.client.graphics.RenderObject;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.Movement;
 import de._13ducks.spacebatz.shared.PropertyList;
 import de._13ducks.spacebatz.util.geo.Vector;
 
