@@ -43,19 +43,19 @@ public class RenderUtils {
     }
 
     public static float getSourceXForTile(Texture texture, int tile, int tileSize) {
-        return (float) tileSize * ((float) tile % ((float) texture.getImageWidth() / (float) tileSize)) / (float) texture.getImageWidth();
+        return (float) tileSize * ((float) tile % ((float) texture.getImageWidth() / (float) tileSize)) / (float) texture.getImageWidth() + (float) ((float) 1 / (float) texture.getImageWidth());
     }
 
     public static float getSourceYForTile(Texture texture, int tile, int tileSize) {
-        return (float) tileSize * (tile / (texture.getImageHeight() / tileSize)) / (float) texture.getImageHeight();
+        return (float) tileSize * (tile / (texture.getImageHeight() / tileSize)) / (float) texture.getImageHeight() + (float) ((float) 1 / (float) texture.getImageHeight());
     }
 
     public static float getSourceWidthForTile(Texture texture, int tile, int tileSize) {
-        return (float) tileSize / (float) texture.getImageWidth();
+        return (float) (tileSize) / (float) texture.getImageWidth() - (float) ((float) 2 / (float) texture.getImageWidth());
     }
 
     public static float getSourceHeightForTile(Texture texture, int tile, int tileSize) {
-        return (float) tileSize / (float) texture.getImageHeight();
+        return (float) (tileSize) / (float) texture.getImageHeight() - (float) ((float) 2 / (float) texture.getImageHeight());
     }
 
     private RenderUtils() {
