@@ -16,12 +16,23 @@ import java.util.HashMap;
 public class ClientInventory extends de._13ducks.spacebatz.server.data.Inventory {
 
     public int tryCreateItem(Item item, PropertyList props) {
-        for (int i = CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT - 1; i >= 0; i--) {
+
+        // erst Ausrüstungsslots durchsuchen:
+        for (int i = CompileTimeParameters.INVENTORY_SIZE; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT - 1; i++) {
             if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
                 slots.get(i).setItem(item, props);
                 return i;
             }
         }
+        // dann Slots im Rucksack überprüfen:
+        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE - 1; i++) {
+            if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
+                slots.get(i).setItem(item, props);
+                return i;
+            }
+        }
+
+
         // Item in temporären slot stecken:
         for (int i = CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT; i < Integer.MAX_VALUE; i++) {
             if (!slots.containsKey(i)) {

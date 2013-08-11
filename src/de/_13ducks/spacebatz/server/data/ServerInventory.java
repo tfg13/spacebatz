@@ -20,7 +20,15 @@ public class ServerInventory extends Inventory {
      * @return die id des slots in den das Item gelegt wurde oder -1 wenn kein platz war.
      */
     public int tryCreateItem(Item item, Char owner) {
-        for (int i = CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT - 1; i >= 0; i--) {
+        // erst Ausrüstungsslots durchsuchen:
+        for (int i = CompileTimeParameters.INVENTORY_SIZE; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT - 1; i++) {
+            if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
+                slots.get(i).setItem(item, owner.getProperties());
+                return i;
+            }
+        }
+        // dann Slots im Rucksack überprüfen:
+        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE - 1; i++) {
             if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
                 slots.get(i).setItem(item, owner.getProperties());
                 return i;
