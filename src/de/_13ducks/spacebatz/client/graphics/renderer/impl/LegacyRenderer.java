@@ -35,7 +35,7 @@ public class LegacyRenderer extends CoreRenderer {
     /*
      * Settings
      */
-    private int shadowLevel = 0;
+    private int shadowLevel = 3;
     private boolean smoothGround = true;
     private boolean fancyTop = true;
     /**
