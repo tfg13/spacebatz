@@ -110,7 +110,7 @@ public class ItemCarrier extends Char {
     public void tick(int gametick) {
         super.tick(gametick);
         for (int i = Inventory.WEAPONSLOT1; i <= Inventory.WEAPONSLOT3; i++) {
-            Item weapon = inventory.getItem(Inventory.WEAPONSLOT1);
+            Item weapon = inventory.getItem(i);
             if (weapon != null) {
                 // Waffe, die gerade schiesst, soll nicht abkühlen
                 if (i != activeWeaponSlot || Server.game.getTick() >= attackCooldownTick - 1) {
