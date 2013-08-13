@@ -3,15 +3,20 @@ package de._13ducks.spacebatz.client.graphics.renderer.impl;
 import de._13ducks.spacebatz.client.Bullet;
 import de._13ducks.spacebatz.client.Char;
 import de._13ducks.spacebatz.client.Enemy;
+import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.DamageNumber;
 import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.LegacyShaderLoader;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
+import de._13ducks.spacebatz.client.graphics.TextWriter;
+import de._13ducks.spacebatz.client.graphics.input.impl.GameInput;
 import de._13ducks.spacebatz.client.graphics.renderer.CoreRenderer;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.geo.GeoTools;
@@ -34,6 +39,7 @@ public class LegacyRenderer extends CoreRenderer {
     private float tilesX = 1f * DefaultSettings.CLIENT_GFX_RES_X / DefaultSettings.CLIENT_GFX_RES_Y * 20f;
     private float tilesY = 20f;
     private int[] shader;
+    private int showNickNames = 1;
     /*
      * Settings
      */
@@ -206,15 +212,15 @@ public class LegacyRenderer extends CoreRenderer {
             }
         }
 
-//        // Namen einblenden?
-//        for (LogicPlayer p : GameClient.players.values()) {
-//            PlayerCharacter player = p.getPlayer();
-//            if (player != null && inSight(player) && !p.isDead()) {
-//                if ((showNickNames == 1 && mouseOverChar(player, camera)) || showNickNames == 2) {
-//                    textWriter.renderTextXCentered(p.getNickName(), (float) player.getX() + panX, (float) player.getY() + panY - 1.5f);
-//                }
-//            }
-//        }
+        // Namen einblenden?
+        for (LogicPlayer p : GameClient.players.values()) {
+            PlayerCharacter player = p.getPlayer();
+            if (player != null && inSight(player) && !p.isDead()) {
+                if ((showNickNames == 1 && mouseOverChar(player)) || showNickNames == 2) {
+                    TextWriter.renderTextXCentered(p.getNickName(), toPixelCoordsX((float) player.getX() + panX), toPixelCoordsY((float) player.getY() + panY - 1.5f));
+                }
+            }
+        }
         GL11.glColor4f(1f, 1f, 1f, 1f);
 
         // Bullets zeichnen
@@ -226,28 +232,28 @@ public class LegacyRenderer extends CoreRenderer {
         }
 
         // Schadenszahlen zeichnen
-//        Iterator<DamageNumber> iter = damageNumbers.iterator();
-//        while (iter.hasNext()) {
-//            DamageNumber d = iter.next();
-//            if (Engine.getTime() > d.getSpawntime() + DAMAGENUMBER_LIFETIME) {
-//                // alt - > löschen
-//                iter.remove();
-//            } else {
-//                //rendern:
-//                float height = (Engine.getTime() - d.getSpawntime()) / 250.0f;
-//                float visibility = 1 - ((float) (Engine.getTime() - d.getSpawntime())) / DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
-//                visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
-//                textWriter.renderText(String.valueOf(d.getDamage()), (float) d.getX() + renderer.getCamera().getPanX(), (float) d.getY() + renderer.getCamera().getPanY() + height, 1f, .1f, .2f, visibility);
-//            }
-//        }
-//        glColor4f(1f, 1f, 1f, 1f);
+        Iterator<DamageNumber> iter = GameClient.getEngine().getGraphics().damageNumberIterator();
+        while (iter.hasNext()) {
+            DamageNumber d = iter.next();
+            if (Engine.getTime() > d.getSpawntime() + CompileTimeParameters.CLIENT_GFX_DAMAGENUMBER_LIFETIME) {
+                // alt - > löschen
+                iter.remove();
+            } else {
+                //rendern:
+                float height = (Engine.getTime() - d.getSpawntime()) / 250.0f;
+                float visibility = 1 - ((float) (Engine.getTime() - d.getSpawntime())) / CompileTimeParameters.CLIENT_GFX_DAMAGENUMBER_LIFETIME; // Anteil der vergangenen Zeit an der Gesamtlebensdauer
+                visibility = Math.min(visibility * 2, 1); // bis 0.5 * lifetime: visibility 1, dann linear auf 0
+                TextWriter.renderText(String.valueOf(d.getDamage()), toPixelCoordsX((float) d.getX() + panX), toPixelCoordsY((float) d.getY() + panY + height), 1f, .1f, .2f, visibility);
+            }
+        }
+        GL11.glColor4f(1f, 1f, 1f, 1f);
 
         RenderUtils.getTextureByName("fx.png").bind();
-        Iterator<Fx> iter = GameClient.getEngine().getGraphics().fxIterator();
-        while (iter.hasNext()) {
-            Fx f = iter.next();
+        Iterator<Fx> itera = GameClient.getEngine().getGraphics().fxIterator();
+        while (itera.hasNext()) {
+            Fx f = itera.next();
             if (GameClient.frozenGametick > f.getStarttick() + f.getLifetime()) {
-                iter.remove();
+                itera.remove();
             } else {
                 if (f.getOwner() != null) {
                     renderAnim(f.getAnim(), f.getOwner().getX(), f.getOwner().getY(), f.getAnim().getDirection(), f.getStarttick());
@@ -427,6 +433,16 @@ public class LegacyRenderer extends CoreRenderer {
     }
 
     /**
+     * Findet heraus, ob der Mauszeiger derzeit über dem gegebenen Char schwebt.
+     *
+     * @param c der zu untersuchende Char
+     * @return true, wenn drüber, sonst false
+     */
+    private boolean mouseOverChar(Char c) {
+        return (GameInput.getLogicMouseX() >= c.getX() - c.getSize() && GameInput.getLogicMouseX() <= c.getX() + c.getSize() && GameInput.getLogicMouseY() >= c.getY() - c.getSize() && GameInput.getLogicMouseY() <= c.getY() + c.getSize());
+    }
+
+    /**
      * Liest das Pattern aus.
      */
     private int patternAt(int[][] tex, int x, int y) {
@@ -584,5 +600,13 @@ public class LegacyRenderer extends CoreRenderer {
         GL11.glVertex3f((float) x + panX - 1, (float) y + panY - 1, 0);
         GL11.glEnd();
         GL11.glPopMatrix();
+    }
+
+    private float toPixelCoordsX(float input) {
+        return input / tilesX * DefaultSettings.CLIENT_GFX_RES_X;
+    }
+
+    private float toPixelCoordsY(float input) {
+        return input / tilesY * DefaultSettings.CLIENT_GFX_RES_Y;
     }
 }

@@ -28,7 +28,6 @@ public final class CompileTimeParameters {
      */
     private CompileTimeParameters() {
     }
-    
     /**
      * Die Server-Tickrate in default-Delay zwischen Ticks. 15 entspricht also einer Tickrate von 66,66666666... Wert darf nicht negativ sein, also nicht über 127 steigen. Die minimal mögliche
      * Server-Tickrate ist also etwa 8 Ticks/s
@@ -88,4 +87,8 @@ public final class CompileTimeParameters {
      * Die Maximal zu erwartende Anzahl Maustasten, die verwendet werden.
      */
     public static final int CLIENT_MAX_MOUSE_BUTTONS = 3;
+    /**
+     * Angabe wie lange Schadenszahlen sichtbar sind
+     */
+    public static final int CLIENT_GFX_DAMAGENUMBER_LIFETIME = 1000;
 }

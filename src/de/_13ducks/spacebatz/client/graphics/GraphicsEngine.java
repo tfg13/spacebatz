@@ -1,5 +1,6 @@
 package de._13ducks.spacebatz.client.graphics;
 
+import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
@@ -93,6 +94,10 @@ public class GraphicsEngine {
      * Liste mit aktuell abgespielten Effekten.
      */
     private LinkedList<Fx> fx = new LinkedList<>();
+    /**
+     * Liste mit aktuell abgespielten Schadenszahlen.
+     */
+    private LinkedList<DamageNumber> damageNumbers = new LinkedList<>();
 
     /**
      * Initialisiert die GrafikEngine.
@@ -233,7 +238,18 @@ public class GraphicsEngine {
      * @param y
      */
     public void createDamageNumber(int damage, double x, double y) {
-        System.out.println("AddMe: Add Particle System to re-enable Damagenumbers");
+        DamageNumber d = new DamageNumber(damage, x, y, Engine.getTime());
+        damageNumbers.add(d);
+    }
+
+    /**
+     * Liefert einen Iterator über alle Schadenszahlen.
+     * Nicht wirklich schön, man kann damit von außen die Datenstruktur verändern.
+     *
+     * @return Iterator über alle Schadenszahlen
+     */
+    public Iterator<DamageNumber> damageNumberIterator() {
+        return damageNumbers.iterator();
     }
 
     /**
