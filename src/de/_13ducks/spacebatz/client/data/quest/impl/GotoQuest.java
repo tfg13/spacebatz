@@ -19,6 +19,7 @@ public class GotoQuest extends ClientQuest {
 
     /**
      * Erstellt einen neuen GotoQuest.
+     *
      * @param questID die Spielweit eindeutige ID
      * @param target das Ziel, dort muss der Spieler hin
      */
@@ -40,7 +41,7 @@ public class GotoQuest extends ClientQuest {
         double dir = Math.atan2(GameClient.player.getX() - target[0], target[1] - GameClient.player.getY());
         glRotated(dir / Math.PI * 180, 0, 0, 1);
         glTranslated(-1, -1, 0);
-        RenderUtils.getTextureByName("misc.png").bind();
+        RenderUtils.bindTexture("misc.png");
         glBegin(GL_QUADS); // QUAD-Zeichenmodus aktivieren
         glTexCoord2f(0 * 0.0625f, 0 * 0.0625f); // Obere linke Ecke auf der Tilemap (Werte von 0 bis 1)
         glVertex3f(0, 0 + 2, 0); // Obere linke Ecke auf dem Bildschirm (Werte wie eingestellt (Anzahl ganzer Tiles))

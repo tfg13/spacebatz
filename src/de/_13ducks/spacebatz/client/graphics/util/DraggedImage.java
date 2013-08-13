@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.client.graphics.util;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.vao.DynamicTileVAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
-import org.newdawn.slick.opengl.Texture;
 
 /**
  *
@@ -12,13 +11,13 @@ import org.newdawn.slick.opengl.Texture;
 public class DraggedImage extends VisibleGUIElement {
 
     private DynamicTileVAO vao;
-    Texture texture;
+    String textureName;
     int tile;
     int mouseX, mouseY;
 
     public DraggedImage(int width, int height, String textureName, int tile, int tileWidth) {
         vao = VAOFactory.IOnlyWantToDrawATile(0, 0, 0, 0, textureName, tile, tileWidth);
-        texture = RenderUtils.getTextureByName("skilltree.png");
+        this.textureName = textureName;
         this.tile = tile;
         vao.setRenderSize(width, height);
         isVisible = false;
@@ -33,7 +32,7 @@ public class DraggedImage extends VisibleGUIElement {
 
     @Override
     public void renderElement() {
-        RenderUtils.setTilemap(texture);
+        RenderUtils.bindTexture(textureName);
         vao.setRenderPosition(mouseX, mouseY);
         vao.render();
     }

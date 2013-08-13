@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.client.graphics.vao;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.newdawn.slick.opengl.Texture;
 
 /**
  * Zeichnet eine Tile von einer Textur. Die Textur- und Renderkoordinaten können verändert werden.
@@ -14,7 +13,7 @@ public class DynamicTexturedRectangleVAO extends VAO {
 
     private int x, y, width, height;
     private float sourceX, sourceY, sourceWidth, sourceHeight;
-    private Texture texture;
+    private String textureName;
 
     protected DynamicTexturedRectangleVAO(int x, int y, int width, int height, String textureName, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
         super(6, true, false, GL15.GL_DYNAMIC_DRAW, GL11.GL_TRIANGLES, VAOFactory.blockShaderModifications ? -1 : VAOFactory.setShaderColTexModeAdr);
@@ -22,11 +21,11 @@ public class DynamicTexturedRectangleVAO extends VAO {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.texture = RenderUtils.getTextureByName(textureName);
-        this.sourceX = (float) sourceX / (float) texture.getImageWidth();
-        this.sourceY = (float) sourceY / (float) texture.getImageHeight();
-        this.sourceWidth = (float) sourceWidth / (float) texture.getImageWidth();
-        this.sourceHeight = (float) sourceHeight / (float) texture.getImageHeight();
+        this.textureName = textureName;
+        this.sourceX = (float) sourceX / RenderUtils.getTextureWidth(textureName);
+        this.sourceY = (float) sourceY / RenderUtils.getTextureHeight(textureName);
+        this.sourceWidth = (float) sourceWidth / RenderUtils.getTextureWidth(textureName);
+        this.sourceHeight = (float) sourceHeight / RenderUtils.getTextureHeight(textureName);
         pushRectT(x, y, width, height, this.sourceX, this.sourceY, this.sourceWidth, this.sourceHeight);
         upload();
     }
@@ -49,7 +48,7 @@ public class DynamicTexturedRectangleVAO extends VAO {
 
     @Override
     public void render() {
-        RenderUtils.setTilemap(texture);
+        RenderUtils.bindTexture(textureName);
         super.render();
     }
 }

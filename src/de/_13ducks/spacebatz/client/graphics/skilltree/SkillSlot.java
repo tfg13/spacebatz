@@ -1,10 +1,8 @@
 package de._13ducks.spacebatz.client.graphics.skilltree;
 
-import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import de._13ducks.spacebatz.client.graphics.util.Button;
 import de._13ducks.spacebatz.client.graphics.vao.DynamicTileVAO;
 import de._13ducks.spacebatz.client.graphics.vao.VAOFactory;
-import org.newdawn.slick.opengl.Texture;
 
 /**
  * Zeigt den Skill an der auf eine bestimmte Taste gelegt wurde. Kann Skills per Drag and Drop aufnehmen, um sie auf diese Taste zu legen.
@@ -17,9 +15,7 @@ public class SkillSlot extends Button {
      * Die Taste die den Skill anspricht.
      */
     private byte targetKey;
-    private int tile;
     private SkillTreeOverlay skilltree;
-    private Texture texture;
     DynamicTileVAO image;
 
     /**
@@ -30,10 +26,8 @@ public class SkillSlot extends Button {
      */
     public SkillSlot(int tile, SkillTreeOverlay skilltree, byte key, int x, int y, int width, int height) {
         super(x, y, width, height);
-        this.tile = tile;
         targetKey = key;
         this.skilltree = skilltree;
-        texture = RenderUtils.getTextureByName("skilltree.png");
         image = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "skilltree.png", tile, 32);
     }
 
@@ -41,7 +35,6 @@ public class SkillSlot extends Button {
      * Setzt die Tile die gerendert wird.
      */
     public void setTile(int tile) {
-        this.tile = tile;
         image.setSourceTile(tile);
     }
 

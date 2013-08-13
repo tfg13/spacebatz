@@ -3,7 +3,6 @@ package de._13ducks.spacebatz.client.graphics.vao;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.newdawn.slick.opengl.Texture;
 
 /**
  * Baut VAOs.
@@ -127,11 +126,10 @@ public class VAOFactory {
      */
     public static VAO IOnlyWantToDrawAPartOfATexture(int targetX, int targetY, int targetWidth, int targetHeight, String textureName, int textureX, int textureY, int textureWidth, int textureHeight) {
         VAO vao = createDynamicTexturedRectVAO();
-        Texture texture = RenderUtils.getTextureByName(textureName);
-        float sourceX = (float) textureX / texture.getImageWidth();
-        float sourceY = (float) textureY / texture.getImageHeight();
-        float sourceWidth = (float) textureWidth / texture.getImageWidth();
-        float sourceHeight = (float) textureHeight / texture.getImageHeight();
+        float sourceX = (float) textureX / RenderUtils.getTextureWidth(textureName);
+        float sourceY = (float) textureY / RenderUtils.getTextureHeight(textureName);
+        float sourceWidth = (float) textureWidth / RenderUtils.getTextureWidth(textureName);
+        float sourceHeight = (float) textureHeight / RenderUtils.getTextureHeight(textureName);
         vao.pushRectT(targetX, targetY, targetWidth, targetHeight, sourceX, sourceY, sourceWidth, sourceHeight);
         vao.upload();
         return vao;

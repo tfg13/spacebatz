@@ -110,7 +110,7 @@ public class LegacyRenderer extends CoreRenderer {
         int[][] ground = GameClient.currentLevel.ground;
         byte[][] ground_random = GameClient.currentLevel.ground_randomize;
         // Boden zuerst
-        RenderUtils.getTextureByName("ground.png").bind(); // groundTiles-Textur wird jetzt verwendet
+        RenderUtils.bindTexture("ground.png"); // groundTiles-Textur wird jetzt verwendet
         int dx1adr = GL20.glGetUniformLocation(shader[1], "tex1deltaX");
         int dy1adr = GL20.glGetUniformLocation(shader[1], "tex1deltaY");
         int dx2adr = GL20.glGetUniformLocation(shader[1], "tex2deltaX");
@@ -148,7 +148,7 @@ public class LegacyRenderer extends CoreRenderer {
         // Top rendern
         int[][] top = GameClient.currentLevel.top;
         byte[][] top_random = GameClient.currentLevel.top_randomize;
-        RenderUtils.getTextureByName("top.png").bind(); // groundTiles-Textur wird jetzt verwendet
+        RenderUtils.bindTexture("top.png"); // groundTiles-Textur wird jetzt verwendet
         for (int x = -(int) (1 + panX); x < -(1 + panX) + tilesX + 2; x++) {
             for (int y = -(int) (1 + panY); y < -(1 + panY) + tilesY + 2; y++) {
                 int shadow = shadowAt(GameClient.currentLevel.shadow, x, y);
@@ -187,7 +187,7 @@ public class LegacyRenderer extends CoreRenderer {
 
 
         // Enemies zeichnen:
-        RenderUtils.getTextureByName("enemy00.png").bind();
+        RenderUtils.bindTexture("enemy00.png");
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Enemy) {
                 if (inSight(c) && !c.isInvisible()) {
@@ -203,7 +203,7 @@ public class LegacyRenderer extends CoreRenderer {
         }
 
         // Players zeichnen:
-        RenderUtils.getTextureByName("player.png").bind();
+        RenderUtils.bindTexture("player.png");
         for (LogicPlayer p : GameClient.players.values()) {
             PlayerCharacter player = p.getPlayer();
             if (player != null && inSight(player) && !p.isDead()) {
@@ -224,7 +224,7 @@ public class LegacyRenderer extends CoreRenderer {
         GL11.glColor4f(1f, 1f, 1f, 1f);
 
         // Bullets zeichnen
-        RenderUtils.getTextureByName("bullet.png").bind();
+        RenderUtils.bindTexture("bullet.png");
         for (Char c : GameClient.netIDMap.values()) {
             if (c instanceof Bullet && inSight(c)) {
                 renderAnim(c.getRenderObject().getBaseAnim(), c.getX(), c.getY(), c.getDir(), 0);
@@ -248,7 +248,7 @@ public class LegacyRenderer extends CoreRenderer {
         }
         GL11.glColor4f(1f, 1f, 1f, 1f);
 
-        RenderUtils.getTextureByName("fx.png").bind();
+        RenderUtils.bindTexture("fx.png");
         Iterator<Fx> itera = GameClient.getEngine().getGraphics().fxIterator();
         while (itera.hasNext()) {
             Fx f = itera.next();

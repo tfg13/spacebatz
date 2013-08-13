@@ -111,7 +111,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         int playerY = (int) (GameClient.player.getY()) / 8;
 
         // Ground
-        RenderUtils.getTextureByName("ground.png").bind();
+        RenderUtils.bindTexture("ground.png");
         for (int x = playerX - 4; x <= playerX + 4; x++) {
             if (x < 0 || x >= groundChunkVAOs.length) {
                 continue;
@@ -128,7 +128,7 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         }
 
         // Top
-        RenderUtils.getTextureByName("top.png").bind();
+        RenderUtils.bindTexture("top.png");
         for (int x = playerX - 4; x <= playerX + 4; x++) {
             if (x < 0 || x >= topChunkVAOs.length) {
                 continue;
@@ -149,14 +149,14 @@ public class OpenGL32CoreRenderer extends CoreRenderer {
         }
         // Player
         updateVBOs();
-        RenderUtils.getTextureByName("player.png").bind();
+        RenderUtils.bindTexture("player.png");
         // Drehen:
         pushRotMatrix((float) GameClient.player.getDir(), (float) GameClient.player.getSubtickedX(GraphicsEngine.SubTick.frozenSubTick), (float) GameClient.player.getSubtickedY(GraphicsEngine.SubTick.frozenSubTick));
         testPlayer.render();
         restoreRot();
 
         // Enemys
-        RenderUtils.getTextureByName("enemy00.png").bind();
+        RenderUtils.bindTexture("enemy00.png");
         updateEnemyVAOs();
         renderEnemyVAOs();
     }
