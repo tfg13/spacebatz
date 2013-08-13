@@ -7,6 +7,7 @@ import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.PlayerCharacter;
 import de._13ducks.spacebatz.client.data.LogicPlayer;
 import de._13ducks.spacebatz.client.graphics.Animation;
+import de._13ducks.spacebatz.client.graphics.Fx;
 import de._13ducks.spacebatz.client.graphics.GraphicsEngine;
 import de._13ducks.spacebatz.client.graphics.LegacyShaderLoader;
 import de._13ducks.spacebatz.client.graphics.RenderUtils;
@@ -15,6 +16,7 @@ import de._13ducks.spacebatz.shared.DefaultSettings;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.util.geo.GeoTools;
 import de._13ducks.spacebatz.util.geo.Vector;
+import java.util.Iterator;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -239,6 +241,21 @@ public class LegacyRenderer extends CoreRenderer {
 //            }
 //        }
 //        glColor4f(1f, 1f, 1f, 1f);
+
+        RenderUtils.getTextureByName("fx.png").bind();
+        Iterator<Fx> iter = GameClient.getEngine().getGraphics().fxIterator();
+        while (iter.hasNext()) {
+            Fx f = iter.next();
+            if (GameClient.frozenGametick > f.getStarttick() + f.getLifetime()) {
+                iter.remove();
+            } else {
+                if (f.getOwner() != null) {
+                    renderAnim(f.getAnim(), f.getOwner().getX(), f.getOwner().getY(), f.getAnim().getDirection(), f.getStarttick());
+                } else {
+                    renderAnim(f.getAnim(), f.getX(), f.getY(), f.getAnim().getDirection(), f.getStarttick());
+                }
+            }
+        }
 
         // Shadow zeichnen:
         if (shadowLevel > 0) {

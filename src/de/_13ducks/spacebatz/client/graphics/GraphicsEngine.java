@@ -17,6 +17,8 @@ import de._13ducks.spacebatz.shared.network.StatisticRingBuffer;
 import java.lang.reflect.Field;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
@@ -87,6 +89,10 @@ public class GraphicsEngine {
      * Allow OpenGL 3+? (non-legacy requires 3.2)
      */
     private boolean legacyMode = false;
+    /**
+     * Liste mit aktuell abgespielten Effekten.
+     */
+    private LinkedList<Fx> fx = new LinkedList<>();
 
     /**
      * Initialisiert die GrafikEngine.
@@ -236,7 +242,17 @@ public class GraphicsEngine {
      * @param fx
      */
     public void addFx(Fx fx) {
-        System.out.println("AddMe: Re-implement addFx");
+        this.fx.add(fx);
+    }
+
+    /**
+     * Liefert einen Iterator über alle Effekte.
+     * Nicht wirklich schön, man kann damit von außen die Datenstruktur verändern.
+     *
+     * @return Iterator über alle Effekte
+     */
+    public Iterator<Fx> fxIterator() {
+        return fx.iterator();
     }
 
     public SkillTreeOverlay getSkillTree() {
