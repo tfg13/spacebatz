@@ -246,6 +246,7 @@ public class LegacyRenderer extends CoreRenderer {
                 TextWriter.renderText(String.valueOf(d.getDamage()), toPixelCoordsX((float) d.getX() + panX), toPixelCoordsY((float) d.getY() + panY + height), 1f, .1f, .2f, visibility);
             }
         }
+        reEnableShader();
         GL11.glColor4f(1f, 1f, 1f, 1f);
 
         RenderUtils.bindTexture("fx.png");
