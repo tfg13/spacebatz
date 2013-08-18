@@ -130,6 +130,7 @@ public class GameClient {
                         System.out.println("Connecting failed. Retrying...");
                     }
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
             }
