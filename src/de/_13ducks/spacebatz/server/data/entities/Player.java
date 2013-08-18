@@ -22,6 +22,8 @@ import de._13ducks.spacebatz.server.data.skilltree.MarsroverSkilltree;
 import de._13ducks.spacebatz.server.data.skilltree.SkillTree;
 import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.DefaultSettings;
+import de._13ducks.spacebatz.shared.Item;
+import de._13ducks.spacebatz.shared.WeaponStats;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_CORRECT_INVENTORY;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TOGGLE_ALIVE;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_PLAYER_TURRET_DIR_UPDATE;
@@ -131,19 +133,22 @@ public class Player extends ItemCarrier {
                 if (!buildmode) {
                     // Tick für nächsten erlaubten Angriff setzen (abhängig von Attackspeed)
                     double aspeed = standardAttack.getWeaponStats().getAttackspeed();
-                    if (getActiveWeapon() != null) {
-                        aspeed = getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeed() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getAttackspeedMultiplicatorBonus());
+                    Item activeWeapon = getActiveWeapon();
+                    if (activeWeapon != null) {
+                        WeaponAbility ability = activeWeapon.getWeaponAbility();
+                        WeaponStats stats = ability.getWeaponStats();
+                        aspeed = stats.getAttackspeed() * (1 + stats.getAttackspeedMultiplicatorBonus());
                     }
 
-                    if (getActiveWeapon() == null || getActiveWeapon().getWeaponAbility() == null) {
+                    if (activeWeapon == null || activeWeapon.getWeaponAbility() == null) {
                         attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
                         standardAttack.tryUseOnPosition(this, tx, ty);
                     } else {
-                        int maxOverheat = (int) (getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
-                        if (getActiveWeapon().getOverheat() + 1 <= maxOverheat || getActiveWeapon().getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
+                        int maxOverheat = (int) (activeWeapon.getWeaponAbility().getWeaponStats().getMaxoverheat() * (1 + activeWeapon.getWeaponAbility().getWeaponStats().getMaxoverheatMultiplicatorBonus()));
+                        if (activeWeapon.getOverheat() + 1 <= maxOverheat || activeWeapon.getWeaponAbility().getWeaponStats().getMaxoverheat() == 0) {
                             attackCooldownTick = Server.game.getTick() + (int) Math.ceil(1 / aspeed);
-                            getActiveWeapon().increaseOverheat(1);
-                            getActiveWeapon().getWeaponAbility().tryUseOnPosition(this, tx, ty);
+                            activeWeapon.increaseOverheat(1);
+                            activeWeapon.getWeaponAbility().tryUseOnPosition(this, tx, ty);
                         }
                     }
                 } else {
