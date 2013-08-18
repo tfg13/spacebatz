@@ -32,7 +32,7 @@ public abstract class Inventory {
     /**
      * Die aktive Waffe
      */
-    private int activeWeaponSlot;
+    private int activeWeaponSlot = WEAPONSLOT1;
 
     public Inventory() {
         slots = new HashMap<>();
