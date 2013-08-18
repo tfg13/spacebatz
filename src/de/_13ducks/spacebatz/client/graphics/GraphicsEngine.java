@@ -4,6 +4,7 @@ import de._13ducks.spacebatz.client.Engine;
 import de._13ducks.spacebatz.client.GameClient;
 import de._13ducks.spacebatz.client.graphics.input.Input;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.overlay.impl.DucksOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.HudOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.TerminalOverlay;
 import de._13ducks.spacebatz.client.graphics.overlay.impl.inventory.InventoryOverlay;
@@ -127,6 +128,13 @@ public class GraphicsEngine {
             shader = ShaderLoader.load();
             VAOFactory.init(GL20.glGetUniformLocation(shader[SHADER_INDEX_OVERLAYS], "colorTexMode"));
 
+            // Shader für Overlays bauen:
+            setupOverlayShader();
+
+            DucksOverlay ducksLogo = new DucksOverlay();
+            ducksLogo.render();
+            ducksLogo.destroy();
+
             // Komponenten erzeugen:
             input = new Input();
 
@@ -155,9 +163,6 @@ public class GraphicsEngine {
 
             coreRenderer.setupShaders(shader);
 
-            // Shader für Overlays bauen:
-            setupOverlayShader();
-
             coreRenderer.reEnableShader();
 
 
@@ -181,9 +186,6 @@ public class GraphicsEngine {
     public void tick() {
         // Schatten-Aufdecken animieren:
         shadowAnimator.tick();
-
-        // Bild löschen, neu malen
-        glClear(GL_COLOR_BUFFER_BIT);
 
         // Zeitmessung
         long ns = System.nanoTime();
