@@ -398,7 +398,7 @@ public class VAO {
      * Löscht die Daten dieses VAOs von der Grafikkarte. Nach diesem Aufruf darf die Referenz verworfen werden, damit die GC die Reste frisst.
      */
     public void destroy() {
-        if (created) {
+        if (!created) {
             throw new IllegalStateException("Illegal: VAO usage: Cannot purge from graphics card, not uploaded");
         }
         GL30.glBindVertexArray(vaoID);
