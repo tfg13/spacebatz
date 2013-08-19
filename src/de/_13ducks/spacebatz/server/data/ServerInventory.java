@@ -21,14 +21,14 @@ public class ServerInventory extends Inventory {
      */
     public int tryCreateItem(Item item, Char owner) {
         // erst Ausrüstungsslots durchsuchen:
-        for (int i = CompileTimeParameters.INVENTORY_SIZE; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT - 1; i++) {
+        for (int i = CompileTimeParameters.INVENTORY_SIZE; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT; i++) {
             if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
                 slots.get(i).setItem(item, owner.getProperties());
                 return i;
             }
         }
         // dann Slots im Rucksack überprüfen:
-        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE - 1; i++) {
+        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE; i++) {
             if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
                 slots.get(i).setItem(item, owner.getProperties());
                 return i;
@@ -38,26 +38,22 @@ public class ServerInventory extends Inventory {
     }
 
     /**
-     * Codiert die Inventarbelegung in ein byte[).
+     * Codiert die Inventarbelegung in ein byte-Array.
      *
-     * Das erste byte ist die Zahl der Einträge. Jeder Eintrag besteht aus einem byte das den slot angibt, und einem Integer (4 bytes) der die netId des zugehörigen Items angibt.
+     * Das Byte-Array enthält einen Integer ( die netId des Items ) für jeden slot, also insgesamt CompileTimeParameters.INVENTORY_SIZE Einträge.
      *
      * @return das Byte-Array mit der Inventarbelegung
      */
     public byte[] getInventoryMapping() {
-        int count = 0;
         BitEncoder encoder = new BitEncoder();
-        encoder.writeByte((byte) 0); // Platzhalter für die Länge
-        for (int i = 0; i < slots.size(); i++) {
-            encoder.writeByte((byte) i);
+        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT; i++) {
             if (!slots.get(i).isEmpty()) {
                 encoder.writeInt(slots.get(i).getItem().getNetID());
-                count++;
+            } else {
+                encoder.writeInt(- 1);
             }
         }
-        byte[] data = encoder.getBytes();
-        data[0] = (byte) count;
-        return data;
+        return encoder.getBytes();
     }
 
     public Item getItem(int slot) {

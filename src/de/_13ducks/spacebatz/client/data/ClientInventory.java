@@ -18,14 +18,14 @@ public class ClientInventory extends de._13ducks.spacebatz.server.data.Inventory
     public int tryCreateItem(Item item, PropertyList props) {
 
         // erst Ausrüstungsslots durchsuchen:
-        for (int i = CompileTimeParameters.INVENTORY_SIZE; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT - 1; i++) {
+        for (int i = CompileTimeParameters.INVENTORY_SIZE; i < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT; i++) {
             if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
                 slots.get(i).setItem(item, props);
                 return i;
             }
         }
         // dann Slots im Rucksack überprüfen:
-        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE - 1; i++) {
+        for (int i = 0; i < CompileTimeParameters.INVENTORY_SIZE; i++) {
             if (slots.get(i).canEquipClass(item.getItemClass()) && slots.get(i).isEmpty()) {
                 slots.get(i).setItem(item, props);
                 return i;
@@ -54,22 +54,27 @@ public class ClientInventory extends de._13ducks.spacebatz.server.data.Inventory
      *
      * @param mapping
      */
-    public void forceInventoryMapping(byte[] mapping) {
-        HashMap<Integer, ItemSlot> items = new HashMap<>();
-        items.putAll(slots);
+    public void forceInventoryMapping(byte[] mapping, PropertyList props) {
+        // Alle Items temporär zwischenspeichern:
+        HashMap<Integer, Item> tempItems = new HashMap<>();
+        for (ItemSlot slot : slots.values()) {
+            if (!slot.isEmpty()) {
+                tempItems.put(slot.getItem().getNetID(), slot.getItem());
+                slot.removeItem(props);
+            }
+        }
+
+        // Items nach der Vorgabe vom Server wieder einfügen:
         BitDecoder decoder = new BitDecoder(mapping);
-        int count = decoder.readByte();
-        for (int i = 0; i < count; i++) {
-            int slot = decoder.readByte();
+        for (int slot = 0; slot < CompileTimeParameters.INVENTORY_SIZE + EQUIPSLOT_COUNT; slot++) {
             int itemNetID = decoder.readInt();
-            Item item = null;
-            for (ItemSlot itemSlot : items.values()) {
-                if (itemSlot.getItem().getNetID() == itemNetID) {
-                    item = itemSlot.getItem();
+            if (itemNetID != -1) {
+                if (tempItems.containsKey(itemNetID)) {
+                    slots.get(slot).setItem(tempItems.get(itemNetID), props);
+                } else {
+                    throw new IllegalStateException("Client misses Item " + itemNetID);
                 }
             }
-            slots.get(i).removeItem(null);
-            slots.get(slot).setItem(item, null);
         }
     }
 
