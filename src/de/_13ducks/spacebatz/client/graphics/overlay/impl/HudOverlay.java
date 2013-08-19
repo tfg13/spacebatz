@@ -1,7 +1,9 @@
 package de._13ducks.spacebatz.client.graphics.overlay.impl;
 
 import de._13ducks.spacebatz.client.GameClient;
+import de._13ducks.spacebatz.client.graphics.TextWriter;
 import de._13ducks.spacebatz.client.graphics.overlay.Overlay;
+import de._13ducks.spacebatz.client.graphics.renderer.impl.LegacyRenderer;
 import de._13ducks.spacebatz.client.graphics.vao.DynamicRectangleVAO;
 import de._13ducks.spacebatz.client.graphics.vao.DynamicTexturedRectangleVAO;
 import de._13ducks.spacebatz.client.graphics.vao.DynamicTileVAO;
@@ -23,6 +25,7 @@ public class HudOverlay extends Overlay {
     private DynamicTileVAO weapon3;
     private DynamicRectangleVAO selectedWeaponBackground;
     private DynamicRectangleVAO healthbarRect;
+    private DynamicRectangleVAO screenRect;
 
     public HudOverlay() {
         int x, y, width, height;
@@ -65,6 +68,12 @@ public class HudOverlay extends Overlay {
         width = (int) (DefaultSettings.CLIENT_GFX_RES_X * 0.08f);
         height = (int) (DefaultSettings.CLIENT_GFX_RES_Y * 0.08f);
         weapon3 = VAOFactory.IOnlyWantToDrawATile(x, y, width, height, "item.png", 0, 32);
+
+        x = 0;
+        y = 0;
+        width = DefaultSettings.CLIENT_GFX_RES_X;
+        height = DefaultSettings.CLIENT_GFX_RES_Y;
+        screenRect = VAOFactory.createDynamicRectangleVAO(x, y, width, height, new float[]{1.0f, 0.1f, 0.0f, 0.5f});
 
     }
 
@@ -118,6 +127,17 @@ public class HudOverlay extends Overlay {
         }
         healthbarRect.setRenderSize((int) (0.1645f * ((float) hp / maxhp) * DefaultSettings.CLIENT_GFX_RES_X), (int) (0.018f * DefaultSettings.CLIENT_GFX_RES_Y));
         healthbarRect.render();
+
+        // REspawn-Text
+        if (GameClient.logicPlayer.isDead()) {
+            screenRect.render();
+            if (GameClient.frozenGametick >= GameClient.player.getRespawntick()) {
+                TextWriter.renderText("Press <Fire> to respawn", 0.5f * DefaultSettings.CLIENT_GFX_RES_X, 0.5f * DefaultSettings.CLIENT_GFX_RES_Y);
+            } else {
+                int seconds = (int) Math.ceil((GameClient.player.getRespawntick() - GameClient.frozenGametick) * GameClient.getNetwork2().getLogicTickDelay() / 1000.0);
+                TextWriter.renderText("Respawn in " + seconds + " Seconds", 0.5f * DefaultSettings.CLIENT_GFX_RES_X, 0.5f * DefaultSettings.CLIENT_GFX_RES_Y);
+            }
+        }
 
 //        // HUD-Hintergrund:
 //        glColor3f(1.0f, 1.0f, 1.0f);
