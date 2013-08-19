@@ -265,6 +265,6 @@ public class InventoryOverlay extends TriggeredOverlay {
      * @param data
      */
     public void forceMapping(byte[] data) {
-        GameClient.player.inventory.forceInventoryMapping(data);
+        GameClient.player.inventory.forceInventoryMapping(data, GameClient.player.properties);
     }
 }

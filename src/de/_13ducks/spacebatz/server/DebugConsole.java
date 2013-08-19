@@ -12,12 +12,12 @@ package de._13ducks.spacebatz.server;
 
 import de._13ducks.spacebatz.server.ai.astar.PathRequester;
 import de._13ducks.spacebatz.server.data.Client;
-import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.entities.Enemy;
 import de._13ducks.spacebatz.server.data.entities.Entity;
 import de._13ducks.spacebatz.server.data.entities.Player;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
 import de._13ducks.spacebatz.server.gamelogic.EnemyFactory;
+import de._13ducks.spacebatz.shared.network.messages.STC.STC_CORRECT_INVENTORY;
 import de._13ducks.spacebatz.util.geo.Vector;
 import java.io.*;
 import java.util.ArrayList;
@@ -61,8 +61,7 @@ public class DebugConsole {
      */
     private int loglevel = LOGLEVEL_ALL;
     /**
-     * Ein Stream zum ungefilternen Ausgeben für die interne Nutzung der
-     * Debug-Console.
+     * Ein Stream zum ungefilternen Ausgeben für die interne Nutzung der Debug-Console.
      */
     private PrintStream outStream;
     /**
@@ -75,8 +74,7 @@ public class DebugConsole {
     private ConcurrentHashMap<Byte, Object[]> rcons;
 
     /**
-     * Konstruktor Erzeugt einen neuen Thread der alle Eingaben
-     * zwischenspeichert
+     * Konstruktor Erzeugt einen neuen Thread der alle Eingaben zwischenspeichert
      */
     public DebugConsole() {
         rconOutput = new ArrayList<>();
@@ -281,6 +279,13 @@ public class DebugConsole {
                                 }
                             }
                         }, size1);
+                        break;
+                    case "stc_correct_inventory()":
+                        for (Client client : Server.game.clients.values()) {
+                            STC_CORRECT_INVENTORY.sendCorrectInventory(client.getPlayer().inventory.getInventoryMapping(), client.getPlayer());
+                        }
+
+
                         break;
                     case "maphash":
                         System.out.println(Server.game.getLevel().getHash());

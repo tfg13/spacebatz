@@ -5,6 +5,7 @@ import de._13ducks.spacebatz.client.network.STCCommand;
 import de._13ducks.spacebatz.server.Server;
 import de._13ducks.spacebatz.server.data.Client;
 import de._13ducks.spacebatz.server.data.entities.Player;
+import de._13ducks.spacebatz.shared.CompileTimeParameters;
 import de._13ducks.spacebatz.shared.network.MessageIDs;
 import de._13ducks.spacebatz.shared.network.OutgoingCommand;
 
@@ -22,12 +23,12 @@ public class STC_CORRECT_INVENTORY extends STCCommand {
 
     @Override
     public boolean isVariableSize() {
-        return true;
+        return false;
     }
 
     @Override
     public int getSize(byte sizeData) {
-        return sizeData;
+        return CompileTimeParameters.INVENTORY_SIZE * 4; // Ein Integer(4 bytes) pro slot
     }
 
     public static void sendCorrectInventory(byte[] mapping, Player player) {
