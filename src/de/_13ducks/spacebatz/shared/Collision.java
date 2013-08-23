@@ -15,6 +15,19 @@ public class Collision {
     private Collision() {
     }
 
+    /**
+     * Berechnet, ob die gewünschte Bewegung möglich ist, ohne mit einer Wand zusammen zu stoßen.
+     * Falls eine Kollision festgestellt wird, wird berechnet, wie weit man in der aktuellen Richtung noch fahren kann, ohne zu kollidieren.
+     * Außerdem wird der erste Block berechnet, mit dem man zusammenstößt, wenn man die Bewegung so durchführt.
+     *
+     * @param fromX aktuelle X-Position, muss erlaubt sein (Kollisionsfrei und innerhalb der Map)
+     * @param fromY aktuelle Y-Position, muss erlaubt sein (Kollisionsfrei und innerhlab der Map)
+     * @param toX gewünsche X-Position, die gesamte, lineare Strecke dort hin wird geprüft (muss innerhalb der Map sein, sonst gibts Exceptions)
+     * @param toY gewünsche Y-Position, die gesamte, lineare Strecke dort hin wird geprüft (muss innerhalb der Map sein, sonst gibts Exceptions)
+     * @param size Größe der sich bewegenden Entity
+     * @param collisionMap Kollisionsmap, die durchsucht werden soll. Die Client-oder Servermap des aktuellen Levels
+     * @return CollisionResult mit den Ergebnissen der Berechnung.
+     */
     public static CollisionResult computeCollision(double fromX, double fromY, double toX, double toY, double size, boolean[][] collisionMap) {
         CollisionResult result = new CollisionResult();
         result.maxX = toX;
@@ -28,6 +41,21 @@ public class Collision {
         // Anfangs- und Ziel-Y des Gebiets das gescannt wird
         int moveAreaStartY = (int) (Math.min(fromY, toY) - size / 2);
         int moveAreaEndY = (int) (Math.max(fromY, toY) + size / 2) + 1;
+        // Suchraster auf Mapgrenzen einschränken:
+        if (moveAreaStartX < 0) {
+            moveAreaStartX = 0;
+        } else if (moveAreaStartX > collisionMap.length) {
+            moveAreaEndX = collisionMap.length;
+        }
+        if (moveAreaStartY < 0) {
+            moveAreaStartY = 0;
+        } else if (moveAreaStartY > collisionMap[0].length) {
+            moveAreaEndY = collisionMap[0].length;
+        }
+        // Grob illegale Zielkoordinaten verbieten:
+        if (toX < 0 || toX >= collisionMap.length || toY < 0 || toY >= collisionMap[0].length) {
+            throw new RuntimeException("Prevented illegal movement from " + fromX + " " + fromY + " to " + toX + " " + toY);
+        }
 
 
         // Gesucht ist der Block, mit dem wir als erstes kollidieren
