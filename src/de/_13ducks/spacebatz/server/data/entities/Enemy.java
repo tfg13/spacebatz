@@ -17,7 +17,7 @@ import de._13ducks.spacebatz.server.data.Teams.Team;
 import de._13ducks.spacebatz.server.data.abilities.Ability;
 import de._13ducks.spacebatz.server.data.entities.move.InterpolatedMover;
 import de._13ducks.spacebatz.server.gamelogic.DropManager;
-import de._13ducks.spacebatz.shared.CompileTimeParameters;
+import de._13ducks.spacebatz.shared.Collision;
 import de._13ducks.spacebatz.shared.EnemyTypeStats;
 import de._13ducks.spacebatz.shared.EnemyTypes;
 import de._13ducks.spacebatz.shared.network.messages.STC.STC_SET_FACING_TARGET;
@@ -240,116 +240,7 @@ public class Enemy extends Char implements EntityLinearTargetObserver, PathReque
      * @return
      */
     public boolean lineOfSight(double fromX, double fromY, double toX, double toY) {
-        // Der Vektor der Bewegung:
-        double deltaX = toX - fromX;
-        double deltaY = toY - fromY;
-        // Anfangs- und Ziel-X des Gebiets das gescannt wird
-        int moveAreaStartX = (int) (Math.min(fromX, toX) - getSize() / 2);
-        int moveAreaEndX = (int) (Math.max(fromX, toX) + getSize() / 2) + 1;
-        // Anfangs- und Ziel-Y des Gebiets das gescannt wird
-        int moveAreaStartY = (int) (Math.min(fromY, toY) - getSize() / 2);
-        int moveAreaEndY = (int) (Math.max(fromY, toY) + getSize() / 2) + 1;
-
-
-        // Gesucht ist der Block, mit dem wir als erstes kollidieren
-        // der Faktor für die weiteste Position auf die wir ohne Kolision vorrücken können: start + d * vector
-        double d;
-        // das kleinste gefundene d
-        double smallestD = Double.MAX_VALUE;
-        // Variablen, die wir in jedem Schleifendurchlauf brauchen:
-        double blockMidX, blockMidY, d1, d2;
-        // Jetzt alle Blöcke im angegebenen Gebiet checken:
-        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
-            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
-                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
-
-                    // Der Mittelpunkt des Blocks
-                    blockMidX = x + 0.5;
-                    blockMidY = y + 0.5;
-                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidX + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
-                    d2 = ((blockMidX - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromX) / deltaX;
-
-                    // das kleinere d wählen:
-                    d = Math.min(d1, d2);
-
-                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
-                        d = 0;
-                    }
-
-                    // Y-Distanz berechnen, zum schauen ob wir nicht am Block mit y-Abstand vorbeifahren:
-                    double yDistance = Math.abs(blockMidY - (fromY + d * deltaY));
-
-                    if (!Double.isNaN(yDistance) && 0 <= d && d <= 1 && yDistance < ((getSize() / 2.0) + 0.5)) {
-                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
-                        // Also wenn die Kollision näher ist als die anderen speichern:
-                        if (d < smallestD) {
-                            smallestD = d;
-                        }
-                    }
-                }
-            }
-        }
-        double sx = Double.NaN;
-        // Hier haben wir mit smallestD und xCollision alle relevanten infos
-        if (smallestD < Double.MAX_VALUE) {
-            // Die Koordinaten der Position die noch erreicht werden kann ohne kollision:
-            sx = fromX + smallestD * deltaX;
-        }
-
-        // Für die Y-Berechung die Werte zurücksetzten, für die Block-Berechung aber behalten!
-        double globalsmallestD = smallestD;
-        smallestD = Double.MAX_VALUE;
-        // Jetzt alle Blöcke im angegebenen Gebiet checken:
-        for (int x = moveAreaStartX; x < moveAreaEndX; x++) {
-            for (int y = moveAreaStartY; y < moveAreaEndY; y++) {
-                if (Server.game.getLevel().getCollisionMap()[x][y] == true) {
-
-
-                    // Der Mittelpunkt des Blocks
-                    blockMidX = x + 0.5;
-                    blockMidY = y + 0.5;
-                    // Wenn nicht müssen wir noch auf Y-Kollision prüfen:
-                    // Die Faktoren für die beiden Punkte, an denen der Mover den Block berühren würde
-                    d1 = ((blockMidY + (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
-                    d2 = ((blockMidY - (CompileTimeParameters.DOUBLE_EQUALS_DIST + 0.5 + getSize() / 2.0)) - fromY) / deltaY;
-                    // Das kleinere d wählen:
-                    d = Math.min(d1, d2);
-
-                    if (Double.isInfinite(d) || Double.isNaN(d) || d < 0) {
-                        d = 0;
-                    }
-
-                    double xDistance = Math.abs(blockMidX - (fromX + d * deltaX));
-
-                    if (!Double.isNaN(xDistance) && 0 <= d && d <= 1 && xDistance < ((getSize() / 2.0) + 0.5)) {
-                        // Wenn das d gültig ist *und* wir Y-Überschneidung haben, würden wir mit dem Block kollidieren
-                        // Also wenn die Kollision näher ist als die anderen speichern:
-                        if (d < smallestD) {
-                            smallestD = d;
-                        }
-                        // Näher als die von X?
-                        if (d < globalsmallestD) {
-                            globalsmallestD = d;
-                        }
-                    }
-                }
-            }
-        }
-        double sy = Double.NaN;
-        // Hier haben wir mit smallestD und xCollision alle relevanten infos
-        if (smallestD < Double.MAX_VALUE) {
-            // Die Koordinaten der Position die noch erreicht werden kann
-            sy = fromY + smallestD * deltaY;
-        }
-
-        // Bewegung koorigieren?
-        if (!(Double.isNaN(sx) && Double.isNaN(sy))) {
-            return false;
-        } else {
-            return true;
-        }
-
+        return !Collision.computeCollision(fromX, fromY, toX, toY, getSize(), Server.game.getLevel().getCollisionMap()).collides;
     }
 
     @Override

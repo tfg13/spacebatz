@@ -247,7 +247,7 @@ public class Game {
         EnemySpawner.tick();
         //Tote Entities aufräumen:
         entityManager.removeDisposableEntities();
-        // Kollision berechnen: (Muss zuletzt berechnet werden, da sonst Gegner durch Wände laufen können)
+        // Game-Kollision berechnen (nicht Bewegungskollision)
         CollisionManager.computeCollision();
     }
 
