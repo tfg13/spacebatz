@@ -72,6 +72,10 @@ public class DebugConsole {
      * Die verbundenen rcons.
      */
     private ConcurrentHashMap<Byte, Object[]> rcons;
+    /**
+     * Sucht nach Fehlern im Sysout und Syserr und gibt den Maphash aus, falls einer auftaucht.
+     */
+    private boolean errorDetected = false;
 
     /**
      * Konstruktor Erzeugt einen neuen Thread der alle Eingaben zwischenspeichert
@@ -123,10 +127,50 @@ public class DebugConsole {
                         // Filtern
                         boolean warn = line.toLowerCase().startsWith("warn");
                         boolean err = line.toLowerCase().startsWith("err");
-
+                        if (!errorDetected && (line.toLowerCase().contains("error") || line.toLowerCase().contains("exception"))) {
+                            errorDetected = true;
+                            outStream.println("DebugConsole: Problem detected. Current Map:");
+                            outStream.println(Server.game.getLevel().getHash());
+                        }
                         if (loglevel == LOGLEVEL_ALL || (loglevel == LOGLEVEL_WARNING && (warn || err)) || (loglevel == LOGLEVEL_ERROR && err)) {
                             outStream.println(line);
                         }
+                    }
+                }
+            }));
+        } catch (Exception ex) {
+        }
+        // Stderr abfangen:
+        try {
+            final PrintStream realerr = System.err;
+            final PrintStream errStream = new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                    // Eventuell an die rcons verteilen
+                    for (PrintStream rcon : rconOutput) {
+                        rcon.write(b);
+                        rcon.flush();
+                    }
+                    // Normal ausgeben
+                    realerr.write(b);
+                }
+            });
+            System.setErr(new PrintStream(new OutputStream() {
+                StringBuffer buf = new StringBuffer();
+
+                @Override
+                public void write(int b) throws IOException {
+                    if (b != '\n' && b != '\r') {
+                        buf.append((char) b);
+                    } else {
+                        String line = buf.toString();
+                        buf = new StringBuffer();
+                        if (!errorDetected && (line.toLowerCase().contains("error") || line.toLowerCase().contains("exception"))) {
+                            errorDetected = true;
+                            outStream.println("DebugConsole: Problem detected. Current Map:");
+                            outStream.println(Server.game.getLevel().getHash());
+                        }
+                        errStream.println(line);
                     }
                 }
             }));
