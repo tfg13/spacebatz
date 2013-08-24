@@ -432,11 +432,6 @@ public class PlayerCharacter extends Char {
     public void applyMove(Movement m) {
         super.applyMove(m);
         if (m.startTick == -1 && predictedX == 0 && predictedY == 0) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
             // Bei init-Set-Befehlen die Position in die Prediction übernehmen.
             predictedX = m.startX;
             predictedY = m.startY;
