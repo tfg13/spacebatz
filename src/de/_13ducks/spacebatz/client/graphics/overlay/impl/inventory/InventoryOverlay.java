@@ -245,6 +245,8 @@ public class InventoryOverlay extends TriggeredOverlay {
         container.mouseReleased(mx, my, button);
         // jetzt ggf. noch laufende Drag and Drop Operation stoppen
         dragStartSlot = -1;
+        dragging = false;
+        draggedItem.isVisible = false;
     }
 
     @Override
