@@ -56,13 +56,11 @@ public class Char {
      */
     private double x, y;
     /**
-     * Die Richtung, in die dieser Char schaut. Die übliche
-     * PI-Einheitskreis-Zählweise
+     * Die Richtung, in die dieser Char schaut. Die übliche PI-Einheitskreis-Zählweise
      */
     private double dir = 0;
     /**
-     * Die Richtung, in die dieser Char schauen soll. Er dreht sich in jedem
-     * Tick etwas in diese Richtung.
+     * Die Richtung, in die dieser Char schauen soll. Er dreht sich in jedem Tick etwas in diese Richtung.
      */
     private double target_dir = 0;
     /**
@@ -94,8 +92,7 @@ public class Char {
      */
     private boolean invisible = false;
     /**
-     * Gibt an, ob die Blickrichtung dieses Chars auf einen anderen Char fixiert
-     * ist.
+     * Gibt an, ob die Blickrichtung dieses Chars auf einen anderen Char fixiert ist.
      */
     private boolean isFacingTarget;
     /**
@@ -105,7 +102,7 @@ public class Char {
     /**
      * Gibt an ob dieser Char automatisch in Bewegungsrichtung schaut.
      */
-    public boolean lookInMovingDirection;
+    public boolean lookInMovingDirection = true;
 
     public Char(int netID, float size, RenderObject renderObject) {
         this.netID = netID;
@@ -120,8 +117,7 @@ public class Char {
     }
 
     /**
-     * Liefert den aktuellen X-Wert zurück Bewegungen sind hier schon
-     * eingerechnet.
+     * Liefert den aktuellen X-Wert zurück Bewegungen sind hier schon eingerechnet.
      *
      * @return die aktuelle X-Position
      */
@@ -130,8 +126,7 @@ public class Char {
     }
 
     /**
-     * Liefert den aktuellen Y-Wert zurück Bewegungen sind hier schon
-     * eingerechnet.
+     * Liefert den aktuellen Y-Wert zurück Bewegungen sind hier schon eingerechnet.
      *
      * @return die aktuelle Y-Position
      */
@@ -140,8 +135,7 @@ public class Char {
     }
 
     /**
-     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und
-     * deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
      *
      * @return die aktuelle X-Position, Bewegungen eingerechnet
      */
@@ -150,8 +144,7 @@ public class Char {
     }
 
     /**
-     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und
-     * deshalb garantiert nicht mit der Prediction in Konflikt gerät.
+     * Interne Wegberechungsmethode, die nicht überschrieben werden kann, und deshalb garantiert nicht mit der Prediction in Konflikt gerät.
      *
      * @return die aktuelle Y-Position, Bewegungen eingerechnet
      */
@@ -160,8 +153,8 @@ public class Char {
     }
 
     /**
-     * Liefert im Prinzip das Selbe wie getX(), interpoliert aber den aktuellen Subtick auch noch mit rein.
-     * Eine so hohe zeitliche Auflösung ist vor allem für die Grafik interessant, die damit noch flüssigere Animationen erreicht.
+     * Liefert im Prinzip das Selbe wie getX(), interpoliert aber den aktuellen Subtick auch noch mit rein. Eine so hohe zeitliche Auflösung ist vor allem für die Grafik
+     * interessant, die damit noch flüssigere Animationen erreicht.
      *
      * @param subTick der zu verwendende SubTick im üblichen 0..1+ Format
      * @return die sehr präzise X-Position
@@ -171,8 +164,8 @@ public class Char {
     }
 
     /**
-     * Liefert im Prinzip das Selbe wie getY(), interpoliert aber den aktuellen Subtick auch noch mit rein.
-     * Eine so hohe zeitliche Auflösung ist vor allem für die Grafik interessant, die damit noch flüssigere Animationen erreicht.
+     * Liefert im Prinzip das Selbe wie getY(), interpoliert aber den aktuellen Subtick auch noch mit rein. Eine so hohe zeitliche Auflösung ist vor allem für die Grafik
+     * interessant, die damit noch flüssigere Animationen erreicht.
      *
      * @param subTick der zu verwendende SubTick im üblichen 0..1+ Format
      * @return die sehr präzise Y-Position
