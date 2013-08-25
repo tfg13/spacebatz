@@ -82,7 +82,9 @@ public class ItemCarrier extends Char {
      *
      */
     public void setSelectedTool(int tool) {
-        activeToolSlot = tool;
+        if (tool == Inventory.TOOLSLOT1 || tool == Inventory.TOOLSLOT2) {
+            activeToolSlot = tool;
+        }
     }
 
     /**
