@@ -84,10 +84,6 @@ public class PlayerCharacter extends Char {
      * Der Tick, bei dem zuletzt eine Prediction stattgefunden hat.
      */
     private double lastPredictionTick;
-    /**
-     * Der letzte Subtick, bei dem eine hochpräzise Prediction durchgeführt wurde.
-     */
-    private double lastPredictionSubTick;
     /*
      * Im Baumodus
      */
@@ -278,7 +274,7 @@ public class PlayerCharacter extends Char {
                 // Positionen nachkorrigieren, damit sich keine Rundungsfehler über die Zeit aufsummieren:
                 if (predictedX != super.getX() || predictedY != super.getY()) {
                     if (Math.abs(predictedX - super.getX()) > .001 || Math.abs(predictedY - super.getY()) > .001) {
-                        System.out.println("WARNING: CPRED: Major prediction correction was required:  X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
+                        System.out.println("WARN: CPRED: Major prediction correction was required:  X " + (super.getX() - predictedX) + " Y " + (super.getY() - predictedY));
                     }
                     predictedX = super.getX();
                     predictedY = super.getY();
@@ -338,7 +334,7 @@ public class PlayerCharacter extends Char {
     @Override
     public double getX() {
         // Liefert vorhergesagte Werte, falls die Prediction an ist.
-        if (!predictMovements && !paralyzed) {
+        if (!predictMovements || paralyzed) {
             return super.getX();
         }
 
@@ -348,7 +344,7 @@ public class PlayerCharacter extends Char {
     @Override
     public double getY() {
         // Liefert vorhergesagte Werte, falls die Prediction an ist.
-        if (!predictMovements && !paralyzed) {
+        if (!predictMovements || paralyzed) {
             return super.getY();
         }
 
@@ -358,7 +354,7 @@ public class PlayerCharacter extends Char {
     @Override
     public double getSubtickedX(double subTick) {
         // Liefert vorhergesagte Werte, falls die Prediction an ist.
-        if (!predictMovements && !paralyzed) {
+        if (!predictMovements || paralyzed) {
             return super.getSubtickedX(subTick);
         }
 
@@ -368,7 +364,7 @@ public class PlayerCharacter extends Char {
     @Override
     public double getSubtickedY(double subTick) {
         // Liefert vorhergesagte Werte, falls die Prediction an ist.
-        if (!predictMovements && !paralyzed) {
+        if (!predictMovements || paralyzed) {
             return super.getSubtickedY(subTick);
         }
 
@@ -377,7 +373,7 @@ public class PlayerCharacter extends Char {
 
     @Override
     public double getDir() {
-        if (!predictMovements && !paralyzed) {
+        if (!predictMovements || paralyzed) {
             return super.getDir();
         }
         return predictedDir;
